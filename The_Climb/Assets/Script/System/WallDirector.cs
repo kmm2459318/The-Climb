@@ -1,0 +1,21 @@
+using UnityEngine;
+//  壁に当たったかどうか判定する
+public class WallDirector : MonoBehaviour
+{
+    IWallHitTable WallHitTable;    //  壁に当たった時のインターフェイスのインスタンス
+    void Awake()
+    {
+        WallHitTable = GetComponent<IWallHitTable>();
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag(TagName.Wall))
+        {
+            if(WallHitTable != null)
+            {
+                //  このスクリプトがついているオブジェクトの壁に当たった時の処理
+                WallHitTable.OnHitWall();
+            }
+        }
+    }
+}
