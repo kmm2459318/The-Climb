@@ -5,14 +5,19 @@ public class PlayerMove : MonoBehaviour
 {
     Rigidbody RigidBody;    
     private float groundMoveForce = 0.25f;     //プレイヤーの地上移動速度
-    private float moveInput = 0f;       //プレイヤーの移動方向
-    private float airMoveForce = 90f;   //空中での移動速度
+    private float moveInput = 0f;        //プレイヤーの移動方向
+    private float airMoveForce = 90f;    //空中での移動速度
     private float maxAirSpeed = 10f;     //空中での速度制限
-    private bool jumping = false;       //ジャンプ入力中判定
-    private float jumpTime;             //ジャンプ入力時間
-    private float jumpTimeMax = 0.1f;   //最大ジャンプ入力時間
+    private bool jumping = false;        //ジャンプ入力中判定
+    private float coyoteTime = 0.05f;    //コヨーテタイム
+    private float coyoteCounter = 0f;    //コヨーテタイムカウント
+    private float jumpCoolTime = 0.06f;  //ジャンプのクールタイム
+    private float jumpCoolCounter = 0f;  //ジャンのクールタイムカウント
+    private bool jumpCoolTiming = false;  //ジャンクールタイムを始める用判定
+    private float jumpTime;              //ジャンプ入力時間
+    private float jumpTimeMax = 0.1f;    //最大ジャンプ入力時間
     private float jumpPower = 15f;       //ジャンプでプレイヤーにかかる上方向の力
-    private float maxJumpSpeed = 100f;     //空中での速度制限
+    private float maxJumpSpeed = 100f;   //空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();  //ジャンプ時の速度カーブ
 
     public Transform groundCheck;       //プレイヤー足元の地面判定用オブジェクト
@@ -29,7 +34,7 @@ public class PlayerMove : MonoBehaviour
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();
-        Physics.gravity = new Vector3(0, -50.6F, 0); // Gを倍にする
+        Physics.gravity = new Vector3(0, -45.6F, 0); // Gを倍にする
     }
 
     private void Update()
@@ -54,9 +59,13 @@ public class PlayerMove : MonoBehaviour
         }
 
         //ジャンプ
-        if (Input.GetKeyDown(KeyCode.Space) && isJumpOK)
+        if ((coyoteCounter <= coyoteTime || isJumpOK) && !isRightWall && !isLeftWall && !jumpCoolTiming)
         {
-            jumping = true;
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                jumping = true;
+                jumpCoolTiming = true;
+            }
         }
 
         if (jumping)
@@ -71,47 +80,41 @@ public class PlayerMove : MonoBehaviour
                 jumpTime += Time.deltaTime;
             }
         }
+
+        if (jumpCoolTiming)
+        {
+            jumpCoolCounter += Time.deltaTime;
+
+            if (jumpCoolCounter > jumpCoolTime)
+            {
+                jumpCoolTiming = false;
+            }
+        }
     }
 
     void FixedUpdate()
     {
-        Vector3[] floorOffsets = new Vector3[] {
-            Vector3.zero,
-            Vector3.left * 0.499f,
-            Vector3.right * 0.499f
-        };
-        Vector3[] wallOffsets = new Vector3[] {
-            Vector3.zero,
-            Vector3.up * 0.49f,
-            Vector3.down * 0.49f
-        };
-
         // 地面判定（円形）
-        //isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
-        isGrounded = floorOffsets.Any(offset =>
-            Physics.CheckCapsule(groundCheck.position + Vector3.left * 0.499f, groundCheck.position + Vector3.right * 0.499f, groundCheckRadius, groundLayer)
-        );
+        isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.left * 0.49f, groundCheck.position + Vector3.right * 0.49f, groundCheckRadius, groundLayer);
         // ジャンプOK判定（円形）
-        isJumpOK = floorOffsets.Any(offset =>
-            Physics.CheckCapsule(jumpOKCheck.position + Vector3.left * 0.299f, jumpOKCheck.position + Vector3.right * 0.299f, 0.2f, groundLayer)
-        );
+        isJumpOK = Physics.CheckCapsule(jumpOKCheck.position + Vector3.left * 0.29f, jumpOKCheck.position + Vector3.right * 0.29f, 0.2f, groundLayer);
         // 左壁判定（円形）
-        isLeftWall = wallOffsets.Any(offset =>
-            Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.49f, leftWallCheck.position + Vector3.down * 0.49f, groundCheckRadius, groundLayer)
-        );
+        isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.49f, leftWallCheck.position + Vector3.down * 0.49f, groundCheckRadius, groundLayer);
         // 右壁判定（円形）
-        isRightWall = wallOffsets.Any(offset =>
-            Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.49f, rightWallCheck.position + Vector3.down * 0.49f, groundCheckRadius, groundLayer)
-        );
+        isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.49f, rightWallCheck.position + Vector3.down * 0.49f, groundCheckRadius, groundLayer);
 
         //移動
         if (isGrounded)
         {
+            coyoteCounter = 0f;
+
             //プレイヤー地上の移動
             GroundPlayerMove();
         }
         else
         {
+            coyoteCounter += Time.deltaTime;
+
             //プレイヤー空中の移動
             AirPlayerMove();
         }
