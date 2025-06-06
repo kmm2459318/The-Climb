@@ -9,9 +9,17 @@ public class EnemyMover : MonoBehaviour
     {
         RB = GetComponent<Rigidbody>();
     }
-    //  ˆÚ“®
-    public void Move(Vector3 Velocity)
+    //  Šî–{ˆÚ“®
+    public void BaseMove(Vector3 Velocity)
     {
         RB.MovePosition(RB.position + Velocity);
+    }
+    //  ƒWƒƒƒ“ƒv
+    public void Jump(float JumpForce)
+    {
+        Vector3 Velocity = RB.linearVelocity;
+        Velocity.y = 0;
+        RB.linearVelocity = Velocity;
+        RB.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
     }
 }

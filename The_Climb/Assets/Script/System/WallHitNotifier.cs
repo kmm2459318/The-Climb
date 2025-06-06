@@ -1,6 +1,6 @@
 using UnityEngine;
 //  壁に当たったかどうか判定する
-public class WallDirector : MonoBehaviour
+public class WallHitNotifier : MonoBehaviour
 {
     IWallHitTable WallHitTable;    //  壁に当たった時のインターフェイスのインスタンス
     void Awake()
