@@ -426,6 +426,42 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &901249229
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 901249230}
+  m_Layer: 0
+  m_Name: GroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &901249230
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 901249229}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1058851874}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1058851874 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5979823589065921296, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+  m_PrefabInstance: {fileID: 3612176113701049441}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1189780564
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,7 +474,7 @@ GameObject:
   - component: {fileID: 1189780567}
   - component: {fileID: 1189780566}
   - component: {fileID: 1189780565}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TentativeFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -546,17 +582,77 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2574114015764632309, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2574114015764632309, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2574114015764632309, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_Constraints
+      value: 112
+      objectReference: {fileID: 0}
+    - target: {fileID: 2574114015764632309, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2574114015764632309, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2574114015764632309, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_AngularDamping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: groundCheck
+      value: 
+      objectReference: {fileID: 901249230}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: jumpCurve.m_Curve.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: jumpCurve.m_Curve.Array.data[0].time
+      value: -0.0044403076
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: jumpCurve.m_Curve.Array.data[1].time
+      value: 0.9777832
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: jumpCurve.m_Curve.Array.data[0].value
+      value: 0.5074768
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: jumpCurve.m_Curve.Array.data[1].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: jumpCurve.m_Curve.Array.data[0].inSlope
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: jumpCurve.m_Curve.Array.data[0].outSlope
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4693955653665549781, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.52644
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4693955653665549781, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.43856
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4693955653665549781, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 13.848
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4693955653665549781, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       propertyPath: m_LocalRotation.w
@@ -586,9 +682,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5979823589065921296, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979823589065921296, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 5979823589065921296, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5979823589065921296, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 901249230}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
 --- !u!1660057539 &9223372036854775807
