@@ -19,17 +19,21 @@ public class PlayerMove : MonoBehaviour
     private float jumpPower = 15f;       //ジャンプでプレイヤーにかかる上方向の力
     private float maxJumpSpeed = 100f;   //空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();  //ジャンプ時の速度カーブ
+    private bool wasGrounded = false;    //前フレームの地面状態
+    public bool landing = false;         //着地したか判定
+    public bool slipping = false;        //着地後勢い止めず滑ってる判定
 
     public Transform groundCheck;       //プレイヤー足元の地面判定用オブジェクト
     public bool isGrounded;             //地面判定
-    public Transform jumpOKCheck;       //プレイヤー足元のジャンプ判定用オブジェクト
-    public bool isJumpOK;               //ジャンプOK判定
+    public Transform jumpMoveOKCheck;       //プレイヤー足元のジャンプ判定用オブジェクト
+    public bool isJumpMoveOK;               //ジャンプOK判定
     public Transform leftWallCheck;     //プレイヤー足元の左壁判定用オブジェクト
     public bool isLeftWall;             //左壁判定
     public Transform rightWallCheck;    //プレイヤー足元の右壁判定用オブジェクト
     public bool isRightWall;            //右壁判定
     public LayerMask groundLayer;       //地面レイヤー
-    private float groundCheckRadius = 0.001f;  //地面判定の半径
+    private float groundCheckRadius = 0.2f;  //地面判定の半径
+    private bool isAir = false;         //空中判定
 
     void Start()
     {
@@ -58,8 +62,13 @@ public class PlayerMove : MonoBehaviour
             moveInput = 0f;
         }
 
+        if (landing)
+        {
+            slipping = true;
+        }
+
         //ジャンプ
-        if ((coyoteCounter <= coyoteTime || isJumpOK) && !isRightWall && !isLeftWall && !jumpCoolTiming)
+        if ((coyoteCounter <= coyoteTime || isJumpMoveOK) && !jumpCoolTiming)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -94,18 +103,41 @@ public class PlayerMove : MonoBehaviour
 
     void FixedUpdate()
     {
-        // 地面判定（円形）
-        isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.left * 0.49f, groundCheck.position + Vector3.right * 0.49f, groundCheckRadius, groundLayer);
-        // ジャンプOK判定（円形）
-        isJumpOK = Physics.CheckCapsule(jumpOKCheck.position + Vector3.left * 0.29f, jumpOKCheck.position + Vector3.right * 0.29f, 0.2f, groundLayer);
-        // 左壁判定（円形）
-        isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.49f, leftWallCheck.position + Vector3.down * 0.49f, groundCheckRadius, groundLayer);
-        // 右壁判定（円形）
-        isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.49f, rightWallCheck.position + Vector3.down * 0.49f, groundCheckRadius, groundLayer);
+        // 地面判定（カプセル形）
+        isGrounded = Physics.CheckSphere(groundCheck.position , groundCheckRadius, groundLayer);
+        // 左壁判定（カプセル形）
+        isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.49f, leftWallCheck.position + Vector3.down * 0.49f, 0.001f, groundLayer);
+        // 右壁判定（カプセル形）
+        isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.49f, rightWallCheck.position + Vector3.down * 0.49f, 0.001f, groundLayer);
+
+        //空中時、isJumpOKを反応させない
+        if (isAir)
+        {
+            isJumpMoveOK = false;
+        }
+        else
+        {
+            // ジャンプOK判定（カプセル形）
+            isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, 0.6f, groundLayer);
+        }
+
+        //着地判定
+        landing = false;
+        if (!wasGrounded && isGrounded)
+        {
+            landing = true;
+
+            // 横方向の速度が一定以上ならスリップ開始
+            if (Mathf.Abs(RigidBody.linearVelocity.x) > 3.910599f || Mathf.Abs(RigidBody.linearVelocity.x) < -3.910599f)  // ← 閾値は調整
+            {
+                slipping = true;
+            }
+        }
 
         //移動
-        if (isGrounded)
+        if (isGrounded || (!isGrounded && isJumpMoveOK && !isLeftWall && !isRightWall))
         {
+            isAir = false;
             coyoteCounter = 0f;
 
             //プレイヤー地上の移動
@@ -113,6 +145,7 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
+            isAir = true;
             coyoteCounter += Time.deltaTime;
 
             //プレイヤー空中の移動
@@ -125,6 +158,9 @@ public class PlayerMove : MonoBehaviour
             Jump();
         }
 
+        //前フレームの接地判定
+        wasGrounded = isGrounded;
+
         //壁に当たったらジャンプが止まる
         //if (jumping && (isLeftWall || isRightWall))
         //{
@@ -135,6 +171,32 @@ public class PlayerMove : MonoBehaviour
 
     private void GroundPlayerMove() 
     {
+        Vector3 velocity = RigidBody.linearVelocity;
+
+        if (slipping)
+        {
+            // 入力があるときは減速しない（そのまま滑る）
+            if (moveInput == 0f)
+            {
+                // 横速度だけ徐々に0に近づける（減衰させる）
+                float slipFriction = 30f;  // この値は調整が必要（大きいと早く止まる）
+                velocity.x = Mathf.MoveTowards(velocity.x, 0f, slipFriction * Time.fixedDeltaTime);
+                RigidBody.linearVelocity = new Vector3(velocity.x, velocity.y, velocity.z);
+
+                // 一定以下になったらスリップ終了（普通の地上移動に戻す）
+                if (Mathf.Abs(velocity.x) < 0.1f)
+                {
+                    slipping = false;
+                }
+                return; // 通常の地上移動処理はスキップ
+            }
+            else
+            {
+                // 入力が入ったら即座にスリップを終了
+                slipping = false;
+            }
+        }
+
         // 地上：慣性なし、即応する左右移動
         Vector3 force = new Vector3(moveInput, 0f, 0f) * groundMoveForce;
         RigidBody.AddForce(force);

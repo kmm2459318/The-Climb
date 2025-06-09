@@ -858,7 +858,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1670611193}
   m_Layer: 0
-  m_Name: JumpOKCheck
+  m_Name: JumpMoveOKCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -873,7 +873,7 @@ Transform:
   m_GameObject: {fileID: 1670611192}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.65, z: 0}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1072,6 +1072,10 @@ PrefabInstance:
       propertyPath: rightWallCheck
       value: 
       objectReference: {fileID: 534629514}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: jumpMoveOKCheck
+      value: 
+      objectReference: {fileID: 1670611193}
     - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       propertyPath: groundLayer.m_Bits
       value: 128
