@@ -22,6 +22,9 @@ public class PlayerMove : MonoBehaviour
     private bool wasGrounded = false;    //前フレームの地面状態
     public bool landing = false;         //着地したか判定
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
+    private float slippingTime = 0f;     //スリップ方向切り替え用
+    private float slippingCounter = 2f;  //スリップ方向切り替えようタイム
+    Vector3 slipVelocity;                //滑り時のVelocity
 
     public Transform groundCheck;       //プレイヤー足元の地面判定用オブジェクト
     public bool isGrounded;             //地面判定
@@ -32,7 +35,7 @@ public class PlayerMove : MonoBehaviour
     public Transform rightWallCheck;    //プレイヤー足元の右壁判定用オブジェクト
     public bool isRightWall;            //右壁判定
     public LayerMask groundLayer;       //地面レイヤー
-    private float groundCheckRadius = 0.2f;  //地面判定の半径
+    private float groundCheckRadius = 0.1f;  //地面判定の半径
     private bool isAir = false;         //空中判定
 
     void Start()
@@ -62,11 +65,6 @@ public class PlayerMove : MonoBehaviour
             moveInput = 0f;
         }
 
-        if (landing)
-        {
-            slipping = true;
-        }
-
         //ジャンプ
         if ((coyoteCounter <= coyoteTime || isJumpMoveOK) && !jumpCoolTiming)
         {
@@ -93,6 +91,7 @@ public class PlayerMove : MonoBehaviour
         if (jumpCoolTiming)
         {
             jumpCoolCounter += Time.deltaTime;
+            isGrounded = false;
 
             if (jumpCoolCounter > jumpCoolTime)
             {
@@ -103,12 +102,16 @@ public class PlayerMove : MonoBehaviour
 
     void FixedUpdate()
     {
-        // 地面判定（カプセル形）
-        isGrounded = Physics.CheckSphere(groundCheck.position , groundCheckRadius, groundLayer);
         // 左壁判定（カプセル形）
         isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.49f, leftWallCheck.position + Vector3.down * 0.49f, 0.001f, groundLayer);
         // 右壁判定（カプセル形）
         isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.49f, rightWallCheck.position + Vector3.down * 0.49f, 0.001f, groundLayer);
+
+        if (!jumpCoolTiming)
+        {
+            // 地面判定（カプセル形）
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.left * 0.3f, groundCheck.position + Vector3.right * 0.3f, groundCheckRadius, groundLayer);
+        }
 
         //空中時、isJumpOKを反応させない
         if (isAir)
@@ -118,7 +121,7 @@ public class PlayerMove : MonoBehaviour
         else
         {
             // ジャンプOK判定（カプセル形）
-            isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, 0.6f, groundLayer);
+            isJumpMoveOK = Physics.CheckCapsule(jumpMoveOKCheck.position + Vector3.left * 0.2f, jumpMoveOKCheck.position + Vector3.left * 0.2f, 0.3f, groundLayer);
         }
 
         //着地判定
@@ -128,9 +131,10 @@ public class PlayerMove : MonoBehaviour
             landing = true;
 
             // 横方向の速度が一定以上ならスリップ開始
-            if (Mathf.Abs(RigidBody.linearVelocity.x) > 3.910599f || Mathf.Abs(RigidBody.linearVelocity.x) < -3.910599f)  // ← 閾値は調整
+            if (Mathf.Abs(RigidBody.linearVelocity.x) > 3.910599f)
             {
                 slipping = true;
+                slipVelocity = RigidBody.linearVelocity;
             }
         }
 
@@ -169,32 +173,43 @@ public class PlayerMove : MonoBehaviour
         //}
     }
 
-    private void GroundPlayerMove() 
+    private void GroundPlayerMove()
     {
-        Vector3 velocity = RigidBody.linearVelocity;
-
         if (slipping)
         {
-            // 入力があるときは減速しない（そのまま滑る）
-            if (moveInput == 0f)
-            {
-                // 横速度だけ徐々に0に近づける（減衰させる）
-                float slipFriction = 30f;  // この値は調整が必要（大きいと早く止まる）
-                velocity.x = Mathf.MoveTowards(velocity.x, 0f, slipFriction * Time.fixedDeltaTime);
-                RigidBody.linearVelocity = new Vector3(velocity.x, velocity.y, velocity.z);
+            //減少時間
+            float slipFriction = 14f;
 
-                // 一定以下になったらスリップ終了（普通の地上移動に戻す）
-                if (Mathf.Abs(velocity.x) < 0.1f)
-                {
-                    slipping = false;
-                }
-                return; // 通常の地上移動処理はスキップ
-            }
-            else
+            if (moveInput == 1f)
             {
-                // 入力が入ったら即座にスリップを終了
+                //横速度だけ徐々に減衰させRU
+                slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x), 3.910599f, slipFriction * Time.fixedDeltaTime);
+                slippingCounter = 0;
+            }
+            else if(moveInput == -1f)
+            {
+                //横速度だけ徐々に減衰させRU
+                slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x) * -1.0f, -3.910599f, slipFriction * Time.fixedDeltaTime);
+                slippingCounter = 0;
+            }
+            else if (slippingCounter > slippingTime)
+            {
                 slipping = false;
             }
+            else if (moveInput == 0f)
+            {
+                slipVelocity.x = Mathf.MoveTowards(slipVelocity.x, 0f, slipFriction * Time.fixedDeltaTime);
+                slippingCounter += Time.fixedDeltaTime;
+            }
+
+            RigidBody.linearVelocity = new Vector3(slipVelocity.x, 0, 0);
+
+            //一定以下になったらスリップ終了（普通の地上移動に戻す）
+            if (Mathf.Abs(slipVelocity.x) <= 3.910599f)
+            {
+                slipping = false;
+            }
+            return; //通常の地上移動処理はスキップ
         }
 
         // 地上：慣性なし、即応する左右移動
