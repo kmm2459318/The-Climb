@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(EnemyMover))]
+[RequireComponent(typeof(CharacterGroundChecker))]
 //  移動スクリプトに移動値を渡す
 public class KickerMoveCommander : MonoBehaviour, IWallHitTable
 {
@@ -23,7 +24,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable
     void Awake()
     {
         enemyMover = GetComponent<EnemyMover>();
-        kickerStatBlock = kickerStatus.GetStats(EnemyStates.VIOLENT);
+        kickerStatBlock = kickerStatus.GetStats(EnemyStates.NORMAL);
         //  数値初期化
         Initialize();
     }
@@ -61,9 +62,13 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable
     //  定期的なジャンプのループ
     IEnumerator PeriodicallyJump()
     {
+        CharacterGroundChecker characterGroundChecker = GetComponent<CharacterGroundChecker>();
+        
         while (true)
         {
             yield return new WaitForSeconds(CurrentJumpFrequency);
+
+            if(characterGroundChecker.CheckIsGround())
             //  ジャンプ
             enemyMover.Jump(CurrentJumpForce);
         }
