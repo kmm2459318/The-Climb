@@ -19,7 +19,7 @@ public class PlayerMove : MonoBehaviour
     private float coyoteCounter = 0f;    //コヨーテタイムカウント
     private float jumpCoolTime = 0.06f;  //ジャンプのクールタイム
     private float jumpCoolCounter = 0f;  //ジャンのクールタイムカウント
-    private bool jumpCoolTiming = false;  //ジャンクールタイムを始める用判定
+    private bool jumpCoolActive = false;  //ジャンクールタイムを始める用判定
     private float jumpTime;              //ジャンプ入力時間
     private float jumpTimeMax = 0.1f;    //最大ジャンプ入力時間
     private float groundJumpPower = 10f;  //ジャンプでプレイヤーにかかる上方向の力
@@ -74,94 +74,26 @@ public class PlayerMove : MonoBehaviour
     private void Update()
     {
         //移動
-        if (Input.GetKey(keyBind.playerMoveLeft) && Input.GetKey(keyBind.playerMoveRight) ||
-            !Input.GetKey(keyBind.playerMoveLeft) && !Input.GetKey(keyBind.playerMoveRight))  //止まる
-        {
-            moveInput = 0f;
-        }
-        else if (Input.GetKey(keyBind.playerMoveLeft) && !isLeftWall)  //左移動
-        {
-            moveInput = -1f;
-        }
-        else if (Input.GetKey(keyBind.playerMoveRight) && !isRightWall)  //右移動
-        {
-            moveInput = 1f;
-        }
-        else 
-        {
-            moveInput = 0f;
-        }
+        MoveOperation();
 
         //ジャンプ
-        if ((coyoteCounter <= coyoteTime || isJumpMoveOK) && !jumpCoolTiming)
-        {
-            if (Input.GetKeyDown(keyBind.playerJump))
-            {
-                jumping = true;
-                jumpCoolTiming = true;
-
-                //着地ジャンプ
-                if (landingJumpOn)
-                {
-                    landingJumpNumber++;
-                    landingJumpOn = false;
-                }
-            }
-        }
-
-        if (jumping)
-        {
-            if (Input.GetKeyUp(keyBind.playerJump) || jumpTime >= jumpTimeMax)
-            {
-                jumping = false;
-                jumpTime = 0;
-            }
-            else if (Input.GetKey(keyBind.playerJump))
-            {
-                jumpTime += Time.deltaTime;
-            }
-        }
+        JumpOperation();
 
         //チャージジャンプのチャージ
-        if (highJumpOn)
-        {
-            if (jumpCoolTiming || isAir)
-            {
-                highJumpChargeCounter = 0f;
-            }
-            else if (Input.GetKey(keyBind.highJump) && isGrounded)
-            {
-                highJumpChargeCounter += Time.deltaTime;
-            }
-            else if (Input.GetKeyUp(keyBind.highJump))
-            {
-                if (highJumpChargeCounter >= highJumpChargeTime)
-                {
-                    jumpCoolTiming = true;
-                    highJump = true;
-                }
-            }
-        }
+        ChargeJumpOperation();
+
+        //クイックジャンプ
+        QuickJumpOperation();
 
         //ジャンプのクールタイム
-        if (jumpCoolTiming)
+        if (jumpCoolActive)
         {
             jumpCoolCounter += Time.deltaTime;
             isGrounded = false;
 
             if (jumpCoolCounter > jumpCoolTime)
             {
-                jumpCoolTiming = false;
-            }
-        }
-
-        //クイックジャンプ
-        if (quickJumpOn)
-        {
-            if (isAir && Input.GetKeyDown(keyBind.playerJump) && !quickJumpUsed)
-            {
-                quickJump = true;
-                quickJumpUsed = true;
+                jumpCoolActive = false;
             }
         }
     }
@@ -173,7 +105,7 @@ public class PlayerMove : MonoBehaviour
         // 右壁判定（カプセル形）
         isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.49f, rightWallCheck.position + Vector3.down * 0.49f, 0.001f, groundLayer);
 
-        if (!jumpCoolTiming)
+        if (!jumpCoolActive)
         {
             // 地面判定（カプセル形）
             isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.left * 0.3f, groundCheck.position + Vector3.right * 0.3f, groundCheckRadius, groundLayer);
@@ -190,35 +122,8 @@ public class PlayerMove : MonoBehaviour
             isJumpMoveOK = Physics.CheckCapsule(jumpMoveOKCheck.position + Vector3.left * 0.2f, jumpMoveOKCheck.position + Vector3.left * 0.2f, 0.3f, groundLayer);
         }
 
-        //着地判定
-        landing = false;
-        if (!wasGrounded && isGrounded)
-        {
-            landing = true;
-
-            landingJumpCounter = 0f;
-            landingJumpOn = true;
-            quickJumpUsed = false;
-
-            // 横方向の速度が一定以上ならスリップ開始
-            if (Mathf.Abs(RigidBody.linearVelocity.x) > 3.910599f)
-            {
-                slipping = true;
-                slipVelocity = RigidBody.linearVelocity;
-            }
-        }
-
-        //着地ジャンプ猶予カウント
-        if (landingJumpOn)
-        {
-            landingJumpCounter += Time.fixedDeltaTime;
-
-            if (landingJumpCounter > landingJumpTime)
-            {
-                landingJumpOn = false;
-                landingJumpNumber = 0;
-            }
-        }
+        //着地チェック
+        LandingChack();
 
         //移動
         if (isGrounded || (!isGrounded && isJumpMoveOK && !isLeftWall && !isRightWall))
@@ -271,6 +176,127 @@ public class PlayerMove : MonoBehaviour
         wasGrounded = isGrounded;
     }
 
+    private void MoveOperation()
+    {
+        if (Input.GetKey(keyBind.playerMoveLeft) && Input.GetKey(keyBind.playerMoveRight) ||
+            !Input.GetKey(keyBind.playerMoveLeft) && !Input.GetKey(keyBind.playerMoveRight))  //止まる
+        {
+            moveInput = 0f;
+        }
+        else if (Input.GetKey(keyBind.playerMoveLeft) && !isLeftWall)  //左移動
+        {
+            moveInput = -1f;
+        }
+        else if (Input.GetKey(keyBind.playerMoveRight) && !isRightWall)  //右移動
+        {
+            moveInput = 1f;
+        }
+        else
+        {
+            moveInput = 0f;
+        }
+    }
+
+    private void JumpOperation() 
+    {
+        if ((coyoteCounter <= coyoteTime || isJumpMoveOK) && !jumpCoolActive)
+        {
+            if (Input.GetKeyDown(keyBind.playerJump))
+            {
+                jumping = true;
+                jumpCoolActive = true;
+
+                //着地ジャンプ
+                if (landingJumpOn)
+                {
+                    landingJumpNumber++;
+                    landingJumpOn = false;
+                }
+            }
+        }
+
+        if (jumping)
+        {
+            if (Input.GetKeyUp(keyBind.playerJump) || jumpTime >= jumpTimeMax)
+            {
+                jumping = false;
+                jumpTime = 0;
+            }
+            else if (Input.GetKey(keyBind.playerJump))
+            {
+                jumpTime += Time.deltaTime;
+            }
+        }
+    }
+
+    private void ChargeJumpOperation()
+    {
+        if (highJumpOn)
+        {
+            if (jumpCoolActive || isAir)
+            {
+                highJumpChargeCounter = 0f;
+            }
+            else if (Input.GetKey(keyBind.highJump) && isGrounded)
+            {
+                highJumpChargeCounter += Time.deltaTime;
+            }
+            else if (Input.GetKeyUp(keyBind.highJump))
+            {
+                if (highJumpChargeCounter >= highJumpChargeTime)
+                {
+                    jumpCoolActive = true;
+                    highJump = true;
+                }
+            }
+        }
+    }
+
+    private void QuickJumpOperation()
+    {
+        if (quickJumpOn)
+        {
+            if (isAir && Input.GetKeyDown(keyBind.playerJump) && !quickJumpUsed)
+            {
+                quickJump = true;
+                quickJumpUsed = true;
+            }
+        }
+    }
+
+    private void LandingChack()
+    {
+        //着地判定
+        landing = false;
+        if (!wasGrounded && isGrounded)
+        {
+            landing = true;
+
+            landingJumpCounter = 0f;
+            landingJumpOn = true;
+            quickJumpUsed = false;
+
+            // 横方向の速度が一定以上ならスリップ開始
+            if (Mathf.Abs(RigidBody.linearVelocity.x) > 3.910599f)
+            {
+                slipping = true;
+                slipVelocity = RigidBody.linearVelocity;
+            }
+        }
+
+        //着地ジャンプ猶予カウント
+        if (landingJumpOn)
+        {
+            landingJumpCounter += Time.fixedDeltaTime;
+
+            if (landingJumpCounter > landingJumpTime)
+            {
+                landingJumpOn = false;
+                landingJumpNumber = 0;
+            }
+        }
+    }
+
     private void GroundPlayerMove()
     {
         if (slipping)
@@ -284,7 +310,7 @@ public class PlayerMove : MonoBehaviour
                 slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x), 0f, slipFriction * Time.fixedDeltaTime);
                 slippingCounter = 0;
             }
-            else if(moveInput == -1f)
+            else if (moveInput == -1f)
             {
                 //横速度だけ徐々に減衰させRU
                 slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x) * -1.0f, 0f, slipFriction * Time.fixedDeltaTime);
@@ -310,16 +336,36 @@ public class PlayerMove : MonoBehaviour
             return; //通常の地上移動処理はスキップ
         }
 
-        // 地上：慣性なし、即応する左右移動
-        Vector3 force = new Vector3(moveInput, 0f, 0f) * groundMoveForce;
-        RigidBody.AddForce(force);
-        RigidBody.linearVelocity = force * Time.deltaTime * 1000.0f;
+        if (moveInput != 0f)
+        {
+            // 地上：慣性なし、即応する左右移動
+            Vector3 force = new Vector3(moveInput, 0f, 0f) * groundMoveForce;
+            RigidBody.AddForce(force);
+            RigidBody.linearVelocity = new Vector3(force.x * Time.deltaTime * 1000.0f, RigidBody.linearVelocity.y, 0f);
+        }
     }
 
     private void AirPlayerMove()
     {
         // 空中：左右に力を加える
         Vector3 force = new Vector3(moveInput, 0f, 0f) * airMoveForce;
+        switch (landingJumpNumber)
+        {
+            case 0:
+                {
+                    break;
+                }
+            case 1:
+                {
+                    force *= 2f;
+                    break;
+                }
+            default:
+                {
+                    force *= 4f;
+                    break;
+                }
+        }
         RigidBody.AddForce(force, ForceMode.Acceleration);
 
         // 最大空中速度を制限
