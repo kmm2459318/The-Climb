@@ -1,13 +1,15 @@
 using UnityEngine;
 
-public class ThornyCudgelController : MonoBehaviour
+public class ShortThornyCudgelController : MonoBehaviour
 {
+    [Header("初回クールタイム（秒）")]
+    public float initialCooldown = 2f;
+
     [Header("各フェーズ時間（秒）")]
-    public float cooldown1 = 1f;             // shortStretch前
+    public float cooldown1 = 1f;
     public float shortStretchDuration = 0.2f;
-    public float cooldown2 = 1f;           // longStretch前
     public float longStretchDuration = 2f;
-    public float cooldown3 = 1f;             // shrink前
+    public float cooldown3 = 1f;
     public float shrinkDuration = 4f;
 
     [Header("移動距離")]
@@ -15,22 +17,23 @@ public class ThornyCudgelController : MonoBehaviour
     public float longStretchDistance = 75f;
 
     [Header("回転速度（度/秒）")]
-    public float stretchRotationSpeed = 360f;   // 左回転
-    public float shrinkRotationSpeed = 180f;    // 右回転
+    public float stretchRotationSpeed = 360f;
+    public float shrinkRotationSpeed = 180f;
 
     private enum State
     {
+        InitialCooldown,
         Cooldown1,
         ShortStretch,
-        Cooldown2,
         LongStretch,
         Cooldown3,
         Shrinking
     }
 
-    private State currentState = State.Cooldown1;
+    private State currentState = State.InitialCooldown;
 
     private Vector3 baseLocalPosition;
+    private Vector3 shortStretchStart;
     private Vector3 shortStretchEnd;
     private Vector3 longStretchEnd;
 
@@ -48,22 +51,27 @@ public class ThornyCudgelController : MonoBehaviour
     {
         switch (currentState)
         {
+            case State.InitialCooldown:
+                if (TimerReached(initialCooldown))
+                {
+                    timer = 0f;
+                    currentState = State.Cooldown1;
+                }
+                break;
+
             case State.Cooldown1:
                 if (TimerReached(cooldown1)) StartShortStretch();
                 break;
 
             case State.ShortStretch:
-                MoveTowardsTarget(() =>
-                {
-                    shortStretchEnd = transform.localPosition;
-                    timer = 0f;
-                    currentState = State.Cooldown2;
-                });
+                float t = Mathf.Clamp01(timer / shortStretchDuration);
+                transform.localPosition = Vector3.Lerp(shortStretchStart, shortStretchEnd, t);
                 Rotate(-stretchRotationSpeed);
-                break;
-
-            case State.Cooldown2:
-                if (TimerReached(cooldown2)) StartLongStretch();
+                timer += Time.deltaTime;
+                if (t >= 1f)
+                {
+                    StartLongStretch();
+                }
                 break;
 
             case State.LongStretch:
@@ -94,8 +102,8 @@ public class ThornyCudgelController : MonoBehaviour
     void StartShortStretch()
     {
         timer = 0f;
-        targetLocalPosition = baseLocalPosition + Vector3.up * shortStretchDistance;
-        moveSpeed = shortStretchDistance / shortStretchDuration;
+        shortStretchStart = baseLocalPosition;
+        shortStretchEnd = baseLocalPosition + Vector3.up * shortStretchDistance;
         currentState = State.ShortStretch;
     }
 
@@ -127,7 +135,7 @@ public class ThornyCudgelController : MonoBehaviour
 
     void Rotate(float speed)
     {
-        transform.Rotate(Vector3.up, speed * Time.deltaTime, Space.Self);  // ローカル軸で回転
+        transform.Rotate(Vector3.up, speed * Time.deltaTime, Space.Self);
     }
 
     bool TimerReached(float duration)
