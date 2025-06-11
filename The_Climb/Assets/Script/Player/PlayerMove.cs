@@ -22,7 +22,7 @@ public class PlayerMove : MonoBehaviour
     private bool jumpCoolTiming = false;  //ジャンクールタイムを始める用判定
     private float jumpTime;              //ジャンプ入力時間
     private float jumpTimeMax = 0.1f;    //最大ジャンプ入力時間
-    private float groundJumpPower = 12f;  //ジャンプでプレイヤーにかかる上方向の力
+    private float groundJumpPower = 10f;  //ジャンプでプレイヤーにかかる上方向の力
     private float maxJumpSpeed = 12f;   //空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();  //ジャンプ時の速度カーブ
 
@@ -49,13 +49,16 @@ public class PlayerMove : MonoBehaviour
     private float landingJumpCounter = 0f;  //着地ジャンプの猶予カウンター
     private bool landingJumpOn = false;  //着地ジャンプのカウントを始める用
     private int landingJumpNumber = 0;   //着地ジャンプの連続回数
-    private float landingLowJumpPower = 15;  //着地ジャンプのパワー
-    private float landingHighJumpPower = 18f;  //着地ジャンプのパワー
+    private float landingLowJumpPower = 12;  //着地ジャンプのパワー
+    private float landingHighJumpPower = 15f;  //着地ジャンプのパワー
 
     private float highJumpChargeTime = 0.8f;  //ハイジャンプのチャージ時間
     private float highJumpChargeCounter = 0f;  //ハイジャンプのチャージカウンター
     private bool highJump = false;       //ハイジャンプする判定
     private float highJumpPower = 25f;   //ハイジャンプのパワー
+
+    private bool quickJump = false;      //クイックジャンプする判定
+    public bool quickJumpUsed = false;  //クイックジャンプを使用したか判定
 
     void Start()
     {
@@ -122,11 +125,11 @@ public class PlayerMove : MonoBehaviour
         //チャージジャンプのチャージ
         if (highJumpOn)
         {
-            if (jumpCoolTiming)
+            if (jumpCoolTiming || isAir)
             {
                 highJumpChargeCounter = 0f;
             }
-            else if (Input.GetKey(keyBind.highJump) && isJumpMoveOK)
+            else if (Input.GetKey(keyBind.highJump) && isGrounded)
             {
                 highJumpChargeCounter += Time.deltaTime;
             }
@@ -149,6 +152,16 @@ public class PlayerMove : MonoBehaviour
             if (jumpCoolCounter > jumpCoolTime)
             {
                 jumpCoolTiming = false;
+            }
+        }
+
+        //クイックジャンプ
+        if (quickJumpOn)
+        {
+            if (isAir && Input.GetKeyDown(keyBind.playerJump) && !quickJumpUsed)
+            {
+                quickJump = true;
+                quickJumpUsed = true;
             }
         }
     }
@@ -185,6 +198,7 @@ public class PlayerMove : MonoBehaviour
 
             landingJumpCounter = 0f;
             landingJumpOn = true;
+            quickJumpUsed = false;
 
             // 横方向の速度が一定以上ならスリップ開始
             if (Mathf.Abs(RigidBody.linearVelocity.x) > 3.910599f)
@@ -244,6 +258,13 @@ public class PlayerMove : MonoBehaviour
         if (highJump)
         {
             HighJump();
+        }
+
+        if (quickJump)
+        {
+            Jump(landingHighJumpPower);
+
+            quickJump = false;
         }
 
         //前フレームの接地判定
