@@ -12,6 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db217a3ca4d716d429405028893afacf, type: 3}
   m_Name: KickerStatus
   m_EditorClassIdentifier: 
-  MoveSpd: 4
-  JumpForce: 10
-  JumpFrequency: 5
+  StateStats:
+  - State: 0
+    Stats:
+      MoveSpd: 5
+      JumpForce: 5
+      JumpFrequency: 1
+  - State: 1
+    Stats:
+      MoveSpd: 7
+      JumpForce: 10
+      JumpFrequency: 3

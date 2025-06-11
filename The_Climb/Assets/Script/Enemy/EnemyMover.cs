@@ -1,6 +1,7 @@
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(BoxCollider))]
+
 //  敵キャラクターを実際に動かすスクリプト
 public class EnemyMover : MonoBehaviour
 {
