@@ -6,6 +6,10 @@ public class PlayerMove : MonoBehaviour
     Rigidbody RigidBody;
     KeyBind keyBind;
 
+    public bool highJumpOn = false;      //ハイジャンプ可能か
+    public bool quickJumpOn = false;     //クイックジャンプ可能か
+    public bool meteorDropOn = false;    //メテオドロップ叶か
+
     private float groundMoveForce = 0.25f;     //プレイヤーの地上移動速度
     private float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 90f;    //空中での移動速度
@@ -18,40 +22,49 @@ public class PlayerMove : MonoBehaviour
     private bool jumpCoolTiming = false;  //ジャンクールタイムを始める用判定
     private float jumpTime;              //ジャンプ入力時間
     private float jumpTimeMax = 0.1f;    //最大ジャンプ入力時間
-    private float groundJumpPower = 15f;  //ジャンプでプレイヤーにかかる上方向の力
-    private float maxJumpSpeed = 100f;   //空中での速度制限
+    private float groundJumpPower = 12f;  //ジャンプでプレイヤーにかかる上方向の力
+    private float maxJumpSpeed = 12f;   //空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();  //ジャンプ時の速度カーブ
 
     private bool wasGrounded = false;    //前フレームの地面状態
     public bool landing = false;         //着地したか判定
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
-    private float slippingTime = 0f;     //スリップ方向切り替え用
-    private float slippingCounter = 2f;  //スリップ方向切り替えようタイム
+    private float slippingTime = 0.05f;     //スリップ方向切り替え用
+    private float slippingCounter = 0f;  //スリップ方向切り替えようタイム
     Vector3 slipVelocity;                //滑り時のVelocity
 
-    public Transform groundCheck;       //プレイヤー足元の地面判定用オブジェクト
-    public bool isGrounded;             //地面判定
-    public Transform jumpMoveOKCheck;   //プレイヤー足元のジャンプ判定用オブジェクト
-    public bool isJumpMoveOK;           //ジャンプOK判定
-    public Transform leftWallCheck;     //プレイヤー足元の左壁判定用オブジェクト
-    public bool isLeftWall;             //左壁判定
-    public Transform rightWallCheck;    //プレイヤー足元の右壁判定用オブジェクト
-    public bool isRightWall;            //右壁判定
-    public LayerMask groundLayer;       //地面レイヤー
+    public Transform groundCheck;        //プレイヤー足元の地面判定用オブジェクト
+    public bool isGrounded;              //地面判定
+    public Transform jumpMoveOKCheck;    //プレイヤー足元のジャンプ判定用オブジェクト
+    public bool isJumpMoveOK;            //ジャンプOK判定
+    public Transform leftWallCheck;      //プレイヤー足元の左壁判定用オブジェクト
+    public bool isLeftWall;              //左壁判定
+    public Transform rightWallCheck;     //プレイヤー足元の右壁判定用オブジェクト
+    public bool isRightWall;             //右壁判定
+    public LayerMask groundLayer;        //地面レイヤー
     private float groundCheckRadius = 0.1f;  //地面判定の半径
-    private bool isAir = false;         //空中判定
+    private bool isAir = false;          //空中判定
 
-    private float landJumpTime = 0.1f;  //着地ジャンプの猶予タイム
-    private float landJumpCounter = 0f;  //着地ジャンプの猶予カウンター
-    public bool landJumpOn = false;     //着地ジャンプのカウントを始める用
-    public int landJumpNumber = 0;     //着地ジャンプの連続回数
-    private float landLowJumpPower = 17.5f;  //着地ジャンプのパワー
-    private float landHighJumpPower = 20f;  //着地ジャンプのパワー
+    private float landingJumpTime = 0.1f;  //着地ジャンプの猶予タイム
+    private float landingJumpCounter = 0f;  //着地ジャンプの猶予カウンター
+    private bool landingJumpOn = false;  //着地ジャンプのカウントを始める用
+    private int landingJumpNumber = 0;   //着地ジャンプの連続回数
+    private float landingLowJumpPower = 15;  //着地ジャンプのパワー
+    private float landingHighJumpPower = 18f;  //着地ジャンプのパワー
+
+    private float highJumpChargeTime = 0.8f;  //ハイジャンプのチャージ時間
+    private float highJumpChargeCounter = 0f;  //ハイジャンプのチャージカウンター
+    private bool highJump = false;       //ハイジャンプする判定
+    private float highJumpPower = 25f;   //ハイジャンプのパワー
 
     void Start()
     {
         keyBind = GameObject.Find("GameManager").GetComponent<KeyBind>();
         RigidBody = GetComponent<Rigidbody>();
+
+        // インスペクターまたはスクリプトで設定
+        RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
         Physics.gravity = new Vector3(0, -45.6F, 0); // Gを倍にする
     }
 
@@ -85,10 +98,10 @@ public class PlayerMove : MonoBehaviour
                 jumpCoolTiming = true;
 
                 //着地ジャンプ
-                if (landJumpOn)
+                if (landingJumpOn)
                 {
-                    landJumpNumber++;
-                    landJumpOn = false;
+                    landingJumpNumber++;
+                    landingJumpOn = false;
                 }
             }
         }
@@ -106,6 +119,28 @@ public class PlayerMove : MonoBehaviour
             }
         }
 
+        //チャージジャンプのチャージ
+        if (highJumpOn)
+        {
+            if (jumpCoolTiming)
+            {
+                highJumpChargeCounter = 0f;
+            }
+            else if (Input.GetKey(keyBind.highJump) && isJumpMoveOK)
+            {
+                highJumpChargeCounter += Time.deltaTime;
+            }
+            else if (Input.GetKeyUp(keyBind.highJump))
+            {
+                if (highJumpChargeCounter >= highJumpChargeTime)
+                {
+                    jumpCoolTiming = true;
+                    highJump = true;
+                }
+            }
+        }
+
+        //ジャンプのクールタイム
         if (jumpCoolTiming)
         {
             jumpCoolCounter += Time.deltaTime;
@@ -148,8 +183,8 @@ public class PlayerMove : MonoBehaviour
         {
             landing = true;
 
-            landJumpCounter = 0f;
-            landJumpOn = true;
+            landingJumpCounter = 0f;
+            landingJumpOn = true;
 
             // 横方向の速度が一定以上ならスリップ開始
             if (Mathf.Abs(RigidBody.linearVelocity.x) > 3.910599f)
@@ -160,14 +195,14 @@ public class PlayerMove : MonoBehaviour
         }
 
         //着地ジャンプ猶予カウント
-        if (landJumpOn)
+        if (landingJumpOn)
         {
-            landJumpCounter += Time.fixedDeltaTime;
+            landingJumpCounter += Time.fixedDeltaTime;
 
-            if (landJumpCounter > landJumpTime)
+            if (landingJumpCounter > landingJumpTime)
             {
-                landJumpOn = false;
-                landJumpNumber = 0;
+                landingJumpOn = false;
+                landingJumpNumber = 0;
             }
         }
 
@@ -192,18 +227,23 @@ public class PlayerMove : MonoBehaviour
         //ジャンプ
         if (jumping)
         {
-            if (landJumpNumber >= 2)
+            if (landingJumpNumber >= 2)
             {
-                Jump(landHighJumpPower);
+                Jump(landingHighJumpPower);
             }
-            else if (landJumpNumber == 1)
+            else if (landingJumpNumber == 1)
             {
-                Jump(landLowJumpPower);
+                Jump(landingLowJumpPower);
             }
             else
             {
                 Jump(groundJumpPower);
             }
+        }
+
+        if (highJump)
+        {
+            HighJump();
         }
 
         //前フレームの接地判定
@@ -291,5 +331,12 @@ public class PlayerMove : MonoBehaviour
         {
             RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * maxJumpSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
         }
+    }
+
+    private void HighJump()
+    {
+        RigidBody.AddForce(highJumpPower * Vector3.up, ForceMode.Impulse);
+
+        highJump = false;
     }
 }
