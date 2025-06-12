@@ -1,104 +1,120 @@
-using System.Collections;
-using Unity.Mathematics;
 using UnityEngine;
-[RequireComponent(typeof(EnemyMover))]
+
+[RequireComponent(typeof(Rigidbody))]
 public class BossEnemy_HevvyMovement : MonoBehaviour
 {
-    Coroutine jumpLoop;
-    Coroutine attackLoop;
+    public HevvyStats stats;
+    [SerializeField] private CharacterGroundChecker groundChecker;
+    [SerializeField] private float leftBoundary = -5f; //BossãŒå£ã«ã‚ˆã‚Šã™ããªã„ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã®å‘ãå¤‰æ›´ã®ãƒ©ã‚¤ãƒ³ï¼ˆå·¦ï¼‰
+    [SerializeField] private float rightBoundary = 5f; //BossãŒå£ã«ã‚ˆã‚Šã™ããªã„ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã®å‘ãå¤‰æ›´ã®ãƒ©ã‚¤ãƒ³ï¼ˆå³ï¼‰
+    private Rigidbody rb;
+    private float timer;
+    private int jumpCount = 0;
+    private bool isCharging = false;
+    private float chargeTimer = 0f;
+    private int horizontalDirection = 1;
 
-    [Header("ƒXƒe[ƒ^ƒX")]
-    [SerializeField] BossStatus bossStatus;
 
-    EnemyMover enemyMover;
-    Rigidbody rb;
-
-    Vector3 velocity;
-    float currentMoveSpd;
-    float currentJumpForce;
-    float currentJumpInterval;
-    float currentAttackInterval;
-    float slowFallSpeed;
-    float apexThreshold;
-
-    [SerializeField] int moveDir = 1;
-
-    void Awake()
+    private void Awake()
     {
-        enemyMover = GetComponent<EnemyMover>();
         rb = GetComponent<Rigidbody>();
-        Initialize();
     }
 
-    void Start()
+    private void Update()
     {
-        jumpLoop = StartCoroutine(PeriodicallyJump());
-        attackLoop = StartCoroutine(SpecialAttackLoop());
-    }
-
-    void FixedUpdate()
-    {
-        if (!isAttacking)
         {
-            velocity = new Vector3(currentMoveSpd * moveDir * Time.fixedDeltaTime, rb.linearVelocity.y, 0f);
-            enemyMover.BaseMove(velocity);
+                if (isCharging)
+                {
+                    chargeTimer += Time.deltaTime;
+
+                    if (chargeTimer >= stats.chargeDuration)
+                    {
+                    
+                        ChargeJump();
+                        isCharging = false;
+                        chargeTimer = 0f;
+                        jumpCount = 0;
+                    }
+                    // ãŸã¾ã«å·¦å³ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹ï¼ˆã‚ªãƒ—ã‚·ãƒ§ãƒ³ï¼‰
+                    horizontalDirection *= Random.value > 0.5f ? -1 : 1;
+
+                    return;
+                }
+
+                timer += Time.deltaTime;
+
+                if (timer >= stats.jumpInterval)
+                {
+                    timer = 0f;
+                    jumpCount++;
+
+                    if (jumpCount >= stats.jumpsBeforeCharge)
+                    {
+                        BeginCharge();
+                    }
+                    else
+                    {
+                    
+                        NormalJump();
+                    }
+                }
+            // ä¸€å®šã®ãƒ©ã‚¤ãƒ³ã«åˆ°é”ã—ãŸã‚‰å‘ãã‚’å¤‰ãˆã‚‹
+            if (transform.position.x <= leftBoundary)
+            {
+                horizontalDirection = 1;
+            }
+            else if (transform.position.x >= rightBoundary)
+            {
+                horizontalDirection = -1;
+            }
+
         }
     }
 
-    void Initialize()
+    void NormalJump()
     {
-        currentMoveSpd = bossStatus.MoveSpeed;
-        currentJumpForce = bossStatus.SpecialJumpForce;
-        currentJumpInterval = bossStatus.JumpInterval;
-        currentAttackInterval = bossStatus.AttackInterval;
-        slowFallSpeed = bossStatus.SlowFallSpeed;
-        apexThreshold = bossStatus.ApexDetectThreshold;
-
-        moveDir = (moveDir == 0) ? 1 : (int)Mathf.Sign(moveDir);
+        //CharacterGroundChecker characterGroundChecker = GetComponent<CharacterGroundChecker>();
+        //if (characterGroundChecker.CheckIsGround())
+        //{
+            rb.linearVelocity = Vector3.zero;
+            Vector3 jumpVector = new Vector3(stats.horizontalJumpForce * horizontalDirection, stats.jumpForce, 0f);
+            rb.AddForce(jumpVector, ForceMode.Impulse);
+        //}
     }
 
-    public void OnHitWall()
+    void BeginCharge()
     {
-        moveDir *= -1;
+        isCharging = true;
+        rb.linearVelocity = Vector3.zero;
     }
 
-    IEnumerator PeriodicallyJump()
+    void ChargeJump()
     {
-        while (true)
+        //CharacterGroundChecker characterGroundChecker = GetComponent<CharacterGroundChecker>();
+        //if (characterGroundChecker.CheckIsGround())
+        //{
+            rb.linearVelocity = Vector3.zero;
+            Vector3 jumpVector = new Vector3(0f, stats.chargeJumpForce, 0f);
+            rb.AddForce(jumpVector, ForceMode.Impulse);
+
+            // é™ä¸‹æ™‚ã«é‡åŠ›ã‚’å¼±ãã™ã‚‹ï¼ˆæœˆé¢é¢¨ï¼‰
+            StartCoroutine(SlowFallCoroutine());
+        //}
+    }
+
+    System.Collections.IEnumerator SlowFallCoroutine()
+    {
+        float originalGravity = rb.mass;
+        rb.linearDamping = 0f;
+        rb.useGravity = false;
+
+        while (rb.linearVelocity.y > 0f)
         {
-            yield return new WaitForSeconds(currentJumpInterval);
-            enemyMover.Jump(bossStatus.JumpForce); // ’ÊíƒWƒƒƒ“ƒv
+            yield return null;
         }
-    }
 
-    bool isAttacking = false;
-
-    IEnumerator SpecialAttackLoop()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(currentAttackInterval);
-
-            // UŒ‚’†ƒtƒ‰ƒO‚ğ—§‚Ä‚é
-            isAttacking = true;
-
-            // ’â~ƒtƒF[ƒY
-            yield return new WaitForSeconds(bossStatus.AttackStopDuration);
-
-            // “Á‘åƒWƒƒƒ“ƒv
-            enemyMover.Jump(currentJumpForce);
-
-            // Å‚“’B“_‚Ü‚Å‘Ò‹@
-            yield return new WaitUntil(() => Mathf.Abs(rb.linearVelocity.y) < apexThreshold);
-
-            // ‚ä‚Á‚­‚è‰º~
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, -slowFallSpeed, rb.linearVelocity.z);
-
-            // ’n–Ê‚É‚Â‚­‚Ü‚Å‘Ò‚Âi‚±‚±‚Å‚Í’n–ÊÚ’n‚Í‰¼”»’èj
-            yield return new WaitUntil(() => enemyMover.IsGrounded);
-
-            // UŒ‚I—¹
-            isAttacking = false;
-        }
+        rb.useGravity = true;
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, 0f);
+        rb.AddForce(Vector3.down * Physics.gravity.y * stats.slowFallGravityScale, ForceMode.Acceleration);
     }
 }
