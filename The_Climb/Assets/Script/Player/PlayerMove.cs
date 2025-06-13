@@ -10,11 +10,11 @@ public class PlayerMove : MonoBehaviour
     public bool quickJumpOn = false;     //クイックジャンプ可能か
     public bool meteorDropOn = false;    //メテオドロップ叶か
 
-    private float groundMoveForce = 0.25f;     //プレイヤーの地上移動速度
+    private float groundMoveForce = 0.24f;     //プレイヤーの地上移動速度
     private float moveInput = 0f;        //プレイヤーの移動方向
     private bool playerDirectionRight = true;  //プレイヤーの見ている方向が右ならtrue、左ならfalse
-    private float airMoveForce = 80f;    //空中での移動速度
-    private float maxAirSpeed = 10f;     //空中での速度制限
+    private float airMoveForce = 60f;    //空中での移動速度
+    private float maxAirSpeed = 8f;     //空中での速度制限
     private bool jumping = false;        //ジャンプ入力中判定
     private float coyoteTime = 0.05f;    //コヨーテタイム
     private float coyoteCounter = 0f;    //コヨーテタイムカウント
@@ -23,7 +23,7 @@ public class PlayerMove : MonoBehaviour
     private bool jumpCoolActive = false;  //ジャンクールタイムを始める用判定
     private float jumpTime;              //ジャンプ入力時間
     private float jumpTimeMax = 0.1f;    //最大ジャンプ入力時間
-    private float groundJumpPower = 10f;  //ジャンプでプレイヤーにかかる上方向の力
+    private float groundJumpPower = 11f;  //ジャンプでプレイヤーにかかる上方向の力
     private float maxJumpSpeed = 12f;    //空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();  //ジャンプ時の速度カーブ
 
@@ -50,7 +50,7 @@ public class PlayerMove : MonoBehaviour
     private float landingJumpCounter = 0f;  //着地ジャンプの猶予カウンター
     private bool landingJumpOn = false;  //着地ジャンプのカウントを始める用
     public int landingJumpNumber = 0;   //着地ジャンプの連続回数
-    private float landingLowJumpPower = 12;  //一回目着地ジャンプのパワー
+    private float landingLowJumpPower = 13f;  //一回目着地ジャンプのパワー
     private float landingHighJumpPower = 15f;  //二回目着地ジャンプのパワー
 
     private float highJumpChargeTime = 0.8f;  //ハイジャンプのチャージ時間
@@ -179,6 +179,8 @@ public class PlayerMove : MonoBehaviour
         //ジャンプ
         if (jumping)
         {
+            jumpTime += Time.deltaTime;
+
             if (landingJumpNumber >= 2)
             {
                 Jump(landingHighJumpPower);
@@ -285,10 +287,6 @@ public class PlayerMove : MonoBehaviour
                 jumping = false;
                 jumpTime = 0;
             }
-            else if (Input.GetKey(keyBind.playerJump))
-            {
-                jumpTime += Time.deltaTime;
-            }
         }
     }
 
@@ -300,13 +298,20 @@ public class PlayerMove : MonoBehaviour
             {
                 highJumpChargeCounter = 0f;
             }
-            else if(Input.GetKeyUp(keyBind.playerJump) && highJumpChargeCounter >= highJumpChargeTime)
+            else if(Input.GetKeyUp(keyBind.playerJump))
+            {
+                if (highJumpChargeCounter >= highJumpChargeTime)
                 {
-                jumpCoolActive = true;
-                highJump = true;
-                highJumpChargeCounter = 0f;
+                    jumpCoolActive = true;
+                    highJump = true;
+                    highJumpChargeCounter = 0f;
+                }
+                else
+                {
+                    jumping = true;
+                }
             }
-            else if (Input.GetKey(keyBind.highJump) && isGrounded && Input.GetKey(keyBind.playerJump))
+            else if (isGrounded && Input.GetKey(keyBind.playerJump))
             {
                 highJumpChargeCounter += Time.deltaTime;
                 slipping = false;
@@ -389,7 +394,7 @@ public class PlayerMove : MonoBehaviour
         if (slipping)
         {
             //減少時間
-            float slipFriction = 15f;
+            float slipFriction = 30f;
 
             if (moveInput == 1f)
             {
@@ -444,12 +449,12 @@ public class PlayerMove : MonoBehaviour
                 }
             case 1:
                 {
-                    force *= 2f;
+                    force *= 1.2f;
                     break;
                 }
             default:
                 {
-                    force *= 4f;
+                    force *= 1.4f;
                     break;
                 }
         }
