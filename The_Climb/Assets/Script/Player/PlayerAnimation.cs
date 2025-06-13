@@ -2,14 +2,27 @@ using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
 {
+    private Animator animator;
     private int spacePressCount = 0;
+
+    void Start()
+    {
+        // Animator取得
+        animator = GetComponent<Animator>();
+        if (animator == null)
+        {
+            Debug.LogError("Animator が見つかりません。コンポーネントをアタッチしてください。");
+        }
+    }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             spacePressCount++;
-            int animStep = (spacePressCount - 1) % 3 + 1; // 1 → 2 → 3 → 1 と循環
+            int animStep = (spacePressCount - 1) % 3 + 1;
+
+            Debug.Log("スペース押された → アニメーション Step " + animStep);
 
             switch (animStep)
             {
@@ -28,19 +41,16 @@ public class PlayerAnimation : MonoBehaviour
 
     void JumpAnimStep1()
     {
-        Debug.Log("アニメーション 1 を再生");
-        // ここに Animation1 再生処理を記述
+        animator.SetTrigger("JumpAnimStep1");
     }
 
     void JumpAnimStep2()
     {
-        Debug.Log("アニメーション 2 を再生");
-        // ここに Animation2 再生処理を記述
+        animator.SetTrigger("JumpAnimStep2");
     }
 
     void JumpAnimStep3()
     {
-        Debug.Log("アニメーション 3 を再生");
-        // ここに Animation3 再生処理を記述
+        animator.SetTrigger("JumpAnimStep3");
     }
 }
