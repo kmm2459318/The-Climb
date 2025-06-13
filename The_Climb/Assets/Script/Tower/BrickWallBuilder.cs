@@ -6,10 +6,11 @@ public class BrickWallBuilder : MonoBehaviour
     public GameObject brickPrefab;
 
     [Header("“ƒ‚Ì\‘¢")]
-    public int bricksPerLayer = 6;        // 1’i‚ÌƒŒƒ“ƒK”iŒË”j
-    public int heightLayers = 5;          // c‚Ì’i”
-    public float radius = 5f;             // ”¼Œa
-    public float verticalSpacing = 0.5f;  // ã‰º‚ÌŠÔŠu
+    public int bricksPerLayer = 60;        // 1’i‚ÌƒŒƒ“ƒK”iŒË”j
+    public int heightLayers = 60;          // c‚Ì’i”
+    public float radius = 10f;             // ”¼Œa
+    public float verticalSpacing = 0.39f;  // ã‰º‚ÌŠÔŠu
+    public float baseHeight = 0f;         // ˆê”Ô‰º‚ÌƒŒƒ“ƒK‚Ì‚‚³iYÀ•Wj
 
     void Start()
     {
@@ -28,7 +29,7 @@ public class BrickWallBuilder : MonoBehaviour
 
         for (int y = 0; y < heightLayers; y++)
         {
-            float currentHeight = y * verticalSpacing;
+            float currentHeight = baseHeight + y * verticalSpacing;
 
             // ‹ô”’i‚È‚çŠp“x‚ğ”¼•ª‚¸‚ç‚µ‚ÄƒŒƒ“ƒKÏ‚İ‚É‚·‚é
             float angleOffset = (y % 2 == 1) ? angleStep / 2f : 0f;
@@ -43,7 +44,6 @@ public class BrickWallBuilder : MonoBehaviour
                     Mathf.Sin(angle) * radius
                 );
 
-                // ŠOŒü‚«‚ÉŒü‚¯‚é‚½‚ß‚É -angleStep*i ‚Å‚È‚­A-Mathf.Rad2Deg * angle ‚É‚·‚é
                 Quaternion rotation = Quaternion.Euler(0, -Mathf.Rad2Deg * angle, 0);
 
                 Instantiate(brickPrefab, position, rotation, transform);
