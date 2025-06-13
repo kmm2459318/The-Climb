@@ -49,7 +49,7 @@ public class PlayerMove : MonoBehaviour
     private float landingJumpTime = 0.1f;  //着地ジャンプの猶予タイム
     private float landingJumpCounter = 0f;  //着地ジャンプの猶予カウンター
     private bool landingJumpOn = false;  //着地ジャンプのカウントを始める用
-    private int landingJumpNumber = 0;   //着地ジャンプの連続回数
+    public int landingJumpNumber = 0;   //着地ジャンプの連続回数
     private float landingLowJumpPower = 12;  //一回目着地ジャンプのパワー
     private float landingHighJumpPower = 15f;  //二回目着地ジャンプのパワー
 
@@ -63,11 +63,14 @@ public class PlayerMove : MonoBehaviour
 
     private bool meteorDrop = false;      //メテオドロップする判定
     public bool meteorDropUsed = false;   //メテオドロップを使用したか判定
+    private bool meteorHighJumpOK = false;  //メテオドロップからのハイジャンプへの移行ができるか
     private float meteorDropPower = 25f;  //メテオドロップのパワー
     private float meteorDropAngle = 135f;  //メテオドロップの角度
     private float meteorDropXMove;        //メテオドロップのX軸移動
     private float meteorDropYMove;        //メテオドロップのY軸移動
     private bool meteorHighJump = false;  //メテオドロップ後のハイジャンプ
+    private float meteorDropTime = 0.2f;     //メテオドロップからのハイジャンプに移行できるまでの時間
+    public float meteorDropCounter = 0f;  //メテオドロップのカウンター
 
     void Start()
     {
@@ -245,7 +248,7 @@ public class PlayerMove : MonoBehaviour
     {
         if ((coyoteCounter <= coyoteTime || isJumpMoveOK) && !jumpCoolActive && highJumpChargeCounter < highJumpChargeTime)
         {
-            if (Input.GetKeyDown(keyBind.playerJump))
+            if (Input.GetKeyDown(keyBind.playerJump) &&!meteorHighJumpOK)
             {
                 jumping = true;
                 jumpCoolActive = true;
@@ -253,18 +256,25 @@ public class PlayerMove : MonoBehaviour
                 //着地ジャンプ
                 if (landingJumpOn)
                 {
-                    //メテオドロップからのハイジャンプ
-                    if (meteorDropUsed)
-                    {
-                        meteorHighJump = true;
-                        jumping = false;
-                    }
-
                     landingJumpOn = false;
                     landingJumpNumber++;
                     quickJumpUsed = false;
                     meteorDropUsed = false;
+                    meteorDropCounter = 0;
                 }
+            }
+            else if (Input.GetKey(keyBind.playerJump) && meteorHighJumpOK && landingJumpOn)  //メテオドロップからのハイジャンプ
+            {
+                if (meteorDropCounter >= meteorDropTime)
+                {
+                    meteorHighJump = true;
+                    landingJumpNumber++;
+                }
+                meteorHighJumpOK = false;
+                landingJumpOn = false;
+                quickJumpUsed = false;
+                meteorDropUsed = false;
+                meteorDropCounter = 0;
             }
         }
 
@@ -299,8 +309,7 @@ public class PlayerMove : MonoBehaviour
             else if (Input.GetKey(keyBind.highJump) && isGrounded && Input.GetKey(keyBind.playerJump))
             {
                 highJumpChargeCounter += Time.deltaTime;
-
-                
+                slipping = false;
             }
         }
     }
@@ -313,6 +322,7 @@ public class PlayerMove : MonoBehaviour
             {
                 meteorDrop = true;
                 meteorDropUsed = true;
+                meteorHighJumpOK = true;
 
                 if (playerDirectionRight)
                 {
@@ -350,7 +360,7 @@ public class PlayerMove : MonoBehaviour
             landingJumpOn = true;
 
             // 横方向の速度が一定以上ならスリップ開始
-            if (Mathf.Abs(RigidBody.linearVelocity.x) > 3.910599f)
+            if (Mathf.Abs(RigidBody.linearVelocity.x) > 3.910599f && !meteorDrop)
             {
                 slipping = true;
                 slipVelocity = RigidBody.linearVelocity;
@@ -368,6 +378,8 @@ public class PlayerMove : MonoBehaviour
                 landingJumpNumber = 0;
                 quickJumpUsed = false;
                 meteorDropUsed = false;
+                meteorDropCounter = 0;
+                meteorHighJumpOK = false;
             }
         }
     }
@@ -487,6 +499,13 @@ public class PlayerMove : MonoBehaviour
 
         RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, meteorDropYMove, 0), ForceMode.Impulse);
 
+        meteorDropCounter += Time.fixedDeltaTime;
+
+        if ((isLeftWall || isRightWall) && !isGrounded)
+        {
+            meteorHighJumpOK = false;
+        }
+
         //メテオドロップ終わり
         if (isLeftWall || isRightWall || isGrounded)
         {
@@ -497,9 +516,10 @@ public class PlayerMove : MonoBehaviour
 
     private void MeteorHighJump() 
     {
+        RigidBody.linearVelocity = new Vector3(0, 0, 0);
+        
         HighJump();
-
-        RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, 0, 0), ForceMode.Impulse);
+        RigidBody.AddForce(new Vector3(meteorDropPower * meteorDropXMove, 1f, 0), ForceMode.Impulse);
 
         meteorHighJump = false;
     }
