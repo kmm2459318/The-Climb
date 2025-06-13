@@ -1,67 +1,78 @@
-using TMPro;
 using UnityEngine;
 
-public class Boss_20_Controller : MonoBehaviour
+public class Boss_20_Controller : MonoBehaviour, IWallHitTable
 {
+    public Boss_20_StatusObjectScript status;
+    public GameObject Bullet_Prefab;
+    public Transform Bullet_Position;
+    EnemyMover enemyMover;
 
-    public Boss_20_StatusObjectScript status;  　//ボスのステータス
-    public GameObject bullet_Prefab;　　　　　　 //遠距離攻撃のPrehab; 
-    public Transform bullet_Position;            //遠距離攻撃の位置
+    private int Boss_Move_Direction;
+    private float Bullet_Timer;
+    private float rest_Timer;
 
-    private float bullet_Timer;             　　 //遠距離攻撃のタイミング
-    private Vector3 targetPosition;　　　　　　　//ボスの位置
-    private float rest_Timer;　　　　　　　　　　//ボスの休憩時間
-    void Start()
+    private Rigidbody rb;
+
+    void Awake()
     {
-        SetNewTargetPosition();
-        bullet_Timer = status.Attack;
+        rb = GetComponent<Rigidbody>(); // Rigidbodyを取得
+        enemyMover = GetComponent<EnemyMover>();
+        Initialize();
     }
 
     void Update()
     {
-        Move();
         HandleShooting();
     }
-    
-    //ボスの動き
-    void Move()　　　　　　　　　　　　　
+
+    void FixedUpdate()
     {
-        Vector3 moveDirection = (targetPosition - transform.position).normalized;
-        float moveSpeed = status.Speed * Time.deltaTime;
+        Move(); // Rigidbodyを動かすなら FixedUpdate で
+    }
 
-        transform.position += moveDirection * moveSpeed;
+    void Initialize()
+    {
+        Bullet_Timer = status.Attack;
+        Boss_Move_Direction = status.LEFT;
+        rest_Timer = 0;
+    }
 
-        if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+    void Move()
+    {
+        // Rigidbodyの MovePosition を使って移動
+        Vector3 newPosition = rb.position + new Vector3(status.Speed * Boss_Move_Direction * Time.fixedDeltaTime, 0f);
+        rb.MovePosition(newPosition);
+        
+    }
+
+    public void OnHitWall()
+    {
+        Debug.Log("当たりました");
+        if (Boss_Move_Direction != 0 && Boss_Move_Direction == status.LEFT)
         {
-            SetNewTargetPosition();
+            Boss_Move_Direction = status.RIGHT;
+        }
+        else if (Boss_Move_Direction == status.RIGHT)
+        {
+            Boss_Move_Direction = status.LEFT;
         }
     }
 
-    //敵の移動範囲
-    void SetNewTargetPosition()
-    {
-        float offsetX = Random.Range(-status.Lateral, status.Lateral);
-        targetPosition = transform.position + new Vector3(offsetX, 0, 0);
-    }
-
-    //遠距離攻撃の攻撃タイミング
     void HandleShooting()
     {
-        bullet_Timer -= Time.deltaTime;
-        if (bullet_Timer <= 0f)
+        Bullet_Timer -= Time.deltaTime;
+        if (Bullet_Timer <= 0f)
         {
             Bullet();
-            bullet_Timer = status.Attack;
+            Bullet_Timer = status.Attack;
         }
     }
 
-    //遠距離攻撃の発射
     void Bullet()
-
     {
-        if ( bullet_Prefab != null && bullet_Position != null)
+        if (Bullet_Prefab != null && Bullet_Position != null)
         {
-            Instantiate( bullet_Prefab, bullet_Position.position, bullet_Position.rotation);
+            Instantiate(Bullet_Prefab, Bullet_Position.position, Bullet_Position.rotation);
         }
     }
 }
