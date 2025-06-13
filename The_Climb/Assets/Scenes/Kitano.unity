@@ -438,7 +438,10 @@ GameObject:
   - component: {fileID: 1483248994}
   - component: {fileID: 1483248993}
   - component: {fileID: 1483248992}
-  m_Layer: 0
+  - component: {fileID: 1483248997}
+  - component: {fileID: 1483248996}
+  - component: {fileID: 1483248998}
+  m_Layer: 7
   m_Name: BossEnemy_Hevvy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -528,12 +531,68 @@ Transform:
   m_GameObject: {fileID: 1483248991}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.64, z: 0}
+  m_LocalPosition: {x: 1.9, y: 0.64, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1483248996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483248991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 175927db918feeb4e9554ba8e467ec9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stats: {fileID: 11400000, guid: 9df0c3b066888314199223c7aaad5fb2, type: 2}
+  leftBoundary: -5
+  rightBoundary: 5
+  horizontalDirection: 1
+--- !u!54 &1483248997
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483248991}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!114 &1483248998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483248991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85b69febb608ee54580084f9850a6be9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GroundCheckDis: 1
 --- !u!1 &2004019606
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,8 +605,8 @@ GameObject:
   - component: {fileID: 2004019609}
   - component: {fileID: 2004019608}
   - component: {fileID: 2004019607}
-  m_Layer: 0
-  m_Name: Cube
+  m_Layer: 3
+  m_Name: Hevvy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -637,7 +696,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -3.04, z: 0}
-  m_LocalScale: {x: 17.8, y: 3.23, z: 1}
+  m_LocalScale: {x: 70.17116, y: 3.23, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

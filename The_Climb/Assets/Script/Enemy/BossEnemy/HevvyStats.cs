@@ -12,4 +12,7 @@ public class HevvyStats : ScriptableObject
     public float chargeDuration = 1.5f;
     public float chargeJumpForce = 20f;
     public float slowFallGravityScale = 0.2f;
+    [Header("ƒWƒƒƒ“ƒv•ûŒü§ŒÀİ’è")]
+    public float LeftBoundary;
+    public float RightBoundary;
 }
