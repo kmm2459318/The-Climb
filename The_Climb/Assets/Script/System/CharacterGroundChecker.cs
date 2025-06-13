@@ -1,11 +1,15 @@
 using UnityEngine;
 
-public class CharacterGroundChecker : MonoBehaviour  //  キャラクター接地判定確認
+//  キャラクター接地判定確認
+public class CharacterGroundChecker : MonoBehaviour
 {
     [SerializeField] float GroundCheckDis;
+
+    public float GroundCheckDisProperty => GroundCheckDis;
     //  接地判定
-    public bool CheckIsGround()
+    public bool CheckIsGround(Vector3? position = null)
     {
-        return Physics.Raycast(this.transform.position, Vector3.down, GroundCheckDis, GameLayer.ToMask(GameLayers.GROUND));
+        Vector3 CheckPos = position ?? this.transform.position;
+        return Physics.Raycast(CheckPos, Vector3.down, GroundCheckDis, GameLayer.ToMask(GameLayers.GROUND));
     }
 }

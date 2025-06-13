@@ -4,7 +4,8 @@ using UnityEngine;
 [System.Serializable]
 public class KickerStatBlock
 {
-    public float MoveSpd;
-    public float JumpForce;
-    public float JumpFrequency;
+    public Vector3 EdgeRayOffset;    //  端判定のRayのオフセット
+    public float MoveSpd;    //  移動速度
+    public float JumpForce;    //  ジャンプ力
+    public float JumpFrequency;    //  ジャンプ頻度
 }

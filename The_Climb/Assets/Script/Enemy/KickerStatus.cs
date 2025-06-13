@@ -9,14 +9,14 @@ public class KickerStatus : ScriptableObject
     [System.Serializable]
     public class StateStatPair
     {
-        public EnemyStates State;    //  敵の状態(通常時と狂暴化)
+        public EnemyMode State;    //  敵の状態(通常時と狂暴化)
         public KickerStatBlock Stats;    //  ステータスを持つクラス
     }
 
     [Header("Kicker Status")]
     public List<StateStatPair> StateStats = new();    //  状態とステータスを持つクラスのリスト(データ入力用)
 
-    Dictionary<EnemyStates, KickerStatBlock> StatMap;    //  状態とステータスの辞書(処理用)
+    Dictionary<EnemyMode, KickerStatBlock> StatMap;    //  状態とステータスの辞書(処理用)
 
     void OnEnable()
     {
@@ -36,7 +36,7 @@ public class KickerStatus : ScriptableObject
         }
     }
     //  状態に応じたステータスの取得
-    public KickerStatBlock GetStats(EnemyStates State)
+    public KickerStatBlock GetStats(EnemyMode State)
     {
         return StatMap.TryGetValue(State, out KickerStatBlock stats) ? stats : null;
     }
