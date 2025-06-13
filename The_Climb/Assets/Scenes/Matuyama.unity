@@ -376,9 +376,9 @@ GameObject:
   - component: {fileID: 349391826}
   - component: {fileID: 349391825}
   - component: {fileID: 349391824}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Block
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -467,7 +467,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.57, y: 2.17, z: 0}
-  m_LocalScale: {x: 9.873249, y: 0.72844, z: 0.89461}
+  m_LocalScale: {x: 9.873249, y: 0.72844, z: 5.9786787}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -659,6 +659,7 @@ GameObject:
   - component: {fileID: 965524886}
   - component: {fileID: 965524888}
   - component: {fileID: 965524889}
+  - component: {fileID: 965524890}
   m_Layer: 0
   m_Name: Kicker
   m_TagString: Untagged
@@ -728,7 +729,7 @@ Transform:
   m_GameObject: {fileID: 965524878}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.61, y: 4.4, z: -0.5}
+  m_LocalPosition: {x: 4.77, y: 6.17, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -832,7 +833,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85b69febb608ee54580084f9850a6be9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GroundCheckDis: 0.5
+  GroundCheckDis: 1
+--- !u!114 &965524890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965524878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77bac0960bde31e4c9bdbc9fd3286b01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &999726365
 GameObject:
   m_ObjectHideFlags: 0
@@ -847,7 +860,7 @@ GameObject:
   - component: {fileID: 999726370}
   m_Layer: 3
   m_Name: Stage
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

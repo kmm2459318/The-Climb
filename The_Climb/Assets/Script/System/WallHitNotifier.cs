@@ -1,4 +1,5 @@
 using UnityEngine;
+
 //  •Ç‚É“–‚½‚Á‚½‚©‚Ç‚¤‚©”»’è‚·‚é
 public class WallHitNotifier : MonoBehaviour
 {
