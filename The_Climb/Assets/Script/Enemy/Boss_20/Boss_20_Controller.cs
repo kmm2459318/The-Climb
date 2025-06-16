@@ -1,22 +1,25 @@
 using UnityEngine;
+using System.Collections;
+using Unity.PlasticSCM.Editor.WebApi;
 
 public class Boss_20_Controller : MonoBehaviour, IWallHitTable
 {
     public Boss_20_StatusObjectScript status;
     public GameObject Bullet_Prefab;
     public Transform Bullet_Position;
-    EnemyMover enemyMover;
 
     private int Boss_Move_Direction;
     private float Bullet_Timer;
     private float rest_Timer;
+    private float boss_Speed;
 
+
+    private bool isResting = false;
     private Rigidbody rb;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>(); // Rigidbodyを取得
-        enemyMover = GetComponent<EnemyMover>();
         Initialize();
     }
 
@@ -34,15 +37,45 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
     {
         Bullet_Timer = status.Attack;
         Boss_Move_Direction = status.LEFT;
-        rest_Timer = 0;
+        rest_Timer = status.Rest;
+        boss_Speed = status.Speed;
     }
 
     void Move()
     {
-        // Rigidbodyの MovePosition を使って移動
-        Vector3 newPosition = rb.position + new Vector3(status.Speed * Boss_Move_Direction * Time.fixedDeltaTime, 0f);
-        rb.MovePosition(newPosition);
-        
+        if (!isResting)
+        {
+            // Rigidbodyの MovePosition を使って移動
+            Vector3 newPosition = rb.position + new Vector3(boss_Speed * Boss_Move_Direction * Time.fixedDeltaTime, 0f);
+            rb.MovePosition(newPosition);
+            rest_Timer -= Time.fixedDeltaTime;
+        }
+
+        if (rest_Timer <= 0f && !isResting)
+        { 
+            isResting = true;
+            StartCoroutine(RestAndResume());
+        }
+    }
+
+    IEnumerator RestAndResume()
+    {
+        Debug.Log("減速開始");
+        float decelerationRate = 2f;
+
+        while (boss_Speed > 0f)
+        {
+            boss_Speed = Mathf.MoveTowards(boss_Speed, 0f, decelerationRate * Time.fixedDeltaTime);
+            yield return new WaitForFixedUpdate();
+        }
+
+        boss_Speed = 0f;
+        Debug.Log("停止完了");
+        yield return new WaitForSeconds(3f);
+        Debug.Log("休憩終了");
+        boss_Speed = status.Speed;
+        rest_Timer = status.Rest;
+        isResting = false;
     }
 
     public void OnHitWall()
@@ -58,21 +91,22 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         }
     }
 
-    void HandleShooting()
-    {
-        Bullet_Timer -= Time.deltaTime;
-        if (Bullet_Timer <= 0f)
-        {
-            Bullet();
-            Bullet_Timer = status.Attack;
-        }
-    }
 
-    void Bullet()
+void HandleShooting()
+{
+    Bullet_Timer -= Time.deltaTime;
+    if (Bullet_Timer <= 0f)
     {
-        if (Bullet_Prefab != null && Bullet_Position != null)
-        {
-            Instantiate(Bullet_Prefab, Bullet_Position.position, Bullet_Position.rotation);
-        }
+        Bullet();
+        Bullet_Timer = status.Attack;
     }
+}
+
+void Bullet()
+{
+    if (Bullet_Prefab != null && Bullet_Position != null)
+    {
+        Instantiate(Bullet_Prefab, Bullet_Position.position, Bullet_Position.rotation);
+    }
+}
 }
