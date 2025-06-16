@@ -71,14 +71,6 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     //  èâä˙âª
     void Initialize()
     {
-        //CommanderMethodMap = new Dictionary<KickerCommanderMethod, ICommand>
-        //{
-        //    {KickerCommanderMethod.MOVE, new ActionCommand(Move)},
-        //    {KickerCommanderMethod.IS_EDGE_POS, new FuncCommand<bool>(IsEdgePos) },
-        //    {KickerCommanderMethod.FLIP_MOVE_DIR, new ActionCommand(FlipMoveDir)},
-        //    {KickerCommanderMethod.JUMP, new ActionCommand(Jump)},
-        //};
-
         EdgeRayOffset = kickerStatBlock.EdgeRayOffset;
         if(CurrentMoveDir != MoveDir.NONE && Mathf.Sign(EdgeRayOffset.x) != Mathf.Sign((int)CurrentMoveDir))
         {

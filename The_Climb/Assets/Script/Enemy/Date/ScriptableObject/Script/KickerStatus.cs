@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "KickerStatus", menuName = "GameDate/Enemy/KickerStatus")]
+[CreateAssetMenu(fileName = "KickerStat", menuName = "GameDate/Enemy/KickerStat")]
 //  キッカーのステータス
 public class KickerStatus : ScriptableObject
 {
