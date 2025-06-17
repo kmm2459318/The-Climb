@@ -2,20 +2,25 @@ using UnityEngine;
 
 public class BossBullet : MonoBehaviour
 {
-    public Boss_20_StatusObjectScript status;
-    private float speed;
-    public float lifeTime = 5.0f;
+    ParticleSystem ps;
+    ParticleSystem.Particle[] m_Particles;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Destroy(gameObject, lifeTime);
+        ps = GetComponent<ParticleSystem>();
     }
 
-    // Update is called once per frame
-    void Bullet()
+    void Update()
     {
-        speed = status.Attack_Speed;
-        transform.Translate(Vector3.right * speed * Time.deltaTime);
+        m_Particles = new ParticleSystem.Particle[ps.main.maxParticles];
+        int numParticlesAlive = ps.GetParticles(m_Particles);
+        for (int i = 0; i < numParticlesAlive; i++)
+        {
+            // ここでパーティクル毎に計算結果を適用する
+            //m_Particles[i].velocity ;
+        }
+        ps.SetParticles(m_Particles, numParticlesAlive);
     }
 }
+
+
