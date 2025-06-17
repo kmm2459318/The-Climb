@@ -215,7 +215,7 @@ public class PlayerMove : MonoBehaviour
 
         if (quickJump)
         {
-            Jump(landingHighJumpPower);
+            Jump(landingLowJumpPower);
 
             quickJump = false;
         }
@@ -329,6 +329,7 @@ public class PlayerMove : MonoBehaviour
                 meteorDrop = true;
                 meteorDropUsed = true;
                 meteorHighJumpOK = true;
+                landingJumpNumber = 0;
 
                 if (playerDirectionRight)
                 {
