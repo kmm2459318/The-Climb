@@ -2,45 +2,66 @@ using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
 {
+    private Animator animator;
     private int spacePressCount = 0;
+    private bool isJumping = false;
+
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRadius = 0.2f;
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+        if (animator == null)
+        {
+            Debug.LogError("Animator ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’ã‚¢ã‚¿ãƒƒãƒã—ã¦ãã ã•ã„ã€‚");
+        }
+    }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        // ç€åœ°ãƒã‚§ãƒƒã‚¯
+        if (isJumping && IsGrounded())
+        {
+            isJumping = false;
+            Debug.Log("ç€åœ°ã—ã¾ã—ãŸã€‚æ¬¡ã®ã‚¸ãƒ£ãƒ³ãƒ—ãŒå¯èƒ½ã«ãªã‚Šã¾ã™ã€‚");
+        }
+
+        // ã‚¹ãƒšãƒ¼ã‚¹å…¥åŠ›
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
             spacePressCount++;
-            int animStep = (spacePressCount - 1) % 3 + 1; // 1 ¨ 2 ¨ 3 ¨ 1 ‚ÆzŠÂ
+            int animStep = (spacePressCount - 1) % 3 + 1;
+            Debug.Log("ã‚¸ãƒ£ãƒ³ãƒ— Step " + animStep);
+            isJumping = true;
 
             switch (animStep)
             {
                 case 1:
-                    JumpAnimStep1();
+                    animator.SetTrigger("JumpAnimStep1");
                     break;
                 case 2:
-                    JumpAnimStep2();
+                    animator.SetTrigger("JumpAnimStep2");
                     break;
                 case 3:
-                    JumpAnimStep3();
+                    animator.SetTrigger("JumpAnimStep3");
                     break;
             }
         }
     }
 
-    void JumpAnimStep1()
+    bool IsGrounded()
     {
-        Debug.Log("ƒAƒjƒ[ƒVƒ‡ƒ“ 1 ‚ğÄ¶");
-        // ‚±‚±‚É Animation1 Ä¶ˆ—‚ğ‹Lq
+        return Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
-    void JumpAnimStep2()
+    void OnDrawGizmosSelected()
     {
-        Debug.Log("ƒAƒjƒ[ƒVƒ‡ƒ“ 2 ‚ğÄ¶");
-        // ‚±‚±‚É Animation2 Ä¶ˆ—‚ğ‹Lq
-    }
-
-    void JumpAnimStep3()
-    {
-        Debug.Log("ƒAƒjƒ[ƒVƒ‡ƒ“ 3 ‚ğÄ¶");
-        // ‚±‚±‚É Animation3 Ä¶ˆ—‚ğ‹Lq
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
     }
 }
