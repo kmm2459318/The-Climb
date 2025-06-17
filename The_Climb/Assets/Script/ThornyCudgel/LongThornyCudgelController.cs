@@ -3,14 +3,14 @@ using UnityEngine;
 public class LongThornyCudgelController : MonoBehaviour
 {
     [Header("初回クールタイム（秒）")]
-    public float initialCooldown = 2f;  // ゲーム開始時に一度だけ
+    public float initialCooldown = 1f;
 
     [Header("各フェーズ時間（秒）")]
-    public float cooldown1 = 1f;             // shortStretch前
+    public float cooldown1 = 1f;
     public float shortStretchDuration = 0.2f;
-    public float cooldown2 = 1f;             // longStretch前
+    public float cooldown2 = 1f;
     public float longStretchDuration = 2f;
-    public float cooldown3 = 1f;             // shrink前
+    public float cooldown3 = 1f;
     public float shrinkDuration = 4f;
 
     [Header("移動距離")]
@@ -18,8 +18,8 @@ public class LongThornyCudgelController : MonoBehaviour
     public float longStretchDistance = 75f;
 
     [Header("回転速度（度/秒）")]
-    public float stretchRotationSpeed = 360f;   // 左回転
-    public float shrinkRotationSpeed = 180f;    // 右回転
+    public float stretchRotationSpeed = 360f;  // 左回転
+    public float shrinkRotationSpeed = 180f;   // 右回転
 
     private enum State
     {
@@ -42,9 +42,12 @@ public class LongThornyCudgelController : MonoBehaviour
     private float moveSpeed = 0f;
     private Vector3 targetLocalPosition;
 
+    private float currentYRotation = 0f;
+
     void Start()
     {
         baseLocalPosition = transform.localPosition;
+        currentYRotation = transform.localEulerAngles.y;
         timer = 0f;
     }
 
@@ -71,7 +74,7 @@ public class LongThornyCudgelController : MonoBehaviour
                     timer = 0f;
                     currentState = State.Cooldown2;
                 });
-                Rotate(-stretchRotationSpeed);
+                RotateContinuous(-stretchRotationSpeed);
                 break;
 
             case State.Cooldown2:
@@ -85,7 +88,7 @@ public class LongThornyCudgelController : MonoBehaviour
                     timer = 0f;
                     currentState = State.Cooldown3;
                 });
-                Rotate(-stretchRotationSpeed);
+                RotateContinuous(-stretchRotationSpeed);
                 break;
 
             case State.Cooldown3:
@@ -93,12 +96,16 @@ public class LongThornyCudgelController : MonoBehaviour
                 break;
 
             case State.Shrinking:
+                timer += Time.deltaTime;
                 MoveTowardsTarget(() =>
                 {
                     timer = 0f;
-                    currentState = State.Cooldown1;  // 再ループ
+                    currentState = State.Cooldown1;
+                    // 縮み終わりで回転リセット
+                    currentYRotation = 0f;
+                    ApplyRotation();
                 });
-                Rotate(shrinkRotationSpeed);
+                RotateContinuous(shrinkRotationSpeed);
                 break;
         }
     }
@@ -137,9 +144,17 @@ public class LongThornyCudgelController : MonoBehaviour
         }
     }
 
-    void Rotate(float speed)
+    void RotateContinuous(float speed)
     {
-        transform.Rotate(Vector3.up, speed * Time.deltaTime, Space.Self);  // ローカル軸で回転
+        currentYRotation += speed * Time.deltaTime;
+        currentYRotation %= 360f;
+        ApplyRotation();
+    }
+
+    void ApplyRotation()
+    {
+        Vector3 euler = transform.localEulerAngles;
+        transform.localEulerAngles = new Vector3(euler.x, currentYRotation, euler.z);
     }
 
     bool TimerReached(float duration)
