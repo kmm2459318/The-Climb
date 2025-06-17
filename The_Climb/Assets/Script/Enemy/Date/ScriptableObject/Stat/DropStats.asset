@@ -9,15 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f190f3a8d8bd2847b4fa90c4f4e3abd, type: 3}
-  m_Name: HevvyStats
+  m_Script: {fileID: 11500000, guid: 1f2f88f3365165d4589fc609479a6c44, type: 3}
+  m_Name: DropStats
   m_EditorClassIdentifier: 
-  jumpForce: 10
-  horizontalJumpForce: 6
-  jumpInterval: 3
-  jumpsBeforeCharge: 3
-  chargeDuration: 1.5
-  chargeJumpForce: 20
-  slowFallGravityScale: 0.2
-  LeftBoundary: -15
-  RightBoundary: 15
+  diagonalRushCount: 3
+  rushSpeed: 15
+  meteorDropCount: 2
+  meteorDropSpeed: 30
+  riseSpeed: 5
+  waitBeforeMeteor: 1
+  offscreenBuffer: 2
+  detectionRange: 100

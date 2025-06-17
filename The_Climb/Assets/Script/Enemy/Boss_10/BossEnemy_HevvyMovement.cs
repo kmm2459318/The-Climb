@@ -4,48 +4,54 @@ using UnityEngine;
 public class BossEnemy_HevvyMovement : MonoBehaviour
 {
     public HevvyStats stats;
-    [SerializeField] private CharacterGroundChecker groundChecker;
-    [SerializeField] private float leftBoundary = -5f; //Bossが壁によりすぎないようにするための向き変更のライン（左）
-    [SerializeField] private float rightBoundary = 5f; //Bossが壁によりすぎないようにするための向き変更のライン（右）
+    private CharacterGroundChecker groundChecker;
+    private float LeftBoundary;/* = -15f; *///Bossが壁によりすぎないようにするための向き変更のライン（左）
+    private float RightBoundary;/* = 15f; /*//*/Bossが壁によりすぎないようにするための向き変更のライン（右）*/
     private Rigidbody rb;
     private float timer;
     private int jumpCount = 0;
     private bool isCharging = false;
     private float chargeTimer = 0f;
-    private int horizontalDirection = 1;
-
+    [SerializeField] private int horizontalDirection = 1;
+    private bool isGrounded;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        groundChecker = GetComponent<CharacterGroundChecker>();
+        LeftBoundary = stats.LeftBoundary;
+        RightBoundary = stats.RightBoundary;
     }
 
     private void Update()
     {
+       
         {
-                if (isCharging)
+            if (isCharging)
                 {
-                    chargeTimer += Time.deltaTime;
+                Debug.Log("チャージジャンプのFlagがたちました");
+                chargeTimer += Time.deltaTime;
 
-                    if (chargeTimer >= stats.chargeDuration)
-                    {
-                    
-                        ChargeJump();
+                if (chargeTimer >= stats.jumpInterval && groundChecker.CheckIsGround())
+
+                {
+                    Debug.Log("チャージジャンプが呼び出しされました");
+                    ChargeJump();
                         isCharging = false;
                         chargeTimer = 0f;
                         jumpCount = 0;
                     }
-                    // たまに左右を切り替える（オプション）
-                    horizontalDirection *= Random.value > 0.5f ? -1 : 1;
+                    
 
                     return;
                 }
 
                 timer += Time.deltaTime;
 
-                if (timer >= stats.jumpInterval)
-                {
-                    timer = 0f;
+            if (timer >= stats.jumpInterval && groundChecker.CheckIsGround())
+
+            {
+                timer = 0f;
                     jumpCount++;
 
                     if (jumpCount >= stats.jumpsBeforeCharge)
@@ -59,12 +65,14 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
                     }
                 }
             // 一定のラインに到達したら向きを変える
-            if (transform.position.x <= leftBoundary)
+            if (transform.position.x <= LeftBoundary)
             {
+                Debug.Log(transform.position);
                 horizontalDirection = 1;
             }
-            else if (transform.position.x >= rightBoundary)
+            else if (transform.position.x >= RightBoundary)
             {
+                Debug.Log(transform.position);
                 horizontalDirection = -1;
             }
 
@@ -73,9 +81,8 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
 
     void NormalJump()
     {
-        //CharacterGroundChecker characterGroundChecker = GetComponent<CharacterGroundChecker>();
-        //if (characterGroundChecker.CheckIsGround())
-        //{
+        //if (groundChecker.CheckIsGround())
+        //{ 
             rb.linearVelocity = Vector3.zero;
             Vector3 jumpVector = new Vector3(stats.horizontalJumpForce * horizontalDirection, stats.jumpForce, 0f);
             rb.AddForce(jumpVector, ForceMode.Impulse);
@@ -86,12 +93,14 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
     {
         isCharging = true;
         rb.linearVelocity = Vector3.zero;
+
+        // たまに左右を切り替える（オプション）
+        //horizontalDirection *= Random.value > 0.5f ? -1 : 1;
     }
 
     void ChargeJump()
     {
-        //CharacterGroundChecker characterGroundChecker = GetComponent<CharacterGroundChecker>();
-        //if (characterGroundChecker.CheckIsGround())
+        //if (groundChecker.CheckIsGround())
         //{
             rb.linearVelocity = Vector3.zero;
             Vector3 jumpVector = new Vector3(0f, stats.chargeJumpForce, 0f);
@@ -104,17 +113,21 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
 
     System.Collections.IEnumerator SlowFallCoroutine()
     {
-        float originalGravity = rb.mass;
-        rb.linearDamping = 0f;
-        rb.useGravity = false;
+        float originalDrag = rb.linearDamping;
 
+        rb.useGravity = false;
+        rb.linearDamping = 0f;
+
+        // 上昇している間は待機
         while (rb.linearVelocity.y > 0f)
         {
             yield return null;
         }
 
+        // 降下開始
         rb.useGravity = true;
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, 0f);
+        rb.linearDamping = originalDrag;
+
         rb.AddForce(Vector3.down * Physics.gravity.y * stats.slowFallGravityScale, ForceMode.Acceleration);
     }
 }
