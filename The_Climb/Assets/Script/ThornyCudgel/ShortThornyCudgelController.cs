@@ -3,22 +3,22 @@ using UnityEngine;
 public class ShortThornyCudgelController : MonoBehaviour
 {
     [Header("初回クールタイム（秒）")]
-    public float initialCooldown = 2f;
+    public float initialCooldown = 1f;
 
     [Header("各フェーズ時間（秒）")]
-    public float cooldown1 = 1f;
-    public float shortStretchDuration = 0.2f;
-    public float longStretchDuration = 2f;
-    public float cooldown3 = 1f;
-    public float shrinkDuration = 4f;
+    public float cooldown1 = 4f;
+    public float shortStretchDuration = 0.25f;
+    public float longStretchDuration = 0.25f;
+    public float cooldown3 = 0f;
+    public float shrinkDuration = 1.5f;
 
     [Header("移動距離")]
     public float shortStretchDistance = 2f;
-    public float longStretchDistance = 75f;
+    public float longStretchDistance = 23f;
 
     [Header("回転速度（度/秒）")]
-    public float stretchRotationSpeed = 360f;
-    public float shrinkRotationSpeed = 180f;
+    public float stretchRotationSpeed = 360f;  // 左回転
+    public float shrinkRotationSpeed = 180f;   // 右回転
 
     private enum State
     {
@@ -36,10 +36,10 @@ public class ShortThornyCudgelController : MonoBehaviour
     private Vector3 shortStretchStart;
     private Vector3 shortStretchEnd;
     private Vector3 longStretchEnd;
+    private Vector3 targetLocalPosition;
 
     private float timer = 0f;
     private float moveSpeed = 0f;
-    private Vector3 targetLocalPosition;
 
     void Start()
     {
@@ -64,24 +64,23 @@ public class ShortThornyCudgelController : MonoBehaviour
                 break;
 
             case State.ShortStretch:
-                float t = Mathf.Clamp01(timer / shortStretchDuration);
-                transform.localPosition = Vector3.Lerp(shortStretchStart, shortStretchEnd, t);
-                Rotate(-stretchRotationSpeed);
+                float t1 = Mathf.Clamp01(timer / shortStretchDuration);
+                float easedT1 = Mathf.SmoothStep(0f, 1f, t1);
+                transform.localPosition = Vector3.Lerp(shortStretchStart, shortStretchEnd, easedT1);
+                Rotate(stretchRotationSpeed); // 左回転
                 timer += Time.deltaTime;
-                if (t >= 1f)
-                {
-                    StartLongStretch();
-                }
+                if (t1 >= 1f) StartLongStretch();
                 break;
 
             case State.LongStretch:
-                MoveTowardsTarget(() =>
+                transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetLocalPosition, moveSpeed * Time.deltaTime);
+                Rotate(stretchRotationSpeed); // 左回転
+                if (Vector3.Distance(transform.localPosition, targetLocalPosition) < 0.01f)
                 {
                     longStretchEnd = transform.localPosition;
                     timer = 0f;
                     currentState = State.Cooldown3;
-                });
-                Rotate(-stretchRotationSpeed);
+                }
                 break;
 
             case State.Cooldown3:
@@ -89,12 +88,16 @@ public class ShortThornyCudgelController : MonoBehaviour
                 break;
 
             case State.Shrinking:
-                MoveTowardsTarget(() =>
+                float t3 = Mathf.Clamp01(timer / shrinkDuration);
+                transform.localPosition = Vector3.Lerp(longStretchEnd, baseLocalPosition, t3);
+                Rotate(-shrinkRotationSpeed); // 右回転
+                timer += Time.deltaTime;
+                if (t3 >= 1f)
                 {
                     timer = 0f;
-                    currentState = State.Cooldown1;  // 再ループ
-                });
-                Rotate(shrinkRotationSpeed);
+                    transform.localRotation = Quaternion.identity;
+                    currentState = State.Cooldown1;
+                }
                 break;
         }
     }
@@ -119,18 +122,7 @@ public class ShortThornyCudgelController : MonoBehaviour
     {
         timer = 0f;
         targetLocalPosition = baseLocalPosition;
-        float totalDistance = Vector3.Distance(transform.localPosition, baseLocalPosition);
-        moveSpeed = totalDistance / shrinkDuration;
         currentState = State.Shrinking;
-    }
-
-    void MoveTowardsTarget(System.Action onComplete)
-    {
-        transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetLocalPosition, moveSpeed * Time.deltaTime);
-        if (Vector3.Distance(transform.localPosition, targetLocalPosition) < 0.01f)
-        {
-            onComplete?.Invoke();
-        }
     }
 
     void Rotate(float speed)
