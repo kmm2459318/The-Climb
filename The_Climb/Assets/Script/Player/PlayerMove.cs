@@ -74,7 +74,7 @@ public class PlayerMove : MonoBehaviour
 
     void Start()
     {
-        keyBind = GameObject.Find("GameManager").GetComponent<KeyBind>();
+        keyBind = GameObject.Find("KeyManager").GetComponent<KeyBind>();
         RigidBody = GetComponent<Rigidbody>();
 
         // インスペクターまたはスクリプトで設定
