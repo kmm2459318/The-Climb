@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
 {
-    private Animator animator;
+    public Animator animator;
     private int spacePressCount = 0;
     private bool isJumping = false;
+    PlayerMove PlayerMove;
 
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
@@ -13,6 +14,8 @@ public class PlayerAnimation : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        PlayerMove = GameObject.Find("TentativePlayer").GetComponent<PlayerMove>();
+
         if (animator == null)
         {
             Debug.LogError("Animator が見つかりません。コンポーネントをアタッチしてください。");
@@ -22,7 +25,7 @@ public class PlayerAnimation : MonoBehaviour
     void Update()
     {
         // 着地チェック
-        if (isJumping && IsGrounded())
+        if (PlayerMove.landing)
         {
             isJumping = false;
             Debug.Log("着地しました。次のジャンプが可能になります。");
@@ -51,17 +54,19 @@ public class PlayerAnimation : MonoBehaviour
         }
     }
 
-    bool IsGrounded()
-    {
-        return Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-    }
+    //bool IsGrounded()
+    //{
+    //    return Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    //}
 
-    void OnDrawGizmosSelected()
-    {
-        if (groundCheck != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-        }
-    }
+    //void OnDrawGizmosSelected()
+    //{
+    //    if (groundCheck != null)
+    //    {
+    //        Gizmos.color = Color.red;
+    //        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+    //    }
+    //}
+
+
 }
