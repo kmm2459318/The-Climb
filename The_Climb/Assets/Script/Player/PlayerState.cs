@@ -8,7 +8,8 @@ public class PlayerState : MonoBehaviour
     public KeyBind keyBind;
     PlayerMove move;
     PlayerJump jump;
-    PlayerSpecialAction special;
+    PlayerSpecialAction special; 
+    public PlayerAnimation PlayerAnimation;
 
     public bool highJumpOn = false;      //ハイジャンプ可能か
     public bool quickJumpOn = false;     //クイックジャンプ可能か
@@ -39,6 +40,8 @@ public class PlayerState : MonoBehaviour
         move = GetComponent<PlayerMove>();
         jump = GetComponent<PlayerJump>();
         special = GetComponent<PlayerSpecialAction>();
+
+        PlayerAnimation = GameObject.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
 
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
 

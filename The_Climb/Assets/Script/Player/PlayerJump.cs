@@ -59,14 +59,17 @@ public class PlayerJump : MonoBehaviour
             if (landingJumpNumber >= 2)
             {
                 Jump(landingHighJumpPower);
+                state.PlayerAnimation.animator.SetTrigger("JumpAnimStep3");
             }
             else if (landingJumpNumber == 1)
             {
                 Jump(landingLowJumpPower);
+                state.PlayerAnimation.animator.SetTrigger("JumpAnimStep2");
             }
             else
             {
                 Jump(groundJumpPower);
+                state.PlayerAnimation.animator.SetTrigger("JumpAnimStep1");
             }
         }
     }
