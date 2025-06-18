@@ -6,18 +6,19 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
 {
     public Boss_20_StatusObjectScript status;   //Assetファイル
     public GameObject Bullet_Prefab;            //弾のPrehab
-    public Transform  Bullet_Position;　　　　　//弾の発射位置
+    public Transform Bullet_Position;　　　　　//弾の発射位置
 
-    private int   Boss_Move_Direction;　　　　　//敵の動く方向
+    private int Boss_Move_Direction;　　　　　//敵の動く方向
     private float Bullet_Timer;　　　　　　　　 //弾を発射するまでの時間
     private float rest_Timer;　　　　　　　　　 //休憩時間
     private float boss_Speed;　　　　　　　　　 //ボスの速さ
-    private bool  isResting = false;　　　　　　//ボスの動くかどうかの判定
-    private Rigidbody rb;　　　　　　　　　　　　
+    private bool isResting = false;　　　　　　//ボスの動くかどうかの判定
+    private Rigidbody rb;
+    private Transform targetTransform;
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody>(); 
+        rb = GetComponent<Rigidbody>();
         Initialize();
     }
 
@@ -51,7 +52,7 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         }
 
         if (rest_Timer <= 0f && !isResting)
-        { 
+        {
             isResting = true;
             StartCoroutine(RestAndResume());
         }
@@ -92,28 +93,28 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         }
     }
 
-
-　　void HandleShooting()
-　　{
-    　　Bullet_Timer -= Time.deltaTime;
-    　　if (Bullet_Timer <= 0f)
-    　{
-        　Bullet();
-        　Bullet_Timer = status.Attack;
-    　}
-　　}
-
-　void Bullet()
-　{
-       if (Bullet_Prefab != null && Bullet_Position != null)
-       {
-           GameObject bullet = Instantiate(Bullet_Prefab, Bullet_Position.position, Bullet_Position.rotation);
-           BossBullet bulletScript = bullet.GetComponent<BossBullet>();
-           if (bulletScript != null)
-           {
-               //bulletScript.status = status;
-               //bulletScript.Fire(); // 発射処理
-           }
+    //弾の発射タイミング
+    void HandleShooting()
+    {
+        Bullet_Timer -= Time.deltaTime;
+        if (Bullet_Timer <= 0f)
+        {
+            Bullet();
+            Bullet_Timer = status.Attack;
         }
     }
-　}
+
+    //発射　　　　　　　　　　
+    void Bullet()
+    {
+        if (Bullet_Prefab != null && Bullet_Position != null)
+        {
+            GameObject bullet = Instantiate(Bullet_Prefab, Bullet_Position.position, Bullet_Position.rotation);
+            BossBullet bulletScript = bullet.GetComponent<BossBullet>();
+            if (bulletScript != null)
+            {
+                bulletScript.target = targetTransform; // ← ここでターゲットを渡す
+            }
+        }
+    }
+}
