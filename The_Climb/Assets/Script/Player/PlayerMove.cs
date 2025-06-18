@@ -5,6 +5,7 @@ public class PlayerMove : MonoBehaviour
 {
     Rigidbody RigidBody;
     KeyBind keyBind;
+    PlayerAnimation PlayerAnimation;
 
     public bool highJumpOn = false;      //ハイジャンプ可能か
     public bool quickJumpOn = false;     //クイックジャンプ可能か
@@ -72,10 +73,12 @@ public class PlayerMove : MonoBehaviour
     private float meteorDropTime = 0.37f;  //メテオドロップからのハイジャンプに移行できるまでの時間
     public float meteorDropCounter = 0f;  //メテオドロップのカウンター
 
+
     void Start()
     {
         keyBind = GameObject.Find("KeyManager").GetComponent<KeyBind>();
         RigidBody = GetComponent<Rigidbody>();
+        PlayerAnimation = GameObject.Find("pico_chan_chr_pico_00"). GetComponent<PlayerAnimation>();
 
         // インスペクターまたはスクリプトで設定
         RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
@@ -185,14 +188,18 @@ public class PlayerMove : MonoBehaviour
             if (landingJumpNumber >= 2)
             {
                 Jump(landingHighJumpPower);
+                PlayerAnimation.animator.SetTrigger("JumpAnimStep3");
+
             }
             else if (landingJumpNumber == 1)
             {
                 Jump(landingLowJumpPower);
+                PlayerAnimation.animator.SetTrigger("JumpAnimStep2");
             }
             else
             {
                 Jump(groundJumpPower);
+                PlayerAnimation.animator.SetTrigger("JumpAnimStep1");
             }
         }
 
