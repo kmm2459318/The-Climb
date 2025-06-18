@@ -4,18 +4,13 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     Rigidbody RigidBody;
-<<<<<<< HEAD
     PlayerState state;
     PlayerJump jump;
     PlayerSpecialAction special;
-=======
-    KeyBind keyBind;
-    PlayerAnimation PlayerAnimation;
 
     public bool highJumpOn = false;      //ハイジャンプ可能か
     public bool quickJumpOn = false;     //クイックジャンプ可能か
     public bool meteorDropOn = false;    //メテオドロップ叶か
->>>>>>> main
 
     private float groundMoveForce = 0.35f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 6.459797f;
@@ -29,26 +24,13 @@ public class PlayerMove : MonoBehaviour
     public Vector3 slipVelocity;                //滑り時のVelocity
 
 
+
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();
-<<<<<<< HEAD
         state = GetComponent<PlayerState>();
         jump = gameObject.GetComponent<PlayerJump>();
         special = gameObject.GetComponent<PlayerSpecialAction>();
-=======
-        PlayerAnimation = GameObject.Find("pico_chan_chr_pico_00"). GetComponent<PlayerAnimation>();
-
-        // インスペクターまたはスクリプトで設定
-        RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
-
-        Physics.gravity = new Vector3(0, -45.6F, 0); // Gを倍にする
-
-        float meteorDropDirection = meteorDropAngle * Mathf.Deg2Rad;
-
-        meteorDropXMove = Mathf.Sin(meteorDropDirection);
-        meteorDropYMove = Mathf.Cos(meteorDropDirection);
->>>>>>> main
     }
 
     private void Update()
@@ -80,59 +62,6 @@ public class PlayerMove : MonoBehaviour
                 AirPlayerMove();
             }
         }
-<<<<<<< HEAD
-=======
-
-        //ジャンプ
-        if (jumping)
-        {
-            jumpTime += Time.deltaTime;
-
-            if (landingJumpNumber >= 2)
-            {
-                Jump(landingHighJumpPower);
-                PlayerAnimation.animator.SetTrigger("JumpAnimStep3");
-
-            }
-            else if (landingJumpNumber == 1)
-            {
-                Jump(landingLowJumpPower);
-                PlayerAnimation.animator.SetTrigger("JumpAnimStep2");
-            }
-            else
-            {
-                Jump(groundJumpPower);
-                PlayerAnimation.animator.SetTrigger("JumpAnimStep1");
-            }
-        }
-
-        if (highJump)
-        {
-            HighJump();
-
-            highJump = false;
-        }
-
-        if (meteorDrop)
-        {
-            MeteorDrop();
-        }
-
-        if (meteorHighJump)
-        {
-            MeteorHighJump();
-        }
-
-        if (quickJump)
-        {
-            Jump(landingLowJumpPower);
-
-            quickJump = false;
-        }
-
-        //前フレームの接地判定
-        wasGrounded = isGrounded;
->>>>>>> main
     }
 
     private void MoveOperation()
