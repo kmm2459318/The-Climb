@@ -23,6 +23,9 @@ public class PlayerMove : MonoBehaviour
     private float slippingCounter = 0f;  //スリップ方向切り替えようタイム
     public Vector3 slipVelocity;                //滑り時のVelocity
 
+    public float MoveInput => moveInput; // ←読み取り専用プロパティ
+    public PlayerAnimation PlayerAnimation;
+    public PlayerState State => state;
 
 
     void Start()
@@ -31,6 +34,8 @@ public class PlayerMove : MonoBehaviour
         state = GetComponent<PlayerState>();
         jump = gameObject.GetComponent<PlayerJump>();
         special = gameObject.GetComponent<PlayerSpecialAction>();
+
+        PlayerAnimation = GameObject.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
     }
 
     private void Update()

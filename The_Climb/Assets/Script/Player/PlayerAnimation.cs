@@ -5,7 +5,9 @@ public class PlayerAnimation : MonoBehaviour
     public Animator animator;
     private int spacePressCount = 0;
     private bool isJumping = false;
-    PlayerState playerState;
+    private Rigidbody rb;
+    PlayerMove PlayerMove;
+    PlayerState PlayerState;
 
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
@@ -14,24 +16,42 @@ public class PlayerAnimation : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        playerState = GameObject.Find("TentativePlayer").GetComponent<PlayerState>();
+        PlayerMove = GameObject.Find("TentativePlayer").GetComponent<PlayerMove>();
+        PlayerState = GameObject.Find("TentativePlayer").GetComponent<PlayerState>();
 
         if (animator == null)
-        {
             Debug.LogError("Animator が見つかりません。コンポーネントをアタッチしてください。");
-        }
     }
 
     void Update()
     {
-        // 着地チェック
-        if (playerState.landing)
+        // ★ 地面チェック
+        if (IsGrounded())
         {
+            if (isJumping)
+            {
+                Debug.Log("着地しました。次のジャンプが可能になります。");
+            }
             isJumping = false;
-            Debug.Log("着地しました。次のジャンプが可能になります。");
         }
 
-        // スペース入力
+        // ★ ランアニメ（地上かつ移動中なら再生）
+        bool isRunning = PlayerMove.State.isGrounded && Mathf.Abs(PlayerMove.MoveInput) > 0f;
+        animator.SetBool("IsRunning", isRunning);
+
+
+        
+        // 体の向き反転処理
+        if (PlayerMove.MoveInput > 0f)
+        {
+            transform.rotation = Quaternion.Euler(0, 90, 0); // 右向き
+        }
+        else if (PlayerMove.MoveInput < 0f)
+        {
+            transform.rotation = Quaternion.Euler(0, -90, 0); // 左向き
+        }
+
+        // ★ スペース入力（ジャンプアニメ：3パターン切替）
         if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
             spacePressCount++;
@@ -54,19 +74,9 @@ public class PlayerAnimation : MonoBehaviour
         }
     }
 
-    //bool IsGrounded()
-    //{
-    //    return Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-    //}
-
-    //void OnDrawGizmosSelected()
-    //{
-    //    if (groundCheck != null)
-    //    {
-    //        Gizmos.color = Color.red;
-    //        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-    //    }
-    //}
-
-
+    // ★ 3D用の地面判定
+    private bool IsGrounded()
+    {
+        return Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
+    }
 }
