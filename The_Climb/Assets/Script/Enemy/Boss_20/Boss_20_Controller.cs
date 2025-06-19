@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using Unity.PlasticSCM.Editor.WebApi;
+using static UnityEngine.GraphicsBuffer;
 
 public class Boss_20_Controller : MonoBehaviour, IWallHitTable
 {
@@ -20,6 +21,11 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
     {
         rb = GetComponent<Rigidbody>();
         Initialize();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            targetTransform = player.transform;
+        }
     }
 
     void Update()
@@ -111,9 +117,16 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         {
             GameObject bullet = Instantiate(Bullet_Prefab, Bullet_Position.position, Bullet_Position.rotation);
             BossBullet bulletScript = bullet.GetComponent<BossBullet>();
+
+            // ここで null チェック
             if (bulletScript != null)
             {
-                bulletScript.target = targetTransform; // ← ここでターゲットを渡す
+                Debug.Log("BossBullet スクリプトが見つかりました！");
+                bulletScript.target = targetTransform;
+            }
+            else
+            {
+                Debug.LogError("BossBullet スクリプトが見つかりません！（bulletScript が null）");
             }
         }
     }
