@@ -217,7 +217,6 @@ GameObject:
   - component: {fileID: 5979823589065921296}
   - component: {fileID: 7719615598097338142}
   - component: {fileID: 4732247768405051251}
-  - component: {fileID: 4577596102938807158}
   - component: {fileID: 3133395199702357206}
   - component: {fileID: 2574114015764632309}
   m_Layer: 0
@@ -300,27 +299,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4577596102938807158
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8265955754314674708}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.5, y: 1.41, z: 0.5}
-  m_Center: {x: 0, y: 0.69, z: 0}
 --- !u!114 &3133395199702357206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,61 +311,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af19e1eedc2393f48a66ba2b34202b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highJumpOn: 0
-  quickJumpOn: 0
-  meteorDropOn: 1
-  jumpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -0.01834071
-      value: 0.7730288
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.06649279
-      value: 0.86326295
-      inSlope: 0.4281266
-      outSlope: 0.4281266
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 1
-      outWeight: 0.26473874
-    - serializedVersion: 3
-      time: 1.035392
-      value: 0.96269274
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  landing: 0
+  groundMaxSpeed: 6.459797
   slipping: 0
-  groundCheck: {fileID: 8568953389800512174}
-  isGrounded: 0
-  jumpMoveOKCheck: {fileID: 5710958916398575756}
-  isJumpMoveOK: 0
-  leftWallCheck: {fileID: 8745336908231081762}
-  isLeftWall: 0
-  rightWallCheck: {fileID: 239748021280898601}
-  isRightWall: 0
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  isAir: 0
-  landingJumpNumber: 0
-  highJumpChargeCounter: 0
-  quickJumpUsed: 0
-  meteorDropUsed: 0
-  meteorDropCounter: 0
+  slipVelocity: {x: 0, y: 0, z: 0}
 --- !u!54 &2574114015764632309
 Rigidbody:
   m_ObjectHideFlags: 0
