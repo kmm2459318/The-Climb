@@ -22,7 +22,7 @@ public class PlayerJump : MonoBehaviour
 
     public int landingJumpNumber = 0;   //着地ジャンプの連続回数
     private float landingLowJumpPower = 14f;  //一回目着地ジャンプのパワー
-    public float landingHighJumpPower = 16f;  //二回目着地ジャンプのパワー
+    private float landingHighJumpPower = 16f;  //二回目着地ジャンプのパワー
 
     void Start()
     {
