@@ -17,6 +17,7 @@ public class PlayerState : MonoBehaviour
 
     public bool playerDirectionRight = true;  //プレイヤーの見ている方向が右ならtrue、左ならfalse
     private bool wasGrounded = false;    //前フレームの地面状態
+    public bool landing = false;         //着地判定
     private float landingJumpTime = 0.1f;  //着地ジャンプの猶予タイム
     private float landingJumpCounter = 0f;  //着地ジャンプの猶予カウンター
     public bool landingJumpOn = false;  //着地ジャンプのカウントを始める用
@@ -94,9 +95,12 @@ public class PlayerState : MonoBehaviour
 
     private void LandingChack()
     {
+        landing = false;
         //着地判定
         if (!wasGrounded && isGrounded)
         {
+            landing = true;
+
             landingJumpCounter = 0f;
             landingJumpOn = true;
 
