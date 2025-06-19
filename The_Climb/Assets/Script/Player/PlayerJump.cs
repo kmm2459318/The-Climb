@@ -14,15 +14,15 @@ public class PlayerJump : MonoBehaviour
     private float jumpCoolCounter = 0f;  //ジャンのクールタイムカウント
     public bool jumpCoolActive = false;  //ジャンクールタイムを始める用判定
     private float jumpTime;              //ジャンプ入力時間
-    private float jumpTimeMax = 0.15f;    //最大ジャンプ入力時間
-    private float jumpTimeMaxSaving = 0.15f;  //最大ジャンプ入力時間を保持
-    private float groundJumpPower = 14f;  //ジャンプでプレイヤーにかかる上方向の力
+    private float jumpTimeMax = 0.2f;    //最大ジャンプ入力時間
+    private float jumpTimeMaxSaving = 0.2f;  //最大ジャンプ入力時間を保持
+    private float groundJumpPower = 12f;  //ジャンプでプレイヤーにかかる上方向の力
     private float maxJumpSpeed = 12f;    //空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();  //ジャンプ時の速度カーブ
 
     public int landingJumpNumber = 0;   //着地ジャンプの連続回数
-    private float landingLowJumpPower = 16f;  //一回目着地ジャンプのパワー
-    public float landingHighJumpPower = 18f;  //二回目着地ジャンプのパワー
+    private float landingLowJumpPower = 14f;  //一回目着地ジャンプのパワー
+    public float landingHighJumpPower = 16f;  //二回目着地ジャンプのパワー
 
     void Start()
     {
@@ -106,9 +106,9 @@ public class PlayerJump : MonoBehaviour
 
         if (jumping)
         {
-            if (Input.GetKeyUp(state.keyBind.playerJump) && jumpTime <= jumpTimeMaxSaving * 2 / 3)
+            if (Input.GetKeyUp(state.keyBind.playerJump) && jumpTime <= jumpTimeMaxSaving * 1 / 2)
             {
-                jumpTimeMax = jumpTimeMaxSaving * 2 / 3;
+                jumpTimeMax = jumpTimeMaxSaving * 1 / 2;
             }
         }
     }
