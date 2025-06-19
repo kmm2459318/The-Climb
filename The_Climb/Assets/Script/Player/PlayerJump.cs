@@ -24,6 +24,9 @@ public class PlayerJump : MonoBehaviour
     private float landingLowJumpPower = 16f;  //一回目着地ジャンプのパワー
     public float landingHighJumpPower = 18f;  //二回目着地ジャンプのパワー
 
+    public bool isOnTrampoline = false;
+    public float TrampolinePower = 5f;
+
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();
@@ -117,6 +120,12 @@ public class PlayerJump : MonoBehaviour
     {
         Debug.Log("jannpu-");
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
+
+        //トランポリンに乗っている場合ジャンプ力を上げる
+        if(isOnTrampoline)
+        {
+            jumpPower *= TrampolinePower;
+        }
 
         // ジャンプの速度をアニメーションカーブから取得
         float time = jumpTime / jumpTimeMaxSaving;
