@@ -1,15 +1,15 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "KickerStat", menuName = "GameDate/Enemy/KickerStat")]
 //  キッカーのステータス
 public class KickerStatus : ScriptableObject
 {
-    //  状態とステータスをもつクラス
+    //  敵の状態とステータスをもつクラス
     [System.Serializable]
     public class StateStatPair
     {
-        public EnemyMode State;    //  敵の状態(通常時と狂暴化)
+        public EnemyMode enemyMode;    //  敵の状態(通常時と狂暴化)
         public KickerStatBlock Stats;    //  ステータスを持つクラス
     }
 
@@ -29,9 +29,9 @@ public class KickerStatus : ScriptableObject
         StatMap = new();
         foreach (var pair in StateStats)
         {
-            if (!StatMap.ContainsKey(pair.State))
+            if (!StatMap.ContainsKey(pair.enemyMode))
             {
-                StatMap.Add(pair.State, pair.Stats);
+                StatMap.Add(pair.enemyMode, pair.Stats);
             }
         }
     }
@@ -41,17 +41,3 @@ public class KickerStatus : ScriptableObject
         return StatMap.TryGetValue(State, out KickerStatBlock stats) ? stats : null;
     }
 }
-//  以下コード保存所
-
-//[Header("Normal Time")]
-//[SerializeField] float MoveSpd_Normal;    //  移動速度(平常時)
-//[SerializeField] float JumpForce_Normal;    //  ジャンプ力(平常時)
-//[SerializeField] float JumpFrequency_Normal;  //  ジャンプする間隔(平常時)
-//[Header("Violent Time")]
-//[SerializeField] float MoveSpd;    //  移動速度(狂暴化時)
-//[SerializeField] float JumpForce;    //  ジャンプ力(狂暴化時)
-//[SerializeField] float JumpFrequency;  //  ジャンプする間隔(狂暴化時)
-
-//public float MoveSpdProperty => MoveSpd_Normal;
-//public float JumpForceProperty => JumpForce_Normal;
-//public float JumpFrequencyProperty => JumpFrequency_Normal;
