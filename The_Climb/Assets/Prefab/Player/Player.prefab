@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4419540929878694139}
-  - component: {fileID: 3082844980454654072}
   - component: {fileID: 158218493162333596}
   m_Layer: 0
   m_Name: HeadingAttack
@@ -33,27 +32,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5979823589065921296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &3082844980454654072
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805939567105611153}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.25
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &158218493162333596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,7 +331,6 @@ GameObject:
   - component: {fileID: 3133395199702357206}
   - component: {fileID: 5401961285133459525}
   - component: {fileID: 7055985816896250419}
-  - component: {fileID: 3040880098030806429}
   - component: {fileID: 4708216002185107873}
   - component: {fileID: 2574114015764632309}
   m_Layer: 0
@@ -537,7 +514,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   landingJumpNumber: 0
-  landingHighJumpPower: 19
 --- !u!114 &7055985816896250419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -559,29 +535,6 @@ MonoBehaviour:
   meteorHighJump: 0
   meteorDropTime: 0.37
   meteorDropCounter: 0
---- !u!136 &3040880098030806429
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8265955754314674708}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.25
-  m_Height: 1.39
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.69, z: 0}
 --- !u!65 &4708216002185107873
 BoxCollider:
   m_ObjectHideFlags: 0
