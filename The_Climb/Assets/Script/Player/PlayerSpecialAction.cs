@@ -106,7 +106,6 @@ public class PlayerSpecialAction : MonoBehaviour
             }
             else
             {
-                Debug.Log("jannpuppu-");
                 jump.jumping = true;
             }
 
@@ -153,13 +152,15 @@ public class PlayerSpecialAction : MonoBehaviour
 
     public IEnumerator HighJumpUse()
     {
-        RigidBody.linearVelocity = new Vector3(0, 0, 0);
+        float power = highJumpPower;
 
-        RigidBody.AddForce(highJumpPower * Vector3.up, ForceMode.Impulse);
-        
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 30; i++)
         {
-            state.isGrounded = false;
+            RigidBody.linearVelocity = new Vector3(0, 0, 0);
+
+            RigidBody.AddForce(power * Vector3.up, ForceMode.Impulse);
+            power --;
+
             yield return null;
         }
     }
