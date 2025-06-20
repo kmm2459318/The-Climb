@@ -73,7 +73,7 @@ public class PlayerState : MonoBehaviour
         else
         {
             // ジャンプOK判定（カプセル形）
-            isJumpMoveOK = Physics.CheckCapsule(jumpMoveOKCheck.position + Vector3.left * 0.1f, jumpMoveOKCheck.position + Vector3.right * 0.1f, 0.3f, groundLayer);
+            isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, groundCheckRadius, groundLayer);
         }
 
         //着地チェック
