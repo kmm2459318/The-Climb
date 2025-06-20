@@ -5,7 +5,7 @@ public class PlayerAnimation : MonoBehaviour
     public Animator animator;
     private int spacePressCount = 0;
     private bool isJumping = false;
-    PlayerMove PlayerMove;
+    PlayerState playerState;
 
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
@@ -14,7 +14,7 @@ public class PlayerAnimation : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        PlayerMove = GameObject.Find("TentativePlayer").GetComponent<PlayerMove>();
+        playerState = GameObject.Find("TentativePlayer").GetComponent<PlayerState>();
 
         if (animator == null)
         {
@@ -25,7 +25,7 @@ public class PlayerAnimation : MonoBehaviour
     void Update()
     {
         // 着地チェック
-        if (PlayerMove.landing)
+        if (playerState.landing)
         {
             isJumping = false;
             Debug.Log("着地しました。次のジャンプが可能になります。");

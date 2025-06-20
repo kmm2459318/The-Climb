@@ -19,8 +19,8 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     
 
     [Header("Instance")]
-    [SerializeField] KickerStatus kickerStatus;    //  ステータスインスタンス
-    KickerStatBlock kickerStatBlock;    //  ステータスインスタンス
+    [SerializeField] KickerStatus kickerStatus;    //  キッカーステータスインスタンス
+    KickerStatBlock kickerStatBlock;    //  キッカーステータスクラス
     EnemyMover enemyMover;    //  エネミームーバーインスタンス
     CharacterGroundChecker characterGroundChecker;    //  グラウンドチェッカーインスタンス
     EnemyStateMachine enemyStateMachine;
