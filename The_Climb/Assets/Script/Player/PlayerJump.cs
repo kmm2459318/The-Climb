@@ -14,14 +14,15 @@ public class PlayerJump : MonoBehaviour
     private float jumpCoolCounter = 0f;  //ジャンのクールタイムカウント
     public bool jumpCoolActive = false;  //ジャンクールタイムを始める用判定
     private float jumpTime;              //ジャンプ入力時間
-    private float jumpTimeMax = 0.1f;    //最大ジャンプ入力時間
-    private float groundJumpPower = 15f;  //ジャンプでプレイヤーにかかる上方向の力
+    private float jumpTimeMax = 0.2f;    //最大ジャンプ入力時間
+    private float jumpTimeMaxSaving = 0.2f;  //最大ジャンプ入力時間を保持
+    private float groundJumpPower = 12f;  //ジャンプでプレイヤーにかかる上方向の力
     private float maxJumpSpeed = 12f;    //空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();  //ジャンプ時の速度カーブ
 
     public int landingJumpNumber = 0;   //着地ジャンプの連続回数
-    private float landingLowJumpPower = 17f;  //一回目着地ジャンプのパワー
-    public float landingHighJumpPower = 19f;  //二回目着地ジャンプのパワー
+    private float landingLowJumpPower = 14f;  //一回目着地ジャンプのパワー
+    private float landingHighJumpPower = 16f;  //二回目着地ジャンプのパワー
 
     void Start()
     {
@@ -54,7 +55,7 @@ public class PlayerJump : MonoBehaviour
         //ジャンプ
         if (jumping)
         {
-            jumpTime += Time.deltaTime;
+            jumpTime += Time.fixedDeltaTime;
 
             if (landingJumpNumber >= 2)
             {
@@ -82,6 +83,7 @@ public class PlayerJump : MonoBehaviour
             {
                 jumping = true;
                 jumpCoolActive = true;
+                jumpTimeMax = jumpTimeMaxSaving;
 
                 //着地ジャンプ
                 if (state.landingJumpOn)
@@ -104,10 +106,9 @@ public class PlayerJump : MonoBehaviour
 
         if (jumping)
         {
-            if (Input.GetKeyUp(state.keyBind.playerJump) || jumpTime >= jumpTimeMax)
+            if (Input.GetKeyUp(state.keyBind.playerJump) && jumpTime <= jumpTimeMaxSaving * 1 / 2)
             {
-                jumping = false;
-                jumpTime = 0;
+                jumpTimeMax = jumpTimeMaxSaving * 1 / 2;
             }
         }
     }
@@ -117,10 +118,10 @@ public class PlayerJump : MonoBehaviour
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
 
         // ジャンプの速度をアニメーションカーブから取得
-        float time = jumpTime / jumpTimeMax;
+        float time = jumpTime / jumpTimeMaxSaving;
         float power = jumpPower * jumpCurve.Evaluate(time);
 
-        if (time >= 1)
+        if (jumpTime >= jumpTimeMax)
         {
             jumping = false;
             jumpTime = 0;

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ public class PlayerSpecialAction : MonoBehaviour
     private float highJumpPower = 30f;   //ハイジャンプのパワー
 
     private bool quickJump = false;      //クイックジャンプする判定
-    private float quickJumpPower = 21f;
+    private float quickJumpPower = 32f;  //クイックジャンプのパワー
     public bool quickJumpUsed = false;   //クイックジャンプを使用したか判定
 
     public bool meteorDrop = false;      //メテオドロップする判定
@@ -46,7 +47,7 @@ public class PlayerSpecialAction : MonoBehaviour
         if (state.highJumpOn)
         {
             //チャージジャンプのチャージキー操作
-            ChargeJumpOperation();
+            HighJumpChargeOperation();
         }
 
         if (state.meteorDropOn)
@@ -67,7 +68,7 @@ public class PlayerSpecialAction : MonoBehaviour
         //ハイジャンプ実行
         if (highJump)
         {
-            HighJumpUse();
+            StartCoroutine(HighJumpUse());
 
             highJump = false;
         }
@@ -91,9 +92,9 @@ public class PlayerSpecialAction : MonoBehaviour
 
     }
 
-    private void ChargeJumpOperation()
+    private void HighJumpChargeOperation()
     {
-        if (jump.jumpCoolActive || state.isAir || (Input.GetKeyUp(state.keyBind.highJump) && highJumpChargeCounter <= 0.1f))
+        if (jump.jumpCoolActive || state.isAir || (Input.GetKeyUp(state.keyBind.playerJump) && highJumpChargeCounter <= 0.2f))
         {
             highJumpChargeCounter = 0f;
         }
@@ -101,15 +102,15 @@ public class PlayerSpecialAction : MonoBehaviour
         {
             if (highJumpChargeCounter >= highJumpChargeTime)
             {
-                jump.jumpCoolActive = true;
                 highJump = true;
-                highJumpChargeCounter = 0f;
             }
             else
             {
                 jump.jumping = true;
-                highJumpChargeCounter = 0f;
             }
+
+            jump.jumpCoolActive = true;
+            highJumpChargeCounter = 0f;
         }
         else if (state.isGrounded && Input.GetKey(state.keyBind.playerJump))
         {
@@ -149,9 +150,19 @@ public class PlayerSpecialAction : MonoBehaviour
         }
     }
 
-    public void HighJumpUse()
+    public IEnumerator HighJumpUse()
     {
-        RigidBody.AddForce(highJumpPower * Vector3.up, ForceMode.Impulse);
+        float power = highJumpPower;
+
+        for (int i = 0; i < 30; i++)
+        {
+            RigidBody.linearVelocity = new Vector3(0, 0, 0);
+
+            RigidBody.AddForce(power * Vector3.up, ForceMode.Impulse);
+            power --;
+
+            yield return null;
+        }
     }
 
     private void MeteorDropUse()
