@@ -6,11 +6,14 @@ public class BrickWallBuilder : MonoBehaviour
     public GameObject brickPrefab;
 
     [Header("塔の構造")]
-    public int bricksPerLayer = 60;        // 1段のレンガ数（戸数）
-    public int heightLayers = 60;          // 縦の段数
-    public float radius = 10f;             // 半径
-    public float verticalSpacing = 0.39f;  // 上下の間隔
-    public float baseHeight = 0f;         // 一番下のレンガの高さ（Y座標）
+    public int bricksPerLayer = 122;         // 1段のレンガ数（戸数）
+    public int heightLayers = 120;           // 縦の段数
+    public float radius = 20f;               // 半径
+    public float verticalSpacing = 0.39f;    // 上下の間隔
+    public float totalAngle = 360f;          // 囲む角度（例：360で円、180で半円）
+
+    [Header("塔の中心位置（レンガの中心基準）")]
+    public Vector3 baseCenterPosition = new Vector3(0f, -20f, 0f); // 塔の一番下段の中心位置
 
     void Start()
     {
@@ -25,26 +28,28 @@ public class BrickWallBuilder : MonoBehaviour
 
     void BuildWall()
     {
-        float angleStep = 360f / bricksPerLayer;
+        float angleStep = totalAngle / bricksPerLayer;
 
         for (int y = 0; y < heightLayers; y++)
         {
-            float currentHeight = baseHeight + y * verticalSpacing;
+            float currentHeight = baseCenterPosition.y + y * verticalSpacing;
 
-            // 偶数段なら角度を半分ずらしてレンガ積みにする
+            // 偶数段は半分ずらしてレンガ積みに
             float angleOffset = (y % 2 == 1) ? angleStep / 2f : 0f;
 
             for (int i = 0; i < bricksPerLayer; i++)
             {
-                float angle = (i * angleStep + angleOffset) * Mathf.Deg2Rad;
+                float angleDeg = -totalAngle / 2f + i * angleStep + angleOffset;
+                float angleRad = angleDeg * Mathf.Deg2Rad;
 
+                // 塔の中心位置からオフセットして配置
                 Vector3 position = new Vector3(
-                    Mathf.Cos(angle) * radius,
+                    baseCenterPosition.x + Mathf.Cos(angleRad) * radius,
                     currentHeight,
-                    Mathf.Sin(angle) * radius
+                    baseCenterPosition.z + Mathf.Sin(angleRad) * radius
                 );
 
-                Quaternion rotation = Quaternion.Euler(0, -Mathf.Rad2Deg * angle, 0);
+                Quaternion rotation = Quaternion.Euler(0, -angleDeg, 0);
 
                 Instantiate(brickPrefab, position, rotation, transform);
             }
