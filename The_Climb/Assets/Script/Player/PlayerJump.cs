@@ -115,7 +115,6 @@ public class PlayerJump : MonoBehaviour
 
     public void Jump(float jumpPower)
     {
-        Debug.Log("jannpu-");
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
 
         // ジャンプの速度をアニメーションカーブから取得
