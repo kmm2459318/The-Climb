@@ -1,31 +1,27 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 using Unity.PlasticSCM.Editor.WebApi;
 using static UnityEngine.GraphicsBuffer;
 
 public class Boss_20_Controller : MonoBehaviour, IWallHitTable
 {
-    public Boss_20_StatusObjectScript status;   //Assetƒtƒ@ƒCƒ‹
-    public GameObject Bullet_Prefab;            //’e‚ÌPrehab
-    public Transform Bullet_Position;@@@@@//’e‚Ì”­ËˆÊ’u
+    public Boss_20_StatusObjectScript status;   //Assetãƒ•ã‚¡ã‚¤ãƒ«
+    public GameObject Bullet_Prefab;            //å¼¾ã®Prehab
+    public Transform Bullet_Position;ã€€ã€€ã€€ã€€ã€€//å¼¾ã®ç™ºå°„ä½ç½®
 
-    private int Boss_Move_Direction;@@@@@//“G‚Ì“®‚­•ûŒü
-    private float Bullet_Timer;@@@@@@@@ //’e‚ğ”­Ë‚·‚é‚Ü‚Å‚ÌŠÔ
-    private float rest_Timer;@@@@@@@@@ //‹xŒeŠÔ
-    private float boss_Speed;@@@@@@@@@ //ƒ{ƒX‚Ì‘¬‚³
-    private bool isResting = false;@@@@@@//ƒ{ƒX‚Ì“®‚­‚©‚Ç‚¤‚©‚Ì”»’è
+    private int Boss_Move_Direction;ã€€ã€€ã€€ã€€ã€€//æ•µã®å‹•ãæ–¹å‘
+    private float Bullet_Timer;ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ //å¼¾ã‚’ç™ºå°„ã™ã‚‹ã¾ã§ã®æ™‚é–“
+    private float rest_Timer;ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ //ä¼‘æ†©æ™‚é–“
+    private float boss_Speed;ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ //ãƒœã‚¹ã®é€Ÿã•
+    private bool isResting = false;ã€€ã€€ã€€ã€€ã€€ã€€//ãƒœã‚¹ã®å‹•ãã‹ã©ã†ã‹ã®åˆ¤å®š
     private Rigidbody rb;
-    private Transform targetTransform;
+    private Transform playerTransformTransform;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         Initialize();
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            targetTransform = player.transform;
-        }
+        
     }
 
     void Update()
@@ -38,7 +34,7 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         Move();
     }
 
-    //ƒ{ƒX‚Ì‰Šúó‘Ô‚Ìİ’è
+    //ãƒœã‚¹ã®åˆæœŸçŠ¶æ…‹ã®è¨­å®š
     void Initialize()
     {
         Bullet_Timer = status.Attack;
@@ -47,7 +43,7 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         boss_Speed = status.Speed;
     }
 
-    //ƒ{ƒX‚Ì“®‚«
+    //ãƒœã‚¹ã®å‹•ã
     void Move()
     {
         if (!isResting)
@@ -64,10 +60,10 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         }
     }
 
-    //ƒ{ƒX‚Ì‹xŒe
+    //ãƒœã‚¹ã®ä¼‘æ†©
     IEnumerator RestAndResume()
     {
-        Debug.Log("Œ¸‘¬ŠJn");
+        Debug.Log("æ¸›é€Ÿé–‹å§‹");
         float decelerationRate = 2f;
 
         while (boss_Speed > 0f)
@@ -77,18 +73,18 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         }
 
         boss_Speed = 0f;
-        Debug.Log("’â~Š®—¹");
+        Debug.Log("åœæ­¢å®Œäº†");
         yield return new WaitForSeconds(3f);
-        Debug.Log("‹xŒeI—¹");
+        Debug.Log("ä¼‘æ†©çµ‚äº†");
         boss_Speed = status.Speed;
         rest_Timer = status.Rest;
         isResting = false;
     }
 
-    //•Ç‚É‚ ‚½‚Á‚½‚Ì“®‚«
+    //å£ã«ã‚ãŸã£ãŸæ™‚ã®å‹•ã
     public void OnHitWall()
     {
-        Debug.Log("“–‚½‚è‚Ü‚µ‚½");
+        Debug.Log("å½“ãŸã‚Šã¾ã—ãŸ");
         if (Boss_Move_Direction != 0 && Boss_Move_Direction == status.LEFT)
         {
             Boss_Move_Direction = status.RIGHT;
@@ -99,7 +95,7 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         }
     }
 
-    //’e‚Ì”­Ëƒ^ƒCƒ~ƒ“ƒO
+    //å¼¾ã®ç™ºå°„ã‚¿ã‚¤ãƒŸãƒ³ã‚°
     void HandleShooting()
     {
         Bullet_Timer -= Time.deltaTime;
@@ -110,24 +106,28 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         }
     }
 
-    //”­Ë@@@@@@@@@@
+    //ç™ºå°„ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€
     void Bullet()
     {
         if (Bullet_Prefab != null && Bullet_Position != null)
         {
             GameObject bullet = Instantiate(Bullet_Prefab, Bullet_Position.position, Bullet_Position.rotation);
-            BossBullet bulletScript = bullet.GetComponent<BossBullet>();
 
-            // ‚±‚±‚Å null ƒ`ƒFƒbƒN
-            if (bulletScript != null)
+            if (bullet.TryGetComponent(out BossBullet bulletScript))
             {
-                Debug.Log("BossBullet ƒXƒNƒŠƒvƒg‚ªŒ©‚Â‚©‚è‚Ü‚µ‚½I");
-                bulletScript.target = targetTransform;
+                Debug.Log("BossBullet ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã—ãŸï¼");
+                StartCoroutine(DelayedParticleAdjust(bulletScript));
             }
             else
             {
-                Debug.LogError("BossBullet ƒXƒNƒŠƒvƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñIibulletScript ‚ª nullj");
+                Debug.LogWarning("BossBullet ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ");
             }
         }
+    }
+
+    IEnumerator DelayedParticleAdjust(BossBullet bulletScript)
+    {
+        yield return new WaitForSeconds(0.05f);  // 1ãƒ•ãƒ¬ãƒ¼ãƒ å¾…æ©Ÿ
+        bulletScript.ForceUpdateParticles();
     }
 }
