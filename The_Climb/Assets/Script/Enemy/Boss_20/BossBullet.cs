@@ -7,30 +7,25 @@ public class BossBullet : MonoBehaviour
 
     public float threshold = 100f;   // 加速度の最大値制限
     public float intensity = 1f;     // 加速の強さ
-    private Transform playerTransform;
+    public Transform playerTransform;
 
 
     void Awake()
     {
         ps = GetComponent<ParticleSystem>();
-        m_Particles = new ParticleSystem.Particle[ps.main.maxParticles];
+      
     }
-    private void Start()
-    {
-        // プレイヤーのTransformを取得
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            playerTransform = player.transform;
-        }
-        else
-        {
-            Debug.LogError("Playerが見つかりません。タグが正しいか確認してください。");
-        }
-    }
+  
     void Update()
     {
-        ForceUpdateParticles();
+        if (ps.isPlaying) // パーティクルが再生中のときだけ追尾処理
+        {
+            ForceUpdateParticles();
+        }
+    }
+    public void Play()
+    {
+        ps.Play(); // 攻撃タイミングで再生
     }
 
     public void ForceUpdateParticles()
@@ -40,7 +35,7 @@ public class BossBullet : MonoBehaviour
             Debug.Log("ターゲットが見つかりません");
             return;
         }
-
+         m_Particles = new ParticleSystem.Particle[ps.main.maxParticles];
         int numParticlesAlive = ps.GetParticles(m_Particles);
 
         for (int i = 0; i < numParticlesAlive; i++)

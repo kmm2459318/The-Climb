@@ -15,8 +15,7 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
     private float boss_Speed;　　　　　　　　　 //ボスの速さ
     private bool isResting = false;　　　　　　//ボスの動くかどうかの判定
     private Rigidbody rb;
-    private Transform playerTransformTransform;
-
+    
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -115,7 +114,7 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
 
             if (bullet.TryGetComponent(out BossBullet bulletScript))
             {
-                Debug.Log("BossBullet スクリプトが見つかりました！");
+                bulletScript.Play(); // パーティクル再生命令を出す
                 StartCoroutine(DelayedParticleAdjust(bulletScript));
             }
             else
