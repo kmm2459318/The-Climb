@@ -4,13 +4,14 @@ public class BossBullet : MonoBehaviour
 {
     public float speed = 5f;
     public float lifeTime = 5f;
+    public GameObject player;
 
-    public GameObject player;               // 発射時に代入されるプレイヤー（Inspectorではなくスクリプトから）
     private Vector3 targetPosition;
     private bool initialized = false;
 
     void Start()
     {
+        // シーン内の "Player" タグが付いたオブジェクトを探す
         GameObject player = GameObject.FindWithTag("Player");
 
         if (player == null)
