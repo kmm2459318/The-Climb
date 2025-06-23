@@ -4,14 +4,14 @@ using UnityEngine;
 public class HevvyStats : ScriptableObject
 {
     [Header("ジャンプ設定")]
-    public float jumpForce = 10f;               // 縦方向ジャンプ力
-    public float horizontalJumpForce = 2f;      // 横方向ジャンプ力
-    public float jumpInterval = 3f;             // ジャンプ間隔
+    public float JumpForce = 10f;               // 縦方向ジャンプ力
+    public float HorizontalJumpForce = 2f;      // 横方向ジャンプ力
+    public float JumpInterval = 3f;             // ジャンプ間隔
     [Header("チャージジャンプ設定")]
-    public int jumpsBeforeCharge = 3;
-    public float chargeDuration = 1.5f;
-    public float chargeJumpForce = 20f;
-    public float slowFallGravityScale = 0.2f;
+    public int JumpsBeforeCharge = 3;
+    public float ChargeDuration = 1.5f;
+    public float ChargeJumpForce = 20f;
+    public float SlowFallGravityScale = 0.2f;
     [Header("ジャンプ方向制限設定")]
     public float LeftBoundary;
     public float RightBoundary;
