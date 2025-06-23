@@ -1,6 +1,14 @@
 //  タグの名前一覧
-public static class TagName
+public readonly struct TagName
 {
-    public const string Wall = "Wall";
-    public const string Ground = "Ground";
+    public static readonly TagName Wall = new TagName("Wall");    //  壁のタグの名前
+    public static readonly TagName Ground = new TagName("Ground");    //  地面のタグの名前
+    public string Value { get; }
+
+    //  Valueにvalueをセットするコンストラクタ
+    private TagName(string value) => Value = value;
+    //  ToStringでValueを返すようにオーバーライド
+    public override string ToString() => Value;
+    //  TagName型ではなくString型を返すように変更
+    public static implicit operator string(TagName Tag) => Tag.Value;
 }
