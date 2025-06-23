@@ -42,10 +42,12 @@ public class PlayerJump : MonoBehaviour
         {
             jumpCoolCounter += Time.deltaTime;
             state.isGrounded = false;
+            Debug.Log(jumpCoolCounter);
 
             if (jumpCoolCounter > jumpCoolTime)
             {
                 jumpCoolActive = false;
+                jumpCoolCounter = 0f;
             }
         }
     }
@@ -56,6 +58,8 @@ public class PlayerJump : MonoBehaviour
         if (jumping)
         {
             jumpTime += Time.fixedDeltaTime;
+
+            special.headingAttack.SetActive(true);
 
             if (landingJumpNumber >= 2)
             {
@@ -83,9 +87,9 @@ public class PlayerJump : MonoBehaviour
             {
                 jumping = true;
                 jumpCoolActive = true;
+                jumpTime = 0f;
                 jumpTimeMax = jumpTimeMaxSaving;
                 Debug.Log(RigidBody.linearVelocity.y);
-                special.headingAttack.SetActive(true);
                 Debug.Log("trueŒã"+special.headingAttack);
 
                 //’…’nƒWƒƒƒ“ƒv
@@ -129,7 +133,6 @@ public class PlayerJump : MonoBehaviour
         if (jumpTime >= jumpTimeMax)
         {
             jumping = false;
-            jumpTime = 0;
         }
 
         RigidBody.AddForce(power * Vector3.up, ForceMode.Impulse);

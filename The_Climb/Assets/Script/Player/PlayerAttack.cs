@@ -6,6 +6,9 @@ public class PlayerAttack : MonoBehaviour
     PlayerJump jump;
     PlayerSpecialAction special;
 
+    private float headingSafeTime = 0.1f;
+    private float headingSafeCounter = 0f;
+
     void Start()
     {
         state = gameObject.transform.parent.gameObject.GetComponent<PlayerState>();
@@ -15,9 +18,24 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
+        if (jump.jumpCoolActive)
+        {
+            headingSafeCounter = headingSafeTime;  //ジャンプ開始時にリセット
+        }
+        else if (headingSafeCounter > 0f)
+        {
+            headingSafeCounter -= Time.deltaTime;
+        }
+
         if (this.gameObject.name == "HeadingAttack")
         {
-            HeadingFalse();
+            Debug.Log(state.RigidBody.linearVelocity.y);
+            if (headingSafeCounter <= 0f &&
+                state.RigidBody.linearVelocity.y < 0.5f)
+            { 
+                HeadingFalse();
+                headingSafeCounter = headingSafeTime;
+            }
         }
         else if (this.gameObject.name == "MeteorDropAttack")
         {
@@ -27,11 +45,8 @@ public class PlayerAttack : MonoBehaviour
 
     private void HeadingFalse()
     {
-        if (state.RigidBody.linearVelocity.y < 1f && !jump.jumpCoolActive)
-        {
-            Debug.Log("false"+special.headingAttack);
-            this.gameObject.SetActive(false);
-        }
+        this.gameObject.SetActive(false);
+        Debug.Log("false後" + special.headingAttack);
     }
 
     private void MeteorDropFalse()
@@ -47,6 +62,9 @@ public class PlayerAttack : MonoBehaviour
         if (other.gameObject.CompareTag("Untagged") && this.gameObject.name == "HeadingAttack")
         {
             Debug.Log("headingAttack");
+            state.RigidBody.linearVelocity = new Vector3(state.RigidBody.linearVelocity.x, 0, state.RigidBody.linearVelocity.z);
+            special.highJumpStop = true;
+            jump.jumping = false;
         }
 
         if (other.gameObject.CompareTag("Untagged") && this.gameObject.name == "MeteorDropAttack")
