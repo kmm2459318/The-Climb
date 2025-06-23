@@ -84,6 +84,9 @@ public class PlayerJump : MonoBehaviour
                 jumping = true;
                 jumpCoolActive = true;
                 jumpTimeMax = jumpTimeMaxSaving;
+                Debug.Log(RigidBody.linearVelocity.y);
+                special.headingAttack.SetActive(true);
+                Debug.Log("trueŒã"+special.headingAttack);
 
                 //’…’nƒWƒƒƒ“ƒv
                 if (state.landingJumpOn)
@@ -96,8 +99,10 @@ public class PlayerJump : MonoBehaviour
             {
                 if (special.meteorDropCounter >= special.meteorDropTime)
                 {
+                    jumpCoolActive = true;
                     special.meteorHighJump = true;
                     landingJumpNumber++;
+                    special.headingAttack.SetActive(true);
                 }
                 special.meteorHighJumpOK = false;
                 state.LandingJumpReset();

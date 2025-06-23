@@ -9,13 +9,16 @@ public class PlayerSpecialAction : MonoBehaviour
     PlayerMove move;
     PlayerJump jump;
 
+    public GameObject headingAttack;
+    public GameObject meteorDropAttack;
+
     public float highJumpChargeTime = 0.8f;  //ハイジャンプのチャージ時間
     public float highJumpChargeCounter = 0f;  //ハイジャンプのチャージカウンター
     private bool highJump = false;       //ハイジャンプする判定
     private float highJumpPower = 30f;   //ハイジャンプのパワー
 
     private bool quickJump = false;      //クイックジャンプする判定
-    private float quickJumpPower = 32f;  //クイックジャンプのパワー
+    private float quickJumpPower = 30f;  //クイックジャンプのパワー
     public bool quickJumpUsed = false;   //クイックジャンプを使用したか判定
 
     public bool meteorDrop = false;      //メテオドロップする判定
@@ -35,6 +38,9 @@ public class PlayerSpecialAction : MonoBehaviour
         state = GetComponent<PlayerState>();
         move = gameObject.GetComponent<PlayerMove>();
         jump = gameObject.GetComponent<PlayerJump>();
+
+        headingAttack = transform.Find("HeadingAttack").gameObject;
+        meteorDropAttack = transform.Find("MeteorDropAttack").gameObject;
 
         float meteorDropDirection = meteorDropAngle * Mathf.Deg2Rad;
 
@@ -103,6 +109,9 @@ public class PlayerSpecialAction : MonoBehaviour
             if (highJumpChargeCounter >= highJumpChargeTime)
             {
                 highJump = true;
+                Debug.Log(RigidBody.linearVelocity.y);
+                headingAttack.SetActive(true);
+                Debug.Log("true後" + headingAttack);
             }
             else
             {
@@ -128,6 +137,7 @@ public class PlayerSpecialAction : MonoBehaviour
             meteorDropUsed = true;
             meteorHighJumpOK = true;
             jump.landingJumpNumber = 0;
+            meteorDropAttack.SetActive(true);
 
             if (state.playerDirectionRight)
             {
