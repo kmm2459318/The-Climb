@@ -10,6 +10,7 @@ public class WallHitNotifier : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(this.gameObject.name);
         if(collision.gameObject.CompareTag(TagName.Wall))
         {
             if(WallHitTable != null)
