@@ -2,74 +2,37 @@ using UnityEngine;
 
 public class BossBullet : MonoBehaviour
 {
-    private ParticleSystem ps;
-    private ParticleSystem.Particle[] m_Particles;
+    public float speed = 5f;
+    public float lifeTime = 5f;
 
-    public float threshold = 100f;   // 加速度の最大値制限
-    public float intensity = 1f;     // 加速の強さ
-    public Transform playerTransform;
+    public GameObject player;               // 発射時に代入されるプレイヤー（Inspectorではなくスクリプトから）
+    private Vector3 targetPosition;
+    private bool initialized = false;
 
-
-    void Awake()
+    void Start()
     {
-        ps = GetComponent<ParticleSystem>();
-      
-    }
-  
-    void Update()
-    {
-        if (ps.isPlaying) // パーティクルが再生中のときだけ追尾処理
+        GameObject player = GameObject.FindWithTag("Player");
+
+        if (player == null)
         {
-            ForceUpdateParticles();
-        }
-    }
-    public void Play()
-    {
-        ps.Play(); // 攻撃タイミングで再生
-    }
-
-    public void ForceUpdateParticles()
-    {
-        if (playerTransform == null)
-        {
-            Debug.Log("ターゲットが見つかりません");
+            Debug.LogWarning("Playerタグのオブジェクトが見つかりません！");
             return;
         }
-         m_Particles = new ParticleSystem.Particle[ps.main.maxParticles];
-        int numParticlesAlive = ps.GetParticles(m_Particles);
 
-        for (int i = 0; i < numParticlesAlive; i++)
-        {
+        // プレイヤーの現在の位置を取得
+        targetPosition = player.transform.position;
 
-            
-            // ワールド座標・ワールド速度に変換
-            Vector3 velocity = ps.transform.TransformDirection(m_Particles[i].velocity);
-            Vector3 position = ps.transform.TransformPoint(m_Particles[i].position);
+        initialized = true;
 
-            float period = m_Particles[i].remainingLifetime * 0.9f;
+        // 一定時間後に自動で破棄
+        Destroy(gameObject, lifeTime);
+    }
 
-            // 追尾すべき方向
-            Vector3 diff = playerTransform.position - position;
+    void Update()
+    {
+        if (!initialized) return;
 
-            // 加速度を計算（等加速度運動の式）
-            Vector3 accel = (diff - velocity * period) * 2f / (period * period);
-         
-            // 加速度が大きすぎる場合、最大値で制限
-            if (accel.magnitude > threshold)
-            {
-                accel = accel.normalized * threshold;
-              
-            }
-
-            // 加速度に基づいて速度を更新
-            velocity += accel * Time.deltaTime * intensity;
-
-            // ローカル座標系に戻して保存
-            m_Particles[i].velocity = ps.transform.InverseTransformDirection(velocity);
-            Debug.Log("生きているパーティクル数: " + numParticlesAlive);
-        }
-
-        // 変更を反映
-        ps.SetParticles(m_Particles, numParticlesAlive);
+        Vector3 direction = (targetPosition - transform.position).normalized;
+        transform.position += direction * speed * Time.deltaTime;
     }
 }

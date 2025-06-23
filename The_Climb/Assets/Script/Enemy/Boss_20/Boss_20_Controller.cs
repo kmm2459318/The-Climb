@@ -15,12 +15,12 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
     private float boss_Speed;　　　　　　　　　 //ボスの速さ
     private bool isResting = false;　　　　　　//ボスの動くかどうかの判定
     private Rigidbody rb;
-    
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         Initialize();
-        
+
     }
 
     void Update()
@@ -108,25 +108,11 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
     //発射　　　　　　　　　　
     void Bullet()
     {
-        if (Bullet_Prefab != null && Bullet_Position != null)
+        GameObject bullet = Instantiate(Bullet_Prefab, Bullet_Position.position, Bullet_Position.rotation);
+        BossBullet bulletScript = bullet.GetComponent<BossBullet>();
+        if (bulletScript != null)
         {
-            GameObject bullet = Instantiate(Bullet_Prefab, Bullet_Position.position, Bullet_Position.rotation);
-
-            if (bullet.TryGetComponent(out BossBullet bulletScript))
-            {
-                bulletScript.Play(); // パーティクル再生命令を出す
-                StartCoroutine(DelayedParticleAdjust(bulletScript));
-            }
-            else
-            {
-                Debug.LogWarning("BossBullet スクリプトが見つかりませんでした");
-            }
+            bulletScript.player = GameObject.FindWithTag("Player"); // 正しく割り当てる
         }
-    }
-
-    IEnumerator DelayedParticleAdjust(BossBullet bulletScript)
-    {
-        yield return new WaitForSeconds(0.05f);  // 1フレーム待機
-        bulletScript.ForceUpdateParticles();
     }
 }
