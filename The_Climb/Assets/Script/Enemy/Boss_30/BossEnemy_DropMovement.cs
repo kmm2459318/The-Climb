@@ -20,12 +20,12 @@ public class BossEnemy_DropMovement : MonoBehaviour
 
     private State currentState;
 
-    private int rushCounter = 0;
-    private int meteorCounter = 0;
-    private bool firstHoverDone = false;
-    private int aimMoveCounter = 0;
-    private bool aimingToRight = true;
-    private bool movingToB = true;
+    private int RushCounter = 0;
+    private int MeteorCounter = 0;
+    private bool FirstHoverDone = false;
+    private int AimMoveCounter = 0;
+    private bool AimingToRight = true;
+    private bool MovingToB = true;
 
     private bool hasDropped = false;
 
@@ -33,7 +33,7 @@ public class BossEnemy_DropMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         currentState = State.RushMove;
-        transform.position = new Vector3(stats.pointA_X, stats.groundY, 0f);
+        transform.position = new Vector3(stats.PointA_X, stats.GroundY, 0f);
     }
 
     private void Update()
@@ -68,30 +68,30 @@ public class BossEnemy_DropMovement : MonoBehaviour
 
     void PerformRushMove()
     {
-        float targetX = movingToB ? stats.pointB_X : stats.pointA_X;
+        float targetX = MovingToB ? stats.PointB_X : stats.PointA_X;
         float direction = Mathf.Sign(targetX - transform.position.x);
-        rb.linearVelocity = new Vector3(direction * stats.rushSpeed, 0f, 0f);
+        rb.linearVelocity = new Vector3(direction * stats.RushSpeed, 0f, 0f);
 
         if (Mathf.Abs(transform.position.x - targetX) < 0.2f)
         {
-            rushCounter++;
+            RushCounter++;
             rb.linearVelocity = Vector3.zero;
 
-            if (rushCounter >= stats.diagonalRushCount)
+            if (RushCounter >= stats.DiagonalRushCount)
             {
-                if (!firstHoverDone)
+                if (!FirstHoverDone)
                 {
                     currentState = State.FirstHover;
                 }
                 else
                 {
-                    meteorCounter = 0;
+                    MeteorCounter = 0;
                     currentState = State.Rising;
                 }
             }
             else
             {
-                movingToB = !movingToB;
+                MovingToB = !MovingToB;
             }
         }
     }
@@ -99,34 +99,34 @@ public class BossEnemy_DropMovement : MonoBehaviour
     IEnumerator FirstHoverCoroutine()
     {
         currentState = State.Waiting;
-        firstHoverDone = true;
+        FirstHoverDone = true;
 
-        transform.position = new Vector3(transform.position.x, stats.hoverHeight, 0f);
-        yield return new WaitForSeconds(stats.waitBeforeMeteor);
+        transform.position = new Vector3(transform.position.x, stats.HoverHeight, 0f);
+        yield return new WaitForSeconds(stats.WaitBeforeMeteor);
 
-        aimMoveCounter = 0;
-        aimingToRight = true;
+        AimMoveCounter = 0;
+        AimingToRight = true;
         currentState = State.Aiming;
     }
 
     void PerformAiming()
     {
-        float targetX = aimingToRight ? stats.aimMoveRightX : stats.aimMoveLeftX;
+        float targetX = AimingToRight ? stats.AimMoveRightX : stats.AimMoveLeftX;
         float direction = Mathf.Sign(targetX - transform.position.x);
-        rb.linearVelocity = new Vector3(direction * stats.aimMoveSpeed, 0f, 0f);
+        rb.linearVelocity = new Vector3(direction * stats.AimMoveSpeed, 0f, 0f);
 
         if (Mathf.Abs(transform.position.x - targetX) < 0.2f)
         {
-            aimMoveCounter++;
+            AimMoveCounter++;
             rb.linearVelocity = Vector3.zero;
 
-            if (aimMoveCounter >= stats.aimMoveCount)
+            if (AimMoveCounter >= stats.AimMoveCount)
             {
                 StartCoroutine(WaitAndDrop());
             }
             else
             {
-                aimingToRight = !aimingToRight;
+                AimingToRight = !AimingToRight;
             }
         }
     }
@@ -134,7 +134,7 @@ public class BossEnemy_DropMovement : MonoBehaviour
     IEnumerator WaitAndDrop()
     {
         currentState = State.Waiting;
-        yield return new WaitForSeconds(stats.waitBeforeMeteor);
+        yield return new WaitForSeconds(stats.WaitBeforeMeteor);
         currentState = State.MeteorDrop;
         hasDropped = false; // Drop前にリセット
     }
@@ -145,14 +145,14 @@ public class BossEnemy_DropMovement : MonoBehaviour
 
         hasDropped = true;
         Vector3 dir = (player.position - transform.position).normalized;
-        rb.linearVelocity = dir * stats.meteorDropSpeed;
+        rb.linearVelocity = dir * stats.MeteorDropSpeed;
     }
 
     void PerformRising()
     {
-        rb.linearVelocity = new Vector3(0f, stats.riseSpeed, 0f);
+        rb.linearVelocity = new Vector3(0f, stats.RiseSpeed, 0f);
             
-        if (transform.position.y >= stats.hoverHeight)
+        if (transform.position.y >= stats.HoverHeight)
         {
             rb.linearVelocity = Vector3.zero;
             currentState = State.MeteorDrop;
@@ -166,11 +166,11 @@ public class BossEnemy_DropMovement : MonoBehaviour
         {
             rb.linearVelocity = Vector3.zero;
             hasDropped = false;
-            meteorCounter++;
+            MeteorCounter++;
 
-            if (meteorCounter >= stats.meteorDropCount)
+            if (MeteorCounter >= stats.meteorDropCount)
             {
-                rushCounter = 0;
+                RushCounter = 0;
                 currentState = State.RushMove;
             }
             else
@@ -183,7 +183,7 @@ public class BossEnemy_DropMovement : MonoBehaviour
     IEnumerator WaitAndRise()
     {
         currentState = State.Waiting;
-        yield return new WaitForSeconds(stats.waitBeforeMeteor);
+        yield return new WaitForSeconds(stats.WaitBeforeMeteor);
         currentState = State.Rising;
     }
 }
