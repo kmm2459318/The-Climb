@@ -13,8 +13,8 @@ public class PlayerMove : MonoBehaviour
     public bool meteorDropOn = false;    //メテオドロップ叶か
 
     private float groundMoveForce = 0.35f;     //プレイヤーの地上移動速度
-    public float groundMaxSpeed = 6.459797f;
-    private float moveInput = 0f;        //プレイヤーの移動方向
+    public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
+    public float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 60f;    //空中での移動速度
     private float maxAirSpeed = 10f;     //空中での速度制限
 
@@ -168,6 +168,14 @@ public class PlayerMove : MonoBehaviour
         RigidBody.AddForce(force, ForceMode.Acceleration);
 
         // 最大空中速度を制限
+        if (!special.quickJumpUsed)
+        {
+            maxAirSpeed = 10f;
+        }
+        else 
+        {
+            maxAirSpeed = 15f;
+        }
         Vector3 horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
         if (horizontalVelocity.magnitude > maxAirSpeed)
         {

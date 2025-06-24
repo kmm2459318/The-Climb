@@ -29,7 +29,7 @@ public class PlayerAttack : MonoBehaviour
 
         if (this.gameObject.name == "HeadingAttack")
         {
-            Debug.Log(state.RigidBody.linearVelocity.y);
+            //Debug.Log(state.RigidBody.linearVelocity.y);
             if (headingSafeCounter <= 0f &&
                 state.RigidBody.linearVelocity.y < 0.5f)
             { 
@@ -46,7 +46,7 @@ public class PlayerAttack : MonoBehaviour
     private void HeadingFalse()
     {
         this.gameObject.SetActive(false);
-        Debug.Log("falseŒã" + special.headingAttack);
+        //Debug.Log("falseŒã" + special.headingAttack);
     }
 
     private void MeteorDropFalse()

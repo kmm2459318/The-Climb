@@ -48,7 +48,8 @@ public class PlayerJump : MonoBehaviour
         {
             jumpCoolCounter += Time.deltaTime;
             state.isGrounded = false;
-            Debug.Log(jumpCoolCounter);
+            state.isJumpMoveOK = false;
+            //Debug.Log(jumpCoolCounter);
 
             if (jumpCoolCounter > jumpCoolTime)
             {
@@ -116,8 +117,8 @@ public class PlayerJump : MonoBehaviour
                 jumpCoolActive = true;
                 jumpTime = 0f;
                 jumpTimeMax = jumpTimeMaxSaving;
-                Debug.Log(RigidBody.linearVelocity.y);
-                Debug.Log("trueŒã"+special.headingAttack);
+                //Debug.Log(RigidBody.linearVelocity.y);
+                //Debug.Log("trueŒã"+special.headingAttack);
 
                 //’…’nƒWƒƒƒ“ƒv
                 if (state.landingJumpOn)
