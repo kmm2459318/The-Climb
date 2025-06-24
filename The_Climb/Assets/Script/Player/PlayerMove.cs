@@ -14,7 +14,7 @@ public class PlayerMove : MonoBehaviour
 
     private float groundMoveForce = 0.35f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
-    public float moveInput = 0f;        //プレイヤーの移動方向
+    private float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 60f;    //空中での移動速度
     private float maxAirSpeed = 10f;     //空中での速度制限
 
