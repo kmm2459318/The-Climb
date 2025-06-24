@@ -117,7 +117,7 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         Quaternion rotation = Bullet_Position.rotation;
 
         // -1.5, -0.5, +0.5, +1.5 にオフセット（左右2個ずつ均等に）
-        float[] offsets = new float[] { -1.5f, -0.5f, 0.5f, 1.5f };
+        float[] offsets = new float[] { -1.5f, 1.5f };
 
         foreach (float offset in offsets)
         {
@@ -127,7 +127,7 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
             BossBullet bulletScript = bullet.GetComponent<BossBullet>();
             if (bulletScript != null)
             {
-                bulletScript.player = player; // 現在のプレイヤーを設定
+                bulletScript.status = this.status;
             }
         }
 
