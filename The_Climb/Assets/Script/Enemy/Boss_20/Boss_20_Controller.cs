@@ -108,11 +108,29 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
     //発射　　　　　　　　　　
     void Bullet()
     {
-        GameObject bullet = Instantiate(Bullet_Prefab, Bullet_Position.position, Bullet_Position.rotation);
-        BossBullet bulletScript = bullet.GetComponent<BossBullet>();
-        if (bulletScript != null)
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player == null) return;
+
+        float spacing = 0.5f; // 横の間隔（好みに応じて調整）
+
+        Vector3 basePosition = Bullet_Position.position;
+        Quaternion rotation = Bullet_Position.rotation;
+
+        // -1.5, -0.5, +0.5, +1.5 にオフセット（左右2個ずつ均等に）
+        float[] offsets = new float[] { -1.5f, 1.5f };
+
+        foreach (float offset in offsets)
         {
-            bulletScript.player = GameObject.FindWithTag("Player"); // 正しく割り当てる
+            Vector3 spawnPos = basePosition + Bullet_Position.right * offset * spacing;
+            GameObject bullet = Instantiate(Bullet_Prefab, spawnPos, rotation);
+
+            BossBullet bulletScript = bullet.GetComponent<BossBullet>();
+            if (bulletScript != null)
+            {
+                bulletScript.status = this.status;
+            }
         }
+
     }
+
 }
