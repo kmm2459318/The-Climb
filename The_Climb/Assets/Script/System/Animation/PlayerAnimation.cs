@@ -5,9 +5,10 @@ public class PlayerAnimation : MonoBehaviour
     public Animator animator;
     private int spacePressCount = 0;
     private bool isJumping = false;
-    private Rigidbody rb;
-    PlayerMove PlayerMove;
-    PlayerState PlayerState;
+    private bool wasGrounded = true;
+
+    private PlayerMove PlayerMove;
+    private PlayerState PlayerState;
 
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
@@ -16,8 +17,8 @@ public class PlayerAnimation : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        PlayerMove = GameObject.Find("TentativePlayer").GetComponent<PlayerMove>();
-        PlayerState = GameObject.Find("TentativePlayer").GetComponent<PlayerState>();
+        PlayerMove = GameObject.Find("PlayerModel").GetComponent<PlayerMove>();
+        PlayerState = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
 
         if (animator == null)
             Debug.LogError("Animator が見つかりません。コンポーネントをアタッチしてください。");
@@ -25,39 +26,33 @@ public class PlayerAnimation : MonoBehaviour
 
     void Update()
     {
-        // ★ 地面チェック
-        if (IsGrounded())
-        {
-            if (isJumping)
-            {
-                Debug.Log("着地しました。次のジャンプが可能になります。");
-            }
-            isJumping = false;
-        }
+        bool isGrounded = IsGrounded();
 
-        // ★ ランアニメ（地上かつ移動中なら再生）
+        // 着地検出
+        if (isGrounded && !wasGrounded)
+        {
+            Debug.Log("着地しました。次のジャンプが可能になります。");
+            isJumping = false; // 再解禁
+        }
+        wasGrounded = isGrounded;
+
+        // ランアニメ
         bool isRunning = PlayerMove.State.isGrounded && Mathf.Abs(PlayerMove.MoveInput) > 0f;
         animator.SetBool("IsRunning", isRunning);
 
-
-        
-        // 体の向き反転処理
+        // 向き
         if (PlayerMove.MoveInput > 0f)
-        {
-            transform.rotation = Quaternion.Euler(0, 90, 0); // 右向き
-        }
+            transform.rotation = Quaternion.Euler(0, 90, 0);
         else if (PlayerMove.MoveInput < 0f)
-        {
-            transform.rotation = Quaternion.Euler(0, -90, 0); // 左向き
-        }
+            transform.rotation = Quaternion.Euler(0, -90, 0);
 
-        // ★ スペース入力（ジャンプアニメ：3パターン切替）
-        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
+        // ジャンプアニメ：空中ではロック
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isJumping)
         {
             spacePressCount++;
             int animStep = (spacePressCount - 1) % 3 + 1;
             Debug.Log("ジャンプ Step " + animStep);
-            isJumping = true;
+            isJumping = true; // ロックをかける
 
             switch (animStep)
             {
@@ -74,7 +69,6 @@ public class PlayerAnimation : MonoBehaviour
         }
     }
 
-    // ★ 3D用の地面判定
     private bool IsGrounded()
     {
         return Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);

@@ -9,13 +9,19 @@ public class PlayerSpecialAction : MonoBehaviour
     PlayerMove move;
     PlayerJump jump;
 
+    public GameObject headingAttack;
+    public GameObject meteorDropAttack;
+
     public float highJumpChargeTime = 0.8f;  //ハイジャンプのチャージ時間
     public float highJumpChargeCounter = 0f;  //ハイジャンプのチャージカウンター
     private bool highJump = false;       //ハイジャンプする判定
+
     private float highJumpPower = 30f;   //ハイジャンプのパワー
+    public bool highJumpStop = false;    //ハイジャンプをやめる判定
 
     private bool quickJump = false;      //クイックジャンプする判定
-    private float quickJumpPower = 32f;  //クイックジャンプのパワー
+    private float quickJumpPowerX = 10f;  //クイックジャンプの横のパワー
+    private float quickJumpPowerY = 5f;  //クイックジャンプの縦のパワー
     public bool quickJumpUsed = false;   //クイックジャンプを使用したか判定
 
     public bool meteorDrop = false;      //メテオドロップする判定
@@ -35,6 +41,9 @@ public class PlayerSpecialAction : MonoBehaviour
         state = GetComponent<PlayerState>();
         move = gameObject.GetComponent<PlayerMove>();
         jump = gameObject.GetComponent<PlayerJump>();
+
+        headingAttack = transform.Find("HeadingAttack").gameObject;
+        meteorDropAttack = transform.Find("MeteorDropAttack").gameObject;
 
         float meteorDropDirection = meteorDropAngle * Mathf.Deg2Rad;
 
@@ -68,7 +77,7 @@ public class PlayerSpecialAction : MonoBehaviour
         //ハイジャンプ実行
         if (highJump)
         {
-            StartCoroutine(HighJumpUse());
+            HighJumpUse();
 
             highJump = false;
         }
@@ -85,9 +94,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
         if (quickJump)
         {
-            jump.Jump(quickJumpPower);
-
-            quickJump = false;
+            QuickJumpUse();
         }
 
     }
@@ -103,6 +110,9 @@ public class PlayerSpecialAction : MonoBehaviour
             if (highJumpChargeCounter >= highJumpChargeTime)
             {
                 highJump = true;
+                //Debug.Log(RigidBody.linearVelocity.y);
+                headingAttack.SetActive(true);
+                //Debug.Log("true後" + headingAttack);
             }
             else
             {
@@ -128,6 +138,7 @@ public class PlayerSpecialAction : MonoBehaviour
             meteorDropUsed = true;
             meteorHighJumpOK = true;
             jump.landingJumpNumber = 0;
+            meteorDropAttack.SetActive(true);
 
             if (state.playerDirectionRight)
             {
@@ -148,21 +159,43 @@ public class PlayerSpecialAction : MonoBehaviour
             quickJump = true;
             quickJumpUsed = true;
         }
+        
+        //横移動入力中ならジャンプ力低下
+        if (move.MoveInput == 1f || move.MoveInput == -1f)
+        {
+            quickJumpPowerY = 10f;
+        }
+        else
+        {
+            quickJumpPowerY = 15f;
+        }
     }
 
-    public IEnumerator HighJumpUse()
+    public void HighJumpUse()
     {
-        float power = highJumpPower;
+        //float power = highJumpPower;
 
-        for (int i = 0; i < 30; i++)
-        {
-            RigidBody.linearVelocity = new Vector3(0, 0, 0);
+        //for (int i = 0; i < 30; i++)
+        //{
+            //RigidBody.linearVelocity = new Vector3(0, 0, 0);
 
-            RigidBody.AddForce(power * Vector3.up, ForceMode.Impulse);
-            power --;
+            RigidBody.AddForce(new Vector3(RigidBody.linearVelocity.x, highJumpPower, 0), ForceMode.Impulse);
+        jump.jumpCoolActive = true;
+            //power --;
 
-            yield return null;
-        }
+            //yield return null;
+
+            //if (i < 25)
+            //{
+
+            //}
+
+            //if (highJumpStop)
+            //{
+            //    i = 30;
+            //    highJumpStop = false;
+            //}
+        //}
     }
 
     private void MeteorDropUse()
@@ -185,6 +218,15 @@ public class PlayerSpecialAction : MonoBehaviour
             RigidBody.useGravity = true;
             meteorDrop = false;
         }
+    }
+
+    private void QuickJumpUse()
+    {
+        RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
+        Debug.Log(quickJumpPowerY);
+        RigidBody.AddForce(new Vector3(quickJumpPowerX * move.MoveInput, quickJumpPowerY, 0), ForceMode.Impulse) ;
+
+        quickJump = false;
     }
 
     private void MeteorHighJumpUse()
