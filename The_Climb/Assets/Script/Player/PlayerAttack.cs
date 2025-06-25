@@ -59,7 +59,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Untagged") && this.gameObject.name == "HeadingAttack")
+        if (other.gameObject.CompareTag("Ground") && this.gameObject.name == "HeadingAttack")
         {
             Debug.Log("headingAttack");
             state.RigidBody.linearVelocity = new Vector3(state.RigidBody.linearVelocity.x, 0, state.RigidBody.linearVelocity.z);
@@ -67,7 +67,7 @@ public class PlayerAttack : MonoBehaviour
             jump.jumping = false;
         }
 
-        if (other.gameObject.CompareTag("Untagged") && this.gameObject.name == "MeteorDropAttack")
+        if (other.gameObject.CompareTag("Ground") && this.gameObject.name == "MeteorDropAttack")
         {
             Debug.Log("Break");
         }
