@@ -17,8 +17,8 @@ public class PlayerAnimation : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        PlayerMove = GameObject.Find("TentativePlayer").GetComponent<PlayerMove>();
-        PlayerState = GameObject.Find("TentativePlayer").GetComponent<PlayerState>();
+        PlayerMove = GameObject.Find("PlayerModel").GetComponent<PlayerMove>();
+        PlayerState = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
 
         if (animator == null)
             Debug.LogError("Animator が見つかりません。コンポーネントをアタッチしてください。");
