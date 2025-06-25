@@ -48,10 +48,13 @@ public class PlayerJump : MonoBehaviour
         {
             jumpCoolCounter += Time.deltaTime;
             state.isGrounded = false;
+            state.isJumpMoveOK = false;
+            //Debug.Log(jumpCoolCounter);
 
             if (jumpCoolCounter > jumpCoolTime)
             {
                 jumpCoolActive = false;
+                jumpCoolCounter = 0f;
             }
         }
     }
@@ -64,6 +67,8 @@ public class PlayerJump : MonoBehaviour
         {
             jumpTime += Time.fixedDeltaTime;
             float JumpPower;
+
+            special.headingAttack.SetActive(true);
 
             if (landingJumpNumber >= 2)
             {
@@ -110,7 +115,10 @@ public class PlayerJump : MonoBehaviour
             {
                 jumping = true;
                 jumpCoolActive = true;
+                jumpTime = 0f;
                 jumpTimeMax = jumpTimeMaxSaving;
+                //Debug.Log(RigidBody.linearVelocity.y);
+                //Debug.Log("trueŒã"+special.headingAttack);
 
                 //’…’nƒWƒƒƒ“ƒv
                 if (state.landingJumpOn)
@@ -123,8 +131,10 @@ public class PlayerJump : MonoBehaviour
             {
                 if (special.meteorDropCounter >= special.meteorDropTime)
                 {
+                    jumpCoolActive = true;
                     special.meteorHighJump = true;
                     landingJumpNumber++;
+                    special.headingAttack.SetActive(true);
                 }
                 special.meteorHighJumpOK = false;
                 state.LandingJumpReset();
@@ -157,7 +167,6 @@ public class PlayerJump : MonoBehaviour
         if (jumpTime >= jumpTimeMax)
         {
             jumping = false;
-            jumpTime = 0;
         }
 
         RigidBody.AddForce(power * Vector3.up, ForceMode.Impulse);

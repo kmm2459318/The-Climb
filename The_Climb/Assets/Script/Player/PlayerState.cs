@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public class PlayerState : MonoBehaviour
 {
-    Rigidbody RigidBody;
+    public Rigidbody RigidBody;
     public KeyBind keyBind;
     PlayerMove move;
     PlayerJump jump;
@@ -42,7 +42,7 @@ public class PlayerState : MonoBehaviour
         jump = GetComponent<PlayerJump>();
         special = GetComponent<PlayerSpecialAction>();
 
-        PlayerAnimation = GameObject.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
+        PlayerAnimation = transform.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
 
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
 
