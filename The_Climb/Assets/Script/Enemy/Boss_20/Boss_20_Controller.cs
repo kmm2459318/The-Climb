@@ -3,19 +3,23 @@ using System.Collections;
 using Unity.PlasticSCM.Editor.WebApi;
 using static UnityEngine.GraphicsBuffer;
 
-public class Boss_20_Controller : MonoBehaviour, IWallHitTable
+public class Boss_20_Controller : MonoBehaviour
 {
     public Boss_20_StatusObjectScript status;   //Assetファイル
     public GameObject Bullet_Prefab;            //弾のPrehab
-    public Transform Bullet_Position;　　　　　//弾の発射位置
+    public Transform Bullet_Position;　　　　　 //弾の発射位置
+    public Transform Player;
 
-    private int Boss_Move_Direction;　　　　　//敵の動く方向
+    private int Enemy_Left_Max;                 //敵の移動は左の範囲
+    private int Enemy_Right_Max;　　　　　　　　//敵の移動は右の範囲
+    private int Boss_Move_Direction;　　　　　  //敵の動く方向
     private float Bullet_Timer;　　　　　　　　 //弾を発射するまでの時間
     private float rest_Timer;　　　　　　　　　 //休憩時間
     private float boss_Speed;　　　　　　　　　 //ボスの速さ
-    private bool isResting = false;　　　　　　//ボスの動くかどうかの判定
+    private bool isResting = false;　　　　　　 //ボスの動くかどうかの判定
     private Rigidbody rb;
 
+    //初期化処理
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -40,6 +44,8 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         Boss_Move_Direction = status.LEFT;
         rest_Timer = status.Rest;
         boss_Speed = status.Speed;
+        Enemy_Left_Max = status.LEFT_Max;
+        Enemy_Right_Max = status.RIGHT_Max; ;
     }
 
     //ボスの動き
@@ -48,6 +54,7 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         if (!isResting)
         {
             Vector3 newPosition = rb.position + new Vector3(boss_Speed * Boss_Move_Direction * Time.fixedDeltaTime, 0f);
+            EnemyMovementRange(ref newPosition);
             rb.MovePosition(newPosition);
             rest_Timer -= Time.fixedDeltaTime;
         }
@@ -80,16 +87,18 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
         isResting = false;
     }
 
-    //壁にあたった時の動き
-    public void OnHitWall()
+    //動く方向の指定
+     void EnemyMovementRange(ref Vector3 nextPosition)
     {
-        Debug.Log("当たりました");
-        if (Boss_Move_Direction != 0 && Boss_Move_Direction == status.LEFT)
+        if(nextPosition.x <= Enemy_Left_Max)
         {
+                      
             Boss_Move_Direction = status.RIGHT;
         }
-        else if (Boss_Move_Direction == status.RIGHT)
+        
+        else if(nextPosition.x >= Enemy_Right_Max)
         {
+           
             Boss_Move_Direction = status.LEFT;
         }
     }
@@ -108,19 +117,21 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
     //発射　　　　　　　　　　
     void Bullet()
     {
-        GameObject player = GameObject.FindWithTag("Player");
-        if (player == null) return;
-
-        float spacing = 0.5f; // 横の間隔（好みに応じて調整）
-
-        Vector3 basePosition = Bullet_Position.position;
-        Quaternion rotation = Bullet_Position.rotation;
-
-        // -1.5, -0.5, +0.5, +1.5 にオフセット（左右2個ずつ均等に）
-        float[] offsets = new float[] { -1.5f, 1.5f };
-
-        foreach (float offset in offsets)
+        if (!isResting)
         {
+          GameObject player = GameObject.FindWithTag("Player");
+          if (player == null) return;
+
+          float spacing = 0.5f; // 横の間隔（好みに応じて調整）
+
+          Vector3 basePosition = Bullet_Position.position;
+          Quaternion rotation = Bullet_Position.rotation;
+
+          // -1.5, -0.5, +0.5, +1.5 にオフセット（左右2個ずつ均等に）
+          float[] offsets = new float[] { -1.5f, 1.5f };
+
+          foreach (float offset in offsets)
+          {
             Vector3 spawnPos = basePosition + Bullet_Position.right * offset * spacing;
             GameObject bullet = Instantiate(Bullet_Prefab, spawnPos, rotation);
 
@@ -128,8 +139,11 @@ public class Boss_20_Controller : MonoBehaviour, IWallHitTable
             if (bulletScript != null)
             {
                 bulletScript.status = this.status;
+                bulletScript.Initialize(Player);
             }
+          }
         }
+       
 
     }
 
