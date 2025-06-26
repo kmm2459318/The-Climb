@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Unity.PlasticSCM.Editor.WebApi;
-using static UnityEngine.GraphicsBuffer;
+using UnityEngine.InputSystem.Utilities;
+using System;
+using System.Net.Http.Headers;
+
+
 
 public class Boss_20_Controller : MonoBehaviour
 {
@@ -12,12 +15,15 @@ public class Boss_20_Controller : MonoBehaviour
 
     private int Enemy_Left_Max;                 //敵の移動は左の範囲
     private int Enemy_Right_Max;　　　　　　　　//敵の移動は右の範囲
+    private float Enemy_Vertical;                 //敵の縦移動
     private int Boss_Move_Direction;　　　　　  //敵の動く方向
     private float Bullet_Timer;　　　　　　　　 //弾を発射するまでの時間
     private float rest_Timer;　　　　　　　　　 //休憩時間
     private float boss_Speed;　　　　　　　　　 //ボスの速さ
     private bool isResting = false;　　　　　　 //ボスの動くかどうかの判定
     private Rigidbody rb;
+    private float Wave = 5.0f;                  //揺れ動く回数
+    
 
     //初期化処理
     void Awake()
@@ -26,7 +32,6 @@ public class Boss_20_Controller : MonoBehaviour
         Initialize();
 
     }
-
     void Update()
     {
         HandleShooting();
@@ -45,7 +50,9 @@ public class Boss_20_Controller : MonoBehaviour
         rest_Timer = status.Rest;
         boss_Speed = status.Speed;
         Enemy_Left_Max = status.LEFT_Max;
-        Enemy_Right_Max = status.RIGHT_Max; ;
+        Enemy_Right_Max = status.RIGHT_Max; 
+        Enemy_Vertical = status.Vertical;
+
     }
 
     //ボスの動き
@@ -53,7 +60,9 @@ public class Boss_20_Controller : MonoBehaviour
     {
         if (!isResting)
         {
-            Vector3 newPosition = rb.position + new Vector3(boss_Speed * Boss_Move_Direction * Time.fixedDeltaTime, 0f);
+            Vector3 waveMotion = new Vector3(0f, Mathf.Sin(Time.time * Wave) * Enemy_Vertical, 0f);
+
+            Vector3 newPosition = rb.position + new Vector3(boss_Speed * Boss_Move_Direction * Time.fixedDeltaTime, 0f) + waveMotion;
             EnemyMovementRange(ref newPosition);
             rb.MovePosition(newPosition);
             rest_Timer -= Time.fixedDeltaTime;
@@ -65,6 +74,8 @@ public class Boss_20_Controller : MonoBehaviour
             StartCoroutine(RestAndResume());
         }
     }
+
+   
 
     //ボスの休憩
     IEnumerator RestAndResume()

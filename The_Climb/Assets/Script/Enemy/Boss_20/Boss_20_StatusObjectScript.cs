@@ -14,7 +14,7 @@ public class Boss_20_StatusObjectScript : ScriptableObject
     public int    RIGHT;　　　　　　  //右の移動
     public int    RIGHT_Max;          //右の移動の動ける範囲
     public int    Rest;               //休憩のタイミング
-    public int    Vertical;           //縦移動
+    public float  Vertical;           //縦移動
     public int    Attack;             //遠距離攻撃のタイミング
     public float  Attack_Speed;       //遠距離攻撃の速さ
 }
