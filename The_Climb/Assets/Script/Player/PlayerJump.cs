@@ -24,6 +24,12 @@ public class PlayerJump : MonoBehaviour
     private float landingLowJumpPower = 14f;  //一回目着地ジャンプのパワー
     private float landingHighJumpPower = 16f;  //二回目着地ジャンプのパワー
 
+    public  bool  isOnTrampoline      = false; //トランポリンに乗っているかの判定
+    public  float TrampolinePower     = 1.5f;  //トランポリンのジャンプ倍率
+    private float TrampolineGraceTime = 0.15f; //トランポリンの効果を維持する時間
+    private float TrampolineTimer     = 0f;    //トランポリンの効果を管理するタイマー
+    private bool  TrampolineJumping   = false; //トランポリンのジャンプ中判定
+
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();
@@ -42,35 +48,61 @@ public class PlayerJump : MonoBehaviour
         {
             jumpCoolCounter += Time.deltaTime;
             state.isGrounded = false;
+            state.isJumpMoveOK = false;
+            //Debug.Log(jumpCoolCounter);
 
             if (jumpCoolCounter > jumpCoolTime)
             {
                 jumpCoolActive = false;
+                jumpCoolCounter = 0f;
             }
         }
     }
 
     private void FixedUpdate()
     {
+
         //ジャンプ
         if (jumping)
         {
             jumpTime += Time.fixedDeltaTime;
+            float JumpPower;
+
+            special.headingAttack.SetActive(true);
 
             if (landingJumpNumber >= 2)
             {
-                Jump(landingHighJumpPower);
+                JumpPower = landingHighJumpPower;
                 state.PlayerAnimation.animator.SetTrigger("JumpAnimStep3");
             }
             else if (landingJumpNumber == 1)
             {
-                Jump(landingLowJumpPower);
+                JumpPower = landingLowJumpPower;
                 state.PlayerAnimation.animator.SetTrigger("JumpAnimStep2");
             }
             else
             {
-                Jump(groundJumpPower);
+                JumpPower = groundJumpPower;
                 state.PlayerAnimation.animator.SetTrigger("JumpAnimStep1");
+            }
+
+            //トランポリンに乗っていたらトランポリンの効果を反映
+            if(isOnTrampoline)
+            {
+                TrampolineJumping = true;
+                TrampolineTimer = TrampolineGraceTime;
+            }
+
+            Jump(JumpPower);
+        }
+
+        //トランポリン効果のタイマー
+        if(TrampolineJumping)
+        {
+            TrampolineTimer -= Time.fixedDeltaTime;
+            if (TrampolineTimer <= 0)
+            {
+                TrampolineJumping = false;
             }
         }
     }
@@ -83,7 +115,10 @@ public class PlayerJump : MonoBehaviour
             {
                 jumping = true;
                 jumpCoolActive = true;
+                jumpTime = 0f;
                 jumpTimeMax = jumpTimeMaxSaving;
+                //Debug.Log(RigidBody.linearVelocity.y);
+                //Debug.Log("true後"+special.headingAttack);
 
                 //着地ジャンプ
                 if (state.landingJumpOn)
@@ -96,8 +131,10 @@ public class PlayerJump : MonoBehaviour
             {
                 if (special.meteorDropCounter >= special.meteorDropTime)
                 {
+                    jumpCoolActive = true;
                     special.meteorHighJump = true;
                     landingJumpNumber++;
+                    special.headingAttack.SetActive(true);
                 }
                 special.meteorHighJumpOK = false;
                 state.LandingJumpReset();
@@ -117,6 +154,12 @@ public class PlayerJump : MonoBehaviour
     {
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
 
+        //トランポリンに乗っている場合ジャンプ力を上げる
+        if(TrampolineJumping)
+        {
+            jumpPower *= TrampolinePower;
+        }
+
         // ジャンプの速度をアニメーションカーブから取得
         float time = jumpTime / jumpTimeMaxSaving;
         float power = jumpPower * jumpCurve.Evaluate(time);
@@ -124,7 +167,6 @@ public class PlayerJump : MonoBehaviour
         if (jumpTime >= jumpTimeMax)
         {
             jumping = false;
-            jumpTime = 0;
         }
 
         RigidBody.AddForce(power * Vector3.up, ForceMode.Impulse);
