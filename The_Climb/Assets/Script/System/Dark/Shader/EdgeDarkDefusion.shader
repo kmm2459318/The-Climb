@@ -6,7 +6,7 @@ Shader "Shader/EdgeDarkDefusion"
     }
     SubShader
     {
-        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+        Tags { "Queue" = "Transparent+10" "RenderType" = "Transparent" }
         LOD 100
 
         Pass
@@ -14,6 +14,13 @@ Shader "Shader/EdgeDarkDefusion"
             ZWrite Off
             Blend SrcAlpha OneMinusSrcAlpha
             Cull Off
+
+            Stencil    //  ステンシル設定
+            {
+                Ref 1
+                comp Always
+                Pass Keep
+            }
 
             HLSLPROGRAM
             #pragma vertex vert    //  頂点シェーダのエントリーポイント
@@ -52,11 +59,12 @@ Shader "Shader/EdgeDarkDefusion"
 
                 // 四隅を強調した矩形上のマスク
                 float2 offset = abs(uv - center);
-                float dist = max(offset.x, offset.y);
+                float dist = length(offset);
 
-                float falloff = 0.1f;    //  フェードのぼかし範囲
-                //  進行値に応じてmaskを黒(1)に近づける
-                float mask = smoothstep(_Progress - falloff,_Progress, dist);
+                float fadeStart = -0.5;    //  フェード開始値(UV座標)
+                float fadeComplete = 0;    //  フェード完了値(UV座標)
+                //  進行値に応じて闇の色に画面端から近づける
+                 float mask = smoothstep(fadeStart, fadeComplete, dist - _Progress);
 
                 half4 orig = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv);
                 half3 col = orig.rgb * (1 - mask);
@@ -66,3 +74,5 @@ Shader "Shader/EdgeDarkDefusion"
         }
     }
 }
+//    コード保存所    //
+// float dist = max(offset.x, offset.y);    闇(□に迫ってくる)
