@@ -163,7 +163,7 @@ public class PlayerSpecialAction : MonoBehaviour
         //‰¡ˆÚ“®“ü—Í’†‚È‚çƒWƒƒƒ“ƒv—Í’á‰º
         if (move.MoveInput == 1f || move.MoveInput == -1f)
         {
-            quickJumpPowerY = 10f;
+            quickJumpPowerY = 9f;
         }
         else
         {
@@ -223,7 +223,6 @@ public class PlayerSpecialAction : MonoBehaviour
     private void QuickJumpUse()
     {
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
-        Debug.Log(quickJumpPowerY);
         RigidBody.AddForce(new Vector3(quickJumpPowerX * move.MoveInput, quickJumpPowerY, 0), ForceMode.Impulse) ;
 
         quickJump = false;
