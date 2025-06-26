@@ -33,7 +33,6 @@ public class EdgeDarkCanvasSetter
                 {
                     break;
                 }
-                System.Threading.Thread.Sleep(500); // 500ミリ秒停止(0.5秒)  // デバッグ用停止
                 //  スケーリング設定適応
                 ApplySettings(canvasScaler, edgeDarkCanvasSetting);
                 Debug.Log(SetedImgMsg_Scene + canvasScaler.gameObject.name, canvasScaler);
