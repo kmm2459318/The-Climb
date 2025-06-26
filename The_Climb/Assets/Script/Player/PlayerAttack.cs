@@ -78,7 +78,7 @@ public class PlayerAttack : MonoBehaviour
             Destroy(other.gameObject);
         }
 
-        if (this.gameObject.name == "HeadingAttack")
+        if (this.gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem"))
         {
             //‚Ô‚Â‚©‚Á‚½‚Æ‚«‚Ì“Ë‚Á‚©‚©‚è‚ğÁ‚·
             PlayerYMoveReset();
