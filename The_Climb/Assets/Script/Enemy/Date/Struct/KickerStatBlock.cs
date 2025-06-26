@@ -10,4 +10,5 @@ public class KickerStatBlock
     public float MoveSpd;    //  移動速度
     public float JumpForce;    //  ジャンプ力
     public float JumpFrequency;    //  ジャンプ頻度
+    public float BlowForce;    //  吹っ飛ばし力
 }
