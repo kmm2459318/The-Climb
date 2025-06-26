@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: pico_body_m
   m_Shader: {fileID: 4800000, guid: be891319084e9d147b09d89e80ce60e0, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _DISABLE_OUTLINE
   - _EMISSIVE_SIMPLE
@@ -20,13 +22,14 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 4000
   stringTagMap:
     IgnoreProjection: False
     RenderType: Opaque
   disabledShaderPasses:
   - SRPDEFAULTUNLIT
   - ALWAYS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -266,7 +269,7 @@ Material:
     - _Anisotropy: 0
     - _Ap_RimLight_FeatherOff: 0
     - _Ap_RimLight_Power: 0.1
-    - _AutoRenderQueue: 1
+    - _AutoRenderQueue: 0
     - _BaseColorOverridden: 0
     - _BaseColorVisible: 1
     - _BaseColor_Step: 0.5
@@ -440,11 +443,11 @@ Material:
     - _SpecularHighlights: 1
     - _SpecularOcclusionMode: 1
     - _SrcBlend: 1
-    - _StencilComp: 0
-    - _StencilMode: 0
+    - _StencilComp: 8
+    - _StencilMode: 2
     - _StencilNo: 1
-    - _StencilOpFail: 0
-    - _StencilOpPass: 0
+    - _StencilOpFail: 2
+    - _StencilOpPass: 2
     - _StencilRef: 2
     - _StencilRefDepth: 0
     - _StencilRefDistortionVec: 64
@@ -546,6 +549,7 @@ Material:
     - _ViewShift: {r: 0, g: 0, b: 0, a: 1}
     - emissive: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!114 &1310543203728705469
 MonoBehaviour:
   m_ObjectHideFlags: 11
