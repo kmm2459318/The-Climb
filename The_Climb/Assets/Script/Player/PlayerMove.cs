@@ -174,7 +174,7 @@ public class PlayerMove : MonoBehaviour
         }
         else 
         {
-            maxAirSpeed = 17f;  //クイックジャンプの横移動速度制限
+            maxAirSpeed = 15f;  //クイックジャンプの横移動速度制限
         }
         Vector3 horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
         if (horizontalVelocity.magnitude > maxAirSpeed)
