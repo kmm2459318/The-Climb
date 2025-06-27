@@ -16,14 +16,20 @@ MonoBehaviour:
   - enemyMode: 0
     Stats:
       EdgeRayOffset: {x: 0.5, y: 0, z: 0}
-      MoveSpd: 5
+      MoveSpd: 8
       JumpForce: 10
       JumpFrequency: 5
-      BlowForce: 2000
+      BlowForceX: 600
+      BlowForceY: 5000
+      GroundBlowMode: 5
+      AirBlowMode: 1
   - enemyMode: 1
     Stats:
       EdgeRayOffset: {x: 0.5, y: 0, z: 0}
       MoveSpd: 7
       JumpForce: 15
       JumpFrequency: 3
-      BlowForce: 10
+      BlowForceX: 0
+      BlowForceY: 0
+      GroundBlowMode: 5
+      AirBlowMode: 1

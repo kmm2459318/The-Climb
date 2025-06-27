@@ -10,5 +10,9 @@ public class KickerStatBlock
     public float MoveSpd;    //  移動速度
     public float JumpForce;    //  ジャンプ力
     public float JumpFrequency;    //  ジャンプ頻度
-    public float BlowForce;    //  吹っ飛ばし力
+    [Header("吹っ飛ばし")]
+    public float BlowForceX;    //  X軸の吹っ飛ばし力
+    public float BlowForceY;    //  Y軸の吹っ飛ばし力
+    public ForceMode GroundBlowMode;  //  吹き飛ばし方式
+    public ForceMode AirBlowMode;  //  吹き飛ばし方式
 }
