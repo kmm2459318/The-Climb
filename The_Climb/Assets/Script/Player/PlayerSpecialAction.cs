@@ -15,9 +15,8 @@ public class PlayerSpecialAction : MonoBehaviour
     public float highJumpChargeTime = 0.8f;  //ハイジャンプのチャージ時間
     public float highJumpChargeCounter = 0f;  //ハイジャンプのチャージカウンター
     private bool highJump = false;       //ハイジャンプする判定
-
     private float highJumpPower = 30f;   //ハイジャンプのパワー
-    public bool highJumpStop = false;    //ハイジャンプをやめる判定
+    public bool highJumpUsed = false;   //ハイジャンプを使用したか判定
 
     private bool quickJump = false;      //クイックジャンプする判定
     private float quickJumpPowerX = 10f;  //クイックジャンプの横のパワー
@@ -81,8 +80,6 @@ public class PlayerSpecialAction : MonoBehaviour
         if (highJump)
         {
             HighJumpUse();
-
-            highJump = false;
         }
 
         if (meteorDrop)
@@ -117,8 +114,8 @@ public class PlayerSpecialAction : MonoBehaviour
 
                 playHighJumpAnim = true;
 
+                highJumpUsed = true;
                 headingAttack.SetActive(true);
-                //Debug.Log("true後" + headingAttack);
             }
             else
             {
@@ -179,29 +176,10 @@ public class PlayerSpecialAction : MonoBehaviour
 
     public void HighJumpUse()
     {
-        //float power = highJumpPower;
-
-        //for (int i = 0; i < 30; i++)
-        //{
-            //RigidBody.linearVelocity = new Vector3(0, 0, 0);
-
-            RigidBody.AddForce(new Vector3(RigidBody.linearVelocity.x, highJumpPower, 0), ForceMode.Impulse);
+        RigidBody.AddForce(new Vector3(RigidBody.linearVelocity.x, highJumpPower, 0), ForceMode.Impulse);
         jump.jumpCoolActive = true;
-            //power --;
 
-            //yield return null;
-
-            //if (i < 25)
-            //{
-
-            //}
-
-            //if (highJumpStop)
-            //{
-            //    i = 30;
-            //    highJumpStop = false;
-            //}
-        //}
+        highJump = false;
     }
 
     private void MeteorDropUse()
