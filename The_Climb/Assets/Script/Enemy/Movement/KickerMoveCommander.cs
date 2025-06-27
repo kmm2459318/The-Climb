@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterGroundChecker))]
 [RequireComponent(typeof(LandGroundNotifier))]
 //  移動スクリプトに移動値を渡す
-public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
+public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler, IBlowable
 {
     public enum KickerCommanderMethod    //  このクラス内の関数一覧
     {
@@ -140,5 +140,10 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     public void OnLandStage()
     {
         OnLandGround?.Invoke();
+    }
+    public void Blow(Rigidbody rigidbody, Vector3 Direction)
+    {
+        float CurrentBlowForce = kickerStatBlock.BlowForce;    //  吹き飛ばし力
+        rigidbody.AddForce(Direction * CurrentBlowForce,ForceMode.Impulse);
     }
 }

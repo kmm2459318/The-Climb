@@ -73,21 +73,18 @@ public class PlayerJump : MonoBehaviour
             if (landingJumpNumber >= 2)
             {
                 JumpPower = landingHighJumpPower;
-                state.PlayerAnimation.animator.SetTrigger("JumpAnimStep3");
             }
             else if (landingJumpNumber == 1)
             {
                 JumpPower = landingLowJumpPower;
-                state.PlayerAnimation.animator.SetTrigger("JumpAnimStep2");
             }
             else
             {
-                JumpPower = groundJumpPower;
-                state.PlayerAnimation.animator.SetTrigger("JumpAnimStep1");
+                JumpPower = groundJumpPower; 
             }
 
             //トランポリンに乗っていたらトランポリンの効果を反映
-            if(isOnTrampoline)
+            if (isOnTrampoline)
             {
                 TrampolineJumping = true;
                 TrampolineTimer = TrampolineGraceTime;

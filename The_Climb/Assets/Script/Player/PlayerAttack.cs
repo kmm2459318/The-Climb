@@ -35,6 +35,7 @@ public class PlayerAttack : MonoBehaviour
             { 
                 HeadingFalse();
                 headingSafeCounter = headingSafeTime;
+                special.highJumpUsed = false;
             }
         }
         else if (this.gameObject.name == "MeteorDropAttack")
@@ -57,19 +58,30 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    private void PlayerYMoveReset()
+    {
+        state.RigidBody.linearVelocity = new Vector3(state.RigidBody.linearVelocity.x, 0, state.RigidBody.linearVelocity.z);
+        jump.jumping = false;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Ground") && this.gameObject.name == "HeadingAttack")
+        if (other.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log("headingAttack");
-            state.RigidBody.linearVelocity = new Vector3(state.RigidBody.linearVelocity.x, 0, state.RigidBody.linearVelocity.z);
-            special.highJumpStop = true;
-            jump.jumping = false;
+            //ìGÇè¡Ç∑
+            Destroy(other.gameObject);
         }
 
-        if (other.gameObject.CompareTag("Ground") && this.gameObject.name == "MeteorDropAttack")
+        if (other.gameObject.CompareTag("BreakBlock") && (special.highJumpUsed || special.meteorDrop))
         {
-            Debug.Log("Break");
+            //ÉuÉçÉbÉNÇè¡Ç∑
+            Destroy(other.gameObject);
+        }
+
+        if (this.gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem"))
+        {
+            //Ç‘Ç¬Ç©Ç¡ÇΩÇ∆Ç´ÇÃìÀÇ¡Ç©Ç©ÇËÇè¡Ç∑
+            PlayerYMoveReset();
         }
     }
 }

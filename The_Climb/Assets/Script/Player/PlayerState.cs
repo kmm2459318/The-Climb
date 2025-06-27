@@ -133,4 +133,12 @@ public class PlayerState : MonoBehaviour
         special.meteorDropUsed = false;
         special.meteorDropCounter = 0;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("SearchItem"))
+        {
+            Destroy(other.gameObject);
+        }
+    }
 }
