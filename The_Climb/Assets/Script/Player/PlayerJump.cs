@@ -151,6 +151,8 @@ public class PlayerJump : MonoBehaviour
     {
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
 
+
+
         //トランポリンに乗っている場合ジャンプ力を上げる
         if(TrampolineJumping)
         {
@@ -176,3 +178,4 @@ public class PlayerJump : MonoBehaviour
         }
     }
 }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
