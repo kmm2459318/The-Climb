@@ -3,6 +3,9 @@ public readonly struct TagName
 {
     public static readonly TagName Wall = new TagName("Wall");    //  壁のタグの名前
     public static readonly TagName Ground = new TagName("Ground");    //  地面のタグの名前
+    public static readonly TagName Enemy = new TagName("Enemy");    //  敵のタグの名前
+    public static readonly TagName Player = new TagName("Player");    //  プレイヤーのタグの名前
+    public static readonly TagName SearchItem = new TagName("SearchItem");    //  探索アイテムのタグの名前
     public string Value { get; }
 
     //  Valueにvalueをセットするコンストラクタ
