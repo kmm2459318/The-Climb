@@ -71,5 +71,4 @@ public class CollapseBlock : MonoBehaviour
             visualPart.SetActive(true);
         }
     }
-
 }
