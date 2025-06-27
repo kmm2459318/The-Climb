@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.InputSystem.Utilities;
-using System;
-using System.Net.Http.Headers;
 
 
 
@@ -12,6 +9,7 @@ public class Boss_20_Controller : MonoBehaviour
     public GameObject Bullet_Prefab;            //弾のPrehab
     public Transform Bullet_Position;　　　　　 //弾の発射位置
     public Transform Player;
+
 
     private int Enemy_Left_Max;                 //敵の移動は左の範囲
     private int Enemy_Right_Max;　　　　　　　　//敵の移動は右の範囲
