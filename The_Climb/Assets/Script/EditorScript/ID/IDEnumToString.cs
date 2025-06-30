@@ -7,11 +7,13 @@ public class IDEnumToString
     {
         { IDCategory.UNDEFINED, "Undefined" },
         { IDCategory.EFFECT, "Effect" },
+        { IDCategory.PLAYER, "Player" },
     };
     private static readonly Dictionary<IDLabel, string> IDLabelMap = new()    //  ID生成に使うラベルマップ
     {
         { IDLabel.UNDNAMED, "Unnamed" },
         { IDLabel.DARK, "Dark" },
+        { IDLabel.SPINE, "Spine" },
     };
     //  IDカテゴリーに応じて辞書型からキーを出力
     public static string ToString(IDCategory category) =>

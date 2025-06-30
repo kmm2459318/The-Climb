@@ -4,5 +4,5 @@ using UnityEngine;
 public interface IBlowable
 {
     //  êÅÇ¡îÚÇŒÇ∑ä÷êî
-    void Blow(Rigidbody blowTagert, Vector3 Direction);
+    void Blow(Rigidbody blowTagert, float Direction);
 }

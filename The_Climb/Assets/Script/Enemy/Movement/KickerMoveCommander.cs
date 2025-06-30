@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(EnemyMover))]
 [RequireComponent(typeof(CharacterGroundChecker))]
@@ -23,7 +24,8 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     KickerStatBlock kickerStatBlock;    //  キッカーステータスクラス
     EnemyMover enemyMover;    //  エネミームーバーインスタンス
     CharacterGroundChecker characterGroundChecker;    //  グラウンドチェッカーインスタンス
-    EnemyStateMachine enemyStateMachine;
+    EnemyStateMachine enemyStateMachine;    //  エネミーステートマシーンインスタンス
+    PlayerState playerState;
     public Dictionary<KickerCommanderMethod, ICommand> CommanderMethodMap;    //  このスクリプトの関数の辞書
     public event Action OnJumpTime;    //  ジャンプタイムのサブスク
     public event Action OnLandGround;    //  地面着地のサブスク
@@ -47,6 +49,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         kickerStatBlock = kickerStatus.GetStats(EnemyMode.NORMAL);
         characterGroundChecker = GetComponent<CharacterGroundChecker>();
         enemyStateMachine = new EnemyStateMachine();
+        playerState = GameObject.FindAnyObjectByType<PlayerState>();
         commandProvider = new DefaultCommandProvider(this);
         enemyStateFactory = new EnemyStateFactory(this, enemyStateMachine);
 
@@ -141,9 +144,30 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     {
         OnLandGround?.Invoke();
     }
-    public void Blow(Rigidbody rigidbody, Vector3 Direction)
+    //  吹き飛ばし処理
+    public void Blow(Rigidbody rigidbody, float Direction)
     {
-        float CurrentBlowForce = kickerStatBlock.BlowForce;    //  吹き飛ばし力
-        rigidbody.AddForce(Direction * CurrentBlowForce,ForceMode.Impulse);
+        float CurrentBlowForceX = kickerStatBlock.BlowForceX;    //  X軸の吹き飛ばし力
+        float CurrentBlowForceY = kickerStatBlock.BlowForceY;    //  Y軸の吹き飛ばし力
+        float PlayerResistPowerX = 100f;    //  プレイヤーステータスに追加予定
+        float EffectiveForceX = MathF.Max(0, CurrentBlowForceX - PlayerResistPowerX);    //  実際に適応される力
+
+        ForceMode GroundBlowMode = kickerStatBlock.GroundBlowMode;    //  地上時の吹っ飛ばし方
+        ForceMode AriBlowMode = kickerStatBlock.AirBlowMode;    //  空中時の吹っ飛ばし方
+
+        Vector3 GroundTotalBlowForce = new Vector3(Direction * (EffectiveForceX), 0, 0);    //  地上時の吹き飛ばし力合計
+        Vector3 AirTotalBlowForce = new Vector3(Direction * CurrentBlowForceX, Direction * CurrentBlowForceY, 0f);    //  空中時の吹き飛ばし力合計
+
+        if (playerState.isGrounded)
+        {
+            Debug.DrawRay(ObjectRegistry.Get("Player_Spine_c0c99d2d").transform.position, GroundTotalBlowForce, Color.blue, 0.5f);
+            rigidbody.AddForce(GroundTotalBlowForce, ForceMode.Acceleration);
+        }
+        else
+        {
+            Debug.DrawRay(ObjectRegistry.Get("Player_Spine_c0c99d2d").transform.position, AirTotalBlowForce, Color.blue, 0.5f);
+            rigidbody.AddForce(AirTotalBlowForce, ForceMode.Impulse);
+        }
+        FlipMoveDir();  //  移動方向反転
     }
 }
