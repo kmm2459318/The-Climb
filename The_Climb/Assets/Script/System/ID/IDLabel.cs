@@ -1,5 +1,6 @@
 public enum IDLabel    //  オブジェクトのラベルー一覧
 {
-    UNDNAMED,
-    DARK,
+    UNDNAMED,    //  未定義
+    DARK,    //  闇
+    SPINE,    //  シャツ
 }
