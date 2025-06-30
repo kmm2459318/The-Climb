@@ -31,7 +31,7 @@ public class PlayerState : MonoBehaviour
     public Transform rightWallCheck;     //プレイヤー足元の右壁判定用オブジェクト
     public bool isRightWall;             //右壁判定
     public LayerMask groundLayer;  //地面レイヤー
-    private float groundCheckRadius = 0.1f;  //地面判定の半径
+    private float groundCheckRadius = 0.001f;  //地面判定の半径
     public bool isAir = false;          //空中判定
 
     void Start()
@@ -47,7 +47,9 @@ public class PlayerState : MonoBehaviour
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
 
         // インスペクターまたはスクリプトで設定
-        RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        RigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
         Physics.gravity = new Vector3(0, -45.6F, 0); // Gを倍にする
     }
@@ -62,7 +64,14 @@ public class PlayerState : MonoBehaviour
         if (!jump.jumpCoolActive)
         {
             // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.left * 0.1f, groundCheck.position + Vector3.right * 0.1f, groundCheckRadius, groundLayer);
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.1f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
+        }
+
+        // 地面判定のあとに、壁に当たってるかどうかで判定を覆す
+        if ((isLeftWall && RigidBody.linearVelocity.x < -0.1f) ||
+            (isRightWall && RigidBody.linearVelocity.x > 0.1f))
+        {
+            isGrounded = false;
         }
 
         //空中時、isJumpOKを反応させない
@@ -73,7 +82,7 @@ public class PlayerState : MonoBehaviour
         else
         {
             // ジャンプOK判定（カプセル形）
-            isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, groundCheckRadius, groundLayer);
+            isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, 0.25f, groundLayer);
         }
 
         //着地チェック
@@ -87,6 +96,13 @@ public class PlayerState : MonoBehaviour
         else
         {
             isAir = false;
+        }
+
+        //壁に当たるのならば強制停止
+        if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
+    (isRightWall && RigidBody.linearVelocity.x > 0))
+        {
+            RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
         }
 
         //前フレームの接地判定
