@@ -1,5 +1,6 @@
 public enum IDCategory    //  オブジェクトのカテゴリー一覧
 {
-    UNDEFINED,
-    EFFECT,
+    UNDEFINED,    //  未定義状態
+    EFFECT,    //  エフェクト
+    PLAYER    //  プレイヤーのスキン
 }

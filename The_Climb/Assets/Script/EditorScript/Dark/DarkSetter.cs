@@ -48,8 +48,8 @@ public class DarkSetter
     {
         return Object.FindObjectsByType<IDGenerater>(FindObjectsSortMode.None)
                      .Where(Dark => Dark != null &&
-                      Dark.CategoryProperty == IDEnumToString.ToString(IDCategory.EFFECT) &&
-                      Dark.LabelProperty == IDEnumToString.ToString(IDLabel.DARK))
+                      Dark.CategoryAsStringProperty == IDEnumToString.ToString(IDCategory.EFFECT) &&
+                      Dark.LabelAsStringProperty == IDEnumToString.ToString(IDLabel.DARK))
                      .Select(Dark => Dark.gameObject)
                      .ToArray();
     }

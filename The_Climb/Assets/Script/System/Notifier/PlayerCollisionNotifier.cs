@@ -5,9 +5,15 @@ public class PlayerCollisionNotifier : CollisionNotifier<IBlowable>
 {
     void OnCollisionEnter(Collision collision)
     {
-        Vector3 Direction = collision.transform.position - transform.position;    //  吹き飛ばし方向
+        if(collision.rigidbody == null)
+        {
+            return;
+        }
 
+        float Direction = Mathf.Sign(ObjectRegistry.Get("Player_Spine_c0c99d2d").transform.position.x - transform.position.x);    //  吹き飛ばし方向
         //  壁に当たった時の処理を実行
-        NotifyIfTagMatches(collision, "Player", h => h.Blow(collision.rigidbody, Direction));
+        NotifyIfTagMatches(collision, TagName.Player, h => h.Blow(collision.rigidbody, Direction));
     }
 }
+//  以下コード保存所 // 
+//Vector3 Direction = ObjectRegistry.Get("PlayerSkin_Shirt_28fe1bb6").transform.position - transform.position;    //  吹き飛ばし方向

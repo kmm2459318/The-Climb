@@ -5,9 +5,7 @@ using System.Collections.Generic;
 
 public class FloorSystemManager : MonoBehaviour
 {
-    [Header("シーンに配置済みのプレイヤー")]
-    public GameObject player;
-
+    [Header("フェードイメージ（UI）")]
     public Image fadeImage;
 
     [Header("階層Prefabリスト")]
@@ -22,6 +20,7 @@ public class FloorSystemManager : MonoBehaviour
     [Header("トリガー距離")]
     public float triggerDistance = 1.5f;
 
+    private GameObject player;
     private int currentFloorIndex = 0;
     private GameObject currentFloor;
     private FloorData currentFloorData;
@@ -37,18 +36,26 @@ public class FloorSystemManager : MonoBehaviour
 
     private void Start()
     {
+        // タグ "Player" でプレイヤーを自動取得
+        player = GameObject.FindWithTag("Player");
+
+        if (player == null)
+        {
+            Debug.LogError("[FloorSystemManager] シーンにタグ 'Player' が付いたオブジェクトが見つかりません。");
+            return;
+        }
+
         LoadFloor(currentFloorIndex, true);
         StartCoroutine(FadeIn(fadeDuration / 2f));
     }
 
     private void Update()
     {
-        if (isSwitching) return;
-        if (player == null || currentFloorData == null) return;
+        if (isSwitching || player == null || currentFloorData == null) return;
 
         Vector3 playerPos = player.transform.position;
 
-        // 戻る判定（StartPointに近いとき）
+        // StartPoint に到達したか判定
         if (currentFloorData.startPoint != null)
         {
             float distStart = Vector3.Distance(playerPos, currentFloorData.startPoint.position);
@@ -61,7 +68,7 @@ public class FloorSystemManager : MonoBehaviour
             }
         }
 
-        // 進む判定（GoalPointに近いとき）
+        // GoalPoint に到達したか判定
         if (currentFloorData.goalPoint != null)
         {
             float distGoal = Vector3.Distance(playerPos, currentFloorData.goalPoint.position);
@@ -80,9 +87,7 @@ public class FloorSystemManager : MonoBehaviour
         if (isSwitching) yield break;
         isSwitching = true;
 
-        // プレイヤー非アクティブ化
         player.SetActive(false);
-
         yield return StartCoroutine(FadeOut(fadeDuration / 2f));
 
         if (currentFloor != null)
@@ -92,29 +97,23 @@ public class FloorSystemManager : MonoBehaviour
 
         currentFloor = Instantiate(floorPrefabs[currentFloorIndex], floorsRoot);
         currentFloorData = currentFloor.GetComponent<FloorData>();
+
         if (currentFloorData == null)
         {
             Debug.LogError($"[FloorSystemManager] FloorData コンポーネントがありません: {floorPrefabs[currentFloorIndex].name}");
             isSwitching = false;
             yield break;
         }
+
         currentFloorData.CheckReferences();
 
         Transform spawnPos = (isFirstLoad || goingUp) ? currentFloorData.spawnPoint : currentFloorData.goalPoint;
-        if (spawnPos != null)
-            player.transform.position = spawnPos.position;
-        else
-        {
-            Debug.LogWarning("SpawnPoint または GoalPoint が未設定です");
-            player.transform.position = Vector3.zero;
-        }
+        player.transform.position = spawnPos != null ? spawnPos.position : Vector3.zero;
 
         player.SetActive(true);
-
         isFirstLoad = false;
 
         yield return StartCoroutine(FadeIn(fadeDuration / 2f));
-
         isSwitching = false;
     }
 
@@ -136,17 +135,7 @@ public class FloorSystemManager : MonoBehaviour
         currentFloorData.CheckReferences();
 
         Transform spawnPos = (isFirstLoad || goingUp) ? currentFloorData.spawnPoint : currentFloorData.goalPoint;
-        if (spawnPos != null)
-        {
-            player.transform.position = spawnPos.position;
-        }
-        else
-        {
-            Debug.LogWarning("SpawnPoint または GoalPoint が未設定です");
-            player.transform.position = Vector3.zero;
-        }
-
-        // プレイヤーは最初からアクティブなので操作なし
+        player.transform.position = spawnPos != null ? spawnPos.position : Vector3.zero;
 
         isFirstLoad = false;
     }
