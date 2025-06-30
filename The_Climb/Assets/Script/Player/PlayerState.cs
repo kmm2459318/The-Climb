@@ -47,7 +47,9 @@ public class PlayerState : MonoBehaviour
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
 
         // インスペクターまたはスクリプトで設定
-        RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        RigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
         Physics.gravity = new Vector3(0, -45.6F, 0); // Gを倍にする
     }
@@ -63,6 +65,13 @@ public class PlayerState : MonoBehaviour
         {
             // 地面判定（カプセル形）
             isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.1f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
+        }
+
+        // 地面判定のあとに、壁に当たってるかどうかで判定を覆す
+        if ((isLeftWall && RigidBody.linearVelocity.x < -0.1f) ||
+            (isRightWall && RigidBody.linearVelocity.x > 0.1f))
+        {
+            isGrounded = false;
         }
 
         //空中時、isJumpOKを反応させない
@@ -87,6 +96,13 @@ public class PlayerState : MonoBehaviour
         else
         {
             isAir = false;
+        }
+
+        //壁に当たるのならば強制停止
+        if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
+    (isRightWall && RigidBody.linearVelocity.x > 0))
+        {
+            RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
         }
 
         //前フレームの接地判定
