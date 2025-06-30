@@ -550,6 +550,7 @@ GameObject:
   - component: {fileID: 907655439}
   - component: {fileID: 907655440}
   - component: {fileID: 907655442}
+  - component: {fileID: 907655443}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -640,7 +641,7 @@ Transform:
   m_GameObject: {fileID: 907655433}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.69, y: 0.8, z: 0}
+  m_LocalPosition: {x: -7.69, y: 1.86, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -684,7 +685,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!114 &907655442
 MonoBehaviour:
@@ -702,6 +703,22 @@ MonoBehaviour:
   Bullet_Prefab: {fileID: 8893101497631227824, guid: 31ca76c15c0c2ed438d247a5d3359825, type: 3}
   Bullet_Position: {fileID: 1956054867}
   Player: {fileID: 1256748364}
+--- !u!114 &907655443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907655433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6409b9bd332e4e140b36b8bd4de8d709, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1256748364}
+  knockbackDistance: 2
+  knockbackForce: 5
+  stopDuration: 0.2
 --- !u!4 &991747645 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4693955653665549781, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
