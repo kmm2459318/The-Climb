@@ -7,7 +7,7 @@ public class PlayerAnimation : MonoBehaviour
     private PlayerMove playerMove;
     private PlayerState playerState;
     private PlayerSpecialAction playerSpecial;
-    private PlayerJump playerJump;  // ← 追加
+    private PlayerJump playerJump;
 
     private bool wasGrounded = true;
     private bool isJumping = false;
@@ -23,7 +23,7 @@ public class PlayerAnimation : MonoBehaviour
         playerMove = GameObject.Find("PlayerModel").GetComponent<PlayerMove>();
         playerState = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
         playerSpecial = GameObject.Find("PlayerModel").GetComponent<PlayerSpecialAction>();
-        playerJump = GameObject.Find("PlayerModel").GetComponent<PlayerJump>(); // ← 追加
+        playerJump = GameObject.Find("PlayerModel").GetComponent<PlayerJump>();
 
         if (animator == null)
             Debug.LogError("Animator が見つかりません。コンポーネントをアタッチしてください。");
@@ -41,17 +41,28 @@ public class PlayerAnimation : MonoBehaviour
         }
         wasGrounded = isGrounded;
 
-        // チャージ中は走りアニメを止めるように判定を修正
-        bool isChargingHighJump = playerSpecial.highJumpChargeCounter > 0f;
+        // 移動入力（走り判定）
+        bool hasMoveInput = Mathf.Abs(playerMove.MoveInput) > 0f;
 
-        bool isRunning = playerState.isGrounded
-                         && Mathf.Abs(playerMove.MoveInput) > 0f
-                         && !isChargingHighJump;
+        // ジャンプキー押下判定
+        bool isJumpKeyPressed = Input.GetKey(playerState.keyBind.playerJump);
 
+        // しゃがみ開始トリガー（ジャンプキー押した瞬間）
+        if (isJumpKeyPressed && !crouchStarted)
+        {
+            animator.SetTrigger("StartCrouch");
+            crouchStarted = true;
+        }
+        // ジャンプキー離したらしゃがみ解除フラグOFF
+        if (!isJumpKeyPressed)
+        {
+            crouchStarted = false;
+        }
+        animator.SetBool("IsCrouching", isJumpKeyPressed);
+
+        // 走り状態（ジャンプキー押してない・かつ移動キー押している・かつ地面にいる）
+        bool isRunning = playerState.isGrounded && hasMoveInput && !isJumpKeyPressed;
         animator.SetBool("IsRunning", isRunning);
-
-        // しゃがみアニメもこの後に設定
-        animator.SetBool("IsChargingHighJump", isChargingHighJump);
 
         // 向き制御
         if (playerMove.MoveInput > 0f)
@@ -59,32 +70,11 @@ public class PlayerAnimation : MonoBehaviour
         else if (playerMove.MoveInput < 0f)
             transform.rotation = Quaternion.Euler(0, -90, 0);
 
-        // --- 各ジャンプアニメーション処理 ---
-
-        // ハイジャンプチャージ中に一度だけしゃがみ開始アニメ
-        if (playerSpecial.highJumpChargeCounter > 0.1f && !crouchStarted)
-        {
-            animator.SetTrigger("StartCrouch");
-            crouchStarted = true;
-        }
-
-        // チャージが終わったら解除
-        if (playerSpecial.highJumpChargeCounter == 0f)
-        {
-            crouchStarted = false;
-        }
-
-        // ハイジャンプ実行時
+        // ハイジャンプ実行
         if (playerSpecial.playHighJumpAnim)
         {
             animator.SetTrigger("HighJump");
             playerSpecial.playHighJumpAnim = false;
-            crouchStarted = false;
-        }
-
-        // チャージキャンセル時も解除
-        if (Input.GetKeyUp(playerState.keyBind.playerJump))
-        {
             crouchStarted = false;
         }
 
@@ -96,19 +86,22 @@ public class PlayerAnimation : MonoBehaviour
             return;
         }
 
-        // 通常ジャンプ：ジャンプ入力時に landingJumpNumber に応じてジャンプアニメ再生
+        // 通常ジャンプ判定
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isJumping)
         {
-            int animStep = 1;
-
-            if (playerJump.landingJumpNumber >= 2)
-                animStep = 3;
-            else if (playerJump.landingJumpNumber == 1)
-                animStep = 2;
-
             isJumping = true;
 
-            switch (animStep)
+            int jumpType = 1; // デフォルト通常ジャンプ
+
+            if (playerJump != null)
+            {
+                if (playerJump.landingJumpNumber >= 2)
+                    jumpType = 3;
+                else if (playerJump.landingJumpNumber == 1)
+                    jumpType = 2;
+            }
+
+            switch (jumpType)
             {
                 case 1:
                     animator.SetTrigger("JumpAnimStep1");
@@ -121,7 +114,7 @@ public class PlayerAnimation : MonoBehaviour
                     break;
             }
 
-            Debug.Log($"ジャンプアニメ Step {animStep}");
+            Debug.Log($"ジャンプアニメ Step {jumpType}");
         }
     }
 

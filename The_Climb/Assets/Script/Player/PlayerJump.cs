@@ -6,6 +6,8 @@ public class PlayerJump : MonoBehaviour
     PlayerState state;
     PlayerMove move;
     PlayerSpecialAction special;
+    private PlayerAnimation playerAnimation;
+
 
     public bool jumping = false;        //ジャンプ入力中判定
     private float coyoteTime = 0.05f;    //コヨーテタイム
@@ -36,6 +38,8 @@ public class PlayerJump : MonoBehaviour
         state = GetComponent<PlayerState>();
         move = gameObject.GetComponent<PlayerMove>();
         special = gameObject.GetComponent<PlayerSpecialAction>();
+        playerAnimation = GetComponent<PlayerAnimation>();
+
     }
 
     void Update()
@@ -176,6 +180,7 @@ public class PlayerJump : MonoBehaviour
         {
             RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * maxJumpSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
         }
+
     }
 }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
