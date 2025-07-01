@@ -7,32 +7,33 @@ using UnityEngine.Rendering;
 [RequireComponent(typeof(EnemyMover))]
 [RequireComponent(typeof(CharacterGroundChecker))]
 [RequireComponent(typeof(LandGroundNotifier))]
+[RequireComponent(typeof(CharacterStateVisualizer))]
 //  移動スクリプトに移動値を渡す
 public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler, IBlowable
 {
     public enum KickerCommanderMethod    //  このクラス内の関数一覧
     {
-        MOVE,
-        IS_EDGE_POS,
-        FLIP_MOVE_DIR,
-        JUMP,
+        MOVE,    //  基礎移動
+        IS_EDGE_POS,    //  端か判定
+        FLIP_MOVE_DIR,    //  移動方向反転
+        JUMP,    //  ジャンプ
     }
     
-
     [Header("Instance")]
     [SerializeField] KickerStatus kickerStatus;    //  キッカーステータスインスタンス
     KickerStatBlock kickerStatBlock;    //  キッカーステータスクラス
     EnemyMover enemyMover;    //  エネミームーバーインスタンス
     CharacterGroundChecker characterGroundChecker;    //  グラウンドチェッカーインスタンス
     EnemyStateMachine enemyStateMachine;    //  エネミーステートマシーンインスタンス
-    PlayerState playerState;
+    PlayerState playerState;    //  プレイヤーステートインスタンス
+    CharacterStateVisualizer characterStateVisualizer;    //  キャラクターステートビジュアライザーインスタンス
     public Dictionary<KickerCommanderMethod, ICommand> CommanderMethodMap;    //  このスクリプトの関数の辞書
     public event Action OnJumpTime;    //  ジャンプタイムのサブスク
     public event Action OnLandGround;    //  地面着地のサブスク
     Coroutine JumpLoop;    //  ジャンプループコルーチンの変数
 
-    ICommandProvider commandProvider;
-    IEnemyStateFactory enemyStateFactory;
+    ICommandProvider commandProvider;    //  インターフェース型変数
+    IEnemyStateFactory enemyStateFactory;    //  インターフェースが多変数
 
     Vector3 Velocity;    //  キャラクター移動値
     Vector3 EdgeRayOffset;    //  端を検知するRayのオフセット
@@ -45,6 +46,12 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
 
     void Awake()
     {
+        if (kickerStatus == null)
+        {
+            Debug.LogWarning($"{nameof(KickerMoveCommander)} : kickerStatus is not assigned");
+            return;
+        }
+
         enemyMover = GetComponent<EnemyMover>();
         kickerStatBlock = kickerStatus.GetStats(EnemyMode.NORMAL);
         characterGroundChecker = GetComponent<CharacterGroundChecker>();
@@ -52,6 +59,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         playerState = GameObject.FindAnyObjectByType<PlayerState>();
         commandProvider = new DefaultCommandProvider(this);
         enemyStateFactory = new EnemyStateFactory(this, enemyStateMachine);
+        characterStateVisualizer = GetComponent<CharacterStateVisualizer>();
 
         //  初期状態をWalkに変更
         CommanderMethodMap =commandProvider.GetCommandMap();
@@ -60,6 +68,26 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         //  数値初期化
         Initialize();
     }
+    //  テストのための初期化
+    void InitializeForTest(KickerStatus status)
+    {
+        enemyMover = GetComponent<EnemyMover>();
+        this.kickerStatBlock = status.GetStats(EnemyMode.NORMAL);
+        characterGroundChecker = GetComponent<CharacterGroundChecker>();
+        enemyStateMachine = new EnemyStateMachine();
+        playerState = GameObject.FindAnyObjectByType<PlayerState>();
+        commandProvider = new DefaultCommandProvider(this);
+        enemyStateFactory = new EnemyStateFactory(this, enemyStateMachine);
+        characterStateVisualizer = GetComponent<CharacterStateVisualizer>();
+
+        //  初期状態をWalkに変更
+        CommanderMethodMap = commandProvider.GetCommandMap();
+        enemyStateMachine.ChangeState(enemyStateFactory.CreateWalkState());
+
+        //  数値初期化
+        Initialize();
+    }
+
     void Start()
     {
         //  定期的なジャンプのループを開始
@@ -70,6 +98,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         Debug.DrawRay(transform.position, Vector3.down * characterGroundChecker.GroundCheckDisProperty, Color.red);
         Debug.DrawRay(EdgeRayOffset + transform.position, Vector3.down * characterGroundChecker.GroundCheckDisProperty, Color.gray);
         enemyStateMachine.FixedUpdate();
+        characterStateVisualizer.MoveDirectionPropety(Velocity);
     }
     //  初期化
     void Initialize()
