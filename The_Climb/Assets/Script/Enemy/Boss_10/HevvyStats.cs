@@ -1,18 +1,22 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "HevvyStats", menuName = "Enemy/HevvyStats", order = 1)]
+[CreateAssetMenu(fileName = "HevvyStats", menuName = "BossStats/HevvyStats")]
 public class HevvyStats : ScriptableObject
 {
-    [Header("ジャンプ設定")]
-    public float JumpForce = 10f;               // 縦方向ジャンプ力
-    public float HorizontalJumpForce = 2f;      // 横方向ジャンプ力
-    public float JumpInterval = 3f;             // ジャンプ間隔
-    [Header("チャージジャンプ設定")]
-    public int JumpsBeforeCharge = 3;
-    public float ChargeDuration = 1.5f;
-    public float ChargeJumpForce = 20f;
-    public float SlowFallGravityScale = 0.2f;
-    [Header("ジャンプ方向制限設定")]
-    public float LeftBoundary;
-    public float RightBoundary;
+    [Header("移動・ジャンプ関連")]
+    public float hopSpeed = 2f;
+    public float verticalJumpForce = 12f;
+    public float arcJumpForce = 8f;
+    public float arcJumpHeight = 5f;
+
+    [Header("チャージ・スタン時間")]
+    public float chargeTime = 1.5f;
+    public float stunDuration = 3f;
+
+    [Header("距離トリガー")]
+    public float nearTriggerDistance = 3f;
+    public float farTriggerDistance = 6f;
+
+    [Header("必要ヒット数")]
+    public int requiredHitsToDefeat = 3;
 }
