@@ -66,22 +66,22 @@ public class PlayerAttack : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (this.gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem"))
+        {
+            //‚Ô‚Â‚©‚Á‚½‚Æ‚«‚Ì“Ë‚Á‚©‚©‚è‚ğÁ‚·
+            PlayerYMoveReset();
+        }
+
         if (other.gameObject.CompareTag("Enemy"))
         {
             //“G‚ğÁ‚·
             Destroy(other.gameObject);
         }
-
+        
         if (other.gameObject.CompareTag("BreakBlock") && (special.highJumpUsed || special.meteorDrop))
         {
             //ƒuƒƒbƒN‚ğÁ‚·
             Destroy(other.gameObject);
-        }
-
-        if (this.gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem"))
-        {
-            //‚Ô‚Â‚©‚Á‚½‚Æ‚«‚Ì“Ë‚Á‚©‚©‚è‚ğÁ‚·
-            PlayerYMoveReset();
         }
     }
 }
