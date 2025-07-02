@@ -17,6 +17,9 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.2f;
 
+    private float jumpKeyHoldTime = 0f;
+    private float crouchThreshold = 0.2f; // この時間以上でしゃがみ開始
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -32,8 +35,10 @@ public class PlayerAnimation : MonoBehaviour
     void Update()
     {
         bool isGrounded = IsGrounded();
+        bool hasMoveInput = Mathf.Abs(playerMove.MoveInput) > 0f;
+        bool isJumpKeyPressed = Input.GetKey(playerState.keyBind.playerJump);
 
-        // 着地検出
+        // 地面着地検出
         if (isGrounded && !wasGrounded)
         {
             Debug.Log("着地しました");
@@ -41,28 +46,11 @@ public class PlayerAnimation : MonoBehaviour
         }
         wasGrounded = isGrounded;
 
-        // 移動入力（走り判定）
-        bool hasMoveInput = Mathf.Abs(playerMove.MoveInput) > 0f;
-
-        // ジャンプキー押下判定
-        bool isJumpKeyPressed = Input.GetKey(playerState.keyBind.playerJump);
-
-        // しゃがみ開始トリガー（ジャンプキー押した瞬間）
-        if (isJumpKeyPressed && !crouchStarted)
-        {
-            animator.SetTrigger("StartCrouch");
-            crouchStarted = true;
-        }
-        // ジャンプキー離したらしゃがみ解除フラグOFF
-        if (!isJumpKeyPressed)
-        {
-            crouchStarted = false;
-        }
-        animator.SetBool("IsCrouching", isJumpKeyPressed);
-
         // 走り状態（ジャンプキー押してない・かつ移動キー押している・かつ地面にいる）
         bool isRunning = playerState.isGrounded && hasMoveInput && !isJumpKeyPressed;
         animator.SetBool("IsRunning", isRunning);
+
+
 
         // 向き制御
         if (playerMove.MoveInput > 0f)
@@ -70,7 +58,38 @@ public class PlayerAnimation : MonoBehaviour
         else if (playerMove.MoveInput < 0f)
             transform.rotation = Quaternion.Euler(0, -90, 0);
 
-        // ハイジャンプ実行
+        // ジャンプキー長押し時間カウント
+        if (isJumpKeyPressed && isGrounded && !isJumping)
+        {
+            jumpKeyHoldTime += Time.deltaTime;
+
+            if (jumpKeyHoldTime >= crouchThreshold && !crouchStarted)
+            {
+                animator.SetTrigger("StartCrouch");
+                crouchStarted = true;
+            }
+        }
+        else
+        {
+            jumpKeyHoldTime = 0f;
+        }
+
+        // しゃがみキャンセル（ジャンプまたは移動）
+        bool shouldCancelCrouch = hasMoveInput || isJumping;
+        if (crouchStarted && shouldCancelCrouch)
+        {
+            animator.SetTrigger("EndCrouch");
+            crouchStarted = false;
+        }
+
+        // Animatorに現在のしゃがみ状態を伝える
+        animator.SetBool("IsCrouching", crouchStarted);
+
+        // アイドル状態（入力が全くないとき）
+        bool isIdle = !hasMoveInput && !isJumpKeyPressed && isGrounded && !isJumping;
+        animator.SetBool("IsIdle", isIdle);
+
+        // ハイジャンプ演出
         if (playerSpecial.playHighJumpAnim)
         {
             animator.SetTrigger("HighJump");
@@ -78,7 +97,7 @@ public class PlayerAnimation : MonoBehaviour
             crouchStarted = false;
         }
 
-        // メテオドロップ
+        // メテオドロップ演出
         if (playerSpecial.meteorDrop)
         {
             animator.SetTrigger("MeteorDrop");
@@ -86,12 +105,12 @@ public class PlayerAnimation : MonoBehaviour
             return;
         }
 
-        // 通常ジャンプ判定
+        // 通常ジャンプ（Spaceキー）でジャンプアニメ
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isJumping)
         {
             isJumping = true;
 
-            int jumpType = 1; // デフォルト通常ジャンプ
+            int jumpType = 1; // 通常ジャンプ
 
             if (playerJump != null)
             {
@@ -116,6 +135,9 @@ public class PlayerAnimation : MonoBehaviour
 
             Debug.Log($"ジャンプアニメ Step {jumpType}");
         }
+
+        // 地面判定のAnimator反映
+        animator.SetBool("IsGrounded", isGrounded);
     }
 
     private bool IsGrounded()
