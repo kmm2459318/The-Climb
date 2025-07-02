@@ -1,9 +1,12 @@
+using Zenject;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Rendering;
 
+[assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]
+[assembly: InternalsVisibleTo("Assembly-CSharp-Tests")]
 [RequireComponent(typeof(EnemyMover))]
 [RequireComponent(typeof(CharacterGroundChecker))]
 [RequireComponent(typeof(LandGroundNotifier))]
@@ -20,12 +23,12 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     }
     
     [Header("Instance")]
-    [SerializeField] KickerStatus kickerStatus;    //  キッカーステータスインスタンス
+    [SerializeField] [Inject] internal KickerStatus kickerStatus;    //  キッカーステータスインスタンス
     KickerStatBlock kickerStatBlock;    //  キッカーステータスクラス
     EnemyMover enemyMover;    //  エネミームーバーインスタンス
     CharacterGroundChecker characterGroundChecker;    //  グラウンドチェッカーインスタンス
     EnemyStateMachine enemyStateMachine;    //  エネミーステートマシーンインスタンス
-    PlayerState playerState;    //  プレイヤーステートインスタンス
+    [Inject]PlayerState playerState;    //  プレイヤーステートインスタンス
     CharacterStateVisualizer characterStateVisualizer;    //  キャラクターステートビジュアライザーインスタンス
     public Dictionary<KickerCommanderMethod, ICommand> CommanderMethodMap;    //  このスクリプトの関数の辞書
     public event Action OnJumpTime;    //  ジャンプタイムのサブスク
@@ -43,7 +46,13 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     float CurrentMoveSpd;    //  現在の移動速度
     float CurrentJumpForce;    //  現在のジャンプ力
     float CurrentJumpFrequency;    //  現在のジャンプ頻度
+    
+    ////  インスタンス注入
+    //[Inject]
+    //void Construct()
+    //{
 
+    //}
     void Awake()
     {
         if (kickerStatus == null)
@@ -56,7 +65,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         kickerStatBlock = kickerStatus.GetStats(EnemyMode.NORMAL);
         characterGroundChecker = GetComponent<CharacterGroundChecker>();
         enemyStateMachine = new EnemyStateMachine();
-        playerState = GameObject.FindAnyObjectByType<PlayerState>();
+        //playerState = GameObject.FindAnyObjectByType<PlayerState>();
         commandProvider = new DefaultCommandProvider(this);
         enemyStateFactory = new EnemyStateFactory(this, enemyStateMachine);
         characterStateVisualizer = GetComponent<CharacterStateVisualizer>();
@@ -69,7 +78,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         Initialize();
     }
     //  テストのための初期化
-    void InitializeForTest(KickerStatus status)
+    internal void InitializeForTest(KickerStatus status)
     {
         enemyMover = GetComponent<EnemyMover>();
         this.kickerStatBlock = status.GetStats(EnemyMode.NORMAL);
@@ -90,6 +99,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
 
     void Start()
     {
+        Debug.Log(enemyMover.gameObject.name);
         //  定期的なジャンプのループを開始
         JumpLoop = StartCoroutine(PeriodicallyJump());
     }

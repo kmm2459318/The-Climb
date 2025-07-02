@@ -47,8 +47,8 @@ public class KickerMoveCommanderTest
         });
 
         // Awake再実行用に呼び出し
-        kickerMoveCommander.GetType().GetField("kickerStatus", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(kickerMoveCommander, kickerStatus);
-        kickerMoveCommander.GetType().GetMethod("InitializeForTest", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(kickerMoveCommander, new object[] { kickerStatus });
+        kickerMoveCommander.kickerStatus = kickerStatus;
+        kickerMoveCommander.InitializeForTest(kickerStatus);
     }
 
     [Test]
@@ -80,3 +80,6 @@ public class KickerMoveCommanderTest
         Assert.AreEqual(MoveDir.LEFT, dir);
     }
 }
+//  以下コード保存所  //
+//kickerMoveCommander.GetType().GetField("kickerStatus", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(kickerMoveCommander, kickerStatus);
+//kickerMoveCommander.GetType().GetMethod("InitializeForTest", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(kickerMoveCommander, new object[] { kickerStatus });
