@@ -1,15 +1,16 @@
 using UnityEngine;
 using System.Collections;
+
 public class Boss_20_Knockback : MonoBehaviour
 {
-
-    [SerializeField] public Transform player;       // プレイヤーのTransform
-    [SerializeField] public float knockbackDistance = 5f; // 発動距離
-    [SerializeField] public float knockbackForce = 0.1f;    // ノックバックの力
-    [SerializeField] private float stopDuration = 0.2f;        // 停止している時間
-                     private bool isKnockbacking = false;                  // 移動を一時的に止めるフラグ
+    [SerializeField] public Transform player;
+    [SerializeField] public float knockbackDistance = 5f;
+    [SerializeField] public float knockbackForce = 0.1f;
+    [SerializeField] private float knockbackDelay = 0.1f;
+    [SerializeField] private float stopDuration = 0.2f;
 
     private Rigidbody rb;
+    private bool isKnockbacking = false;
     private bool hasKnockedBack = false;
 
     void Start()
@@ -19,6 +20,8 @@ public class Boss_20_Knockback : MonoBehaviour
 
     void Update()
     {
+        if (isKnockbacking) return;
+
         CheckPlayerDistance();
     }
 
@@ -34,7 +37,6 @@ public class Boss_20_Knockback : MonoBehaviour
             hasKnockedBack = true;
         }
 
-        // 一定以上離れたらノックバックを再び許可
         if (distance > knockbackDistance + 1f)
         {
             hasKnockedBack = false;
@@ -44,6 +46,8 @@ public class Boss_20_Knockback : MonoBehaviour
     void ApplyKnockback()
     {
         Debug.Log("ノックバック発動！");
+        isKnockbacking = true;
+
         Vector3 direction = (transform.position - player.position).normalized;
         rb.AddForce(direction * knockbackForce, ForceMode.Impulse);
 
@@ -52,10 +56,9 @@ public class Boss_20_Knockback : MonoBehaviour
 
     IEnumerator ResetVelocityAfterKnockback()
     {
-        yield return new WaitForSeconds(knockbackDistance); // 少し時間を置く（力が加わった直後）
+        yield return new WaitForSeconds(knockbackDelay);
 
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero; // 回転も止めたい場合
+        rb.angularVelocity = Vector3.zero;
 
         yield return new WaitForSeconds(stopDuration);
 
