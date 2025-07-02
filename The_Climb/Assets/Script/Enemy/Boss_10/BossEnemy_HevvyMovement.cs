@@ -45,11 +45,6 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
                 hasActivated = true;
             }
         }
-        else if (currentState == BossState.Move)
-        {
-            MoveTowardsPlayer();
-            CheckForTransition();
-        }
     }
 
     void ChangeState(BossState newState)
@@ -63,7 +58,7 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
                 PlayAnimation("Idle");
                 break;
             case BossState.Move:
-                PlayAnimation("HopMove");
+                StartCoroutine(HopMoveRoutine()); // ← ここに移動させる
                 break;
             case BossState.ChargeVertical:
                 PlayAnimation("Charge");
@@ -81,12 +76,31 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
         }
     }
 
-    void MoveTowardsPlayer()
+    IEnumerator HopMoveRoutine()
     {
-        Vector3 direction = (player.position - transform.position).normalized;
-        direction.y = 0;
-        transform.position += direction * stats.hopSpeed * Time.deltaTime;
-        Debug.Log("[Boss] プレイヤーに向かって移動中");
+        PlayAnimation("HopMove");
+
+        for (int i = 0; i < stats.hopMoveCount; i++)
+        {
+            // プレイヤー方向へジャンプベクトルを算出
+            Vector3 direction = (player.position - transform.position).normalized;
+            Vector3 horizontal = new Vector3(direction.x, 0, direction.z);
+
+            rb.linearVelocity = horizontal * stats.hopMoveForce + Vector3.up * stats.hopMoveHeight;
+
+            Debug.Log($"[Boss] ホップ移動 {i + 1}/{stats.hopMoveCount}");
+
+            // 落下するまで待つ
+            yield return new WaitUntil(() => rb.linearVelocity.y <= 0);
+            // 着地するまで待つ
+            yield return new WaitUntil(() => IsGrounded());
+
+            // 少し待ってから次のホップ（必要に応じて調整）
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        Debug.Log("[Boss] ホップ移動完了 → 状態遷移チェック");
+        CheckForTransition();
     }
 
     void CheckForTransition()
@@ -112,7 +126,17 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
         yield return new WaitForSeconds(stats.chargeTime);
 
         PlayAnimation("JumpVertical");
-        rb.linearVelocity = new Vector3(0, stats.verticalJumpForce, 0);
+
+        // プレイヤー方向へのわずかな横移動ベクトルを追加
+        Vector3 targetPos = player.position;
+        Vector3 direction = (targetPos - transform.position).normalized;
+
+        // 横方向に移動したい力（控えめに）
+        Vector3 horizontalForce = new Vector3(direction.x, 0, direction.z) * stats.smallHopForce;
+
+        // 垂直ジャンプ + 横方向へのわずかな力
+        rb.linearVelocity = horizontalForce + Vector3.up * stats.verticalJumpForce;
+
         Debug.Log("[Boss] 垂直ジャンプ 実行");
 
         // Wait until falling then grounded
