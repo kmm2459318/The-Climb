@@ -5,35 +5,35 @@ public class Boss_20_Knockback : MonoBehaviour
 {
     [SerializeField] public Transform player;
     [SerializeField] public float knockbackDistance = 5f;
-    [SerializeField] public float knockbackForce = 0.1f;
-    [SerializeField] private float knockbackDelay = 0.1f;
-    [SerializeField] private float stopDuration = 0.2f;
+    [SerializeField] public float upwardHeight = 2f;     // 上昇の高さ
+    [SerializeField] public float backwardDistance = 2f; // 後退の距離
+    [SerializeField] public float knockbackDuration = 0.5f;
+    [SerializeField] public float returnDuration = 0.5f;
 
-    private Rigidbody rb;
     private bool isKnockbacking = false;
     private bool hasKnockedBack = false;
+    private Vector3 originalPosition;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        originalPosition = transform.position;
     }
 
     void Update()
     {
         if (isKnockbacking) return;
-
         CheckPlayerDistance();
     }
 
     void CheckPlayerDistance()
     {
-        if (player == null || rb == null) return;
+        if (player == null) return;
 
         float distance = Vector3.Distance(transform.position, player.position);
 
         if (distance <= knockbackDistance && !hasKnockedBack)
         {
-            ApplyKnockback();
+            StartCoroutine(PerformKnockback());
             hasKnockedBack = true;
         }
 
@@ -43,24 +43,40 @@ public class Boss_20_Knockback : MonoBehaviour
         }
     }
 
-    void ApplyKnockback()
+    IEnumerator PerformKnockback()
     {
-        Debug.Log("ノックバック発動！");
         isKnockbacking = true;
 
-        Vector3 direction = (transform.position - player.position).normalized;
-        rb.AddForce(direction * knockbackForce, ForceMode.Impulse);
+        Vector3 knockDirection = (transform.position - player.position).normalized;
+        Vector3 upwardTarget = transform.position + Vector3.up * upwardHeight;
+        Vector3 backwardTarget = upwardTarget + knockDirection * backwardDistance;
 
-        StartCoroutine(ResetVelocityAfterKnockback());
-    }
+        // 上昇しながら後退（ノックバック）
+        float elapsed = 0f;
+        Vector3 start = transform.position;
 
-    IEnumerator ResetVelocityAfterKnockback()
-    {
-        yield return new WaitForSeconds(knockbackDelay);
+        while (elapsed < knockbackDuration)
+        {
+            transform.position = Vector3.Lerp(start, backwardTarget, elapsed / knockbackDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
 
-        rb.angularVelocity = Vector3.zero;
+        transform.position = backwardTarget;
 
-        yield return new WaitForSeconds(stopDuration);
+        // 元のY座標にふわっと戻る
+        Vector3 fallTarget = new Vector3(transform.position.x, originalPosition.y, transform.position.z);
+        elapsed = 0f;
+        Vector3 fallStart = transform.position;
+
+        while (elapsed < returnDuration)
+        {
+            transform.position = Vector3.Lerp(fallStart, fallTarget, elapsed / returnDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = fallTarget;
 
         isKnockbacking = false;
     }
