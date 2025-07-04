@@ -35,6 +35,7 @@ public class PlayerSpecialAction : MonoBehaviour
     public float meteorDropCounter = 0f;  //メテオドロップのカウンター
 
     public bool playHighJumpAnim = false; // このフレームでアニメーション再生
+    public bool isHighJumpCharging = false;
     internal bool isChargeInsufficient;
 
     void Start()

@@ -35,6 +35,9 @@ public class PlayerJump : MonoBehaviour
     private float TrampolineTimer     = 0f;    //トランポリンの効果を管理するタイマー
     private bool  TrampolineJumping   = false; //トランポリンのジャンプ中判定
 
+    public float highJumpChargeTime = 0.5f; // 例：必要チャージ時間
+
+
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();

@@ -46,19 +46,21 @@ public class PlayerAnimation : MonoBehaviour
         }
         wasGrounded = isGrounded;
 
-        // 走り状態（ジャンプキー押してない・かつ移動キー押している・かつ地面にいる）
-        bool isRunning = playerState.isGrounded && hasMoveInput && !isJumpKeyPressed;
+        // 向き制御（チャージ中は向きを固定）
+        bool isChargingHighJump = jumpKeyHoldTime > 0f && !isJumping && isGrounded;
+        if (!isChargingHighJump)
+        {
+            if (playerMove.MoveInput > 0f)
+                transform.rotation = Quaternion.Euler(0, 90, 0);
+            else if (playerMove.MoveInput < 0f)
+                transform.rotation = Quaternion.Euler(0, -90, 0);
+        }
+
+        // 走り状態
+        bool isRunning = isGrounded && hasMoveInput && !isJumpKeyPressed;
         animator.SetBool("IsRunning", isRunning);
 
-
-
-        // 向き制御
-        if (playerMove.MoveInput > 0f)
-            transform.rotation = Quaternion.Euler(0, 90, 0);
-        else if (playerMove.MoveInput < 0f)
-            transform.rotation = Quaternion.Euler(0, -90, 0);
-
-        // ジャンプキー長押し時間カウント
+        // ジャンプキー長押し時間カウント（しゃがみ始め）
         if (isJumpKeyPressed && isGrounded && !isJumping)
         {
             jumpKeyHoldTime += Time.deltaTime;
@@ -71,30 +73,36 @@ public class PlayerAnimation : MonoBehaviour
         }
         else
         {
+            // 長押しが中断されたらカウントリセット
             jumpKeyHoldTime = 0f;
         }
 
-        // しゃがみキャンセル（ジャンプまたは移動）
-        bool shouldCancelCrouch = hasMoveInput || isJumping;
+        // しゃがみ状態のキャンセル判定
+        bool shouldCancelCrouch = hasMoveInput || isJumping || (!isJumpKeyPressed && crouchStarted);
         if (crouchStarted && shouldCancelCrouch)
         {
             animator.SetTrigger("EndCrouch");
+            animator.SetBool("IsCrouching", false);
             crouchStarted = false;
         }
 
-        // Animatorに現在のしゃがみ状態を伝える
+        // アニメーターにしゃがみ状態を反映
         animator.SetBool("IsCrouching", crouchStarted);
 
-        // アイドル状態（入力が全くないとき）
+        // アイドル状態
         bool isIdle = !hasMoveInput && !isJumpKeyPressed && isGrounded && !isJumping;
         animator.SetBool("IsIdle", isIdle);
 
-        // ハイジャンプ演出
+        // ハイジャンプ演出（優先）
         if (playerSpecial.playHighJumpAnim)
         {
+            animator.ResetTrigger("EndCrouch"); // 衝突防止
             animator.SetTrigger("HighJump");
-            playerSpecial.playHighJumpAnim = false;
+            animator.SetBool("IsCrouching", false);
             crouchStarted = false;
+            jumpKeyHoldTime = 0f;
+            isJumping = true;
+            playerSpecial.playHighJumpAnim = false;
         }
 
         // メテオドロップ演出
@@ -102,16 +110,15 @@ public class PlayerAnimation : MonoBehaviour
         {
             animator.SetTrigger("MeteorDrop");
             isJumping = true;
-            return;
+            return; // 他の処理はスキップ
         }
 
-        // 通常ジャンプ（Spaceキー）でジャンプアニメ
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isJumping)
+        // 通常ジャンプアニメ（ハイジャンプ演出中は無効）
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isJumping && !playerSpecial.playHighJumpAnim)
         {
             isJumping = true;
 
-            int jumpType = 1; // 通常ジャンプ
-
+            int jumpType = 1;
             if (playerJump != null)
             {
                 if (playerJump.landingJumpNumber >= 2)
