@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4419540929878694139}
   - component: {fileID: 158218493162333596}
-  - component: {fileID: 1253321696468154138}
   - component: {fileID: 6590613962771668550}
   m_Layer: 0
   m_Name: HeadingAttack
@@ -46,27 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c44578532196f747932537aa3012cd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!65 &1253321696468154138
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805939567105611153}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.5, y: 0.5, z: 0.5}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &6590613962771668550
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -375,11 +353,8 @@ GameObject:
   - component: {fileID: 3133395199702357206}
   - component: {fileID: 5401961285133459525}
   - component: {fileID: 7055985816896250419}
-  - component: {fileID: 4708216002185107873}
   - component: {fileID: 4912258855742579570}
   - component: {fileID: 2574114015764632309}
-  - component: {fileID: 1340192618886804523}
-  - component: {fileID: 658431297444987811}
   - component: {fileID: 5449100481224116587}
   m_Layer: 0
   m_Name: PlayerModel
@@ -475,12 +450,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e123a8b36fa1fd447b13c36e42e725de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RigidBody: {fileID: 0}
-  keyBind: {fileID: 8028215626570228958}
-  PlayerAnimation: {fileID: 0}
   highJumpOn: 0
   quickJumpOn: 0
   meteorDropOn: 0
+  RigidBody: {fileID: 0}
+  keyBind: {fileID: 8028215626570228958}
+  PlayerAnimation: {fileID: 0}
   playerDirectionRight: 1
   landing: 0
   landingJumpOn: 0
@@ -512,6 +487,7 @@ MonoBehaviour:
   quickJumpOn: 0
   meteorDropOn: 1
   groundMaxSpeed: 6.459797
+  maxAirSpeed: 10
   slipping: 0
   slipVelocity: {x: 0, y: 0, z: 0}
   PlayerAnimation: {fileID: 0}
@@ -590,27 +566,6 @@ MonoBehaviour:
   meteorHighJump: 0
   meteorDropTime: 0.37
   meteorDropCounter: 0
---- !u!65 &4708216002185107873
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8265955754314674708}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 0.5, y: 1.34, z: 0.5}
-  m_Center: {x: 0, y: 0.715, z: 0}
 --- !u!65 &4912258855742579570
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -618,7 +573,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8265955754314674708}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ccad5117684807a4d8c7f0713eb78fef, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -659,48 +614,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 120
   m_CollisionDetection: 0
---- !u!135 &1340192618886804523
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8265955754314674708}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Radius: 0.05
-  m_Center: {x: -0.21, y: 0.05, z: 0}
---- !u!135 &658431297444987811
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8265955754314674708}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Radius: 0.05
-  m_Center: {x: 0.21, y: 0.05, z: 0}
 --- !u!65 &5449100481224116587
 BoxCollider:
   m_ObjectHideFlags: 0
