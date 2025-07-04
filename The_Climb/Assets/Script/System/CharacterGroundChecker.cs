@@ -15,7 +15,7 @@ public class CharacterGroundChecker : MonoBehaviour
         Vector3 CheckPos = position ?? this.transform.position;    //  光線を出すポジション
         if (Physics.Raycast(CheckPos, Vector3.down, out Hit, GroundCheckDis, GameLayer.ToMask(GameLayers.GROUND)))
         {
-            if (Hit.collider.CompareTag(TagName.Platform))
+            if (Hit.collider.CompareTag(TagName.Ground) || Hit.collider.CompareTag(TagName.Platform))
             {
                 return true;
             }
