@@ -15,16 +15,19 @@ public class PlayerJump : MonoBehaviour
     private float jumpCoolTime = 0.06f;  //ジャンプのクールタイム
     private float jumpCoolCounter = 0f;  //ジャンのクールタイムカウント
     public bool jumpCoolActive = false;  //ジャンクールタイムを始める用判定
+    private bool isJumpQueued = false;   //ジャンプキーが押された判定
+    private float jumpQueueTime = 0.2f;  //ジャンプ先行入力猶予時間
+    private float jumpQueueCounter = 0f;  //ジャンプ先行入力カウンター
     private float jumpTime;              //ジャンプ入力時間
     private float jumpTimeMax = 0.2f;    //最大ジャンプ入力時間
     private float jumpTimeMaxSaving = 0.2f;  //最大ジャンプ入力時間を保持
-    private float groundJumpPower = 12f;  //ジャンプでプレイヤーにかかる上方向の力
+    private float groundJumpPower = 11f;  //ジャンプでプレイヤーにかかる上方向の力
     private float maxJumpSpeed = 12f;    //空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();  //ジャンプ時の速度カーブ
 
     public int landingJumpNumber = 0;   //着地ジャンプの連続回数
-    private float landingLowJumpPower = 14f;  //一回目着地ジャンプのパワー
-    private float landingHighJumpPower = 16f;  //二回目着地ジャンプのパワー
+    private float landingLowJumpPower = 13f;  //一回目着地ジャンプのパワー
+    private float landingHighJumpPower = 15f;  //二回目着地ジャンプのパワー
 
     public  bool  isOnTrampoline      = false; //トランポリンに乗っているかの判定
     public  float TrampolinePower     = 1.5f;  //トランポリンのジャンプ倍率
@@ -65,7 +68,6 @@ public class PlayerJump : MonoBehaviour
 
     private void FixedUpdate()
     {
-
         //ジャンプ
         if (jumping)
         {
@@ -110,9 +112,18 @@ public class PlayerJump : MonoBehaviour
 
     private void JumpOperation()
     {
+        //ジャンプキー押された
+        if (Input.GetKeyDown(state.keyBind.playerJump) && !special.meteorHighJumpOK && !isJumpQueued)
+        {
+            isJumpQueued = true;
+            jumpQueueCounter = 0f;
+        }
+
+        //ジャンプの判定を開始させる
         if ((coyoteCounter <= coyoteTime || state.isJumpMoveOK) && !jumpCoolActive && special.highJumpChargeCounter < special.highJumpChargeTime)
         {
-            if (Input.GetKeyDown(state.keyBind.playerJump) && !special.meteorHighJumpOK)
+            //通常ジャンプと着地ジャンプ
+            if (isJumpQueued)
             {
                 jumping = true;
                 jumpCoolActive = true;
@@ -142,6 +153,7 @@ public class PlayerJump : MonoBehaviour
             }
         }
 
+        //ジャンプボタンが押され続けてる
         if (jumping)
         {
             if (Input.GetKeyUp(state.keyBind.playerJump) && jumpTime <= jumpTimeMaxSaving * 1 / 2)
@@ -149,10 +161,22 @@ public class PlayerJump : MonoBehaviour
                 jumpTimeMax = jumpTimeMaxSaving * 1 / 2;
             }
         }
+
+        //ジャンプ先行入力のカウント
+        if (isJumpQueued)
+        {
+            jumpQueueCounter += Time.deltaTime;
+            
+            if (jumpQueueCounter > jumpQueueTime)
+            {
+                isJumpQueued = false;
+            }
+        }
     }
 
     public void Jump(float jumpPower)
     {
+        Debug.Log($"[Jump] Power: {jumpPower}, Time: {jumpTime}, Max: {jumpTimeMax}");
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
 
 
