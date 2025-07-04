@@ -10,18 +10,20 @@ public class Boss_20_Knockback : MonoBehaviour
     [SerializeField] public float knockbackDuration = 0.5f;
     [SerializeField] public float returnDuration = 0.5f;
 
-    private bool isKnockbacking = false;
+    public bool IsKnockbacking { get; private set; } = false;
     private bool hasKnockedBack = false;
     private Vector3 originalPosition;
 
-    void Start()
+    private void Start()
     {
-        originalPosition = transform.position;
+          originalPosition = transform.position;
     }
+
+ 
 
     void Update()
     {
-        if (isKnockbacking) return;
+        if (IsKnockbacking) return;
         CheckPlayerDistance();
     }
 
@@ -32,7 +34,8 @@ public class Boss_20_Knockback : MonoBehaviour
         float distance = Vector3.Distance(transform.position, player.position);
 
         if (distance <= knockbackDistance && !hasKnockedBack)
-        {
+        { 
+         
             StartCoroutine(PerformKnockback());
             hasKnockedBack = true;
         }
@@ -45,7 +48,7 @@ public class Boss_20_Knockback : MonoBehaviour
 
     IEnumerator PerformKnockback()
     {
-        isKnockbacking = true;
+        IsKnockbacking = true;
 
         Vector3 knockDirection = (transform.position - player.position).normalized;
         Vector3 upwardTarget = transform.position + Vector3.up * upwardHeight;
@@ -65,7 +68,7 @@ public class Boss_20_Knockback : MonoBehaviour
         transform.position = backwardTarget;
 
         // Œ³‚ÌYÀ•W‚É‚Ó‚í‚Á‚Æ–ß‚é
-        Vector3 fallTarget = new Vector3(transform.position.x, originalPosition.y, transform.position.z);
+        Vector3 fallTarget = new Vector3(transform.position.x, originalPosition.y,originalPosition.z);
         elapsed = 0f;
         Vector3 fallStart = transform.position;
 
@@ -78,6 +81,6 @@ public class Boss_20_Knockback : MonoBehaviour
 
         transform.position = fallTarget;
 
-        isKnockbacking = false;
+        IsKnockbacking = false;
     }
 }

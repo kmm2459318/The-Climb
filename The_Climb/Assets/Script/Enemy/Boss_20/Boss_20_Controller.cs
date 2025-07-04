@@ -21,11 +21,13 @@ public class Boss_20_Controller : MonoBehaviour
     private bool isResting = false;　　　　　　 //ボスの動くかどうかの判定
     private Rigidbody rb;
     private float Wave = 5.0f;                  //揺れ動く回数
-    
+    private Boss_20_Knockback knockbackScript;
+
 
     //初期化処理
     void Awake()
     {
+        knockbackScript = GetComponent<Boss_20_Knockback>();
         rb = GetComponent<Rigidbody>();
         Initialize();
 
@@ -56,7 +58,7 @@ public class Boss_20_Controller : MonoBehaviour
     //ボスの動き
     void Move()
     {
-        if (!isResting)
+        if (!isResting && knockbackScript.IsKnockbacking) return;
         {
             Vector3 waveMotion = new Vector3(0f, Mathf.Sin(Time.time * Wave) * Enemy_Vertical, 0f);
 
@@ -126,7 +128,7 @@ public class Boss_20_Controller : MonoBehaviour
     //発射　　　　　　　　　　
     void Bullet()
     {
-        if (!isResting)
+        if (!isResting && knockbackScript.IsKnockbacking) return;
         {
           GameObject player = GameObject.FindWithTag("Player");
           if (player == null) return;
