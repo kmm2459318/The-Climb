@@ -8,6 +8,9 @@ public class WalkState : IEnemyState
     EnemyStateMachine _enemyStateMachine;    //  EnemyStateMachineのインスタンス
     System.Action JumpTimeListener;    //  ジャンプ時間の発火を待つ変数
 
+    //  現在の移動状態を返す
+
+
     //  コンストラクタ
     public WalkState(KickerMoveCommander kickerMoveCommander, EnemyStateMachine enemyStateMachine, IEnemyStateFactory enemyStateFactory)
     {
@@ -38,3 +41,5 @@ public class WalkState : IEnemyState
         _kickerMoveCommander.OnJumpTime -= JumpTimeListener;
     }
 }
+//  以下コード保存所  //
+//public EnemyMovingState EnemyMovingStateProperty => EnemyMovingState.WALK_STATE;

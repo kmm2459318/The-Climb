@@ -47,6 +47,8 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     float CurrentJumpForce;    //  現在のジャンプ力
     float CurrentJumpFrequency;    //  現在のジャンプ頻度
     
+    public EnemyStateMachine EnemyStateMachineProperty => enemyStateMachine;
+
     ////  インスタンス注入
     //[Inject]
     //void Construct()
@@ -89,6 +91,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         enemyStateFactory = new EnemyStateFactory(this, enemyStateMachine);
         characterStateVisualizer = GetComponent<CharacterStateVisualizer>();
 
+
         //  初期状態をWalkに変更
         CommanderMethodMap = commandProvider.GetCommandMap();
         enemyStateMachine.ChangeState(enemyStateFactory.CreateWalkState());
@@ -99,14 +102,13 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
 
     void Start()
     {
-        Debug.Log(enemyMover.gameObject.name);
         //  定期的なジャンプのループを開始
         JumpLoop = StartCoroutine(PeriodicallyJump());
     }
     void FixedUpdate()
     {
         Debug.DrawRay(transform.position, Vector3.down * characterGroundChecker.GroundCheckDisProperty, Color.red);
-        Debug.DrawRay(EdgeRayOffset + transform.position, Vector3.down * characterGroundChecker.GroundCheckDisProperty, Color.gray);
+        Debug.DrawRay(EdgeRayOffset + transform.position, Vector3.down * characterGroundChecker.GroundCheckDisProperty, Color.pink);
         enemyStateMachine.FixedUpdate();
         characterStateVisualizer.MoveDirectionPropety(Velocity);
     }
@@ -142,6 +144,11 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         Velocity = new Vector3(CurrentMoveSpd * (int)CurrentMoveDir * Time.fixedDeltaTime, Velocity.y, 0f);
         //  基本移動
         enemyMover.BaseMove(Velocity);
+    }
+    //  地面か判定する
+    public bool IsGround()
+    {
+        return characterGroundChecker.CheckIsGround();
     }
     //  端か判定する
     public bool IsEdgePos()

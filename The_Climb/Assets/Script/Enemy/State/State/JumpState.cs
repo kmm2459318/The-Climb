@@ -6,7 +6,7 @@ public class JumpState : IEnemyState
     KickerMoveCommander _kickerMoveCommander;    //  KickerMoveCommanderのインスタンス
     EnemyStateMachine _enemyStateMachine;    //  EnemyStateMachineのインスタンス
     System.Action LamdGroundListener;    //  地面着地した時の発火を待つ変数
-
+    
     //  コンストラクタ
     public JumpState(KickerMoveCommander kickerMoveCommander, EnemyStateMachine enemyStateMachine, IEnemyStateFactory enemyStateFactory)
     {
@@ -32,3 +32,6 @@ public class JumpState : IEnemyState
         _kickerMoveCommander.OnLandGround -= LamdGroundListener;
     }
 }
+//  以下コード保存所  //
+//  現在の移動状態を返す
+//public EnemyMovingState EnemyMovingStateProperty => EnemyMovingState.JUMP_STATE;
