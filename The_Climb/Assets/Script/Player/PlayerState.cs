@@ -4,16 +4,16 @@ using UnityEngine.UIElements;
 
 public class PlayerState : MonoBehaviour
 {
+    public bool highJumpOn = false;      //ハイジャンプ可能か
+    public bool quickJumpOn = false;     //クイックジャンプ可能か
+    public bool meteorDropOn = false;    //メテオドロップ叶か
+
     public Rigidbody RigidBody;
     public KeyBind keyBind;
     PlayerMove move;
     PlayerJump jump;
     PlayerSpecialAction special; 
     public PlayerAnimation PlayerAnimation;
-
-    public bool highJumpOn = false;      //ハイジャンプ可能か
-    public bool quickJumpOn = false;     //クイックジャンプ可能か
-    public bool meteorDropOn = false;    //メテオドロップ叶か
 
     public bool playerDirectionRight = true;  //プレイヤーの見ている方向が右ならtrue、左ならfalse
     private bool wasGrounded = false;    //前フレームの地面状態
@@ -33,6 +33,8 @@ public class PlayerState : MonoBehaviour
     public LayerMask groundLayer;  //地面レイヤー
     private float groundCheckRadius = 0.001f;  //地面判定の半径
     public bool isAir = false;          //空中判定
+
+    private float playerFallSpeed = -20f;  //プレイヤーの落下速度
 
     void Start()
     {
@@ -97,6 +99,12 @@ public class PlayerState : MonoBehaviour
         {
             isAir = false;
         }
+        
+        //落下速度調整
+        if (RigidBody.linearVelocity.y < playerFallSpeed && !isGrounded && !jump.jumping)
+        {
+            RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerFallSpeed, 0);
+        }
 
         //壁に当たるのならば強制停止
         if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
@@ -119,6 +127,7 @@ public class PlayerState : MonoBehaviour
 
             landingJumpCounter = 0f;
             landingJumpOn = true;
+            RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
 
             // 横方向の速度が一定以上ならスリップ開始
             if (Mathf.Abs(RigidBody.linearVelocity.x) > move.groundMaxSpeed && !special.meteorDrop)
