@@ -12,12 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f190f3a8d8bd2847b4fa90c4f4e3abd, type: 3}
   m_Name: HevvyStats
   m_EditorClassIdentifier: 
-  jumpForce: 10
-  horizontalJumpForce: 6
-  jumpInterval: 3
-  jumpsBeforeCharge: 3
-  chargeDuration: 1.5
-  chargeJumpForce: 20
-  slowFallGravityScale: 0.2
-  LeftBoundary: -15
-  RightBoundary: 15
+  hopSpeed: 10
+  verticalJumpForce: 40
+  arcJumpForce: 20
+  arcJumpHeight: 20
+  smallHopForce: 1.5
+  hopMoveCount: 3
+  hopMoveForce: 8
+  hopMoveHeight: 10
+  chargeTime: 3
+  stunDuration: 3
+  nearTriggerDistance: 6
+  farTriggerDistance: 3
+  requiredHitsToDefeat: 3
