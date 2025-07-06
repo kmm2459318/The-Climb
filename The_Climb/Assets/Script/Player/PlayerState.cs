@@ -63,11 +63,6 @@ public class PlayerState : MonoBehaviour
         // 右壁判定（カプセル形）
         isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.60f, rightWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayer);
 
-        if (isLeftWall || isRightWall)
-        {
-            Debug.Log("aaaaaaaaaaaaaaaa");
-        }
-
         if (jump.jumpCoolActive || jump.jumping)
         {
             isGrounded = false;
@@ -78,8 +73,8 @@ public class PlayerState : MonoBehaviour
             isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
         }
 
-        // 地面判定のあとに、壁に当たってるかどうかで判定を覆す
-        if (!jump.jumping && 
+        //地面判定のあとに、壁に当たってるかどうかで判定を覆す
+        if (!jump.jumping &&
             ((isLeftWall && RigidBody.linearVelocity.x < -0.1f) ||
             (isRightWall && RigidBody.linearVelocity.x > 0.1f)))
         {
@@ -100,7 +95,7 @@ public class PlayerState : MonoBehaviour
         //着地チェック
         if (!jump.jumpCoolActive)
         {
-            LandingChack();
+            LandingCheck();
         }
 
         //空中判定
@@ -130,7 +125,7 @@ public class PlayerState : MonoBehaviour
         wasGrounded = isGrounded;
     }
 
-    private void LandingChack()
+    private void LandingCheck()
     {
         landing = false;
         //着地判定
