@@ -1,133 +1,211 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class BossEnemy_HevvyMovement : MonoBehaviour
 {
-    public HevvyStats stats;
-    private CharacterGroundChecker GroundChecker;
-    private float LeftBoundary;/* = -15f; *///Bossが壁によりすぎないようにするための向き変更のライン（左）
-    private float RightBoundary;/* = 15f; /*//*/Bossが壁によりすぎないようにするための向き変更のライン（右）*/
-    private Rigidbody rb;
-    private float Timer;
-    private int JumpCount = 0;
-    private bool IsCharging = false;
-    private float ChargeTimer = 0f;
-    [SerializeField] private int HorizontalDirection = 1;
-    private bool IsGrounded;
+    private enum BossState
+    {
+        Idle, Move, ChargeVertical, JumpVertical,
+        ChargeArc, JumpArc, Defeated
+    }
 
-    private void Awake()
+    [Header("参照")]
+    public Transform player;
+    public Animator animator;
+    public HevvyStats stats;
+
+    [Header("起動条件")]
+    public float activationDistance = 10f;
+
+    private BossState currentState;
+    private int hitCount = 0;
+    private bool isVulnerable = false;
+    private Rigidbody rb;
+    private bool hasActivated = false;
+
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
-        GroundChecker = GetComponent<CharacterGroundChecker>();
-        LeftBoundary = stats.LeftBoundary;
-        RightBoundary = stats.RightBoundary;
+        Debug.Log("[Boss] 初期化完了");
+        ChangeState(BossState.Idle);
     }
 
-    private void Update()
+    void Update()
     {
-       
+        if (!hasActivated && currentState == BossState.Idle)
         {
-            if (IsCharging)
-                {
-                Debug.Log("チャージジャンプのFlagがたちました");
-                ChargeTimer += Time.deltaTime;
+            float dist = Vector3.Distance(player.position, transform.position);
+            Debug.Log($"[Boss] Idle中：プレイヤーとの距離 = {dist:F2}");
 
-                if (ChargeTimer >= stats.JumpInterval && GroundChecker.CheckIsGround())
-
-                {
-                    Debug.Log("チャージジャンプが呼び出しされました");
-                    ChargeJump();
-                        IsCharging = false;
-                        ChargeTimer = 0f;
-                        JumpCount = 0;
-                    }
-                    
-
-                    return;
-                }
-
-                Timer += Time.deltaTime;
-
-            if (Timer >= stats.JumpInterval && GroundChecker.CheckIsGround())
-
+            if (dist <= activationDistance)
             {
-                Timer = 0f;
-                    JumpCount++;
-
-                    if (JumpCount >= stats.JumpsBeforeCharge)
-                    {
-                        BeginCharge();
-                    }
-                    else
-                    {
-                    
-                        NormalJump();
-                    }
-                }
-            // 一定のラインに到達したら向きを変える
-            if (transform.position.x <= LeftBoundary)
-            {
-                Debug.Log(transform.position);
-                HorizontalDirection = 1;
+                Debug.Log("[Boss] プレイヤーが接近 → 起動");
+                ChangeState(BossState.Move);
+                hasActivated = true;
             }
-            else if (transform.position.x >= RightBoundary)
-            {
-                Debug.Log(transform.position);
-                HorizontalDirection = -1;
-            }
-
         }
     }
 
-    void NormalJump()
+    void ChangeState(BossState newState)
     {
-        //if (GroundChecker.CheckIsGround())
-        //{ 
-            rb.linearVelocity = Vector3.zero;
-            Vector3 jumpVector = new Vector3(stats.HorizontalJumpForce * HorizontalDirection, stats.JumpForce, 0f);
-            rb.AddForce(jumpVector, ForceMode.Impulse);
-        //}
-    }
+        Debug.Log($"[Boss] 状態遷移: {currentState} → {newState}");
+        currentState = newState;
 
-    void BeginCharge()
-    {
-        IsCharging = true;
-        rb.linearVelocity = Vector3.zero;
-
-        // たまに左右を切り替える（オプション）
-        //HorizontalDirection *= Random.value > 0.5f ? -1 : 1;
-    }
-
-    void ChargeJump()
-    {
-        //if (GroundChecker.CheckIsGround())
-        //{
-            rb.linearVelocity = Vector3.zero;
-            Vector3 jumpVector = new Vector3(0f, stats.ChargeJumpForce, 0f);
-            rb.AddForce(jumpVector, ForceMode.Impulse);
-
-            // 降下時に重力を弱くする（月面風）
-            StartCoroutine(SlowFallCoroutine());
-        //}
-    }
-
-    System.Collections.IEnumerator SlowFallCoroutine()
-    {
-        float originalDrag = rb.linearDamping;
-
-        rb.useGravity = false;
-        rb.linearDamping = 0f;
-
-        // 上昇している間は待機
-        while (rb.linearVelocity.y > 0f)
+        switch (newState)
         {
-            yield return null;
+            case BossState.Idle:
+                PlayAnimation("Idle");
+                break;
+            case BossState.Move:
+                StartCoroutine(HopMoveRoutine()); // ← ここに移動させる
+                break;
+            case BossState.ChargeVertical:
+                PlayAnimation("Charge");
+                StartCoroutine(ChargeThenJumpVertical());
+                break;
+            case BossState.ChargeArc:
+                PlayAnimation("Charge");
+                StartCoroutine(ChargeThenJumpArc());
+                break;
+            case BossState.Defeated:
+                PlayAnimation("Defeat");
+                Debug.Log("[Boss] 撃破されました");
+                Destroy(gameObject, 2f);
+                break;
+        }
+    }
+
+    IEnumerator HopMoveRoutine()
+    {
+        PlayAnimation("HopMove");
+
+        for (int i = 0; i < stats.hopMoveCount; i++)
+        {
+            // プレイヤー方向へジャンプベクトルを算出
+            Vector3 direction = (player.position - transform.position).normalized;
+            Vector3 horizontal = new Vector3(direction.x, 0, direction.z);
+
+            rb.linearVelocity = horizontal * stats.hopMoveForce + Vector3.up * stats.hopMoveHeight;
+
+            Debug.Log($"[Boss] ホップ移動 {i + 1}/{stats.hopMoveCount}");
+
+            // 落下するまで待つ
+            yield return new WaitUntil(() => rb.linearVelocity.y <= 0);
+            // 着地するまで待つ
+            yield return new WaitUntil(() => IsGrounded());
+
+            // 少し待ってから次のホップ（必要に応じて調整）
+            yield return new WaitForSeconds(0.2f);
         }
 
-        // 降下開始
-        rb.useGravity = true;
-        rb.linearDamping = originalDrag;
+        Debug.Log("[Boss] ホップ移動完了 → 状態遷移チェック");
+        CheckForTransition();
+    }
 
-        rb.AddForce(Vector3.down * Physics.gravity.y * stats.SlowFallGravityScale, ForceMode.Acceleration);
+    void CheckForTransition()
+    {
+        float dist = Vector3.Distance(player.position, transform.position);
+        Debug.Log($"[Boss] プレイヤーとの距離: {dist:F2}");
+
+        if (dist < stats.nearTriggerDistance)
+        {
+            Debug.Log("[Boss] プレイヤーが近い → 垂直チャージへ");
+            ChangeState(BossState.ChargeVertical);
+        }
+        else if (dist > stats.farTriggerDistance)
+        {
+            Debug.Log("[Boss] プレイヤーが遠い → 山なりチャージへ");
+            ChangeState(BossState.ChargeArc);
+        }
+    }
+
+    IEnumerator ChargeThenJumpVertical()
+    {
+        Debug.Log("[Boss] 垂直ジャンプ チャージ開始");
+        yield return new WaitForSeconds(stats.chargeTime);
+
+        PlayAnimation("JumpVertical");
+
+        // プレイヤー方向へのわずかな横移動ベクトルを追加
+        Vector3 targetPos = player.position;
+        Vector3 direction = (targetPos - transform.position).normalized;
+
+        // 横方向に移動したい力（控えめに）
+        Vector3 horizontalForce = new Vector3(direction.x, 0, direction.z) * stats.smallHopForce;
+
+        // 垂直ジャンプ + 横方向へのわずかな力
+        rb.linearVelocity = horizontalForce + Vector3.up * stats.verticalJumpForce;
+
+        Debug.Log("[Boss] 垂直ジャンプ 実行");
+
+        // Wait until falling then grounded
+        yield return new WaitUntil(() => rb.linearVelocity.y <= 0);
+        yield return new WaitUntil(() => IsGrounded());
+
+        Debug.Log("[Boss] 垂直ジャンプ終了 → 移動へ");
+        ChangeState(BossState.Move);
+    }
+
+    IEnumerator ChargeThenJumpArc()
+    {
+        Debug.Log("[Boss] 山なりジャンプ チャージ開始");
+        yield return new WaitForSeconds(stats.chargeTime);
+
+        PlayAnimation("JumpArc");
+
+        Vector3 targetPos = player.position;
+        Vector3 direction = (targetPos - transform.position).normalized;
+        rb.linearVelocity = direction * stats.arcJumpForce + Vector3.up * stats.arcJumpHeight;
+
+        Debug.Log("[Boss] 山なりジャンプ 実行");
+
+        yield return new WaitUntil(() => rb.linearVelocity.y <= 0);
+        yield return new WaitUntil(() => IsGrounded());
+
+        Debug.Log("[Boss] 山なりジャンプ終了 → 移動へ");
+        ChangeState(BossState.Move);
+    }
+
+    bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, Vector3.down, 1.1f);
+    }
+
+    void PlayAnimation(string animName)
+    {
+        if (animator != null && !string.IsNullOrEmpty(animName))
+        {
+            animator.Play(animName);
+            Debug.Log($"[Boss] アニメーション再生: {animName}");
+        }
+        else
+        {
+            Debug.Log($"[Boss] アニメーションスキップ（未設定）: {animName}");
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (currentState == BossState.JumpArc && collision.contacts[0].normal.y > 0.5f)
+        {
+            Debug.Log("[Boss] 地面に着地（保険的遷移）");
+            ChangeState(BossState.Move);
+        }
+    }
+
+    // Gizmosで可視化
+    private void OnDrawGizmosSelected()
+    {
+        if (stats == null) return;
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, activationDistance);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, stats.nearTriggerDistance);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, stats.farTriggerDistance);
     }
 }
