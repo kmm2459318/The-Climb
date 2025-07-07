@@ -31,10 +31,10 @@ public class PlayerState : MonoBehaviour
     public Transform rightWallCheck;     //プレイヤー足元の右壁判定用オブジェクト
     public bool isRightWall;             //右壁判定
     public LayerMask groundLayer;  //地面レイヤー
-    private float groundCheckRadius = 0.001f;  //地面判定の半径
+    private float groundCheckRadius = 0.1f;  //地面判定の半径
     public bool isAir = false;          //空中判定
 
-    private float playerFallSpeed = -20f;  //プレイヤーの落下速度
+    private float playerFallSpeed = -19f;  //プレイヤーの落下速度
 
     void Start()
     {
@@ -53,25 +53,30 @@ public class PlayerState : MonoBehaviour
         RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         RigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
-        Physics.gravity = new Vector3(0, -45.6F, 0); // Gを倍にする
+        Physics.gravity = new Vector3(0, -45F, 0); // Gを倍にする
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         // 左壁判定（カプセル形）
-        isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.68f, leftWallCheck.position + Vector3.down * 0.68f, 0.001f, groundLayer);
+        isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.60f, leftWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayer);
         // 右壁判定（カプセル形）
-        isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.68f, rightWallCheck.position + Vector3.down * 0.68f, 0.001f, groundLayer);
+        isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.60f, rightWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayer);
 
-        if (!jump.jumpCoolActive)
+        if (jump.jumpCoolActive || jump.jumping)
+        {
+            isGrounded = false;
+        }
+        else
         {
             // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.1f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
         }
 
-        // 地面判定のあとに、壁に当たってるかどうかで判定を覆す
-        if ((isLeftWall && RigidBody.linearVelocity.x < -0.1f) ||
-            (isRightWall && RigidBody.linearVelocity.x > 0.1f))
+        //地面判定のあとに、壁に当たってるかどうかで判定を覆す
+        if (!jump.jumping &&
+            ((isLeftWall && RigidBody.linearVelocity.x < -0.1f) ||
+            (isRightWall && RigidBody.linearVelocity.x > 0.1f)))
         {
             isGrounded = false;
         }
@@ -84,11 +89,14 @@ public class PlayerState : MonoBehaviour
         else
         {
             // ジャンプOK判定（カプセル形）
-            isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, 0.25f, groundLayer);
+            isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, 0.19f, groundLayer);
         }
 
         //着地チェック
-        LandingChack();
+        if (!jump.jumpCoolActive)
+        {
+            LandingCheck();
+        }
 
         //空中判定
         if (!isGrounded && !isJumpMoveOK)
@@ -101,23 +109,23 @@ public class PlayerState : MonoBehaviour
         }
         
         //落下速度調整
-        if (RigidBody.linearVelocity.y < playerFallSpeed && !isGrounded && !jump.jumping)
+        if (RigidBody.linearVelocity.y < playerFallSpeed && !isGrounded && !jump.jumping && !landing)
         {
             RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerFallSpeed, 0);
         }
 
         //壁に当たるのならば強制停止
-        if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
-    (isRightWall && RigidBody.linearVelocity.x > 0))
-        {
-            RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
-        }
+    //    if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
+    //(isRightWall && RigidBody.linearVelocity.x > 0))
+    //    {
+    //        RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
+    //    }
 
         //前フレームの接地判定
         wasGrounded = isGrounded;
     }
 
-    private void LandingChack()
+    private void LandingCheck()
     {
         landing = false;
         //着地判定
@@ -127,7 +135,9 @@ public class PlayerState : MonoBehaviour
 
             landingJumpCounter = 0f;
             landingJumpOn = true;
-            RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
+            isLeftWall = false;
+            isRightWall = false;
+            //RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
 
             // 横方向の速度が一定以上ならスリップ開始
             if (Mathf.Abs(RigidBody.linearVelocity.x) > move.groundMaxSpeed && !special.meteorDrop)
@@ -140,7 +150,7 @@ public class PlayerState : MonoBehaviour
         //着地ジャンプ猶予カウント
         if (landingJumpOn)
         {
-            landingJumpCounter += Time.fixedDeltaTime;
+            landingJumpCounter += Time.deltaTime;
 
             if (landingJumpCounter > landingJumpTime)
             {

@@ -3,24 +3,27 @@ using UnityEngine;
 
 public class CollapseBlock : MonoBehaviour
 {
-    public float CollapseDelay = 1f;
-    public float RespawnDelay  = 3f;
+    public float CollapseDelay = 1f;   //崩れるまでの遅延時間
+    public float RespawnDelay  = 3f;　 //リスポーンするまでの時間
 
-    private bool isCollapsing = false;
-    private float CollapseTimer;
-    private float RespawnTimer;
+    private bool IsCollapsing = false; //崩れる処理が進行中か判定
+    private float CollapseTimer;       //崩れるまでのタイマー
+    private float RespawnTimer;        //リスポーンまでのタイマー
 
-    private GameObject visualPart;
+    private GameObject VisualPart;     //見た目用の子オブジェクト(足場の見た目部分)
+    private Collider HitBoxCollider;   //当たり判定用コライダー
 
     void Start()
     {
-        visualPart = transform.GetChild(0).gameObject;
-        CollapseTimer = CollapseDelay;
+        VisualPart = transform.GetChild(0).gameObject; //非表示にする足場の見た目(子オブジェクト)を取得
+        HitBoxCollider = GetComponent<Collider>();     //自身のコライダーを取得
+        CollapseTimer = CollapseDelay;                 //タイマーを初期化
     }
 
     void Update()
     {
-        if(isCollapsing)
+        //プレイヤーが乗った時、崩れるまでのタイマーを進める
+        if(IsCollapsing)
         {
             Debug.Log("isCollapse内");
             CollapseTimer -= Time.deltaTime;
@@ -30,8 +33,8 @@ public class CollapseBlock : MonoBehaviour
             }
         }
 
-        //非アクティブ中のリスポーン処理
-        if (visualPart != null && !visualPart.activeSelf)
+        //非アクティブ時、リスポーンタイマーを進める
+        if (VisualPart != null && !VisualPart.activeSelf)
         {
             Debug.Log("非アクティブ中のリスポーン処理");
             RespawnTimer -= Time.deltaTime;
@@ -42,34 +45,54 @@ public class CollapseBlock : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    //プレイヤーが上に乗った時に崩れる処理を進行
+    void OnCollisionEnter(Collision collision)
     {
-        if(other.CompareTag("Player") && !isCollapsing)
+        if(collision.gameObject.CompareTag("Player") && !IsCollapsing)
         {
-            Debug.Log("プレイヤーに当たった");
-            isCollapsing = true;
+            foreach(ContactPoint contact in collision.contacts)
+            {
+                if(Vector3.Dot(-contact.normal,Vector3.up) > 0.8f)
+                {
+                    IsCollapsing = true;
+                    break;
+                }
+            }
         }
     }
 
+    //足場を崩す処理
     void Collapse()
     {
-        if(visualPart != null)
+
+        //コライダーを無効化
+        if (HitBoxCollider != null)
         {
-            visualPart.SetActive(false);
+            HitBoxCollider.enabled = false;
+        }
+
+        //見た目を非表示(子オブジェクト)
+        if(VisualPart != null)
+        {
+            VisualPart.SetActive(false);
         }
 
         CollapseTimer = CollapseDelay;
-        isCollapsing = false;
+        IsCollapsing = false;
         RespawnTimer = RespawnDelay;
     }
 
+    //足場を元に戻す処理
     void Respawn()
     {
-        Debug.Log("リスポーン関数に入った");
-        if(visualPart != null)
+        if (HitBoxCollider != null)
         {
-            visualPart.SetActive(true);
+            HitBoxCollider.enabled = true;
+        }
+
+        if(VisualPart != null)
+        {
+            VisualPart.SetActive(true);
         }
     }
-
 }

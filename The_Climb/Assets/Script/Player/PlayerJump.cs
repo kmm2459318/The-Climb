@@ -12,7 +12,7 @@ public class PlayerJump : MonoBehaviour
     public bool jumping = false;        //ジャンプ入力中判定
     private float coyoteTime = 0.05f;    //コヨーテタイム
     public float coyoteCounter = 0f;    //コヨーテタイムカウント
-    private float jumpCoolTime = 0.06f;  //ジャンプのクールタイム
+    private float jumpCoolTime = 0.2f;  //ジャンプのクールタイム
     private float jumpCoolCounter = 0f;  //ジャンのクールタイムカウント
     public bool jumpCoolActive = false;  //ジャンクールタイムを始める用判定
     private bool isJumpQueued = false;   //ジャンプキーが押された判定
@@ -132,6 +132,7 @@ public class PlayerJump : MonoBehaviour
                 jumpCoolActive = true;
                 jumpTime = 0f;
                 jumpTimeMax = jumpTimeMaxSaving;
+                isJumpQueued = false;
                 //Debug.Log(RigidBody.linearVelocity.y);
                 //Debug.Log("true後"+special.headingAttack);
 
@@ -179,7 +180,7 @@ public class PlayerJump : MonoBehaviour
 
     public void Jump(float jumpPower)
     {
-        Debug.Log($"[Jump] Power: {jumpPower}, Time: {jumpTime}, Max: {jumpTimeMax}");
+        //Debug.Log($"[Jump] Power: {jumpPower}, Time: {jumpTime}, Max: {jumpTimeMax}");
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
 
 
