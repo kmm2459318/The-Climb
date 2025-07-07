@@ -20,7 +20,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private bool quickJump = false;      //クイックジャンプする判定
     private float quickJumpPowerX = 10f;  //クイックジャンプの横のパワー
-    private float quickJumpPowerY = 5f;  //クイックジャンプの縦のパワー
+    private float quickJumpPowerY = 9f;  //クイックジャンプの縦のパワー
     public bool quickJumpUsed = false;   //クイックジャンプを使用したか判定
 
     public bool meteorDrop = false;      //メテオドロップする判定
@@ -110,10 +110,10 @@ public class PlayerSpecialAction : MonoBehaviour
                 highJumpUsed = true;
                 headingAttack.SetActive(true);
             }
-            else
-            {
-                jump.jumping = true;
-            }
+            //else
+            //{
+            //    jump.jumping = true;
+            //}
 
             jump.jumpCoolActive = true;
             highJumpChargeCounter = 0f;
@@ -163,7 +163,7 @@ public class PlayerSpecialAction : MonoBehaviour
         }
         else
         {
-            quickJumpPowerY = 15f;
+            quickJumpPowerY = 12f;
         }
     }
 
@@ -194,14 +194,20 @@ public class PlayerSpecialAction : MonoBehaviour
         {
             RigidBody.useGravity = true;
             meteorDrop = false;
+            RigidBody.linearVelocity = Vector3.zero;
         }
     }
 
     private void QuickJumpUse()
     {
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
-        RigidBody.AddForce(new Vector3(quickJumpPowerX * move.MoveInput, quickJumpPowerY, 0), ForceMode.Impulse) ;
-
+        RigidBody.AddForce(new Vector3(quickJumpPowerX * move.MoveInput, quickJumpPowerY, 0), ForceMode.Impulse);
+        
+        //クイックジャンプの横移動速度制限
+        if (move.MoveInput != 0f)
+        {
+            move.maxAirSpeed = 15f;
+        }
         quickJump = false;
     }
 

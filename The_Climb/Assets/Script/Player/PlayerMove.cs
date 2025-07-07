@@ -16,7 +16,7 @@ public class PlayerMove : MonoBehaviour
     public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
     private float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 60f;    //空中での移動速度
-    private float maxAirSpeed = 10f;     //空中での速度制限
+    public float maxAirSpeed = 10f;     //空中での速度制限
 
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
     private float slippingTime = 0.05f;     //スリップ方向切り替え用
@@ -140,7 +140,7 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            RigidBody.linearVelocity = Vector3.zero;
+            RigidBody.linearVelocity = new Vector3(0f, RigidBody.linearVelocity.y, 0f);
         }
     }
 
@@ -172,14 +172,17 @@ public class PlayerMove : MonoBehaviour
         {
             maxAirSpeed = 10f;
         }
-        else 
-        {
-            maxAirSpeed = 15f;  //クイックジャンプの横移動速度制限
-        }
         Vector3 horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
         if (horizontalVelocity.magnitude > maxAirSpeed)
         {
             RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * maxAirSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
+        }
+
+        //徐々に遅くするよ
+        if (maxAirSpeed > 10f) 
+        {
+            Debug.Log(maxAirSpeed);
+            maxAirSpeed -= 0.14f;
         }
     }
 }
