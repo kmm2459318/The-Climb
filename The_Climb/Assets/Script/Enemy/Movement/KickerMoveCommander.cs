@@ -10,9 +10,11 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyMover))]
 [RequireComponent(typeof(CharacterGroundChecker))]
 [RequireComponent(typeof(LandGroundNotifier))]
+[RequireComponent(typeof(CollideEnemyNotifier))]
+[RequireComponent(typeof(PlayerCollisionNotifier))]
 [RequireComponent(typeof(CharacterStateVisualizer))]
 //  移動スクリプトに移動値を渡す
-public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler, IBlowable
+public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler, IBlowable, ICollideEnemy
 {
     public enum KickerCommanderMethod    //  このクラス内の関数一覧
     {
@@ -214,6 +216,11 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
             Debug.DrawRay(ObjectRegistry.Get("Player_Spine_c0c99d2d").transform.position, AirTotalBlowForce, Color.blue, 0.5f);
             rigidbody.AddForce(AirTotalBlowForce, ForceMode.Impulse);
         }
+        FlipMoveDir();  //  移動方向反転
+    }
+    //  敵と当たった時に実行されるインターフェイス関数
+    public void OnCollideEnemy()
+    {
         FlipMoveDir();  //  移動方向反転
     }
 }
