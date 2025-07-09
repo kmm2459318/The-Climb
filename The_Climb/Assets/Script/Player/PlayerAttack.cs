@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     PlayerState state;
+    PlayerMove move;
     PlayerJump jump;
     PlayerSpecialAction special;
 
@@ -12,6 +13,7 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         state = gameObject.transform.parent.gameObject.GetComponent<PlayerState>();
+        move = gameObject.transform.parent.gameObject.GetComponent<PlayerMove>();
         jump = gameObject.transform.parent.gameObject.GetComponent<PlayerJump>();
         special = gameObject.transform.parent.gameObject.GetComponent<PlayerSpecialAction>();
     }
@@ -27,7 +29,8 @@ public class PlayerAttack : MonoBehaviour
             headingSafeCounter -= Time.deltaTime;
         }
 
-        if (this.gameObject.name == "HeadingAttack")
+        //äeîªíËÇèIóπÇ≥ÇπÇÈ
+        if (gameObject.name == "HeadingAttack")
         {
             //Debug.Log(state.RigidBody.linearVelocity.y);
             if (headingSafeCounter <= 0f &&
@@ -38,15 +41,19 @@ public class PlayerAttack : MonoBehaviour
                 special.highJumpUsed = false;
             }
         }
-        else if (this.gameObject.name == "MeteorDropAttack")
+        else if (gameObject.name == "MeteorDropAttack")
         {
             MeteorDropFalse();
+        }
+        else if (gameObject.name == "QuickJumpAttack")
+        {
+            QuickJumpFalse();
         }
     }
 
     private void HeadingFalse()
     {
-        this.gameObject.SetActive(false);
+        gameObject.SetActive(false);
         //Debug.Log("falseå„" + special.headingAttack);
     }
 
@@ -54,7 +61,15 @@ public class PlayerAttack : MonoBehaviour
     {
         if (!special.meteorDrop)
         {
-            this.gameObject.SetActive(false);
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void QuickJumpFalse()
+    {
+        if (move.maxAirSpeed < 12f)
+        {
+            gameObject.SetActive(false);
         }
     }
 
@@ -66,7 +81,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (this.gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem"))
+        if (gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem"))
         {
             //Ç‘Ç¬Ç©Ç¡ÇΩÇ∆Ç´ÇÃìÀÇ¡Ç©Ç©ÇËÇè¡Ç∑
             PlayerYMoveReset();

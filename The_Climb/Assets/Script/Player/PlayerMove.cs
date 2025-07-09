@@ -94,6 +94,7 @@ public class PlayerMove : MonoBehaviour
 
     private void GroundPlayerMove()
     {
+        //スリップ
         if (slipping)
         {
             //減少時間
@@ -121,7 +122,11 @@ public class PlayerMove : MonoBehaviour
                 slippingCounter += Time.fixedDeltaTime;
             }
 
-            RigidBody.linearVelocity = new Vector3(slipVelocity.x, 0, 0);
+            if (slipVelocity.y < 0)
+            {
+                //Debug.Log("w");
+                RigidBody.linearVelocity = new Vector3(slipVelocity.x, 0, 0);
+            }
 
             //一定以下になったらスリップ終了（普通の地上移動に戻す）
             if (Mathf.Abs(slipVelocity.x) <= groundMaxSpeed)
@@ -181,7 +186,7 @@ public class PlayerMove : MonoBehaviour
         //徐々に遅くするよ
         if (maxAirSpeed > 10f) 
         {
-            Debug.Log(maxAirSpeed);
+            //Debug.Log(maxAirSpeed);
             maxAirSpeed -= 0.14f;
         }
     }
