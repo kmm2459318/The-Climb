@@ -1,38 +1,44 @@
+using Zenject;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Rendering;
 
+[assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]
+[assembly: InternalsVisibleTo("Assembly-CSharp-Tests")]
 [RequireComponent(typeof(EnemyMover))]
 [RequireComponent(typeof(CharacterGroundChecker))]
 [RequireComponent(typeof(LandGroundNotifier))]
+[RequireComponent(typeof(CollideEnemyNotifier))]
+[RequireComponent(typeof(PlayerCollisionNotifier))]
+[RequireComponent(typeof(CharacterStateVisualizer))]
 //  移動スクリプトに移動値を渡す
-public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler, IBlowable
+public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler, IBlowable, ICollideEnemy
 {
     public enum KickerCommanderMethod    //  このクラス内の関数一覧
     {
-        MOVE,
-        IS_EDGE_POS,
-        FLIP_MOVE_DIR,
-        JUMP,
+        MOVE,    //  基礎移動
+        IS_EDGE_POS,    //  端か判定
+        FLIP_MOVE_DIR,    //  移動方向反転
+        JUMP,    //  ジャンプ
     }
     
-
     [Header("Instance")]
-    [SerializeField] KickerStatus kickerStatus;    //  キッカーステータスインスタンス
+    [SerializeField] [Inject] internal KickerStatus kickerStatus;    //  キッカーステータスインスタンス
     KickerStatBlock kickerStatBlock;    //  キッカーステータスクラス
     EnemyMover enemyMover;    //  エネミームーバーインスタンス
     CharacterGroundChecker characterGroundChecker;    //  グラウンドチェッカーインスタンス
     EnemyStateMachine enemyStateMachine;    //  エネミーステートマシーンインスタンス
-    PlayerState playerState;
+    [Inject]PlayerState playerState;    //  プレイヤーステートインスタンス
+    CharacterStateVisualizer characterStateVisualizer;    //  キャラクターステートビジュアライザーインスタンス
     public Dictionary<KickerCommanderMethod, ICommand> CommanderMethodMap;    //  このスクリプトの関数の辞書
     public event Action OnJumpTime;    //  ジャンプタイムのサブスク
     public event Action OnLandGround;    //  地面着地のサブスク
     Coroutine JumpLoop;    //  ジャンプループコルーチンの変数
 
-    ICommandProvider commandProvider;
-    IEnemyStateFactory enemyStateFactory;
+    ICommandProvider commandProvider;    //  インターフェース型変数
+    IEnemyStateFactory enemyStateFactory;    //  インターフェースが多変数
 
     Vector3 Velocity;    //  キャラクター移動値
     Vector3 EdgeRayOffset;    //  端を検知するRayのオフセット
@@ -42,16 +48,31 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     float CurrentMoveSpd;    //  現在の移動速度
     float CurrentJumpForce;    //  現在のジャンプ力
     float CurrentJumpFrequency;    //  現在のジャンプ頻度
+    
+    public EnemyStateMachine EnemyStateMachineProperty => enemyStateMachine;
 
+    ////  インスタンス注入
+    //[Inject]
+    //void Construct()
+    //{
+
+    //}
     void Awake()
     {
+        if (kickerStatus == null)
+        {
+            Debug.LogWarning($"{nameof(KickerMoveCommander)} : kickerStatus is not assigned");
+            return;
+        }
+
         enemyMover = GetComponent<EnemyMover>();
         kickerStatBlock = kickerStatus.GetStats(EnemyMode.NORMAL);
         characterGroundChecker = GetComponent<CharacterGroundChecker>();
         enemyStateMachine = new EnemyStateMachine();
-        playerState = GameObject.FindAnyObjectByType<PlayerState>();
+        //playerState = GameObject.FindAnyObjectByType<PlayerState>();
         commandProvider = new DefaultCommandProvider(this);
         enemyStateFactory = new EnemyStateFactory(this, enemyStateMachine);
+        characterStateVisualizer = GetComponent<CharacterStateVisualizer>();
 
         //  初期状態をWalkに変更
         CommanderMethodMap =commandProvider.GetCommandMap();
@@ -60,6 +81,27 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         //  数値初期化
         Initialize();
     }
+    //  テストのための初期化
+    internal void InitializeForTest(KickerStatus status)
+    {
+        enemyMover = GetComponent<EnemyMover>();
+        this.kickerStatBlock = status.GetStats(EnemyMode.NORMAL);
+        characterGroundChecker = GetComponent<CharacterGroundChecker>();
+        enemyStateMachine = new EnemyStateMachine();
+        playerState = GameObject.FindAnyObjectByType<PlayerState>();
+        commandProvider = new DefaultCommandProvider(this);
+        enemyStateFactory = new EnemyStateFactory(this, enemyStateMachine);
+        characterStateVisualizer = GetComponent<CharacterStateVisualizer>();
+
+
+        //  初期状態をWalkに変更
+        CommanderMethodMap = commandProvider.GetCommandMap();
+        enemyStateMachine.ChangeState(enemyStateFactory.CreateWalkState());
+
+        //  数値初期化
+        Initialize();
+    }
+
     void Start()
     {
         //  定期的なジャンプのループを開始
@@ -68,8 +110,9 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     void FixedUpdate()
     {
         Debug.DrawRay(transform.position, Vector3.down * characterGroundChecker.GroundCheckDisProperty, Color.red);
-        Debug.DrawRay(EdgeRayOffset + transform.position, Vector3.down * characterGroundChecker.GroundCheckDisProperty, Color.gray);
+        Debug.DrawRay(EdgeRayOffset + transform.position, Vector3.down * characterGroundChecker.GroundCheckDisProperty, Color.pink);
         enemyStateMachine.FixedUpdate();
+        characterStateVisualizer.MoveDirectionPropety(Velocity);
     }
     //  初期化
     void Initialize()
@@ -103,6 +146,11 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         Velocity = new Vector3(CurrentMoveSpd * (int)CurrentMoveDir * Time.fixedDeltaTime, Velocity.y, 0f);
         //  基本移動
         enemyMover.BaseMove(Velocity);
+    }
+    //  地面か判定する
+    public bool IsGround()
+    {
+        return characterGroundChecker.CheckIsGround();
     }
     //  端か判定する
     public bool IsEdgePos()
@@ -168,6 +216,11 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
             Debug.DrawRay(ObjectRegistry.Get("Player_Spine_c0c99d2d").transform.position, AirTotalBlowForce, Color.blue, 0.5f);
             rigidbody.AddForce(AirTotalBlowForce, ForceMode.Impulse);
         }
+        FlipMoveDir();  //  移動方向反転
+    }
+    //  敵と当たった時に実行されるインターフェイス関数
+    public void OnCollideEnemy()
+    {
         FlipMoveDir();  //  移動方向反転
     }
 }
