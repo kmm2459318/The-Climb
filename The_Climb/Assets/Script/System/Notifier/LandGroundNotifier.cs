@@ -13,7 +13,7 @@ public class LandGroundNotifier : CollisionNotifier<ILandingHandler>
     void OnCollisionEnter(Collision collision)
     {
         //    OnLandStageŽÀs
-        NotifyIfTagMatches(collision, TagName.Ground, h => {
+        NotifyIfTagMatches(collision, TagName.Platform, h => {
             if (characterGroundChecker.CheckIsGround())
                 h.OnLandStage();
         });

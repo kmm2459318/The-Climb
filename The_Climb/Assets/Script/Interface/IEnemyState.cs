@@ -5,3 +5,5 @@ public interface IEnemyState
     void FixedUpdate();
     void Exit();
 }
+//  à»â∫ÉRÅ[Éhï€ë∂èä  //
+//EnemyMovingState EnemyMovingStateProperty { get; }
