@@ -7,9 +7,9 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
     private enum BossState
     {
         Idle, Move, ChargeVertical, JumpVertical,
-        ChargeArc, JumpArc, Defeated
+        ChargeArc, JumpArc, Stunned, Defeated
     }
-
+    
     [Header("参照")]
     public Transform player;
     public Animator animator;
@@ -23,7 +23,7 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
     private bool isVulnerable = false;
     private Rigidbody rb;
     private bool hasActivated = false;
-
+    public bool IsVulnerable() => isVulnerable;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -72,6 +72,10 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
                 PlayAnimation("Defeat");
                 Debug.Log("[Boss] 撃破されました");
                 Destroy(gameObject, 2f);
+                break;
+            case BossState.Stunned:
+                PlayAnimation("Stun");
+                StartCoroutine(StunRoutine());
                 break;
         }
     }
@@ -143,7 +147,24 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
         yield return new WaitUntil(() => rb.linearVelocity.y <= 0);
         yield return new WaitUntil(() => IsGrounded());
 
-        Debug.Log("[Boss] 垂直ジャンプ終了 → 移動へ");
+        Debug.Log("[Boss] 垂直ジャンプ終了 → スタンへ");
+        ChangeState(BossState.Stunned); // ← スタン状態へ移行
+    }
+    IEnumerator StunRoutine()
+    {
+        Debug.Log("[Boss] スタン状態突入");
+
+        rb.linearVelocity = Vector3.zero;
+        isVulnerable = true;
+
+        GetComponentInChildren<BossWeakPoint>()?.ActivateWeakPoint();
+
+        yield return new WaitForSeconds(stats.stunDuration);
+
+        isVulnerable = false;
+        GetComponentInChildren<BossWeakPoint>()?.DeactivateWeakPoint();
+
+        Debug.Log("[Boss] スタン解除 → 移動へ");
         ChangeState(BossState.Move);
     }
 
@@ -158,10 +179,14 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
         Vector3 direction = (targetPos - transform.position).normalized;
         rb.linearVelocity = direction * stats.arcJumpForce + Vector3.up * stats.arcJumpHeight;
 
-        Debug.Log("[Boss] 山なりジャンプ 実行");
+        isVulnerable = true;
+        GetComponentInChildren<BossWeakPoint>()?.ActivateWeakPoint();
 
         yield return new WaitUntil(() => rb.linearVelocity.y <= 0);
         yield return new WaitUntil(() => IsGrounded());
+
+        isVulnerable = false;
+        GetComponentInChildren<BossWeakPoint>()?.DeactivateWeakPoint();
 
         Debug.Log("[Boss] 山なりジャンプ終了 → 移動へ");
         ChangeState(BossState.Move);
@@ -184,7 +209,18 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
             Debug.Log($"[Boss] アニメーションスキップ（未設定）: {animName}");
         }
     }
+    public void OnHit()
+    {
+        hitCount++;
+        Debug.Log($"[Boss] 弱点ヒット！残り: {stats.requiredHitsToDefeat - hitCount}");
 
+        if (hitCount >= stats.requiredHitsToDefeat)
+        {
+            ChangeState(BossState.Defeated);
+        }
+    }
+
+ 
     private void OnCollisionEnter(Collision collision)
     {
         if (currentState == BossState.JumpArc && collision.contacts[0].normal.y > 0.5f)
@@ -193,7 +229,7 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
             ChangeState(BossState.Move);
         }
     }
-
+    
     // Gizmosで可視化
     private void OnDrawGizmosSelected()
     {
