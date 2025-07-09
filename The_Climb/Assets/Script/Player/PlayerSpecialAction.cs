@@ -19,6 +19,7 @@ public class PlayerSpecialAction : MonoBehaviour
     public bool highJumpUsed = false;   //ハイジャンプを使用したか判定
 
     private bool quickJump = false;      //クイックジャンプする判定
+    public bool isGroundNear = false;   //地面が近いとクイックジャンプ発動させない用
     private float quickJumpPowerX = 10f;  //クイックジャンプの横のパワー
     private float quickJumpPowerY = 9f;  //クイックジャンプの縦のパワー
     public bool quickJumpUsed = false;   //クイックジャンプを使用したか判定
@@ -69,6 +70,16 @@ public class PlayerSpecialAction : MonoBehaviour
             //クイックジャンプキー操作
             QuickJumpOperation();
         }
+
+        //地面が近いか（クイックジャンプ用判定）
+        if (!isGroundNear)
+        {
+            isGroundNear = Physics.CheckSphere(state.jumpMoveOKCheck.position + Vector3.down * 0.4f, 0.19f, state.groundLayer);
+        }
+        else if (RigidBody.linearVelocity.y < 0)
+        {
+            isGroundNear = false;
+        }
     }
 
     private void FixedUpdate()
@@ -98,11 +109,11 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void HighJumpChargeOperation()
     {
-        if (jump.jumpCoolActive || state.isAir || (Input.GetKeyUp(state.keyBind.playerJump) && highJumpChargeCounter <= 0.2f))
+        if (jump.jumpCoolActive || state.isAir || (Input.GetKeyUp(state.keyBind.playerJump) && highJumpChargeCounter <= 0.2f)) //ハイジャンプ不可
         {
             highJumpChargeCounter = 0f;
         }
-        else if (Input.GetKeyUp(state.keyBind.playerJump))
+        else if (Input.GetKeyUp(state.keyBind.playerJump))　//ハイジャンプ放す
         {
             if (highJumpChargeCounter >= highJumpChargeTime)
             {
@@ -118,8 +129,9 @@ public class PlayerSpecialAction : MonoBehaviour
             jump.jumpCoolActive = true;
             highJumpChargeCounter = 0f;
         }
-        else if (state.isGrounded && Input.GetKey(state.keyBind.playerJump))
+        else if (state.isGrounded && Input.GetKey(state.keyBind.playerJump)) //ハイジャンプおしっぱの状態
         {
+            RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
             highJumpChargeCounter += Time.deltaTime;
             move.slipping = false;
         }
@@ -150,7 +162,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void QuickJumpOperation()
     {
-        if (state.isAir && Input.GetKeyDown(state.keyBind.playerJump) && !quickJumpUsed && !meteorDropUsed)
+        if (state.isAir && Input.GetKeyDown(state.keyBind.playerJump) && !quickJumpUsed && !meteorDropUsed && !isGroundNear)
         {
             quickJump = true;
             quickJumpUsed = true;
