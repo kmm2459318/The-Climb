@@ -12,7 +12,7 @@ public class PlayerMove : MonoBehaviour
     public bool quickJumpOn = false;     //クイックジャンプ可能か
     public bool meteorDropOn = false;    //メテオドロップ叶か
 
-    private float groundMoveForce = 0.35f;     //プレイヤーの地上移動速度
+    private float groundMoveForce = 0.7f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
     private float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 50f;    //空中での移動速度

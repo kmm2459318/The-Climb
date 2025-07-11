@@ -137,7 +137,6 @@ public class PlayerSpecialAction : MonoBehaviour
             highJumpChargeCounter += Time.deltaTime;
             move.slipping = false;
         }
-        
     }
 
     private void MeteorDropOperation()
@@ -199,9 +198,11 @@ public class PlayerSpecialAction : MonoBehaviour
 
         meteorDropCounter += Time.fixedDeltaTime;
 
-        if (((state.isLeftWall && !state.playerDirectionRight) || (state.isRightWall && state.playerDirectionRight)) && !state.isGrounded) //壁にぶつかったらメテオハイジャンプ不可
+        //壁にぶつかったらメテオハイジャンプ不可
+        if (((state.isLeftWall && !state.playerDirectionRight) || (state.isRightWall && state.playerDirectionRight)) && !state.isGrounded) 
         {
             meteorHighJumpOK = false;
+            RigidBody.linearVelocity = Vector3.zero;
         }
 
         //メテオドロップ終わり
@@ -228,7 +229,6 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void MeteorHighJumpUse()
     {
-        //Debug.Log("a");
         RigidBody.linearVelocity = new Vector3(0, 0, 0);
 
         RigidBody.AddForce(new Vector3(meteorDropPower * meteorDropXMove, highJumpPower, 0), ForceMode.Impulse);
