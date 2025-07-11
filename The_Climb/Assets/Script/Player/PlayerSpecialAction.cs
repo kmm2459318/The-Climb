@@ -106,7 +106,6 @@ public class PlayerSpecialAction : MonoBehaviour
         {
             QuickJumpUse();
         }
-
     }
 
     private void HighJumpChargeOperation()
@@ -131,7 +130,7 @@ public class PlayerSpecialAction : MonoBehaviour
             jump.jumpCoolActive = true;
             highJumpChargeCounter = 0f;
         }
-        else if (state.isGrounded && Input.GetKey(state.keyBind.playerJump) && !state.landingJumpOn) //ハイジャンプおしっぱの状態
+        else if (state.isGrounded && Input.GetKey(state.keyBind.playerJump) && !state.landingJumpOn && !Input.GetKeyDown(state.keyBind.playerJump)) //ハイジャンプおしっぱの状態
         {
             RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
             highJumpChargeCounter += Time.deltaTime;

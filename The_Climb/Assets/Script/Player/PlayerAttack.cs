@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
@@ -79,24 +80,33 @@ public class PlayerAttack : MonoBehaviour
         jump.jumping = false;
     }
 
+    private IEnumerator HitStop()
+    {
+        Vector3 PlayerVelocity = state.RigidBody.linearVelocity;
+        for (int i = 0; i <= 3; i++)
+        {
+            Debug.Log("stop");
+            state.RigidBody.linearVelocity = Vector3.zero;
+            yield return null;
+        }
+
+        state.RigidBody.linearVelocity = PlayerVelocity;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem"))
+        if (gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem") && !special.highJumpUsed)
         {
             //‚Ô‚Â‚©‚Á‚½‚Æ‚«‚Ì“Ë‚Á‚©‚©‚è‚ðÁ‚·
             PlayerYMoveReset();
         }
 
-        if (other.gameObject.CompareTag("Enemy"))
+        //“G‚É“–‚½‚Á‚½‚ç
+        if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("BreakBlock") && (special.highJumpUsed || special.meteorDrop))
         {
             //“G‚ðÁ‚·
             Destroy(other.gameObject);
-        }
-        
-        if (other.gameObject.CompareTag("BreakBlock") && (special.highJumpUsed || special.meteorDrop))
-        {
-            //ƒuƒƒbƒN‚ðÁ‚·
-            Destroy(other.gameObject);
+            StartCoroutine(HitStop());
         }
     }
 }
