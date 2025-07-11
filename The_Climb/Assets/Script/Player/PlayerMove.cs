@@ -95,46 +95,46 @@ public class PlayerMove : MonoBehaviour
     private void GroundPlayerMove()
     {
         //スリップ
-        if (slipping)
-        {
-            //減少時間
-            float slipFrictionX = 20f;
+        //if (slipping)
+        //{
+        //    //減少時間
+        //    float slipFrictionX = 20f;
 
-            if (moveInput == 1f)
-            {
-                //横速度だけ徐々に減衰させRU
-                slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x), 0f, slipFrictionX * Time.fixedDeltaTime);
-                slippingCounter = 0;
-            }
-            else if (moveInput == -1f)
-            {
-                //横速度だけ徐々に減衰させRU
-                slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x) * -1.0f, 0f, slipFrictionX * Time.fixedDeltaTime);
-                slippingCounter = 0;
-            }
-            else if (slippingCounter > slippingTime)
-            {
-                slipping = false;
-            }
-            else if (moveInput == 0f)
-            {
-                slipVelocity.x = Mathf.MoveTowards(slipVelocity.x, 0f, slipFrictionX * Time.fixedDeltaTime);
-                slippingCounter += Time.fixedDeltaTime;
-            }
+        //    if (moveInput == 1f)
+        //    {
+        //        //横速度だけ徐々に減衰させRU
+        //        slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x), 0f, slipFrictionX * Time.fixedDeltaTime);
+        //        slippingCounter = 0;
+        //    }
+        //    else if (moveInput == -1f)
+        //    {
+        //        //横速度だけ徐々に減衰させRU
+        //        slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x) * -1.0f, 0f, slipFrictionX * Time.fixedDeltaTime);
+        //        slippingCounter = 0;
+        //    }
+        //    else if (slippingCounter > slippingTime)
+        //    {
+        //        slipping = false;
+        //    }
+        //    else if (moveInput == 0f)
+        //    {
+        //        slipVelocity.x = Mathf.MoveTowards(slipVelocity.x, 0f, slipFrictionX * Time.fixedDeltaTime);
+        //        slippingCounter += Time.fixedDeltaTime;
+        //    }
 
-            if (slipVelocity.y < 0)
-            {
-                //Debug.Log("w");
-                RigidBody.linearVelocity = new Vector3(slipVelocity.x, 0, 0);
-            }
+        //    if (slipVelocity.y < 0)
+        //    {
+        //        //Debug.Log("w");
+        //        RigidBody.linearVelocity = new Vector3(slipVelocity.x, 0, 0);
+        //    }
 
-            //一定以下になったらスリップ終了（普通の地上移動に戻す）
-            if (Mathf.Abs(slipVelocity.x) <= groundMaxSpeed)
-            {
-                slipping = false;
-            }
-            return; //通常の地上移動処理はスキップ
-        }
+        //    //一定以下になったらスリップ終了（普通の地上移動に戻す）
+        //    if (Mathf.Abs(slipVelocity.x) <= groundMaxSpeed)
+        //    {
+        //        slipping = false;
+        //    }
+        //    return; //通常の地上移動処理はスキップ
+        //}
 
         if (moveInput != 0f)
         {

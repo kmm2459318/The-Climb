@@ -22,7 +22,7 @@ public class PlayerSpecialAction : MonoBehaviour
     private bool quickJump = false;      //クイックジャンプする判定
     public bool isGroundNear = false;   //地面が近いとクイックジャンプ発動させない用
     private float quickJumpPowerX = 10f;  //クイックジャンプの横のパワー
-    private float quickJumpPowerY = 9f;  //クイックジャンプの縦のパワー
+    private float quickJumpPowerY = 10f;  //クイックジャンプの縦のパワー
     public bool quickJumpUsed = false;   //クイックジャンプを使用したか判定
 
     public bool meteorDrop = false;      //メテオドロップする判定
@@ -173,7 +173,7 @@ public class PlayerSpecialAction : MonoBehaviour
         //横移動入力中ならジャンプ力低下
         if (move.MoveInput == 1f || move.MoveInput == -1f)
         {
-            quickJumpPowerY = 9f;
+            quickJumpPowerY = 7f;
         }
         else
         {
@@ -193,16 +193,18 @@ public class PlayerSpecialAction : MonoBehaviour
     {
         RigidBody.useGravity = false;
         RigidBody.linearVelocity = new Vector3(0, 0, 0);
-
-        RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, meteorDropYMove, 0), ForceMode.Impulse);
-
         meteorDropCounter += Time.fixedDeltaTime;
 
         //壁にぶつかったらメテオハイジャンプ不可
-        if (((state.isLeftWall && !state.playerDirectionRight) || (state.isRightWall && state.playerDirectionRight)) && !state.isGrounded) 
+        if (((state.isLeftWall && !state.playerDirectionRight) || (state.isRightWall && state.playerDirectionRight)) && !state.isGrounded)
         {
             meteorHighJumpOK = false;
             RigidBody.linearVelocity = Vector3.zero;
+        }
+        else
+        {
+            //斜め下に移動させる
+            RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, meteorDropYMove, 0), ForceMode.Impulse);
         }
 
         //メテオドロップ終わり
