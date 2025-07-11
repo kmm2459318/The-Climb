@@ -51,16 +51,17 @@ public class Boss_20_Knockback : MonoBehaviour
         IsKnockbacking = true;
 
         Vector3 knockDirection = (transform.position - player.position).normalized;
+
+        Vector3 upwardStart = new Vector3(transform.position.x, originalPosition.y, originalPosition.z); 
         Vector3 upwardTarget = transform.position + Vector3.up * upwardHeight;
         Vector3 backwardTarget = upwardTarget + knockDirection * backwardDistance;
 
         // 上昇しながら後退（ノックバック）
         float elapsed = 0f;
-        Vector3 start = transform.position;
 
         while (elapsed < knockbackDuration)
         {
-            transform.position = Vector3.Lerp(start, backwardTarget, elapsed / knockbackDuration);
+            transform.position = Vector3.Lerp(upwardStart, backwardTarget, elapsed / knockbackDuration);
             elapsed += Time.deltaTime;
             yield return null;
         }

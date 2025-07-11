@@ -58,7 +58,7 @@ public class Boss_20_Controller : MonoBehaviour
     //ボスの動き
     void Move()
     {
-        if (!isResting && knockbackScript.IsKnockbacking) return;
+        if (isResting || knockbackScript.IsKnockbacking) return;
         {
             Vector3 waveMotion = new Vector3(0f, Mathf.Sin(Time.time * Wave) * Enemy_Vertical, 0f);
 
@@ -128,7 +128,7 @@ public class Boss_20_Controller : MonoBehaviour
     //発射　　　　　　　　　　
     void Bullet()
     {
-        if (!isResting && knockbackScript.IsKnockbacking) return;
+        if (isResting || knockbackScript.IsKnockbacking) return;
         {
           GameObject player = GameObject.FindWithTag("Player");
           if (player == null) return;
