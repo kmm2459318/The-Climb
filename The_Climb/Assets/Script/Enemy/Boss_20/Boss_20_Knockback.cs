@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class Boss_20_Knockback : MonoBehaviour
 {
@@ -9,17 +10,16 @@ public class Boss_20_Knockback : MonoBehaviour
     [SerializeField] public float backwardDistance = 2f; // 後退の距離
     [SerializeField] public float knockbackDuration = 0.5f;
     [SerializeField] public float returnDuration = 0.5f;
+    [SerializeField] private float yThreshold = 0.5f;        // ボスより下からぶつかってきたと判断する高さ差
 
     public bool IsKnockbacking { get; private set; } = false;
     private bool hasKnockedBack = false;
-    private Vector3 originalPosition;
-
+    private float baseY;
     private void Start()
     {
-          originalPosition = transform.position;
+        baseY = transform.position.y;
     }
 
- 
 
     void Update()
     {
@@ -32,10 +32,15 @@ public class Boss_20_Knockback : MonoBehaviour
         if (player == null) return;
 
         float distance = Vector3.Distance(transform.position, player.position);
+        // 2. Y軸の差（ボスが高いほど正）
+        float yDiff = transform.position.y - player.position.y;
 
-        if (distance <= knockbackDistance && !hasKnockedBack)
-        { 
-         
+        // === 条件まとめ ===
+        bool isClose = distance <= knockbackDistance;
+        bool isFromBelow = yDiff > yThreshold;  // プレイヤーがボスより一定以上下にいる
+
+        if (isClose && isFromBelow && !hasKnockedBack)
+        {
             StartCoroutine(PerformKnockback());
             hasKnockedBack = true;
         }
@@ -46,32 +51,41 @@ public class Boss_20_Knockback : MonoBehaviour
         }
     }
 
+
     IEnumerator PerformKnockback()
     {
         IsKnockbacking = true;
 
-        Vector3 knockDirection = (transform.position - player.position).normalized;
+        float fixedZ = transform.position.z;
 
-        Vector3 upwardStart = new Vector3(transform.position.x, originalPosition.y, transform.position.z); 
-        Vector3 upwardTarget = transform.position + Vector3.up * upwardHeight;
-        Vector3 backwardTarget = upwardTarget + knockDirection * backwardDistance;
+        // ノックバック方向（X軸のみ）
+        Vector3 direction = transform.position - player.position;
+        direction.y = 0f;
+        direction.z = 0f;
+        Vector3 knockDirection = direction.normalized;
 
-        // 上昇しながら後退（ノックバック）
+        // ノックバックの目標位置
+        Vector3 knockTarget = new Vector3(
+            transform.position.x + knockDirection.x * backwardDistance,
+            baseY + upwardHeight, // ← 毎回同じ「地面からの高さ」
+            fixedZ
+        );
+
         float elapsed = 0f;
+        Vector3 startPos = new Vector3(transform.position.x, baseY, fixedZ);
 
         while (elapsed < knockbackDuration)
         {
-            transform.position = Vector3.Lerp(upwardStart, upwardTarget, elapsed / knockbackDuration);
+            transform.position = Vector3.Lerp(startPos, knockTarget, elapsed / knockbackDuration);
             elapsed += Time.deltaTime;
             yield return null;
         }
+        transform.position = knockTarget;
 
-        transform.position = backwardTarget;
-
-        // 元のY座標にふわっと戻る
-        Vector3 fallTarget = new Vector3(transform.position.x, originalPosition.y,originalPosition.z);
-        elapsed = 0f;
+        // 落下
         Vector3 fallStart = transform.position;
+        Vector3 fallTarget = new Vector3(knockTarget.x, baseY, fixedZ);
+        elapsed = 0f;
 
         while (elapsed < returnDuration)
         {
@@ -81,7 +95,6 @@ public class Boss_20_Knockback : MonoBehaviour
         }
 
         transform.position = fallTarget;
-
         IsKnockbacking = false;
     }
 }

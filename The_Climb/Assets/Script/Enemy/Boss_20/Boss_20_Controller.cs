@@ -81,14 +81,6 @@ public class Boss_20_Controller : MonoBehaviour
     IEnumerator RestAndResume()
     {
         Debug.Log("減速開始");
-        float decelerationRate = 2f;
-
-        while (boss_Speed > 0f)
-        {
-            boss_Speed = Mathf.MoveTowards(boss_Speed, 0f, decelerationRate * Time.fixedDeltaTime);
-            yield return new WaitForFixedUpdate();
-        }
-
         boss_Speed = 0f;
         Debug.Log("停止完了");
         yield return new WaitForSeconds(3f);
