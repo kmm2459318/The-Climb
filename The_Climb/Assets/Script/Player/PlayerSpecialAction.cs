@@ -12,29 +12,29 @@ public class PlayerSpecialAction : MonoBehaviour
     public GameObject headingAttack;
     public GameObject meteorDropAttack;
 
-    public float highJumpChargeTime = 0.8f;  //ƒnƒCƒWƒƒƒ“ƒv‚Ìƒ`ƒƒ[ƒWŠÔ
-    public float highJumpChargeCounter = 0f;  //ƒnƒCƒWƒƒƒ“ƒv‚Ìƒ`ƒƒ[ƒWƒJƒEƒ“ƒ^[
-    private bool highJump = false;       //ƒnƒCƒWƒƒƒ“ƒv‚·‚é”»’è
-    private float highJumpPower = 30f;   //ƒnƒCƒWƒƒƒ“ƒv‚Ìƒpƒ[
-    public bool highJumpUsed = false;   //ƒnƒCƒWƒƒƒ“ƒv‚ğg—p‚µ‚½‚©”»’è
+    public float highJumpChargeTime = 0.8f;  //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“
+    public float highJumpChargeCounter = 0f;  //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒãƒ£ãƒ¼ã‚¸ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
+    private bool highJump = false;       //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹åˆ¤å®š
+    private float highJumpPower = 30f;   //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒ‘ãƒ¯ãƒ¼
+    public bool highJumpUsed = false;   //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã‚’ä½¿ç”¨ã—ãŸã‹åˆ¤å®š
 
-    private bool quickJump = false;      //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‚·‚é”»’è
-    private float quickJumpPowerX = 10f;  //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‚Ì‰¡‚Ìƒpƒ[
-    private float quickJumpPowerY = 9f;  //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‚Ìc‚Ìƒpƒ[
-    public bool quickJumpUsed = false;   //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‚ğg—p‚µ‚½‚©”»’è
+    private bool quickJump = false;      //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹åˆ¤å®š
+    private float quickJumpPowerX = 10f;  //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã®æ¨ªã®ãƒ‘ãƒ¯ãƒ¼
+    private float quickJumpPowerY = 9f;  //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã®ç¸¦ã®ãƒ‘ãƒ¯ãƒ¼
+    public bool quickJumpUsed = false;   //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã‚’ä½¿ç”¨ã—ãŸã‹åˆ¤å®š
 
-    public bool meteorDrop = false;      //ƒƒeƒIƒhƒƒbƒv‚·‚é”»’è
-    public bool meteorDropUsed = false;   //ƒƒeƒIƒhƒƒbƒv‚ğg—p‚µ‚½‚©”»’è
-    public bool meteorHighJumpOK = false;  //ƒƒeƒIƒhƒƒbƒv‚©‚ç‚ÌƒnƒCƒWƒƒƒ“ƒv‚Ö‚ÌˆÚs‚ª‚Å‚«‚é‚©
-    private float meteorDropPower = 30f;  //ƒƒeƒIƒhƒƒbƒv‚Ìƒpƒ[
-    private float meteorDropAngle = 135f;  //ƒƒeƒIƒhƒƒbƒv‚ÌŠp“x
-    private float meteorDropXMove;        //ƒƒeƒIƒhƒƒbƒv‚ÌX²ˆÚ“®
-    private float meteorDropYMove;        //ƒƒeƒIƒhƒƒbƒv‚ÌY²ˆÚ“®
-    public bool meteorHighJump = false;  //ƒƒeƒIƒhƒƒbƒvŒã‚ÌƒnƒCƒWƒƒƒ“ƒv
-    public float meteorDropTime = 0.37f;  //ƒƒeƒIƒhƒƒbƒv‚©‚ç‚ÌƒnƒCƒWƒƒƒ“ƒv‚ÉˆÚs‚Å‚«‚é‚Ü‚Å‚ÌŠÔ
-    public float meteorDropCounter = 0f;  //ƒƒeƒIƒhƒƒbƒv‚ÌƒJƒEƒ“ƒ^[
+    public bool meteorDrop = false;      //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã™ã‚‹åˆ¤å®š
+    public bool meteorDropUsed = false;   //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã‚’ä½¿ç”¨ã—ãŸã‹åˆ¤å®š
+    public bool meteorHighJumpOK = false;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã‹ã‚‰ã®ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã¸ã®ç§»è¡ŒãŒã§ãã‚‹ã‹
+    private float meteorDropPower = 30f;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®ãƒ‘ãƒ¯ãƒ¼
+    private float meteorDropAngle = 135f;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®è§’åº¦
+    private float meteorDropXMove;        //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®Xè»¸ç§»å‹•
+    private float meteorDropYMove;        //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®Yè»¸ç§»å‹•
+    public bool meteorHighJump = false;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—å¾Œã®ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—
+    public float meteorDropTime = 0.37f;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã‹ã‚‰ã®ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã«ç§»è¡Œã§ãã‚‹ã¾ã§ã®æ™‚é–“
+    public float meteorDropCounter = 0f;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
 
-    public bool playHighJumpAnim = false; // ‚±‚ÌƒtƒŒ[ƒ€‚ÅƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+    public bool playHighJumpAnim = false; // ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
     public bool isHighJumpCharging = false;
     internal bool isChargeInsufficient;
 
@@ -58,26 +58,26 @@ public class PlayerSpecialAction : MonoBehaviour
     {
         if (state.highJumpOn)
         {
-            //ƒ`ƒƒ[ƒWƒWƒƒƒ“ƒv‚Ìƒ`ƒƒ[ƒWƒL[‘€ì
+            //ãƒãƒ£ãƒ¼ã‚¸ã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒãƒ£ãƒ¼ã‚¸ã‚­ãƒ¼æ“ä½œ
             HighJumpChargeOperation();
         }
 
         if (state.meteorDropOn)
         {
-            //ƒƒeƒIƒhƒƒbƒvƒL[‘€ì
+            //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã‚­ãƒ¼æ“ä½œ
             MeteorDropOperation();
         }
 
         if (state.quickJumpOn)
         {
-            //ƒNƒCƒbƒNƒWƒƒƒ“ƒvƒL[‘€ì
+            //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã‚­ãƒ¼æ“ä½œ
             QuickJumpOperation();
         }
     }
 
     private void FixedUpdate()
     {
-        //ƒnƒCƒWƒƒƒ“ƒvÀs
+        //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—å®Ÿè¡Œ
         if (highJump)
         {
             HighJumpUse();
@@ -163,8 +163,8 @@ public class PlayerSpecialAction : MonoBehaviour
             quickJump = true;
             quickJumpUsed = true;
         }
-        
-        //‰¡ˆÚ“®“ü—Í’†‚È‚çƒWƒƒƒ“ƒv—Í’á‰º
+
+        //æ¨ªç§»å‹•å…¥åŠ›ä¸­ãªã‚‰ã‚¸ãƒ£ãƒ³ãƒ—åŠ›ä½ä¸‹
         if (move.MoveInput == 1f || move.MoveInput == -1f)
         {
             quickJumpPowerY = 9f;
@@ -183,12 +183,37 @@ public class PlayerSpecialAction : MonoBehaviour
         highJump = false;
     }
 
+    //private void MeteorDropUse()
+    //{
+    //    RigidBody.useGravity = false;
+    //    RigidBody.linearVelocity = new Vector3(0, 0, 0);
+
+    //    RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, meteorDropYMove, 0), ForceMode.Impulse);
+
+    //    meteorDropCounter += Time.fixedDeltaTime;
+
+    //    if ((state.isLeftWall || state.isRightWall) && !state.isGrounded)
+    //    {
+    //        meteorHighJumpOK = false;
+    //    }
+
+    //    //ï¿½ï¿½ï¿½eï¿½Iï¿½hï¿½ï¿½ï¿½bï¿½vï¿½Iï¿½ï¿½ï¿½
+    //    if (state.isLeftWall || state.isRightWall || state.isGrounded)
+    //    {
+    //        RigidBody.useGravity = true;
+    //        meteorDrop = false;
+    //        RigidBody.linearVelocity = Vector3.zero;
+    //    }
+    //}
+
+
     private void MeteorDropUse()
     {
-        RigidBody.useGravity = false;
-        RigidBody.linearVelocity = new Vector3(0, 0, 0);
+        // useGravityã¯åˆ‡ã‚‰ãªã„
+        // RigidBody.useGravity = false;
 
-        RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, meteorDropYMove, 0), ForceMode.Impulse);
+        // ä¸‹å‘ãã®åŠ›ã‚’åŠ ãˆã¦è½ä¸‹åŠ é€Ÿ
+        RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, meteorDropYMove, 0), ForceMode.Acceleration);
 
         meteorDropCounter += Time.fixedDeltaTime;
 
@@ -197,11 +222,13 @@ public class PlayerSpecialAction : MonoBehaviour
             meteorHighJumpOK = false;
         }
 
-        //ƒƒeƒIƒhƒƒbƒvI‚í‚è
+
+        // ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—çµ‚äº†åˆ¤å®š
         if (state.isLeftWall || state.isRightWall || state.isGrounded)
         {
-            RigidBody.useGravity = true;
             meteorDrop = false;
+
+            // ç€åœ°ç›´å¾Œã«é€Ÿåº¦ã‚’ã‚¼ãƒ­ã«ãƒªã‚»ãƒƒãƒˆ
             RigidBody.linearVelocity = Vector3.zero;
         }
     }
@@ -210,8 +237,8 @@ public class PlayerSpecialAction : MonoBehaviour
     {
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
         RigidBody.AddForce(new Vector3(quickJumpPowerX * move.MoveInput, quickJumpPowerY, 0), ForceMode.Impulse);
-        
-        //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‚Ì‰¡ˆÚ“®‘¬“x§ŒÀ
+
+        //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã®æ¨ªç§»å‹•é€Ÿåº¦åˆ¶é™
         if (move.MoveInput != 0f)
         {
             move.maxAirSpeed = 15f;
