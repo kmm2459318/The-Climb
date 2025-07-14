@@ -25,28 +25,26 @@ public class SunMoveCommander : MonoBehaviour
     }
 
     float SunAngleX;    //  ‘¾—z‚ÌƒAƒ“ƒOƒ‹(X)
-    public bool IsNight;    //  –é‚©‚Ç‚¤‚©
 
-    public bool IsNightProperty => IsNight;
 
     void Update()
     {
         if (TimeProvider.CurrentTimeProperty <= TimeConfig.DayTimeProperty)
         {
-            IsNight = false;
+            TimeProvider.IsNightProperty = false;
             float DayTimeProgress = TimeProvider.CurrentTimeProperty / TimeConfig.DayTimeProperty; 
             SunAngleX = Mathf.Lerp(sunStat.DayTimeStartAngle, sunStat.DayTimeLastAngle, DayTimeProgress);
         }
         else if (TimeProvider.CurrentTimeProperty <= TimeConfig.OneDayTimeProperty)
         {
-            IsNight = true;
+            TimeProvider.IsNightProperty = true;
             float NightTime = TimeProvider.CurrentTimeProperty - TimeConfig.DayTimeProperty;
             float t = NightTime / TimeConfig.NightTimeProperty;
             SunAngleX = Mathf.Lerp(sunStat.NightTimeStartAngle, sunStat.NightTimeLastAngle, t);
         }
         else
         {
-            IsNight = false;
+            TimeProvider.IsNightProperty = false;
             TimeProvider.CurrentTimeProperty = 0f;
         }
         sunMover.ChangeAngle(SunAngleX);
