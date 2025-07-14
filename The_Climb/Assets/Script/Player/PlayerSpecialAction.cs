@@ -19,7 +19,6 @@ public class PlayerSpecialAction : MonoBehaviour
     public bool highJumpUsed = false;   //ハイジャンプを使用したか判定
 
     private bool quickJump = false;      //クイックジャンプする判定
-    public bool isGroundNear = false;   //地面が近いとクイックジャンプ発動させない用
     private float quickJumpPowerX = 10f;  //クイックジャンプの横のパワー
     private float quickJumpPowerY = 9f;  //クイックジャンプの縦のパワー
     public bool quickJumpUsed = false;   //クイックジャンプを使用したか判定
@@ -34,6 +33,10 @@ public class PlayerSpecialAction : MonoBehaviour
     public bool meteorHighJump = false;  //メテオドロップ後のハイジャンプ
     public float meteorDropTime = 0.37f;  //メテオドロップからのハイジャンプに移行できるまでの時間
     public float meteorDropCounter = 0f;  //メテオドロップのカウンター
+
+    public bool playHighJumpAnim = false; // このフレームでアニメーション再生
+    public bool isHighJumpCharging = false;
+    internal bool isChargeInsufficient;
 
     void Start()
     {
@@ -70,16 +73,6 @@ public class PlayerSpecialAction : MonoBehaviour
             //クイックジャンプキー操作
             QuickJumpOperation();
         }
-
-        //地面が近いか（クイックジャンプ用判定）
-        if (!isGroundNear)
-        {
-            isGroundNear = Physics.CheckSphere(state.jumpMoveOKCheck.position + Vector3.down * 0.4f, 0.19f, state.groundLayer);
-        }
-        else if (RigidBody.linearVelocity.y < 0)
-        {
-            isGroundNear = false;
-        }
     }
 
     private void FixedUpdate()
@@ -109,15 +102,19 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void HighJumpChargeOperation()
     {
-        if (jump.jumpCoolActive || state.isAir || (Input.GetKeyUp(state.keyBind.playerJump) && highJumpChargeCounter <= 0.2f)) //ハイジャンプ不可
+        if (jump.jumpCoolActive || state.isAir || (Input.GetKeyUp(state.keyBind.playerJump) && highJumpChargeCounter <= 0.2f))
         {
             highJumpChargeCounter = 0f;
         }
-        else if (Input.GetKeyUp(state.keyBind.playerJump))　//ハイジャンプ放す
+        else if (Input.GetKeyUp(state.keyBind.playerJump))
         {
             if (highJumpChargeCounter >= highJumpChargeTime)
             {
                 highJump = true;
+                //Debug.Log(RigidBody.linearVelocity.y);
+
+                playHighJumpAnim = true;
+
                 highJumpUsed = true;
                 headingAttack.SetActive(true);
             }
@@ -129,13 +126,12 @@ public class PlayerSpecialAction : MonoBehaviour
             jump.jumpCoolActive = true;
             highJumpChargeCounter = 0f;
         }
-        else if (state.isGrounded && Input.GetKey(state.keyBind.playerJump)) //ハイジャンプおしっぱの状態
+        else if (state.isGrounded && Input.GetKey(state.keyBind.playerJump))
         {
-            RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
             highJumpChargeCounter += Time.deltaTime;
             move.slipping = false;
         }
-        
+
     }
 
     private void MeteorDropOperation()
@@ -157,17 +153,17 @@ public class PlayerSpecialAction : MonoBehaviour
                 meteorDropXMove = Mathf.Abs(meteorDropXMove) * -1f;
             }
         }
-        
+
     }
 
     private void QuickJumpOperation()
     {
-        if (state.isAir && Input.GetKeyDown(state.keyBind.playerJump) && !quickJumpUsed && !meteorDropUsed && !isGroundNear)
+        if (state.isAir && Input.GetKeyDown(state.keyBind.playerJump) && !quickJumpUsed && !meteorDropUsed)
         {
             quickJump = true;
             quickJumpUsed = true;
         }
-        
+
         //横移動入力中ならジャンプ力低下
         if (move.MoveInput == 1f || move.MoveInput == -1f)
         {
@@ -187,12 +183,37 @@ public class PlayerSpecialAction : MonoBehaviour
         highJump = false;
     }
 
+    //private void MeteorDropUse()
+    //{
+    //    RigidBody.useGravity = false;
+    //    RigidBody.linearVelocity = new Vector3(0, 0, 0);
+
+    //    RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, meteorDropYMove, 0), ForceMode.Impulse);
+
+    //    meteorDropCounter += Time.fixedDeltaTime;
+
+    //    if ((state.isLeftWall || state.isRightWall) && !state.isGrounded)
+    //    {
+    //        meteorHighJumpOK = false;
+    //    }
+
+    //    //???e?I?h???b?v?I???
+    //    if (state.isLeftWall || state.isRightWall || state.isGrounded)
+    //    {
+    //        RigidBody.useGravity = true;
+    //        meteorDrop = false;
+    //        RigidBody.linearVelocity = Vector3.zero;
+    //    }
+    //}
+
+
     private void MeteorDropUse()
     {
-        RigidBody.useGravity = false;
-        RigidBody.linearVelocity = new Vector3(0, 0, 0);
+        // useGravityは切らない
+        // RigidBody.useGravity = false;
 
-        RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, meteorDropYMove, 0), ForceMode.Impulse);
+        // 下向きの力を加えて落下加速
+        RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, meteorDropYMove, 0), ForceMode.Acceleration);
 
         meteorDropCounter += Time.fixedDeltaTime;
 
@@ -201,11 +222,13 @@ public class PlayerSpecialAction : MonoBehaviour
             meteorHighJumpOK = false;
         }
 
-        //メテオドロップ終わり
+
+        // メテオドロップ終了判定
         if (state.isLeftWall || state.isRightWall || state.isGrounded)
         {
-            RigidBody.useGravity = true;
             meteorDrop = false;
+
+            // 着地直後に速度をゼロにリセット
             RigidBody.linearVelocity = Vector3.zero;
         }
     }
@@ -214,7 +237,7 @@ public class PlayerSpecialAction : MonoBehaviour
     {
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
         RigidBody.AddForce(new Vector3(quickJumpPowerX * move.MoveInput, quickJumpPowerY, 0), ForceMode.Impulse);
-        
+
         //クイックジャンプの横移動速度制限
         if (move.MoveInput != 0f)
         {
