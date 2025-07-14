@@ -50,6 +50,9 @@ public class KickerStateWatchDog : MonoBehaviour
     void OnDestroy()
     {
         enemyStateMachine.OnStateChanged -= StartStateMonitaring;
-        StopCoroutine(JumpMonitaringCoroutines);
+        if (JumpMonitaringCoroutines != null)
+        {
+            StopCoroutine(JumpMonitaringCoroutines);
+        }
     }
 }
