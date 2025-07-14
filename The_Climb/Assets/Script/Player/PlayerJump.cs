@@ -8,7 +8,7 @@ public class PlayerJump : MonoBehaviour
     PlayerSpecialAction special;
 
     public bool jumping = false;        //ジャンプ入力中判定
-    private float coyoteTime = 0.2f;    //コヨーテタイム
+    private float coyoteTime = 0.13f;    //コヨーテタイム
     public float coyoteCounter = 0f;    //コヨーテタイムカウント
     private float jumpCoolTime = 0.2f;  //ジャンプのクールタイム
     private float jumpCoolCounter = 0f;  //ジャンのクールタイムカウント

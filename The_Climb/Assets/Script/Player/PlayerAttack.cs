@@ -85,7 +85,7 @@ public class PlayerAttack : MonoBehaviour
         Vector3 PlayerVelocity = state.RigidBody.linearVelocity;
         for (int i = 0; i <= 3; i++)
         {
-            Debug.Log("stop");
+            //Debug.Log("stop");
             state.RigidBody.linearVelocity = Vector3.zero;
             yield return null;
         }
