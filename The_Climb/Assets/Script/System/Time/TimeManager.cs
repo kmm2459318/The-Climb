@@ -1,15 +1,18 @@
+using System;
 using UnityEngine;
 using Zenject;
 
 //  日付・時間管理スクリプト
 public class TimeManager : MonoBehaviour, ITimeProvider
 {
+    public event Action<bool> OnChangedNight;    //  狂暴化イベント
+
     [Inject] ITimeConfig TimeConfig;    //  時間設定
 
     public float CurrentTime;    //  現在の時間
     float TimeProgressValue;    //  １秒当たりの時間進行値
     int CurrentDay;    //  現在の日付
-    [SerializeField] bool IsNight;
+    [SerializeField] bool IsNight;    //  夜かどうかのフラグ
 
     //  現在時間取得プロパティ
     public float CurrentTimeProperty
@@ -23,7 +26,14 @@ public class TimeManager : MonoBehaviour, ITimeProvider
     public bool IsNightProperty
     {
         get => IsNight;
-        set => IsNight = value;
+        set
+        {
+            if (IsNight != value)
+            {
+                IsNight = value;
+            }
+            OnChangedNight.Invoke(IsNight);
+        }
     }
     void Awake()
     {

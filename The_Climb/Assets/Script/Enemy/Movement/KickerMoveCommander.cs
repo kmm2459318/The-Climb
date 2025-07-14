@@ -38,7 +38,9 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     Coroutine JumpLoop;    //  ジャンプループコルーチンの変数
 
     ICommandProvider commandProvider;    //  インターフェース型変数
-    IEnemyStateFactory enemyStateFactory;    //  インターフェースが多変数
+    IEnemyStateFactory enemyStateFactory;    //  インターフェース型変数
+    ITimeProvider TimeProvider;    //  時間値提供インターフェース
+    EnemyMode CurrentEnemyMode;    //  現在の敵状態　
 
     Vector3 Velocity;    //  キャラクター移動値
     Vector3 EdgeRayOffset;    //  端を検知するRayのオフセット
@@ -48,7 +50,18 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     float CurrentMoveSpd;    //  現在の移動速度
     float CurrentJumpForce;    //  現在のジャンプ力
     float CurrentJumpFrequency;    //  現在のジャンプ頻度
-    
+
+    [Inject]
+    void Construct(
+        PlayerState playerState,
+        ITimeProvider TimeProvider
+        )
+    {
+        this.playerState = playerState;
+        this.TimeProvider = TimeProvider;
+        TimeProvider.OnChangedNight += ChangeToNightMode;
+    }
+
     public EnemyStateMachine EnemyStateMachineProperty => enemyStateMachine;
 
     ////  インスタンス注入
@@ -72,6 +85,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         //playerState = GameObject.FindAnyObjectByType<PlayerState>();
         commandProvider = new DefaultCommandProvider(this);
         enemyStateFactory = new EnemyStateFactory(this, enemyStateMachine);
+        CurrentEnemyMode = EnemyMode.NORMAL;
         characterStateVisualizer = GetComponent<CharacterStateVisualizer>();
 
         //  初期状態をWalkに変更
@@ -91,6 +105,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         playerState = GameObject.FindAnyObjectByType<PlayerState>();
         commandProvider = new DefaultCommandProvider(this);
         enemyStateFactory = new EnemyStateFactory(this, enemyStateMachine);
+        CurrentEnemyMode = EnemyMode.NORMAL;
         characterStateVisualizer = GetComponent<CharacterStateVisualizer>();
 
 
@@ -222,5 +237,21 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     public void OnCollideEnemy()
     {
         FlipMoveDir();  //  移動方向反転
+    }
+    private void ChangeToNightMode(bool IsNight)
+    {
+        CurrentEnemyMode = IsNight ? EnemyMode.NIGHT : EnemyMode.NORMAL;
+        
+        kickerStatBlock = kickerStatus.GetStats(CurrentEnemyMode);
+        CurrentMoveSpd = kickerStatBlock.MoveSpd;
+        CurrentJumpForce = kickerStatBlock.JumpForce;
+        CurrentJumpFrequency = kickerStatBlock.JumpFrequency;
+    }
+    void OnDestroy()
+    {
+        if(TimeProvider != null)
+        {
+            TimeProvider.OnChangedNight -= ChangeToNightMode;
+        }
     }
 }

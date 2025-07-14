@@ -1,10 +1,14 @@
-//  ŠÔ’ñ‹ŸƒCƒ“ƒ^[ƒtƒF[ƒX
+ï»¿//  æ™‚é–“æä¾›ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
+using System;
+
 public interface ITimeProvider
 {
-    //  Œ»İŠÔæ“¾ƒvƒƒpƒeƒB
+    //  ç¾åœ¨æ™‚é–“å–å¾—ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     float CurrentTimeProperty { get; set; }
-    //  Œ»İ“ú”æ“¾ƒvƒƒpƒeƒB
+    //  ç¾åœ¨æ—¥æ•°å–å¾—ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     int CurrentDayProperty { get; }
-
+    //  å¤œã‹ã©ã†ã‹ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     bool IsNightProperty { get; set; }
+
+    event Action<bool> OnChangedNight;
 }
