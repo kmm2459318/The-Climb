@@ -68,7 +68,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void QuickJumpFalse()
     {
-        if (move.maxAirSpeed < 12f)
+        if (move.airMaxSpeed < 12f)
         {
             gameObject.SetActive(false);
         }

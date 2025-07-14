@@ -182,9 +182,9 @@ public class PlayerSpecialAction : MonoBehaviour
 
     public void HighJumpUse()
     {
-        RigidBody.AddForce(new Vector3(RigidBody.linearVelocity.x, highJumpPower, 0), ForceMode.Impulse);
+        RigidBody.AddForce(new Vector3(0, highJumpPower, 0), ForceMode.Impulse);
         jump.jumpCoolActive = true;
-
+        move.airMaxSpeed = 0.005f;
         highJump = false;
     }
 
@@ -223,7 +223,7 @@ public class PlayerSpecialAction : MonoBehaviour
         //クイックジャンプの横移動速度制限
         if (move.MoveInput != 0f)
         {
-            move.maxAirSpeed = 15f;
+            move.airMaxSpeed = 15f;
         }
         quickJump = false;
     }
