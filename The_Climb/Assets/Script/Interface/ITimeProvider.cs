@@ -5,4 +5,6 @@ public interface ITimeProvider
     float CurrentTimeProperty { get; set; }
     //  現在日数取得プロパティ
     int CurrentDayProperty { get; }
+
+    bool IsNightProperty { get; set; }
 }
