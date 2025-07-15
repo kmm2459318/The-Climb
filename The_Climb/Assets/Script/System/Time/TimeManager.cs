@@ -9,7 +9,7 @@ public class TimeManager : MonoBehaviour, ITimeProvider
     public float CurrentTime;    //  現在の時間
     float TimeProgressValue;    //  １秒当たりの時間進行値
     int CurrentDay;    //  現在の日付
-    [SerializeField] bool IsNight;
+    [SerializeField] public bool IsNight;
 
     //  現在時間取得プロパティ
     public float CurrentTimeProperty
