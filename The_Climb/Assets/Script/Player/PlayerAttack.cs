@@ -7,6 +7,7 @@ public class PlayerAttack : MonoBehaviour
     PlayerMove move;
     PlayerJump jump;
     PlayerSpecialAction special;
+    SunMoveCommander sunMoveCommander;
 
     private float headingSafeTime = 0.1f;
     private float headingSafeCounter = 0f;
@@ -17,6 +18,7 @@ public class PlayerAttack : MonoBehaviour
         move = gameObject.transform.parent.gameObject.GetComponent<PlayerMove>();
         jump = gameObject.transform.parent.gameObject.GetComponent<PlayerJump>();
         special = gameObject.transform.parent.gameObject.GetComponent<PlayerSpecialAction>();
+        sunMoveCommander = GameObject.Find("Directional Light").GetComponent<SunMoveCommander>();
     }
 
     void Update()
@@ -101,10 +103,11 @@ public class PlayerAttack : MonoBehaviour
             PlayerYMoveReset();
         }
 
-        //敵に当たったら
-        if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("BreakBlock") && (special.highJumpUsed || special.meteorDrop))
+        //敵への（朝全部、夜通常ジャンプ以外での）攻撃、破壊可能ブロックへのハイジャンプとメテオでの攻撃で消す
+        if (other.gameObject.CompareTag("Enemy") &&
+            (!sunMoveCommander.TimeProvider.IsNightProperty || (sunMoveCommander.TimeProvider.IsNightProperty && (special.highJumpUsed || special.meteorDrop || special.quickJumpUsed))) ||
+            (other.gameObject.CompareTag("BreakBlock") && (special.highJumpUsed || special.meteorDrop)))
         {
-            //敵を消す
             Destroy(other.gameObject);
             StartCoroutine(HitStop());
         }

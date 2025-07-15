@@ -7,7 +7,7 @@ public class SunMoveCommander : MonoBehaviour
 {
     SunStat sunStat;    //  太陽のステータス
     SunMover sunMover;    //  太陽移動インスタンス
-    ITimeProvider TimeProvider;    //  時間値プロバイダ
+    public ITimeProvider TimeProvider;    //  時間値プロバイダ
     ITimeConfig TimeConfig;    //  日付のインスタンス
 
     [Inject]
