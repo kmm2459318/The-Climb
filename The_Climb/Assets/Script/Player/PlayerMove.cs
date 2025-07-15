@@ -8,15 +8,11 @@ public class PlayerMove : MonoBehaviour
     PlayerJump jump;
     PlayerSpecialAction special;
 
-    public bool highJumpOn = false;      //ハイジャンプ可能か
-    public bool quickJumpOn = false;     //クイックジャンプ可能か
-    public bool meteorDropOn = false;    //メテオドロップ叶か
-
-    private float groundMoveForce = 0.35f;     //プレイヤーの地上移動速度
+    private float groundMoveForce = 0.7f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
     private float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 50f;    //空中での移動速度
-    public float maxAirSpeed = 10f;     //空中での速度制限
+    public float airMaxSpeed = 10f;     //空中での速度制限
 
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
     private float slippingTime = 0.05f;     //スリップ方向切り替え用
@@ -94,42 +90,47 @@ public class PlayerMove : MonoBehaviour
 
     private void GroundPlayerMove()
     {
-        if (slipping)
-        {
-            //減少時間
-            float slipFrictionX = 20f;
+        //スリップ
+        //if (slipping)
+        //{
+        //    //減少時間
+        //    float slipFrictionX = 20f;
 
-            if (moveInput == 1f)
-            {
-                //横速度だけ徐々に減衰させRU
-                slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x), 0f, slipFrictionX * Time.fixedDeltaTime);
-                slippingCounter = 0;
-            }
-            else if (moveInput == -1f)
-            {
-                //横速度だけ徐々に減衰させRU
-                slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x) * -1.0f, 0f, slipFrictionX * Time.fixedDeltaTime);
-                slippingCounter = 0;
-            }
-            else if (slippingCounter > slippingTime)
-            {
-                slipping = false;
-            }
-            else if (moveInput == 0f)
-            {
-                slipVelocity.x = Mathf.MoveTowards(slipVelocity.x, 0f, slipFrictionX * Time.fixedDeltaTime);
-                slippingCounter += Time.fixedDeltaTime;
-            }
+        //    if (moveInput == 1f)
+        //    {
+        //        //横速度だけ徐々に減衰させRU
+        //        slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x), 0f, slipFrictionX * Time.fixedDeltaTime);
+        //        slippingCounter = 0;
+        //    }
+        //    else if (moveInput == -1f)
+        //    {
+        //        //横速度だけ徐々に減衰させRU
+        //        slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x) * -1.0f, 0f, slipFrictionX * Time.fixedDeltaTime);
+        //        slippingCounter = 0;
+        //    }
+        //    else if (slippingCounter > slippingTime)
+        //    {
+        //        slipping = false;
+        //    }
+        //    else if (moveInput == 0f)
+        //    {
+        //        slipVelocity.x = Mathf.MoveTowards(slipVelocity.x, 0f, slipFrictionX * Time.fixedDeltaTime);
+        //        slippingCounter += Time.fixedDeltaTime;
+        //    }
 
-            RigidBody.linearVelocity = new Vector3(slipVelocity.x, 0, 0);
+        //    if (slipVelocity.y < 0)
+        //    {
+        //        //Debug.Log("w");
+        //        RigidBody.linearVelocity = new Vector3(slipVelocity.x, 0, 0);
+        //    }
 
-            //一定以下になったらスリップ終了（普通の地上移動に戻す）
-            if (Mathf.Abs(slipVelocity.x) <= groundMaxSpeed)
-            {
-                slipping = false;
-            }
-            return; //通常の地上移動処理はスキップ
-        }
+        //    //一定以下になったらスリップ終了（普通の地上移動に戻す）
+        //    if (Mathf.Abs(slipVelocity.x) <= groundMaxSpeed)
+        //    {
+        //        slipping = false;
+        //    }
+        //    return; //通常の地上移動処理はスキップ
+        //}
 
         if (moveInput != 0f)
         {
@@ -168,21 +169,39 @@ public class PlayerMove : MonoBehaviour
         RigidBody.AddForce(force, ForceMode.Acceleration);
 
         // 最大空中速度を制限
-        if (!special.quickJumpUsed)
+        if (!special.quickJumpUsed && !special.highJumpUsed)
         {
-            maxAirSpeed = 10f;
+            airMaxSpeed = 10f;
         }
         Vector3 horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
-        if (horizontalVelocity.magnitude > maxAirSpeed)
+        if (horizontalVelocity.magnitude > airMaxSpeed)
         {
-            RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * maxAirSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
+            RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * airMaxSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
         }
 
-        //徐々に遅くするよ
-        if (maxAirSpeed > 10f) 
+        //ハイジャンプ後徐々に早くするよ
+        if (special.highJumpUsed)
         {
-            Debug.Log(maxAirSpeed);
-            maxAirSpeed -= 0.14f;
+            if (airMaxSpeed > 10f)
+            {
+                airMaxSpeed = 10f;
+            }
+            else if (airMaxSpeed < 0.1f)
+            {
+                airMaxSpeed += airMaxSpeed;
+            }
+            else if (airMaxSpeed < 10f)
+            {
+                airMaxSpeed += 0.3f;
+            }
+        }
+        else if (special.quickJumpUsed) //クイックジャンプ後徐々に遅くするよ
+        {
+            if (airMaxSpeed > 10f)
+            {
+                //Debug.Log(maxAirSpeed);
+                airMaxSpeed -= 0.14f;
+            }
         }
     }
 }
