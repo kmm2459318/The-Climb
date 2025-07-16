@@ -35,6 +35,8 @@ public class PlayerState : MonoBehaviour
     public bool isAir = false;          //空中判定
 
     private float playerFallSpeed = -19f;  //プレイヤーの落下速度
+    public bool justLanded = false; // 今フレーム着地したか
+
 
     void Start()
     {
@@ -123,23 +125,24 @@ public class PlayerState : MonoBehaviour
 
         //前フレームの接地判定
         wasGrounded = isGrounded;
+
     }
 
     private void LandingCheck()
     {
         landing = false;
-        //着地判定
         if (!wasGrounded && isGrounded)
         {
             landing = true;
+
+            //  着地ジャンプ回数を増やす（最大2まで）
+            jump.landingJumpNumber = Mathf.Min(jump.landingJumpNumber + 1, 2);
 
             landingJumpCounter = 0f;
             landingJumpOn = true;
             isLeftWall = false;
             isRightWall = false;
-            //RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
 
-            // 横方向の速度が一定以上ならスリップ開始
             if (Mathf.Abs(RigidBody.linearVelocity.x) > move.groundMaxSpeed && !special.meteorDrop)
             {
                 move.slipping = true;
@@ -147,7 +150,7 @@ public class PlayerState : MonoBehaviour
             }
         }
 
-        //着地ジャンプ猶予カウント
+        // 猶予時間カウント（オーバーしたらリセット）
         if (landingJumpOn)
         {
             landingJumpCounter += Time.deltaTime;
@@ -160,6 +163,7 @@ public class PlayerState : MonoBehaviour
             }
         }
     }
+
 
     public void LandingJumpReset()
     {

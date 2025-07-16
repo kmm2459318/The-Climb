@@ -19,6 +19,11 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.2f;
 
+    // 壁判定用
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private float wallCheckDistance = 0.3f; // 壁との距離判定
+    [SerializeField] private float wallCheckHeight = 0.5f;   // 判定の高さ調整（キャラの腰あたり）
+
     private float jumpKeyHoldTime = 0f;
     private float crouchThreshold = 0.2f;
 
@@ -46,6 +51,9 @@ public class PlayerAnimation : MonoBehaviour
         bool hasMoveInput = Mathf.Abs(playerMove.MoveInput) > 0f;
         bool isJumpKeyPressed = Input.GetKey(playerState.keyBind.playerJump);
 
+        Rigidbody rb = playerMove.GetComponent<Rigidbody>();
+        float verticalVelocity = rb.linearVelocity.y;
+
         if (isJumping)
         {
             jumpAnimTimer -= Time.deltaTime;
@@ -53,54 +61,26 @@ public class PlayerAnimation : MonoBehaviour
                 isJumping = false;
         }
 
-        if (isGrounded && !wasGrounded)
-        {
-            Debug.Log("着地しました");
-
-            groundedVelocityLockTimer = groundedVelocityLockTime;
-
-            Rigidbody rb = playerMove.GetComponent<Rigidbody>();
-            Vector3 vel = rb.linearVelocity;
-            vel.y = 0f;
-            rb.linearVelocity = vel;
-            rb.angularVelocity = Vector3.zero;
-
-            isJumping = false;
-            crouchStarted = false;
-
-            if (isMeteorDropping)
-            {
-                animator.SetBool("IsMeteorDropping", false);
-                isMeteorDropping = false;
-            }
-
-            animator.SetBool("IsIdle", true);
-            animator.SetBool("IsRunning", false);
-            //animator.SetBool("IsCrouching", false);
-        }
-
-        if (groundedVelocityLockTimer > 0f)
-        {
-            Rigidbody rb = playerMove.GetComponent<Rigidbody>();
-            Vector3 vel = rb.linearVelocity;
-            vel.y = 0f;
-            rb.linearVelocity = vel;
-
-            groundedVelocityLockTimer -= Time.deltaTime;
-        }
-
-        wasGrounded = isGrounded;
-
-        if (!crouchStarted)
-        {
-            if (playerMove.MoveInput > 0f)
-                transform.rotation = Quaternion.Euler(0, 90, 0);
-            else if (playerMove.MoveInput < 0f)
-                transform.rotation = Quaternion.Euler(0, -90, 0);
-        }
-
+        // クイックジャンプ処理
         bool quickJumpUsedThisFrame = playerSpecial.quickJumpUsed && !prevQuickJumpUsed;
+        if (quickJumpUsedThisFrame && !isMeteorDropping)
+        {
+            Debug.Log("クイックジャンプアニメ");
 
+            ResetJumpTriggers();
+            animator.Play("JumpAnimStep1");
+
+            isJumping = true;
+            jumpAnimTimer = jumpAnimDuration;
+            crouchStarted = false;
+            jumpKeyHoldTime = 0f;
+
+            playerSpecial.quickJumpUsed = false;
+            prevQuickJumpUsed = true;
+            return;
+        }
+
+        // メテオドロップ
         if (playerSpecial.meteorDrop && !isMeteorDropping && !isGrounded)
         {
             Debug.Log("メテオドロップ開始");
@@ -111,15 +91,17 @@ public class PlayerAnimation : MonoBehaviour
             isMeteorDropping = true;
             isJumping = true;
 
-            Rigidbody rb = playerMove.GetComponent<Rigidbody>();
             Vector3 vel = rb.linearVelocity;
-            vel.y = -20f;
+            vel.y = 0f;
             rb.linearVelocity = vel;
+
+            rb.AddForce(Vector3.down * 30f, ForceMode.VelocityChange);
 
             playerSpecial.meteorDrop = false;
         }
 
-        if (playerSpecial.playHighJumpAnim && !isJumping && !isMeteorDropping)
+        // ハイジャンプ
+        if (playerSpecial.playHighJumpAnim && !isMeteorDropping)
         {
             Debug.Log("ハイジャンプ演出開始");
 
@@ -134,19 +116,12 @@ public class PlayerAnimation : MonoBehaviour
 
             playerSpecial.playHighJumpAnim = false;
         }
-        else if (quickJumpUsedThisFrame && !isJumping && !isMeteorDropping)
-        {
-            Debug.Log("クイックジャンプアニメ");
 
-            ResetJumpTriggers();
-            animator.SetTrigger("JumpAnimStep1");
-
-            isJumping = true;
-            jumpAnimTimer = jumpAnimDuration;
-        }
-        else if (Input.GetKeyDown(playerState.keyBind.playerJump) && isGrounded && !isJumping && !isMeteorDropping)
+        // 通常ジャンプ・着地ジャンプ
+        else if (Input.GetKeyDown(playerState.keyBind.playerJump) && isGrounded && !isMeteorDropping)
         {
             int jumpType = 1;
+
             if (playerJump != null)
             {
                 if (playerJump.landingJumpNumber >= 2)
@@ -157,6 +132,7 @@ public class PlayerAnimation : MonoBehaviour
 
             ResetJumpTriggers();
             animator.SetTrigger($"JumpAnimStep{jumpType}");
+            animator.SetBool("IsFalling", false);
 
             isJumping = true;
             jumpAnimTimer = jumpAnimDuration;
@@ -164,6 +140,59 @@ public class PlayerAnimation : MonoBehaviour
             Debug.Log($"ジャンプアニメ Step {jumpType}");
         }
 
+        // 落下判定
+        bool isFalling = !isGrounded && !isJumping && !isMeteorDropping && verticalVelocity < -0.1f;
+        animator.SetBool("IsFalling", isFalling);
+
+        // 着地処理
+        if (isGrounded && !wasGrounded)
+        {
+            Debug.Log("着地しました");
+
+            groundedVelocityLockTimer = groundedVelocityLockTime;
+
+            Vector3 vel = rb.linearVelocity;
+            vel.y = 0f;
+            rb.linearVelocity = vel;
+            rb.angularVelocity = Vector3.zero;
+
+            isJumping = false;
+            crouchStarted = false;
+
+            ResetJumpTriggers();
+            animator.ResetTrigger("StartCrouch");
+            animator.ResetTrigger("EndCrouch");
+            animator.SetBool("IsCrouching", false);
+            animator.SetBool("IsMeteorDropping", false);
+            animator.SetBool("IsFalling", false);
+            isMeteorDropping = false;
+
+            // animator.Play("Idle");  // ここは必要なら残してもOKですが、
+            // 状態遷移はパラメータ管理に任せる方が安定します
+        }
+
+        // Y軸速度ロック
+        if (groundedVelocityLockTimer > 0f)
+        {
+            Vector3 vel = rb.linearVelocity;
+            vel.y = 0f;
+            rb.linearVelocity = vel;
+
+            groundedVelocityLockTimer -= Time.deltaTime;
+        }
+
+        wasGrounded = isGrounded;
+
+        // 向きの制御
+        if (!crouchStarted && !isJumping && !isMeteorDropping)
+        {
+            if (playerMove.MoveInput > 0f)
+                transform.rotation = Quaternion.Euler(0, 90, 0);
+            else if (playerMove.MoveInput < 0f)
+                transform.rotation = Quaternion.Euler(0, -90, 0);
+        }
+
+        // しゃがみ開始
         if (isJumpKeyPressed && isGrounded && !isJumping)
         {
             jumpKeyHoldTime += Time.deltaTime;
@@ -179,6 +208,7 @@ public class PlayerAnimation : MonoBehaviour
             jumpKeyHoldTime = 0f;
         }
 
+        // しゃがみ解除
         bool shouldCancelCrouch = crouchStarted && (!isJumpKeyPressed || isJumping);
         if (shouldCancelCrouch)
         {
@@ -188,10 +218,14 @@ public class PlayerAnimation : MonoBehaviour
             jumpKeyHoldTime = 0f;
         }
 
-        //animator.SetBool("IsCrouching", crouchStarted);
-        animator.SetBool("IsIdle", !hasMoveInput && !isJumpKeyPressed && isGrounded && !isJumping && !isMeteorDropping);
+        // 壁判定
+        bool touchingWall = IsTouchingWall();
+
+        // Animator パラメータ更新（壁接触時はアイドルにしない）
+        animator.SetBool("IsIdle", isGrounded && !hasMoveInput && !isJumpKeyPressed && !isJumping && !isMeteorDropping && !touchingWall);
         animator.SetBool("IsRunning", isGrounded && hasMoveInput && !isJumpKeyPressed);
-        //animator.SetBool("IsGrounded", isGrounded);
+        animator.SetBool("IsCrouching", crouchStarted);
+        animator.SetBool("IsGrounded", isGrounded);
 
         prevQuickJumpUsed = playerSpecial.quickJumpUsed;
     }
@@ -201,6 +235,20 @@ public class PlayerAnimation : MonoBehaviour
         return Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
+    private bool IsTouchingWall()
+    {
+        Vector3 origin = transform.position + Vector3.up * wallCheckHeight;
+
+        bool rightHit = Physics.Raycast(origin, transform.right, wallCheckDistance, wallLayer);
+        bool leftHit = Physics.Raycast(origin, -transform.right, wallCheckDistance, wallLayer);
+
+        // デバッグ用にレイを可視化（Sceneビューで見れます）
+        Debug.DrawRay(origin, transform.right * wallCheckDistance, Color.red);
+        Debug.DrawRay(origin, -transform.right * wallCheckDistance, Color.red);
+
+        return rightHit || leftHit;
+    }
+
     private void ResetJumpTriggers()
     {
         animator.ResetTrigger("HighJump");
@@ -208,5 +256,7 @@ public class PlayerAnimation : MonoBehaviour
         animator.ResetTrigger("JumpAnimStep2");
         animator.ResetTrigger("JumpAnimStep3");
         animator.ResetTrigger("MeteorDrop");
+        animator.ResetTrigger("EndCrouch");
+        animator.SetBool("IsFalling", false); // 落下を止める
     }
 }

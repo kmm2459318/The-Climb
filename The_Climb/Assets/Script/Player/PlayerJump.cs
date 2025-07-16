@@ -139,7 +139,7 @@ public class PlayerJump : MonoBehaviour
                 //’…’nƒWƒƒƒ“ƒv
                 if (state.landingJumpOn)
                 {
-                    landingJumpNumber++;
+                    //landingJumpNumber++;
                     state.LandingJumpReset();
                 }
             }
