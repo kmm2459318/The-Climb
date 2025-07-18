@@ -13,5 +13,4 @@ public interface ITimeConfig
     float ProgressTimeProperty { get; }
     //  1日の総実時間プロパティ
     int InitializeDateProperty { get; }
-
 }

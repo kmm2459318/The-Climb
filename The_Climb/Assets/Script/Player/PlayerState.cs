@@ -75,14 +75,6 @@ public class PlayerState : MonoBehaviour
             isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
         }
 
-        //’n–Ê”»’è‚Ì‚ ‚Æ‚ÉA•Ç‚É“–‚½‚Á‚Ä‚é‚©‚Ç‚¤‚©‚Å”»’è‚ğ•¢‚·
-        if (!jump.jumping &&
-            ((isLeftWall && RigidBody.linearVelocity.x < -0.1f) ||
-            (isRightWall && RigidBody.linearVelocity.x > 0.1f)))
-        {
-            isGrounded = false;
-        }
-
         //‹ó’†AisJumpOK‚ğ”½‰‚³‚¹‚È‚¢
         if (isAir)
         {
