@@ -64,8 +64,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.39, y: 0.2, z: 0.5}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.39, y: 0.29, z: 0.5}
+  m_Center: {x: 0, y: 0.09, z: 0}
 --- !u!1 &858820367639580394
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,11 +550,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af19e1eedc2393f48a66ba2b34202b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highJumpOn: 0
-  quickJumpOn: 0
-  meteorDropOn: 1
   groundMaxSpeed: 6.459797
-  maxAirSpeed: 10
+  airMaxSpeed: 10
   slipping: 0
   slipVelocity: {x: 0, y: 0, z: 0}
   PlayerAnimation: {fileID: 0}
