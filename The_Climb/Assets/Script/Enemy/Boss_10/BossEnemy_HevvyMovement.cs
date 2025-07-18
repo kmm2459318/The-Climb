@@ -24,9 +24,15 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
     private Rigidbody rb;
     private bool hasActivated = false;
     public bool IsVulnerable() => isVulnerable;
+
+    private bool isInvincible = false;
+    private Renderer bossRenderer;
+    private Coroutine flashCoroutine;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        bossRenderer = GetComponentInChildren<Renderer>(); // モデルの Renderer を取得
+
         Debug.Log("[Boss] 初期化完了");
         ChangeState(BossState.Idle);
     }
@@ -157,12 +163,25 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         isVulnerable = true;
 
-        GetComponentInChildren<BossWeakPoint>()?.ActivateWeakPoint();
+        var weakPoint = GetComponentInChildren<BossWeakPoint>();
+        if (weakPoint != null)
+        {
+            Debug.Log("[Boss] 弱点をアクティブ化");
+            weakPoint.ActivateWeakPoint();
+        }
+        else
+        {
+            Debug.LogWarning("[Boss] BossWeakPoint が見つかりませんでした！");
+        }
 
         yield return new WaitForSeconds(stats.stunDuration);
 
         isVulnerable = false;
-        GetComponentInChildren<BossWeakPoint>()?.DeactivateWeakPoint();
+        if (weakPoint != null)
+        {
+            Debug.Log("[Boss] 弱点を非アクティブ化");
+            weakPoint.DeactivateWeakPoint();
+        }
 
         Debug.Log("[Boss] スタン解除 → 移動へ");
         ChangeState(BossState.Move);
@@ -211,16 +230,46 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
     }
     public void OnHit()
     {
+        if (!isVulnerable || isInvincible) return; // 無敵中 or 非スタン中は無視
+
         hitCount++;
         Debug.Log($"[Boss] 弱点ヒット！残り: {stats.requiredHitsToDefeat - hitCount}");
+
+        if (flashCoroutine != null)
+            StopCoroutine(flashCoroutine);
+
+        flashCoroutine = StartCoroutine(DamageFlash());
 
         if (hitCount >= stats.requiredHitsToDefeat)
         {
             ChangeState(BossState.Defeated);
         }
     }
+    IEnumerator DamageFlash()
+    {
+        isInvincible = true;
 
- 
+        if (bossRenderer != null)
+        {
+            Color originalColor = bossRenderer.material.color;
+            Color flashColor = Color.red;
+
+            float flashDuration = 0.1f;
+            int flashCount = 5;
+
+            for (int i = 0; i < flashCount; i++)
+            {
+                bossRenderer.material.color = flashColor;
+                yield return new WaitForSeconds(flashDuration);
+                bossRenderer.material.color = originalColor;
+                yield return new WaitForSeconds(flashDuration);
+            }
+        }
+
+        yield return new WaitForSeconds(1.0f); // 無敵時間
+        isInvincible = false;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (currentState == BossState.JumpArc && collision.contacts[0].normal.y > 0.5f)

@@ -7,18 +7,29 @@ public class BossWeakPoint : MonoBehaviour
     private void Start()
     {
         boss = GetComponentInParent<BossEnemy_HevvyMovement>();
-        gameObject.SetActive(false);
+        if (boss == null)
+        {
+            Debug.LogError("[WeakPoint] BossEnemy_HevvyMovement が親に見つかりません！");
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && boss.IsVulnerable())
+        if (other.CompareTag("Player"))
         {
-            boss.OnHit(); // ボスにダメージ
-            gameObject.SetActive(false); // 一時的に無効化
+            boss?.OnHit(); // 親のダメージ処理を呼び出す
         }
     }
 
-    public void ActivateWeakPoint() => gameObject.SetActive(true);
-    public void DeactivateWeakPoint() => gameObject.SetActive(false);
+    public void ActivateWeakPoint()
+    {
+        var col = GetComponent<Collider>();
+        if (col != null) col.enabled = true;
+    }
+
+    public void DeactivateWeakPoint()
+    {
+        var col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+    }
 }
