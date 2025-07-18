@@ -35,6 +35,7 @@ public class PlayerSpecialAction : MonoBehaviour
     public bool meteorHighJump = false;  //メテオドロップ後のハイジャンプ
     public float meteorDropTime = 0.37f;  //メテオドロップからのハイジャンプに移行できるまでの時間
     public float meteorDropCounter = 0f;  //メテオドロップのカウンター
+    internal bool playHighJumpAnim;
 
     void Start()
     {
