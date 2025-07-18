@@ -19,10 +19,10 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.2f;
 
-    // 壁判定用
+    [Header("Wall Check")]
     [SerializeField] private LayerMask wallLayer;
-    [SerializeField] private float wallCheckDistance = 0.3f; // 壁との距離判定
-    [SerializeField] private float wallCheckHeight = 0.5f;   // 判定の高さ調整（キャラの腰あたり）
+    [SerializeField] private float wallCheckDistance = 0.3f;
+    [SerializeField] private float wallCheckHeight = 0.5f;
 
     private float jumpKeyHoldTime = 0f;
     private float crouchThreshold = 0.2f;
@@ -50,6 +50,7 @@ public class PlayerAnimation : MonoBehaviour
         bool isGrounded = IsGrounded();
         bool hasMoveInput = Mathf.Abs(playerMove.MoveInput) > 0f;
         bool isJumpKeyPressed = Input.GetKey(playerState.keyBind.playerJump);
+        bool touchingWall = IsTouchingWall();
 
         Rigidbody rb = playerMove.GetComponent<Rigidbody>();
         float verticalVelocity = rb.linearVelocity.y;
@@ -157,18 +158,18 @@ public class PlayerAnimation : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
 
             isJumping = false;
+            isMeteorDropping = false;
             crouchStarted = false;
+            jumpKeyHoldTime = 0f;
 
             ResetJumpTriggers();
             animator.ResetTrigger("StartCrouch");
             animator.ResetTrigger("EndCrouch");
+
             animator.SetBool("IsCrouching", false);
             animator.SetBool("IsMeteorDropping", false);
             animator.SetBool("IsFalling", false);
-            isMeteorDropping = false;
-
-            // animator.Play("Idle");  // ここは必要なら残してもOKですが、
-            // 状態遷移はパラメータ管理に任せる方が安定します
+            // IdleアニメはSetBool("IsIdle")で制御（Playは使わない）
         }
 
         // Y軸速度ロック
@@ -218,11 +219,9 @@ public class PlayerAnimation : MonoBehaviour
             jumpKeyHoldTime = 0f;
         }
 
-        // 壁判定
-        bool touchingWall = IsTouchingWall();
-
-        // Animator パラメータ更新（壁接触時はアイドルにしない）
-        animator.SetBool("IsIdle", isGrounded && !hasMoveInput && !isJumpKeyPressed && !isJumping && !isMeteorDropping && !touchingWall);
+        // Animator パラメータ更新
+        bool shouldBeIdle = isGrounded && !hasMoveInput && !isJumpKeyPressed && !isJumping && !isMeteorDropping && !touchingWall;
+        animator.SetBool("IsIdle", shouldBeIdle);
         animator.SetBool("IsRunning", isGrounded && hasMoveInput && !isJumpKeyPressed);
         animator.SetBool("IsCrouching", crouchStarted);
         animator.SetBool("IsGrounded", isGrounded);
@@ -242,7 +241,6 @@ public class PlayerAnimation : MonoBehaviour
         bool rightHit = Physics.Raycast(origin, transform.right, wallCheckDistance, wallLayer);
         bool leftHit = Physics.Raycast(origin, -transform.right, wallCheckDistance, wallLayer);
 
-        // デバッグ用にレイを可視化（Sceneビューで見れます）
         Debug.DrawRay(origin, transform.right * wallCheckDistance, Color.red);
         Debug.DrawRay(origin, -transform.right * wallCheckDistance, Color.red);
 
@@ -257,6 +255,6 @@ public class PlayerAnimation : MonoBehaviour
         animator.ResetTrigger("JumpAnimStep3");
         animator.ResetTrigger("MeteorDrop");
         animator.ResetTrigger("EndCrouch");
-        animator.SetBool("IsFalling", false); // 落下を止める
+        animator.SetBool("IsFalling", false);
     }
 }
