@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class PlayerMove : MonoBehaviour
+public class PlayerMove : MonoBehaviour, IConveyorReceiver
 {
     Rigidbody RigidBody;
     PlayerState state;
@@ -22,6 +22,9 @@ public class PlayerMove : MonoBehaviour
     public float MoveInput => moveInput; // ←読み取り専用プロパティ
     public PlayerAnimation PlayerAnimation;
     public PlayerState State => state;
+
+    private bool OnBelt = false;                 //ベルトコンベアに乗っているか
+    private Vector3 BeltVelocity = Vector3.zero; //ベルトコンベアの速度(未接触時はゼロ)
 
 
     void Start()
@@ -90,6 +93,11 @@ public class PlayerMove : MonoBehaviour
 
     private void GroundPlayerMove()
     {
+        //ベルトコンベア上の場合はベルトコンベアの力を加える
+        if (OnBelt)
+        {
+            RigidBody.AddForce(BeltVelocity, ForceMode.Acceleration);
+        }
         //スリップ
         //if (slipping)
         //{
@@ -143,6 +151,8 @@ public class PlayerMove : MonoBehaviour
         {
             RigidBody.linearVelocity = new Vector3(0f, RigidBody.linearVelocity.y, 0f);
         }
+
+        
     }
 
     private void AirPlayerMove()
@@ -203,5 +213,11 @@ public class PlayerMove : MonoBehaviour
                 airMaxSpeed -= 0.14f;
             }
         }
+    }
+
+    public void SetOnBelt(bool OnBelt, Vector3 velocity)
+    {
+        this.OnBelt = OnBelt;
+        this.BeltVelocity = velocity;
     }
 }

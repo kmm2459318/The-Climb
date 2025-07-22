@@ -7,9 +7,9 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
     private enum BossState
     {
         Idle, Move, ChargeVertical, JumpVertical,
-        ChargeArc, JumpArc, Defeated
+        ChargeArc, JumpArc, Stunned, Defeated
     }
-
+    
     [Header("参照")]
     public Transform player;
     public Animator animator;
@@ -23,10 +23,16 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
     private bool isVulnerable = false;
     private Rigidbody rb;
     private bool hasActivated = false;
+    public bool IsVulnerable() => isVulnerable;
 
+    private bool isInvincible = false;
+    private Renderer bossRenderer;
+    private Coroutine flashCoroutine;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        bossRenderer = GetComponentInChildren<Renderer>(); // モデルの Renderer を取得
+
         Debug.Log("[Boss] 初期化完了");
         ChangeState(BossState.Idle);
     }
@@ -72,6 +78,10 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
                 PlayAnimation("Defeat");
                 Debug.Log("[Boss] 撃破されました");
                 Destroy(gameObject, 2f);
+                break;
+            case BossState.Stunned:
+                PlayAnimation("Stun");
+                StartCoroutine(StunRoutine());
                 break;
         }
     }
@@ -143,7 +153,37 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
         yield return new WaitUntil(() => rb.linearVelocity.y <= 0);
         yield return new WaitUntil(() => IsGrounded());
 
-        Debug.Log("[Boss] 垂直ジャンプ終了 → 移動へ");
+        Debug.Log("[Boss] 垂直ジャンプ終了 → スタンへ");
+        ChangeState(BossState.Stunned); // ← スタン状態へ移行
+    }
+    IEnumerator StunRoutine()
+    {
+        Debug.Log("[Boss] スタン状態突入");
+
+        rb.linearVelocity = Vector3.zero;
+        isVulnerable = true;
+
+        var weakPoint = GetComponentInChildren<BossWeakPoint>();
+        if (weakPoint != null)
+        {
+            Debug.Log("[Boss] 弱点をアクティブ化");
+            weakPoint.ActivateWeakPoint();
+        }
+        else
+        {
+            Debug.LogWarning("[Boss] BossWeakPoint が見つかりませんでした！");
+        }
+
+        yield return new WaitForSeconds(stats.stunDuration);
+
+        isVulnerable = false;
+        if (weakPoint != null)
+        {
+            Debug.Log("[Boss] 弱点を非アクティブ化");
+            weakPoint.DeactivateWeakPoint();
+        }
+
+        Debug.Log("[Boss] スタン解除 → 移動へ");
         ChangeState(BossState.Move);
     }
 
@@ -158,10 +198,14 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
         Vector3 direction = (targetPos - transform.position).normalized;
         rb.linearVelocity = direction * stats.arcJumpForce + Vector3.up * stats.arcJumpHeight;
 
-        Debug.Log("[Boss] 山なりジャンプ 実行");
+        isVulnerable = true;
+        GetComponentInChildren<BossWeakPoint>()?.ActivateWeakPoint();
 
         yield return new WaitUntil(() => rb.linearVelocity.y <= 0);
         yield return new WaitUntil(() => IsGrounded());
+
+        isVulnerable = false;
+        GetComponentInChildren<BossWeakPoint>()?.DeactivateWeakPoint();
 
         Debug.Log("[Boss] 山なりジャンプ終了 → 移動へ");
         ChangeState(BossState.Move);
@@ -184,6 +228,47 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
             Debug.Log($"[Boss] アニメーションスキップ（未設定）: {animName}");
         }
     }
+    public void OnHit()
+    {
+        if (!isVulnerable || isInvincible) return; // 無敵中 or 非スタン中は無視
+
+        hitCount++;
+        Debug.Log($"[Boss] 弱点ヒット！残り: {stats.requiredHitsToDefeat - hitCount}");
+
+        if (flashCoroutine != null)
+            StopCoroutine(flashCoroutine);
+
+        flashCoroutine = StartCoroutine(DamageFlash());
+
+        if (hitCount >= stats.requiredHitsToDefeat)
+        {
+            ChangeState(BossState.Defeated);
+        }
+    }
+    IEnumerator DamageFlash()
+    {
+        isInvincible = true;
+
+        if (bossRenderer != null)
+        {
+            Color originalColor = bossRenderer.material.color;
+            Color flashColor = Color.red;
+
+            float flashDuration = 0.1f;
+            int flashCount = 5;
+
+            for (int i = 0; i < flashCount; i++)
+            {
+                bossRenderer.material.color = flashColor;
+                yield return new WaitForSeconds(flashDuration);
+                bossRenderer.material.color = originalColor;
+                yield return new WaitForSeconds(flashDuration);
+            }
+        }
+
+        yield return new WaitForSeconds(1.0f); // 無敵時間
+        isInvincible = false;
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -193,7 +278,7 @@ public class BossEnemy_HevvyMovement : MonoBehaviour
             ChangeState(BossState.Move);
         }
     }
-
+    
     // Gizmosで可視化
     private void OnDrawGizmosSelected()
     {
