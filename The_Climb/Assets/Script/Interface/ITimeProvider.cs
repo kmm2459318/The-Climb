@@ -1,6 +1,6 @@
-﻿//  時間提供インターフェース
-using System;
+﻿using System;
 
+//  時間系提供インターフェース(設定価以外)
 public interface ITimeProvider
 {
     //  現在時間取得プロパティ
@@ -9,6 +9,8 @@ public interface ITimeProvider
     int CurrentDayProperty { get; }
     //  夜かどうかのプロパティ
     bool IsNightProperty { get; set; }
-
+    //  夜になった時の処理
     event Action<bool> OnChangedNight;
+    //  時間加速ラッパー関数
+    void StartTimeAcceleration(float TargetTime, float Duration);
 }

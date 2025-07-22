@@ -25,13 +25,14 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     }
     
     [Header("Instance")]
-    [SerializeField] [Inject] internal KickerStatus kickerStatus;    //  キッカーステータスインスタンス
+    [SerializeField] [Inject] internal KickerStatus kickerStatus;    //  キッカーステータス
     KickerStatBlock kickerStatBlock;    //  キッカーステータスクラス
-    EnemyMover enemyMover;    //  エネミームーバーインスタンス
-    CharacterGroundChecker characterGroundChecker;    //  グラウンドチェッカーインスタンス
-    EnemyStateMachine enemyStateMachine;    //  エネミーステートマシーンインスタンス
-    [Inject]PlayerState playerState;    //  プレイヤーステートインスタンス
-    CharacterStateVisualizer characterStateVisualizer;    //  キャラクターステートビジュアライザーインスタンス
+    EnemyMover enemyMover;    //  エネミームーバー
+    CharacterGroundChecker characterGroundChecker;    //  グラウンドチェッカー
+    EnemyStateMachine enemyStateMachine;    //  エネミーステートマシーン
+    TimeManager timeManager;    //  タイムマネージャー
+    PlayerState playerState;    //  プレイヤーステート
+    CharacterStateVisualizer characterStateVisualizer;    //  キャラクターステートビジュアライザー
     public Dictionary<KickerCommanderMethod, ICommand> CommanderMethodMap;    //  このスクリプトの関数の辞書
     public event Action OnJumpTime;    //  ジャンプタイムのサブスク
     public event Action OnLandGround;    //  地面着地のサブスク
@@ -40,6 +41,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     ICommandProvider commandProvider;    //  インターフェース型変数
     IEnemyStateFactory enemyStateFactory;    //  インターフェース型変数
     ITimeProvider TimeProvider;    //  時間値提供インターフェース
+    IDownFading DownFading;    //  ダウンフェードインターフェース
     EnemyMode CurrentEnemyMode;    //  現在の敵状態　
 
     Vector3 Velocity;    //  キャラクター移動値
@@ -51,25 +53,23 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     float CurrentJumpForce;    //  現在のジャンプ力
     float CurrentJumpFrequency;    //  現在のジャンプ頻度
 
+    //  インジェクトによる初期化
     [Inject]
     void Construct(
+        TimeManager timeManager,
         PlayerState playerState,
-        ITimeProvider TimeProvider
+        ITimeProvider TimeProvider,
+        IDownFading DownFading
         )
     {
+        this.timeManager = timeManager;
         this.playerState = playerState;
         this.TimeProvider = TimeProvider;
+        this.DownFading = DownFading;
         TimeProvider.OnChangedNight += ChangeToNightMode;
     }
 
     public EnemyStateMachine EnemyStateMachineProperty => enemyStateMachine;
-
-    ////  インスタンス注入
-    //[Inject]
-    //void Construct()
-    //{
-
-    //}
     void Awake()
     {
         if (kickerStatus == null)
@@ -210,6 +210,13 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     //  吹き飛ばし処理
     public void Blow(Rigidbody rigidbody, float Direction)
     {
+        if(timeManager.IsNightProperty　&& !timeManager.IsPlayerAttackedProperty)
+        {
+            timeManager.StartTimeAcceleration(0, 1);
+            DownFading.StartDownFading();
+            timeManager.IsPlayerAttackedProperty = true;
+            return;
+        }
         float CurrentBlowForceX = kickerStatBlock.BlowForceX;    //  X軸の吹き飛ばし力
         float CurrentBlowForceY = kickerStatBlock.BlowForceY;    //  Y軸の吹き飛ばし力
         float PlayerResistPowerX = 100f;    //  プレイヤーステータスに追加予定
