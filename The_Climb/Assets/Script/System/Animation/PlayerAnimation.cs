@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerAnimation : MonoBehaviour
 {
@@ -106,10 +107,17 @@ public class PlayerAnimation : MonoBehaviour
         {
             Debug.Log("ハイジャンプ演出開始");
 
-            ResetJumpTriggers();
             animator.SetTrigger("HighJump");
-            animator.SetBool("IsCrouching", false);
 
+            // HighJumpを除外したトリガーリセット
+            animator.ResetTrigger("JumpAnimStep1");
+            animator.ResetTrigger("JumpAnimStep2");
+            animator.ResetTrigger("JumpAnimStep3");
+            animator.ResetTrigger("MeteorDrop");
+            animator.ResetTrigger("EndCrouch");
+            animator.SetBool("IsFalling", false);
+
+            animator.SetBool("IsCrouching", false);
             isJumping = true;
             jumpAnimTimer = jumpAnimDuration;
             crouchStarted = false;
@@ -169,7 +177,6 @@ public class PlayerAnimation : MonoBehaviour
             animator.SetBool("IsCrouching", false);
             animator.SetBool("IsMeteorDropping", false);
             animator.SetBool("IsFalling", false);
-            // IdleアニメはSetBool("IsIdle")で制御（Playは使わない）
         }
 
         // Y軸速度ロック
@@ -220,7 +227,7 @@ public class PlayerAnimation : MonoBehaviour
         }
 
         // Animator パラメータ更新
-        bool shouldBeIdle = isGrounded && !hasMoveInput && !isJumpKeyPressed && !isJumping && !isMeteorDropping && !touchingWall;
+        bool shouldBeIdle = isGrounded && !hasMoveInput && !isJumpKeyPressed && !isJumping && !isMeteorDropping;
         animator.SetBool("IsIdle", shouldBeIdle);
         animator.SetBool("IsRunning", isGrounded && hasMoveInput && !isJumpKeyPressed);
         animator.SetBool("IsCrouching", crouchStarted);
@@ -249,7 +256,7 @@ public class PlayerAnimation : MonoBehaviour
 
     private void ResetJumpTriggers()
     {
-        animator.ResetTrigger("HighJump");
+        // HighJump は除外
         animator.ResetTrigger("JumpAnimStep1");
         animator.ResetTrigger("JumpAnimStep2");
         animator.ResetTrigger("JumpAnimStep3");

@@ -191,7 +191,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void MeteorDropUse()
     {
-        RigidBody.useGravity = false;
+        //RigidBody.useGravity = false;
         RigidBody.linearVelocity = new Vector3(0, 0, 0);
         meteorDropCounter += Time.fixedDeltaTime;
 
