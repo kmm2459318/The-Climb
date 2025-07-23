@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 
 //    太陽移動スクリプト
