@@ -115,13 +115,14 @@ public class PlayerSpecialAction : MonoBehaviour
         {
             highJumpChargeCounter = 0f;
         }
-        else if (Input.GetKeyUp(state.keyBind.playerJump))　//ハイジャンプ放す
+        else if (Input.GetKeyUp(state.keyBind.playerJump)) // ハイジャンプ放す
         {
             if (highJumpChargeCounter >= highJumpChargeTime)
             {
                 highJump = true;
                 highJumpUsed = true;
                 headingAttack.SetActive(true);
+                playHighJumpAnim = true; // アニメーション再生フラグ
             }
             //else
             //{
