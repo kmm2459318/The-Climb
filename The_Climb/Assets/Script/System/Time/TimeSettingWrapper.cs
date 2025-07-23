@@ -1,5 +1,4 @@
-using UnityEngine;
-
+//  ŠÔİ’è‚ğ’ñ‹Ÿ‚Å‚«‚é‚æ‚¤‚Éİ’è
 public class TimeSettingWrapper : ITimeConfig
 {
     private readonly TimeSetting timeSetting;    //  ŠÔİ’è

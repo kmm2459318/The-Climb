@@ -8,6 +8,7 @@ public class EnemyInstaller : MonoInstaller
     //  ƒoƒCƒ“ƒhˆ—
     public override void InstallBindings()
     {
+        Container.Bind<KickerMoveCommander>().FromComponentInHierarchy().AsSingle();
         Container.Bind<KickerStatus>().FromScriptableObject(kickerStatus).AsCached();
     }
 }
