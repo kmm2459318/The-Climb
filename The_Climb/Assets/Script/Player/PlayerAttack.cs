@@ -1,10 +1,13 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
     PlayerState state;
+    PlayerMove move;
     PlayerJump jump;
     PlayerSpecialAction special;
+    SunMoveCommander sunMoveCommander;
 
     private float headingSafeTime = 0.1f;
     private float headingSafeCounter = 0f;
@@ -12,8 +15,10 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         state = gameObject.transform.parent.gameObject.GetComponent<PlayerState>();
+        move = gameObject.transform.parent.gameObject.GetComponent<PlayerMove>();
         jump = gameObject.transform.parent.gameObject.GetComponent<PlayerJump>();
         special = gameObject.transform.parent.gameObject.GetComponent<PlayerSpecialAction>();
+        sunMoveCommander = GameObject.Find("Directional Light").GetComponent<SunMoveCommander>();
     }
 
     void Update()
@@ -27,7 +32,8 @@ public class PlayerAttack : MonoBehaviour
             headingSafeCounter -= Time.deltaTime;
         }
 
-        if (this.gameObject.name == "HeadingAttack")
+        //各判定を終了させる
+        if (gameObject.name == "HeadingAttack")
         {
             //Debug.Log(state.RigidBody.linearVelocity.y);
             if (headingSafeCounter <= 0f &&
@@ -38,15 +44,19 @@ public class PlayerAttack : MonoBehaviour
                 special.highJumpUsed = false;
             }
         }
-        else if (this.gameObject.name == "MeteorDropAttack")
+        else if (gameObject.name == "MeteorDropAttack")
         {
             MeteorDropFalse();
+        }
+        else if (gameObject.name == "QuickJumpAttack")
+        {
+            QuickJumpFalse();
         }
     }
 
     private void HeadingFalse()
     {
-        this.gameObject.SetActive(false);
+        gameObject.SetActive(false);
         //Debug.Log("false後" + special.headingAttack);
     }
 
@@ -54,7 +64,15 @@ public class PlayerAttack : MonoBehaviour
     {
         if (!special.meteorDrop)
         {
-            this.gameObject.SetActive(false);
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void QuickJumpFalse()
+    {
+        if (move.airMaxSpeed < 12f)
+        {
+            gameObject.SetActive(false);
         }
     }
 
@@ -64,24 +82,34 @@ public class PlayerAttack : MonoBehaviour
         jump.jumping = false;
     }
 
+    private IEnumerator HitStop()
+    {
+        Vector3 PlayerVelocity = state.RigidBody.linearVelocity;
+        for (int i = 0; i <= 3; i++)
+        {
+            //Debug.Log("stop");
+            state.RigidBody.linearVelocity = Vector3.zero;
+            yield return null;
+        }
+
+        state.RigidBody.linearVelocity = PlayerVelocity;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (this.gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem"))
+        if (gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem") && !special.highJumpUsed)
         {
             //ぶつかったときの突っかかりを消す
             PlayerYMoveReset();
         }
 
-        if (other.gameObject.CompareTag("Enemy"))
+        //敵への（朝全部、夜通常ジャンプ以外での）攻撃、破壊可能ブロックへのハイジャンプとメテオでの攻撃で消す
+        if (other.gameObject.CompareTag("Enemy") &&
+            (!sunMoveCommander.TimeProvider.IsNightProperty || (sunMoveCommander.TimeProvider.IsNightProperty && (special.highJumpUsed || special.meteorDrop || special.quickJumpUsed))) ||
+            (other.gameObject.CompareTag("BreakBlock") && (special.highJumpUsed || special.meteorDrop)))
         {
-            //敵を消す
             Destroy(other.gameObject);
-        }
-        
-        if (other.gameObject.CompareTag("BreakBlock") && (special.highJumpUsed || special.meteorDrop))
-        {
-            //ブロックを消す
-            Destroy(other.gameObject);
+            StartCoroutine(HitStop());
         }
     }
 }

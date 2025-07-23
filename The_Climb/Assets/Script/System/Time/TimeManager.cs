@@ -3,38 +3,38 @@ using System.Collections;
 using UnityEngine;
 using Zenject;
 
-//  “ú•tEŠÔŠÇ—ƒXƒNƒŠƒvƒg
+//  ï¿½ï¿½ï¿½tï¿½Eï¿½ï¿½ï¿½ÔŠÇ—ï¿½ï¿½Xï¿½Nï¿½ï¿½ï¿½vï¿½g
 public class TimeManager : MonoBehaviour, ITimeProvider
 {
-    public event Action<bool> OnChangedNight;    //  ‹¶–\‰»ƒCƒxƒ“ƒg
-    public Coroutine defaultTimeCount;    //  ŠÔ‰Á‘¬ŠÖ”
-    public Coroutine timeAcceleration;    //  ŠÔ‰Á‘¬ŠÖ”
+    public event Action<bool> OnChangedNight;    //  ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½Cï¿½xï¿½ï¿½ï¿½g
+    public Coroutine defaultTimeCount;    //  ï¿½ï¿½ï¿½Ô‰ï¿½ï¿½ï¿½ï¿½Öï¿½
+    public Coroutine timeAcceleration;    //  ï¿½ï¿½ï¿½Ô‰ï¿½ï¿½ï¿½ï¿½Öï¿½
 
-    [Inject] ITimeConfig TimeConfig;    //  ŠÔİ’è
+    [Inject] ITimeConfig TimeConfig;    //  ï¿½ï¿½ï¿½Ôİ’ï¿½
 
-    public float CurrentTime;    //  Œ»İ‚ÌŠÔ
-    float TimeProgressValue;    //  ‚P•b“–‚½‚è‚ÌŠÔis’l
-    int CurrentDay;    //  Œ»İ‚Ì“ú•t
-    [SerializeField] bool IsNight;    //  –é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
-    bool IsStopCount;    //  ƒ^ƒCƒ}[‚ğ~‚ß‚é‚©~‚ß‚È‚¢‚©
-    bool IsPlayerAttacked;    //  ƒvƒŒƒCƒ„[‚ªUŒ‚‚³‚ê‚½‚©i‰¼ƒtƒ‰ƒOj
+    public float CurrentTime;    //  ï¿½ï¿½ï¿½İ‚Ìï¿½ï¿½ï¿½
+    float TimeProgressValue;    //  ï¿½Pï¿½bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½Ôiï¿½sï¿½l
+    int CurrentDay;    //  ï¿½ï¿½ï¿½İ‚Ì“ï¿½ï¿½t
+    [SerializeField] bool IsNight;    //  ï¿½é‚©ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½Ìƒtï¿½ï¿½ï¿½O
+    bool IsStopCount;    //  ï¿½^ï¿½Cï¿½}ï¿½[ï¿½ï¿½ï¿½~ï¿½ß‚é‚©ï¿½~ï¿½ß‚È‚ï¿½ï¿½ï¿½
+    bool IsPlayerAttacked;    //  ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Oï¿½j
 
-    //    ƒvƒŒƒCƒ„[‚ªUŒ‚‚³‚ê‚½‚©ƒvƒƒpƒeƒB
+    //    ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½pï¿½eï¿½B
     public bool IsPlayerAttackedProperty
     {
         get => IsPlayerAttacked;
         set => IsPlayerAttacked = value;
     }
 
-    //  Œ»İŠÔæ“¾ƒvƒƒpƒeƒB
+    //  ï¿½ï¿½ï¿½İï¿½ï¿½Ôæ“¾ï¿½vï¿½ï¿½ï¿½pï¿½eï¿½B
     public float CurrentTimeProperty
     {
         get => CurrentTime;
         set => CurrentTime = value;
     }
-    //  Œ»İ“ú”æ“¾ƒvƒƒpƒeƒB
+    //  ï¿½ï¿½ï¿½İ“ï¿½ï¿½ï¿½ï¿½æ“¾ï¿½vï¿½ï¿½ï¿½pï¿½eï¿½B
     public int CurrentDayProperty => CurrentDay;
-    //  –éæ“¾ƒvƒƒpƒeƒB
+    //  ï¿½ï¿½æ“¾ï¿½vï¿½ï¿½ï¿½pï¿½eï¿½B
     public bool IsNightProperty
     {
         get => IsNight;
@@ -49,14 +49,14 @@ public class TimeManager : MonoBehaviour, ITimeProvider
     }
     void Awake()
     {
-        //  ”’l‰Šú‰»
+        //  ï¿½ï¿½ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         InitializeValue();
     }
     void Start()
     {
         CoroutineUtility.SafeStartCoroutine(this, ref defaultTimeCount, DefaultTimeCount());
     }
-    //  ‰Šú‰»ŠÖ”
+    //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öï¿½
     void InitializeValue()
     {
         CurrentTime = TimeConfig.InitializeTimeProperty;
@@ -65,13 +65,13 @@ public class TimeManager : MonoBehaviour, ITimeProvider
         IsStopCount = false;
         IsPlayerAttacked = false;
     }
-    //  ŠÔ‰Á‘¬ƒ‰ƒbƒp[ŠÖ”
+    //  ï¿½ï¿½ï¿½Ô‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½bï¿½pï¿½[ï¿½Öï¿½
     public void StartTimeAcceleration(float TargetValue, float Duration)
     {
         CoroutineUtility.SafeStopCoroutine(this, ref defaultTimeCount);
         CoroutineUtility.SafeStartCoroutine(this, ref timeAcceleration, TimeAcceleration(TargetValue, Duration));
     }
-    //  ƒfƒtƒHƒ‹ƒgŠÔƒJƒEƒ“ƒgŠÖ”
+    //  ï¿½fï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ÔƒJï¿½Eï¿½ï¿½ï¿½gï¿½Öï¿½
     IEnumerator DefaultTimeCount()
     {
         while (!IsStopCount)
@@ -80,16 +80,16 @@ public class TimeManager : MonoBehaviour, ITimeProvider
             yield return null;
         }
     }
-    //  ŠÔ‰Á‘¬ŠÖ”
+    //  ï¿½ï¿½ï¿½Ô‰ï¿½ï¿½ï¿½ï¿½Öï¿½
     public IEnumerator TimeAcceleration(float TargetTime, float Duration)
     {
-        //float TimeDiference = Mathf.Abs(TargetTime - CurrentTime);    //  Œ»İŠÔ‚Æ–Ú•WŠÔ‚Ì·
+        //float TimeDiference = Mathf.Abs(TargetTime - CurrentTime);    //  ï¿½ï¿½ï¿½İï¿½ï¿½Ô‚Æ–Ú•Wï¿½ï¿½ï¿½Ô‚Ìï¿½
         float WrappedTargrtTime = TargetTime > CurrentTime ? TargetTime: TargetTime + TimeConfig.OneDayTimeProperty;
         float TimeUntilTarget = WrappedTargrtTime - CurrentTime;
-        float SecProgress = TimeUntilTarget / Duration;    //  1•b‚ ‚½‚è‚Ìis’l
+        float SecProgress = TimeUntilTarget / Duration;    //  1ï¿½bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìiï¿½sï¿½l
         float Epsilon = 2f;
 
-        //int Direction = (TargetTime >= CurrentTime) ? 1 : -1;    //  ‰ÁZ‚©Œ¸Z‚Ì•ûŒü
+        //int Direction = (TargetTime >= CurrentTime) ? 1 : -1;    //  ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½Ì•ï¿½ï¿½ï¿½
 
         //while ((Direction == 1 && CurrentTime < TargetTime) || (Direction == -1 && CurrentTime > TargetTime))
         //{
