@@ -14,6 +14,7 @@ public class IDEnumToString
         { IDLabel.UNDNAMED, "Unnamed" },
         { IDLabel.DARK, "Dark" },
         { IDLabel.SPINE, "Spine" },
+        { IDLabel.FADE, "Fade" },
     };
     //  IDカテゴリーに応じて辞書型からキーを出力
     public static string ToString(IDCategory category) =>

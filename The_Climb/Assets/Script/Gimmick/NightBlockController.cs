@@ -25,7 +25,7 @@ public class NightBlockController : MonoBehaviour
             return;
         }
 
-        LastIsNight = !TimeManager.IsNight;
+        LastIsNight = !TimeManager.IsNightProperty;
         UpdateBlocks();
     }
 
@@ -33,10 +33,10 @@ public class NightBlockController : MonoBehaviour
     {
         if (TimeManager == null) return;
 
-        if (TimeManager.IsNight != LastIsNight)
+        if (TimeManager.IsNightProperty != LastIsNight)
         {
             UpdateBlocks();
-            LastIsNight = TimeManager.IsNight;
+            LastIsNight = TimeManager.IsNightProperty;
         }
     }
 
@@ -46,12 +46,12 @@ public class NightBlockController : MonoBehaviour
         {
             if (pair.DayTimeBlock != null)
             {
-                pair.DayTimeBlock.SetActive(!TimeManager.IsNight); // 昼のみ表示
+                pair.DayTimeBlock.SetActive(!TimeManager.IsNightProperty); // 昼のみ表示
             }
 
             if (pair.NightBlock != null)
             {
-                pair.NightBlock.SetActive(TimeManager.IsNight);    // 夜のみ表示
+                pair.NightBlock.SetActive(TimeManager.IsNightProperty);    // 夜のみ表示
             }
         }
     }
