@@ -2,5 +2,5 @@
 public enum EnemyMode
 {
     NORMAL,
-    VIOLENT,
+    NIGHT,
 }
