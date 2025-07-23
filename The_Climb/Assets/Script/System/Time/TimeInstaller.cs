@@ -10,9 +10,10 @@ public class TimeInstaller : MonoInstaller
     public override void InstallBindings()
     {
         Container.BindInterfacesAndSelfTo<TimeManager>().FromComponentInHierarchy().AsSingle();
-        //Container.Bind<TimeManager>().FromComponentInHierarchy().AsSingle();
-        
-        //Container.Bind<ITimeProvider>().To<TimeManager>().AsSingle();
         Container.Bind<ITimeConfig>().To<TimeSettingWrapper>().AsSingle().WithArguments(timeSettings);
     }
 }
+//    à»â∫ÉRÅ[Éhï€ë∂èä    //
+//Container.Bind<TimeManager>().FromComponentInHierarchy().AsSingle();
+
+//Container.Bind<ITimeProvider>().To<TimeManager>().AsSingle();
