@@ -10,6 +10,7 @@ public class DarknessController : MonoBehaviour
     [Header("闇進行度")]
     [SerializeField, Range(0, 1)] float CurrentProgress;    //  闇進行度
     float CurrentProgressRate_Sec;    //  秒間の闇進行速度(割合値)
+
     void Awake()
     {
         edgeDarkStatBlock = edgeDarkStatus.GetStats(FloorType.NOMAL_FLOOR);
