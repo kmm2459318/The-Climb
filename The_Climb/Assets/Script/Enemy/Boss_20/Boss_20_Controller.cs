@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Zenject.Asteroids;
 
 
 
@@ -9,8 +10,9 @@ public class Boss_20_Controller : MonoBehaviour
     public GameObject Bullet_Prefab;            //弾のPrehab
     public Transform Bullet_Position;　　　　　 //弾の発射位置
     public Transform Player;
+    [SerializeField] private Transform[] waypoints;
 
-
+    private int currentWaypointIndex = 0;
     private int Enemy_Left_Max;                 //敵の移動は左の範囲
     private int Enemy_Right_Max;　　　　　　　　//敵の移動は右の範囲
     private float Enemy_Vertical;                 //敵の縦移動
@@ -58,20 +60,28 @@ public class Boss_20_Controller : MonoBehaviour
     //ボスの動き
     void Move()
     {
-        if (isResting || knockbackScript.IsKnockbacking) return;
+        if (isResting || knockbackScript.IsKnockbacking || waypoints.Length == 0) return;
         {
-            Vector3 waveMotion = new Vector3(0f, Mathf.Sin(Time.time * Wave) * Enemy_Vertical, 0f);
 
-            Vector3 newPosition = rb.position + new Vector3(boss_Speed * Boss_Move_Direction * Time.fixedDeltaTime, 0f) + waveMotion;
-            EnemyMovementRange(ref newPosition);
-            rb.MovePosition(newPosition);
+            Transform targetWaypoint = waypoints[currentWaypointIndex];
+            Vector3 targetpoint = new Vector3(
+                targetWaypoint.position.x,
+                transform.position.y + Mathf.Sin(Time.time * Wave) * Enemy_Vertical,
+                transform.position.z
+                ); 
+
+            Vector3 direction = (targetpoint - transform.position).normalized;
+            rb.MovePosition(transform.position + direction * boss_Speed * Time.fixedDeltaTime);
+
+            EnemyMovementRange(ref targetpoint);
+            rb.MovePosition(targetpoint);
             rest_Timer -= Time.fixedDeltaTime;
-        }
 
-        if (rest_Timer <= 0f && !isResting)
-        {
-            isResting = true;
-            StartCoroutine(RestAndResume());
+            if (rest_Timer <= 0f && !isResting && Vector3.Distance(transform.position, targetWaypoint.position) < 0.1f)
+            {
+                isResting = true;
+                StartCoroutine(RestAndResume());
+            }
         }
     }
 
