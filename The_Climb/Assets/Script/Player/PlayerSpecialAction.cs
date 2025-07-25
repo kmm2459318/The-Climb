@@ -230,10 +230,12 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void MeteorHighJumpUse()
     {
-        RigidBody.linearVelocity = new Vector3(0, 0, 0);
+        headingAttack.SetActive(true);
 
-        RigidBody.AddForce(new Vector3(meteorDropPower * meteorDropXMove, highJumpPower, 0), ForceMode.Impulse);
+        RigidBody.linearVelocity = Vector3.zero;
+        RigidBody.AddForce(new Vector3(meteorDropPower * meteorDropXMove, highJumpPower, 0), ForceMode.VelocityChange);
 
         meteorHighJump = false;
+        jump.jumpCoolActive = true;
     }
 }
