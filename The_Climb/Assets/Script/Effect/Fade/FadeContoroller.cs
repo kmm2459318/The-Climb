@@ -33,6 +33,7 @@ public class FadeContoroller : MonoBehaviour, IDownFading
     //  フェードアウト処理
     public IEnumerator DownFading()
     {
+        FadeSetter.ApplyToSceneFadeQuad();
         while(CurrentProgress > 0)
         {
             CurrentProgress -= CurrentProgressRate_Sec * Time.deltaTime;
