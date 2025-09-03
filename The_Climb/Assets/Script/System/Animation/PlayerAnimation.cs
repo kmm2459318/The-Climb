@@ -24,6 +24,7 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private float wallCheckDistance = 0.3f;
     [SerializeField] private float wallCheckHeight = 0.5f;
+    [SerializeField] private BoxCollider groundCheckCollider;
 
     private float jumpKeyHoldTime = 0f;
     private float crouchThreshold = 0.2f;
@@ -168,18 +169,21 @@ public class PlayerAnimation : MonoBehaviour
             animator.SetBool("IsCrouching", false);
             animator.SetBool("IsFalling", false);
 
-            // メテオドロップからの着地なら〇秒後にIdle
+            // メテオドロップからの着地なら遅延Idle
             if (isMeteorDropping)
             {
                 landedFromMeteor = true;
                 meteorLandTimer = meteorLandDelay;
                 isMeteorDropping = false;
-                animator.SetBool("IsMeteorDropping", true); // 維持する
+                animator.SetBool("IsMeteorDropping", true); // 維持
             }
             else
             {
                 animator.SetBool("IsMeteorDropping", false);
-                animator.SetBool("IsIdle", true); // 通常の着地は即Idleへ
+                animator.SetBool("IsIdle", true);
+
+                // ジャンプ演出を強制終了してIdleへ
+                animator.Play("Idle", 0, 0f);
             }
         }
 
@@ -254,7 +258,18 @@ public class PlayerAnimation : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
+        if (groundCheckCollider == null) return false;
+
+        // BoxCollider の中心とサイズを取得
+        Vector3 center = groundCheckCollider.bounds.center;
+        Vector3 halfExtents = groundCheckCollider.bounds.extents;
+
+        // BoxCast (オーバーラップ判定)
+        bool grounded = Physics.CheckBox(center, halfExtents, Quaternion.identity, groundLayer);
+
+        Debug.DrawLine(center, center + Vector3.down * halfExtents.y, grounded ? Color.green : Color.red);
+
+        return grounded;
     }
 
     private bool IsTouchingWall()
