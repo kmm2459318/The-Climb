@@ -175,6 +175,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8182319410757984519, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: groundCheckCollider
+      value: 
+      objectReference: {fileID: 1198276195}
     - target: {fileID: 8443442042839938066, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       propertyPath: highJumpOn
       value: 1
@@ -187,10 +191,21 @@ PrefabInstance:
       propertyPath: meteorDropOn
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8568953389800512174, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.0412
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568953389800512174, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.009
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6123871795154524803, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1198276195}
   m_SourcePrefab: {fileID: 100100000, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
 --- !u!1 &832575517
 GameObject:
@@ -320,6 +335,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1198276193 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6123871795154524803, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+  m_PrefabInstance: {fileID: 601442160}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1198276195
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198276193}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.24, y: 0.02, z: 0.24}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1877064905
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -374,6 +415,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8151970435963462038, guid: 3aa8a84ad7191c441952b2e187161862, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8471725038412907000, guid: 3aa8a84ad7191c441952b2e187161862, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
