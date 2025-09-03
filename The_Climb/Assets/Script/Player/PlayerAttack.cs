@@ -84,7 +84,9 @@ public class PlayerAttack : MonoBehaviour
 
     private IEnumerator HitStop()
     {
-        Vector3 PlayerVelocity = state.RigidBody.linearVelocity;
+        Vector3 PlayerVelocity = state.RigidBody.linearVelocity; //直前の動きを保存
+
+        //そして3fぐらい止めるよ
         for (int i = 0; i <= 3; i++)
         {
             //Debug.Log("stop");
@@ -92,14 +94,16 @@ public class PlayerAttack : MonoBehaviour
             yield return null;
         }
 
+        //動きを戻す
         state.RigidBody.linearVelocity = PlayerVelocity;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem") && !special.highJumpUsed)
+        //ぶつかったときの突っかかりを消す(yの動きをリセット)　※謎のつっかかりが出た場合はここの条件をいじってください
+        if (gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem") && !special.highJumpUsed && 
+            !other.CompareTag("RespawnArea"))
         {
-            //ぶつかったときの突っかかりを消す
             PlayerYMoveReset();
         }
 
@@ -109,6 +113,8 @@ public class PlayerAttack : MonoBehaviour
             (other.gameObject.CompareTag("BreakBlock") && (special.highJumpUsed || special.meteorDrop)))
         {
             Destroy(other.gameObject);
+
+            //ヒットストップ
             StartCoroutine(HitStop());
         }
     }
