@@ -8,31 +8,31 @@ using System.Buffers.Text;
 public class Boss_20_Controller : MonoBehaviour
 {
     [Header("20階層のボス")]
-    [Tooltip("Aseetファイル")]
+    [Tooltip("20階層ボスのStatusファイルにある")]
     public Boss_20_StatusObjectScript status;   //Assetファイル
     [Tooltip("弾のプレハブ")]
-    public GameObject Bullet_Prefab;            //弾のPrehab
+    public GameObject Bullet_Prefab;         //弾のPrehab
     [Tooltip("弾の発射位置")]
-    public Transform Bullet_Position;      //弾の発射位置
+    public Transform Bullet_Position;      　//弾の発射位置
     [Tooltip("弾の発射位置")]
     public Transform Player;
 
-    private int Enemy_Left_Max;                 //敵の移動は左の範囲
-    private int Enemy_Right_Max;　　　　　　　　//敵の移動は右の範囲
-    private float Enemy_Vertical;               //敵の縦移動
-    private int Boss_Move_Direction;　　　　　  //敵の動く方向
-    private float Bullet_Timer;　　　　　　　　 //弾を発射するまでの時間
-    private float Rest_Timer;　　　　　　　　　 //休憩時間
-    private float Boss_Speed;　　　　　　　　　 //ボスの速さ
+    private int EnemyLeftMax;                 //敵の移動は左の範囲
+    private int EnemyRightMax;　　　　　　　　//敵の移動は右の範囲
+    private float EnemyVertical;               //敵の縦移動
+    private int BossMoveDirection;　　　　　  //敵の動く方向
+    private float BulletTime;　　　　　　　　 //弾を発射するまでの時間
+    private float ActionTime;　　　　　　　　　 　　　//休憩時間までの時間
+    private float RestTime;                   //休憩中
+    private float BossSpeed;　　　　　　　　　 //ボスの速さ
     private bool IsResting = false;　　　　　　 //ボスの動くかどうかの判定
     private Rigidbody Rb;
     private float Wave = 5.0f;                  //揺れ動く回数
-    private Boss_20_Knockback knockbackScript;
-
+    Vector3 AncPos;
+    
     //初期化処理
     void Awake()
     {
-        knockbackScript = GetComponent<Boss_20_Knockback>();
         Rb = GetComponent<Rigidbody>();
         Initialize();
 
@@ -50,74 +50,75 @@ public class Boss_20_Controller : MonoBehaviour
     //ボスの初期状態の設定
     void Initialize()
     {
-        Bullet_Timer = status.Attack;
-        Boss_Move_Direction = status.LEFT;
-        Rest_Timer = status.Rest;
-        Boss_Speed = status.Speed;
-        Enemy_Left_Max = status.LEFT_Max;
-        Enemy_Right_Max = status.RIGHT_Max; 
-        Enemy_Vertical = status.Vertical;
+        BulletTime = status.Attack;
+        BossMoveDirection = status.LEFT;
+        ActionTime = status.Action_Time;
+        RestTime = status.Rest_Time;
+        BossSpeed = status.Speed;
+        EnemyLeftMax = status.LEFT_Max;
+        EnemyRightMax = status.RIGHT_Max;
+        EnemyVertical = status.Vertical;
+        AncPos = transform.position;
 
     }
 
-  //ボスの動き
-  void Move() 
-  { 
-      if (IsResting || knockbackScript.IsKnockbacking) return;
-      Vector3 WaveMotion = new Vector3(0f, Mathf.Sin(Time.time * Wave) * Enemy_Vertical, 0f); 
-      Vector3 NewPosition = Rb.position + new Vector3(Boss_Speed * Boss_Move_Direction * Time.fixedDeltaTime, 0f) + WaveMotion; 
-      EnemyMovementRange(ref NewPosition); 
-      Rb.MovePosition(NewPosition); Rest_Timer -= Time.fixedDeltaTime;
-     
-
-     if (Rest_Timer <= 0f && !IsResting) 
-     { 
-            IsResting = true; StartCoroutine(RestAndResume()); } 
-     }
+    //ボスの動き
+    void Move()
+    {
+        if (IsResting) return;
+        AncPos += new Vector3(BossSpeed * BossMoveDirection * Time.fixedDeltaTime,
+        Mathf.Sin(Time.time * Wave) * EnemyVertical, 0f);
+        // 折り返し処理
+        EnemyMovementRange(ref AncPos);
+        Rb.MovePosition(AncPos);
+        ActionTime -=　 Time.fixedDeltaTime;
+        if (ActionTime <= 0f && !IsResting)
+        {
+            IsResting = true; 
+            StartCoroutine(RestAndResume()); }
+    }
 
 
 
     //ボスの休憩
     IEnumerator RestAndResume()
     {
-        Debug.Log("減速開始");
-        Boss_Speed = 0f;
-        Debug.Log("停止完了");
-        yield return new WaitForSeconds(3f);
-        Debug.Log("休憩終了");
-        Boss_Speed = status.Speed;
-        Rest_Timer = status.Rest;
+        BossSpeed = 0f;
+        EnemyVertical = 0f;
+        yield return new WaitForSeconds(RestTime);
+        BossSpeed = status.Speed;
+        ActionTime = status.Action_Time;
         IsResting = false;
     }
 
     //動く方向の指定
     void EnemyMovementRange(ref Vector3 nextPosition)
     {
-       if(nextPosition.x <= Enemy_Left_Max) 
+       if(nextPosition.x <= EnemyLeftMax) 
        { 
-         Boss_Move_Direction = status.RIGHT; 
+         BossMoveDirection = status.RIGHT; 
        }
-        else if(nextPosition.x >= Enemy_Right_Max) 
+        else if(nextPosition.x >= EnemyRightMax) 
         { 
-         Boss_Move_Direction = status.LEFT; 
+         BossMoveDirection = status.LEFT; 
         } 
     }
 
     //弾の発射タイミング
     void HandleShooting()
     {
-        Bullet_Timer -= Time.deltaTime;
-        if (Bullet_Timer <= 0f)
+        BulletTime -= Time.deltaTime;
+        if (BulletTime <= 0f)
         {
             Bullet();
-            Bullet_Timer = status.Attack;
+            BulletTime = status.Attack;
         }
     }
 
     //発射　　　　　　　　　　
     void Bullet()
     {
-        if (IsResting || knockbackScript.IsKnockbacking) return;
+        if (IsResting) return;
         {
           if (Player == null) return;
 
