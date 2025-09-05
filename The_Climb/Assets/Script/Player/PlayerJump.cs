@@ -6,6 +6,7 @@ public class PlayerJump : MonoBehaviour
     PlayerState state;
     PlayerMove move;
     PlayerSpecialAction special;
+    PlayerKnockBack knock;
 
     public bool jumping = false;        //ジャンプ入力中判定
     private float coyoteTime = 0.13f;    //コヨーテタイム
@@ -39,12 +40,16 @@ public class PlayerJump : MonoBehaviour
         state = GetComponent<PlayerState>();
         move = gameObject.GetComponent<PlayerMove>();
         special = gameObject.GetComponent<PlayerSpecialAction>();
+        knock = gameObject.GetComponent<PlayerKnockBack>();
     }
 
     void Update()
     {
         //ジャンプキー操作
-        JumpOperation();
+        if (!knock.knockBacking)　//ノックバック中は不可
+        {
+            JumpOperation();
+        }
 
         //ジャンプのクールタイム
         if (jumpCoolActive)

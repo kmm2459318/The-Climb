@@ -8,6 +8,7 @@ public class PlayerSpecialAction : MonoBehaviour
     PlayerState state;
     PlayerMove move;
     PlayerJump jump;
+    PlayerKnockBack knock;
 
     public GameObject headingAttack;
     public GameObject meteorDropAttack;
@@ -42,6 +43,7 @@ public class PlayerSpecialAction : MonoBehaviour
         state = GetComponent<PlayerState>();
         move = gameObject.GetComponent<PlayerMove>();
         jump = gameObject.GetComponent<PlayerJump>();
+        knock = gameObject.GetComponent<PlayerKnockBack>();
 
         headingAttack = transform.Find("HeadingAttack").gameObject;
         meteorDropAttack = transform.Find("MeteorDropAttack").gameObject;
@@ -55,22 +57,25 @@ public class PlayerSpecialAction : MonoBehaviour
 
     void Update()
     {
-        if (state.highJumpOn)
+        if (!knock.knockBacking)  //ノックバック中は不可
         {
-            //チャージジャンプのチャージキー操作
-            HighJumpChargeOperation();
-        }
+            if (state.highJumpOn)
+            {
+                //チャージジャンプのチャージキー操作
+                HighJumpChargeOperation();
+            }
 
-        if (state.meteorDropOn)
-        {
-            //メテオドロップキー操作
-            MeteorDropOperation();
-        }
+            if (state.meteorDropOn)
+            {
+                //メテオドロップキー操作
+                MeteorDropOperation();
+            }
 
-        if (state.quickJumpOn)
-        {
-            //クイックジャンプキー操作
-            QuickJumpOperation();
+            if (state.quickJumpOn)
+            {
+                //クイックジャンプキー操作
+                QuickJumpOperation();
+            }
         }
 
         //地面が近いか（クイックジャンプ用判定）
@@ -92,16 +97,19 @@ public class PlayerSpecialAction : MonoBehaviour
             HighJumpUse();
         }
 
+        //メテオドロップ実行
         if (meteorDrop)
         {
             MeteorDropUse();
         }
 
+        //メテオハイジャンプ実行
         if (meteorHighJump)
         {
             MeteorHighJumpUse();
         }
 
+        //クイックジャンプ実行
         if (quickJump)
         {
             QuickJumpUse();
@@ -116,7 +124,7 @@ public class PlayerSpecialAction : MonoBehaviour
         }
         else if (Input.GetKeyUp(state.keyBind.playerJump))　//ハイジャンプ放す
         {
-            if (highJumpChargeCounter >= highJumpChargeTime)
+            if (highJumpChargeCounter >= highJumpChargeTime)  //チャージできてればOK
             {
                 highJump = true;
                 highJumpUsed = true;
@@ -140,7 +148,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void MeteorDropOperation()
     {
-        if (state.isAir && Input.GetKey(state.keyBind.meteorDrop) && Input.GetKeyDown(state.keyBind.playerJump) && !meteorDropUsed)
+        if (state.isAir && Input.GetKey(state.keyBind.meteorDrop) && Input.GetKeyDown(state.keyBind.playerJump) && !meteorDropUsed)  //空中でまだメテオドロップ使ってないか
         {
             meteorDrop = true;
             meteorDropUsed = true;
@@ -148,7 +156,7 @@ public class PlayerSpecialAction : MonoBehaviour
             jump.landingJumpNumber = 0;
             meteorDropAttack.SetActive(true);
 
-            if (state.playerDirectionRight)
+            if (state.playerDirectionRight)  //向いてる方向によって進む方向変化
             {
                 meteorDropXMove = Mathf.Abs(meteorDropXMove);
             }
@@ -162,7 +170,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void QuickJumpOperation()
     {
-        if (state.isAir && Input.GetKeyDown(state.keyBind.playerJump) && !quickJumpUsed && !meteorDropUsed && !isGroundNear)
+        if (state.isAir && Input.GetKeyDown(state.keyBind.playerJump) && !quickJumpUsed && !meteorDropUsed && !isGroundNear)  //空中で地面に近くなく、メテオもクイックもまだ使ってないか
         {
             quickJump = true;
             quickJumpUsed = true;
@@ -194,7 +202,7 @@ public class PlayerSpecialAction : MonoBehaviour
         RigidBody.linearVelocity = new Vector3(0, 0, 0);
         meteorDropCounter += Time.fixedDeltaTime;
 
-        //壁にぶつかったらメテオハイジャンプ不可
+        //壁にぶつかったらメテオハイジャンプ終わり
         if (((state.isLeftWall && !state.playerDirectionRight) || (state.isRightWall && state.playerDirectionRight)) && !state.isGrounded)
         {
             meteorHighJumpOK = false;
@@ -217,7 +225,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void QuickJumpUse()
     {
-        RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
+        RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);  //ジャンプ力重複させないようにリセット
         RigidBody.AddForce(new Vector3(quickJumpPowerX * move.MoveInput, quickJumpPowerY, 0), ForceMode.Impulse);
         
         //クイックジャンプの横移動速度制限
