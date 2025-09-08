@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Zenject.Asteroids;
-using System.Buffers.Text;
-
 
 
 public class Boss_20_Controller : MonoBehaviour
@@ -19,16 +16,22 @@ public class Boss_20_Controller : MonoBehaviour
 
     private int EnemyLeftMax;                 //敵の移動は左の範囲
     private int EnemyRightMax;　　　　　　　　//敵の移動は右の範囲
-    private float EnemyVertical;               //敵の縦移動
+    private float EnemyVertical;              //敵の縦移動
     private int BossMoveDirection;　　　　　  //敵の動く方向
     private float BulletTime;　　　　　　　　 //弾を発射するまでの時間
-    private float ActionTime;　　　　　　　　　 　　　//休憩時間までの時間
+    private float ActionTime;　　　　　　　　 //休憩時間までの時間
     private float RestTime;                   //休憩中
-    private float BossSpeed;　　　　　　　　　 //ボスの速さ
-    private bool IsResting = false;　　　　　　 //ボスの動くかどうかの判定
+    private float BossSpeed;　　　　　　　　　//ボスの速さ
+    private bool IsResting = false;　　　　　 //ボスの動くかどうかの判定
+    private bool NormalAction = true;         //通常モーションするかどうか
+    private bool AttackAction = false;        //攻撃モーションするかどうか
     private Rigidbody Rb;
-    private float Wave = 5.0f;                  //揺れ動く回数
-    Vector3 AncPos;
+    private float Wave = 5.0f;                //揺れ動く回数
+    private float Elapsed = 0;
+    private float Duration = 1.5f;      　　　//戻るまでの時間
+
+    Vector3 AncPos;                           //移動用の位置
+    Vector3 StartPos;                         //最初の位置休憩後に戻す
     
     //初期化処理
     void Awake()
@@ -44,7 +47,9 @@ public class Boss_20_Controller : MonoBehaviour
 
     void FixedUpdate()
     {
-        Move();
+        if (IsResting) return;
+        Nomal_Move();
+        
     }
 
     //ボスの初期状態の設定
@@ -59,25 +64,28 @@ public class Boss_20_Controller : MonoBehaviour
         EnemyRightMax = status.RIGHT_Max;
         EnemyVertical = status.Vertical;
         AncPos = transform.position;
-
+        StartPos = transform.position;
     }
 
     //ボスの動き
-    void Move()
+    void Nomal_Move()
     {
-        if (IsResting) return;
         AncPos += new Vector3(BossSpeed * BossMoveDirection * Time.fixedDeltaTime,
         Mathf.Sin(Time.time * Wave) * EnemyVertical, 0f);
-        // 折り返し処理
         EnemyMovementRange(ref AncPos);
         Rb.MovePosition(AncPos);
         ActionTime -=　 Time.fixedDeltaTime;
         if (ActionTime <= 0f && !IsResting)
         {
             IsResting = true; 
-            StartCoroutine(RestAndResume()); }
+            StartCoroutine(RestAndResume()); 
+        }
     }
 
+    void Attack_Move()
+    {
+
+    }
 
 
     //ボスの休憩
@@ -85,8 +93,12 @@ public class Boss_20_Controller : MonoBehaviour
     {
         BossSpeed = 0f;
         EnemyVertical = 0f;
+
+        Rb.MovePosition(StartPos);
+        AncPos = StartPos;
         yield return new WaitForSeconds(RestTime);
         BossSpeed = status.Speed;
+        EnemyVertical = status.Vertical;
         ActionTime = status.Action_Time;
         IsResting = false;
     }
