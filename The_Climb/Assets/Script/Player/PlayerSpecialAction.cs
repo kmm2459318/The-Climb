@@ -118,11 +118,11 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void HighJumpChargeOperation()
     {
-        if (jump.jumpCoolActive || state.isAir || (Input.GetKeyUp(state.keyBind.playerJump) && highJumpChargeCounter <= 0.2f)) //ハイジャンプ不可
+        if (jump.jumpCoolActive || state.isAir || (state.inputManager.jumpUp && highJumpChargeCounter <= 0.2f)) //ハイジャンプ不可
         {
             highJumpChargeCounter = 0f;
         }
-        else if (Input.GetKeyUp(state.keyBind.playerJump))　//ハイジャンプ放す
+        else if (state.inputManager.jumpUp)　//ハイジャンプ放す
         {
             if (highJumpChargeCounter >= highJumpChargeTime)  //チャージできてればOK
             {
@@ -138,7 +138,7 @@ public class PlayerSpecialAction : MonoBehaviour
             jump.jumpCoolActive = true;
             highJumpChargeCounter = 0f;
         }
-        else if (state.isGrounded && Input.GetKey(state.keyBind.playerJump) && !state.landingJumpOn && !Input.GetKeyDown(state.keyBind.playerJump)) //ハイジャンプおしっぱの状態
+        else if (state.isGrounded && state.inputManager.jumpHeld && !state.landingJumpOn && !state.inputManager.jumpDown) //ハイジャンプおしっぱの状態
         {
             RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
             highJumpChargeCounter += Time.deltaTime;
@@ -148,7 +148,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void MeteorDropOperation()
     {
-        if (state.isAir && Input.GetKey(state.keyBind.meteorDrop) && Input.GetKeyDown(state.keyBind.playerJump) && !meteorDropUsed)  //空中でまだメテオドロップ使ってないか
+        if (state.isAir && state.inputManager.downHeld && state.inputManager.jumpDown && !meteorDropUsed)  //空中でまだメテオドロップ使ってないか
         {
             meteorDrop = true;
             meteorDropUsed = true;
@@ -170,7 +170,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void QuickJumpOperation()
     {
-        if (state.isAir && Input.GetKeyDown(state.keyBind.playerJump) && !quickJumpUsed && !meteorDropUsed && !isGroundNear)  //空中で地面に近くなく、メテオもクイックもまだ使ってないか
+        if (state.isAir && state.inputManager.jumpDown && !quickJumpUsed && !meteorDropUsed && !isGroundNear)  //空中で地面に近くなく、メテオもクイックもまだ使ってないか
         {
             quickJump = true;
             quickJumpUsed = true;

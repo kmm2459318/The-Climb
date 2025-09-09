@@ -9,7 +9,7 @@ public class PlayerState : MonoBehaviour
     public bool meteorDropOn = false;    //メテオドロップ叶か
 
     public Rigidbody RigidBody;
-    public KeyBind keyBind;
+    public InputManager inputManager;
     PlayerMove move;
     PlayerJump jump;
     PlayerSpecialAction special; 
@@ -38,7 +38,7 @@ public class PlayerState : MonoBehaviour
 
     void Start()
     {
-        keyBind = GameObject.Find("KeyManager").GetComponent<KeyBind>();
+        inputManager = GameObject.Find("KeyManager").GetComponent<InputManager>();
         RigidBody = GetComponent<Rigidbody>();
         move = GetComponent<PlayerMove>();
         jump = GetComponent<PlayerJump>();

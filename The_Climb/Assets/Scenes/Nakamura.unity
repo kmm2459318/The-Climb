@@ -897,11 +897,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8be8aa406e1ed6942b7b12de838932e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerLMove: 97
-  playerRMove: 100
-  playerJump: 32
-  highJump: 304
-  meteorDrop: 115
+  jumpAction: {fileID: 0}
 --- !u!4 &1304539683
 Transform:
   m_ObjectHideFlags: 0
@@ -1908,6 +1904,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: leftMoveAction
+      value: 
+      objectReference: {fileID: 563813258539055939, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 3133395199702357206, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: rightMoveAction
+      value: 
+      objectReference: {fileID: 5456014942005721184, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     - target: {fileID: 4136217469297316303, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       propertyPath: _fps
       value: 30
@@ -1956,6 +1960,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8028215626570228958, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: jumpAction
+      value: 
+      objectReference: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - target: {fileID: 8028215626570228958, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: inputActions
+      value: 
+      objectReference: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1966,6 +1978,9 @@ PrefabInstance:
       insertIndex: 8
       addedObject: {fileID: 2131562642}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6964132275681050848, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3612176113701049443}
     - targetCorrespondingSourceObject: {fileID: 8265955754314674708, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       insertIndex: 7
       addedObject: {fileID: 1380581406}
@@ -1973,6 +1988,27 @@ PrefabInstance:
       insertIndex: 8
       addedObject: {fileID: 1380581410}
   m_SourcePrefab: {fileID: 100100000, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+--- !u!1 &3612176113701049442 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6964132275681050848, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+  m_PrefabInstance: {fileID: 3612176113701049441}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3612176113701049443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3612176113701049442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2ba0ce3230c3334cb6e854041db34cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftMoveAction: {fileID: 563813258539055939, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  rightMoveAction: {fileID: 5456014942005721184, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  jumpAction: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  downAction: {fileID: 6593017429955831421, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

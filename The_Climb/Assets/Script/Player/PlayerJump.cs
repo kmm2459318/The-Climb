@@ -114,7 +114,7 @@ public class PlayerJump : MonoBehaviour
     private void JumpOperation()
     {
         //ジャンプキー押された
-        if (Input.GetKeyDown(state.keyBind.playerJump) && !special.meteorHighJumpOK && !isJumpQueued)
+        if (state.inputManager.jumpDown && !special.meteorHighJumpOK && !isJumpQueued)
         {
             isJumpQueued = true;
             jumpQueueCounter = 0f;
@@ -141,7 +141,7 @@ public class PlayerJump : MonoBehaviour
                     state.LandingJumpReset();
                 }
             }
-            else if (Input.GetKey(state.keyBind.playerJump) && special.meteorHighJumpOK && state.landingJumpOn)  //メテオドロップからのハイジャンプ
+            else if (state.inputManager.jumpHeld && special.meteorHighJumpOK && state.landingJumpOn)  //メテオドロップからのハイジャンプ
             {
                 if (special.meteorDropCounter >= special.meteorDropTime)
                 {
@@ -158,7 +158,7 @@ public class PlayerJump : MonoBehaviour
         //ジャンプボタンが押され続けてる
         if (jumping)
         {
-            if (Input.GetKeyUp(state.keyBind.playerJump) && jumpTime <= jumpTimeMaxSaving * 1 / 2)
+            if (state.inputManager.jumpUp && jumpTime <= jumpTimeMaxSaving * 1 / 2)
             {
                 jumpTimeMax = jumpTimeMaxSaving * 1 / 2;
             }

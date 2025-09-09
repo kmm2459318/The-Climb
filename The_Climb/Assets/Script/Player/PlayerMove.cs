@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMove : MonoBehaviour, IConveyorReceiver
 {
@@ -8,6 +9,9 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     PlayerJump jump;
     PlayerSpecialAction special;
     PlayerKnockBack knock;
+
+    [SerializeField] private InputActionReference leftMoveAction;
+    [SerializeField] private InputActionReference rightMoveAction;
 
     private float groundMoveForce = 0.7f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
@@ -70,17 +74,17 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     private void MoveOperation()
     {
-        if (Input.GetKey(state.keyBind.playerLMove) && Input.GetKey(state.keyBind.playerRMove) ||
-            !Input.GetKey(state.keyBind.playerLMove) && !Input.GetKey(state.keyBind.playerRMove))  //止まる
+        if (state.inputManager.leftHeld && state.inputManager.rightHeld ||
+            !state.inputManager.leftHeld && !state.inputManager.rightHeld)  //止まる
         {
             moveInput = 0f;
         }
-        else if (Input.GetKey(state.keyBind.playerLMove) && !state.isLeftWall)  //左移動
+        else if (state.inputManager.leftHeld && !state.isLeftWall)  //左移動
         {
             moveInput = -1f;
             state.playerDirectionRight = false;
         }
-        else if (Input.GetKey(state.keyBind.playerRMove) && !state.isRightWall)  //右移動
+        else if (state.inputManager.rightHeld && !state.isRightWall)  //右移動
         {
             moveInput = 1f;
             state.playerDirectionRight = true;
