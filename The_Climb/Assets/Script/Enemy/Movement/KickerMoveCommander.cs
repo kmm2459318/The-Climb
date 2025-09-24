@@ -66,12 +66,13 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         this.playerState = playerState;
         this.TimeProvider = TimeProvider;
         this.DownFading = DownFading;
-        TimeProvider.OnChangedNight += ChangeToNightMode;
     }
 
     public EnemyStateMachine EnemyStateMachineProperty => enemyStateMachine;
     void Awake()
     {
+        Debug.Log($"[KickerMoveCommander] Injected TimeManager ID: {timeManager.GetInstanceID()}");
+        timeManager.OnChangedNight.Subscribe(ChangeToNightMode);
         if (kickerStatus == null)
         {
             Debug.LogWarning($"{nameof(KickerMoveCommander)} : kickerStatus is not assigned");
@@ -121,6 +122,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     {
         //  定期的なジャンプのループを開始
         JumpLoop = StartCoroutine(PeriodicallyJump());
+        ChangeToNightMode();
     }
     void FixedUpdate()
     {
@@ -245,9 +247,15 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     {
         FlipMoveDir();  //  移動方向反転
     }
-    private void ChangeToNightMode(bool IsNight)
+    private void ChangeToNightMode()
     {
-        CurrentEnemyMode = IsNight ? EnemyMode.NIGHT : EnemyMode.NORMAL;
+        Debug.Log("50 per pasen");
+        
+        CurrentEnemyMode = TimeProvider.IsNightProperty switch
+        {
+            true => EnemyMode.NIGHT,
+            false => EnemyMode.NORMAL,
+        };
         
         kickerStatBlock = kickerStatus.GetStats(CurrentEnemyMode);
         CurrentMoveSpd = kickerStatBlock.MoveSpd;
@@ -258,7 +266,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     {
         if(TimeProvider != null)
         {
-            TimeProvider.OnChangedNight -= ChangeToNightMode;
+            timeManager.OnChangedNight.Unsubscribe(ChangeToNightMode);
         }
     }
 }
