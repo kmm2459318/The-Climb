@@ -2,11 +2,13 @@ using UnityEngine;
 using System.Collections;
 
 //  闇の進行度を調整する
-public class FadeContoroller : MonoBehaviour, IDownFading
+public class FadeController : MonoBehaviour, IDownFading
 {
     [SerializeField] FadeSetting fadeSetting;    //  フェード設定
-    Material OverLayMaterial;    //  四隅からフェードするのマテリアル
+    [SerializeField] GameObject fadeQuad;    //  フェード板
+    Material overLayMaterial;    //  四隅からフェードするのマテリアル
     Coroutine downFadeCoroutine;    //  ダウンフェードコルーチン
+    Coroutine fadeCoroutine;    //  ダウンフェードコルーチン
 
     [Header("現在のフェード進行度")]
     [SerializeField, Range(0, 1)] float CurrentProgress;    //  フェード進行度
@@ -14,13 +16,13 @@ public class FadeContoroller : MonoBehaviour, IDownFading
 
     void Awake()
     {
-        OverLayMaterial = fadeSetting.OverLayMaterial;
+        overLayMaterial = fadeSetting.OverLayMaterial;
 
         //  初期化
-        Initialize();
+        InitializeValue();
     }
     //  初期化
-    void Initialize()
+    void InitializeValue()
     {
         CurrentProgress = fadeSetting.Progress;
         CurrentProgressRate_Sec = fadeSetting.FadeProgressRate_Sec;
@@ -28,24 +30,46 @@ public class FadeContoroller : MonoBehaviour, IDownFading
     //  ダウン時フェードラッパー
     public void StartDownFading()
     {
-        CoroutineUtility.SafeStartCoroutine(this, ref downFadeCoroutine, DownFading());
+        //CoroutineUtility.SafeStartCoroutine(this, ref downFadeCoroutine, DownFading());
+        CoroutineUtility.SafeStartCoroutine(this, ref fadeCoroutine, DownFading());
     }
     //  フェードアウト処理
     public IEnumerator DownFading()
     {
-        FadeSetter.ApplyToSceneFadeQuad();
         while(CurrentProgress > 0)
         {
+            FadeSetter.AdjustFadeQuadPosition(fadeQuad);
             CurrentProgress -= CurrentProgressRate_Sec * Time.deltaTime;
-            OverLayMaterial.SetFloat("_Progress", CurrentProgress);
+            overLayMaterial.SetFloat("_Progress", CurrentProgress);
             yield return null;
         }
         while (CurrentProgress <= 1)
         {
+            FadeSetter.AdjustFadeQuadPosition(fadeQuad);
             CurrentProgress += CurrentProgressRate_Sec * Time.deltaTime;
-            OverLayMaterial.SetFloat("_Progress", CurrentProgress);
+            overLayMaterial.SetFloat("_Progress", CurrentProgress);
             yield return null;
         }
         downFadeCoroutine = null;
+    }
+    //  フェードルーチン
+    private IEnumerator FadeRoutine(float from, float to)
+    {
+        CurrentProgress = from;
+        overLayMaterial.SetFloat("_Progress", CurrentProgress);
+        FadeSetter.AdjustFadeQuadPosition(fadeQuad);
+
+        float direction = Mathf.Sign(to - from);
+
+        while (direction > 0 ? CurrentProgress < to : CurrentProgress > to)
+        {
+            CurrentProgress += CurrentProgressRate_Sec * direction * Time.deltaTime;
+            CurrentProgress = Mathf.Clamp01(CurrentProgress);
+
+            overLayMaterial.SetFloat("_Progress", CurrentProgress);
+            yield return null;
+        }
+
+        fadeCoroutine = null;
     }
 }
