@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class PlayerJump : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class PlayerJump : MonoBehaviour
     private float TrampolineGraceTime = 0.15f; //トランポリンの効果を維持する時間
     private float TrampolineTimer     = 0f;    //トランポリンの効果を管理するタイマー
     private bool  TrampolineJumping   = false; //トランポリンのジャンプ中判定
+
+    public event Action OnJumped;   //ジャンプした瞬間を通知するイベント
 
     void Start()
     {
@@ -126,6 +129,9 @@ public class PlayerJump : MonoBehaviour
                 jumpTime = 0f;
                 jumpTimeMax = jumpTimeMaxSaving;
                 isJumpQueued = false;
+
+                //イベントを通知
+                OnJumped?.Invoke();
                 //Debug.Log(RigidBody.linearVelocity.y);
                 //Debug.Log("true後"+special.headingAttack);
 
@@ -143,6 +149,7 @@ public class PlayerJump : MonoBehaviour
                     jumpCoolActive = true;
                     special.meteorHighJump = true;
                     landingJumpNumber++;
+                    OnJumped!.Invoke();
                     special.headingAttack.SetActive(true);
                 }
                 special.meteorHighJumpOK = false;
