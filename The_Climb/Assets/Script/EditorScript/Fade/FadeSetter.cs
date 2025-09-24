@@ -56,14 +56,35 @@ public class FadeSetter
     {
         Camera cam = Camera.main;    //  メインカメラのインスタンス
 
-        float height = cam.orthographicSize * 2f;    //  画面に映る空間の高さ
-        float width = height * cam.aspect;    //  画面の幅
+        float ScaleAdjustValue = 1.1f;
+        float Height = cam.orthographicSize * 2 * ScaleAdjustValue;    //  画面に映る空間の高さ
+        float Width = Height * cam.aspect * ScaleAdjustValue;    //  画面の幅
         const string UndoLog = "Apply Setting To FadePlane";    //  ScalerでCtrl + Zした時のログ
 
         Undo.RecordObject(fadePlane, UndoLog);
 
         fadePlane.transform.position = cam.transform.position + Camera.main.transform.forward * 1f;
-        fadePlane.transform.localScale = new Vector3(width, height, 1f);   // Quad 前提
+        fadePlane.transform.localScale = new Vector3(Width, Height, 1f);   // Quad 前提
+    }
+    //  フェードの位置をセットする
+    public static void AdjustFadeQuadPosition(GameObject fadePlane, Camera camera = null)
+    {
+        if (fadePlane == null)
+        {
+            Debug.LogWarning("AdjustFadeQuadPosition: fadePlaneがnullです。");
+            return;
+        }
+        camera ??= Camera.main;
+        if (camera == null)
+        {
+            Debug.LogWarning("AdjustFadeQuadPosition: 有効なCameraが見つかりません。");
+            return;
+        }
+
+        const string UndoLog = "Adjust FadePlane Position";
+        Undo.RecordObject(fadePlane.transform, UndoLog);
+        
+        fadePlane.transform.position = camera.transform.position + camera.transform.forward * 1f;
     }
 }
 #endif
