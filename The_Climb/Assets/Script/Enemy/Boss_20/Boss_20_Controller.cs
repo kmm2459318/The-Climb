@@ -1,34 +1,42 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.InputSystem.Utilities;
-using System;
-using System.Net.Http.Headers;
-
 
 
 public class Boss_20_Controller : MonoBehaviour
 {
+    [Header("20階層のボス")]
+    [Tooltip("20階層ボスのStatusファイルにある")]
     public Boss_20_StatusObjectScript status;   //Assetファイル
-    public GameObject Bullet_Prefab;            //弾のPrehab
-    public Transform Bullet_Position;　　　　　 //弾の発射位置
+    [Tooltip("弾のプレハブ")]
+    public GameObject Bullet_Prefab;         //弾のPrehab
+    [Tooltip("弾の発射位置")]
+    public Transform Bullet_Position;      　//弾の発射位置
+    [Tooltip("弾の発射位置")]
     public Transform Player;
 
-    private int Enemy_Left_Max;                 //敵の移動は左の範囲
-    private int Enemy_Right_Max;　　　　　　　　//敵の移動は右の範囲
-    private float Enemy_Vertical;                 //敵の縦移動
-    private int Boss_Move_Direction;　　　　　  //敵の動く方向
-    private float Bullet_Timer;　　　　　　　　 //弾を発射するまでの時間
-    private float rest_Timer;　　　　　　　　　 //休憩時間
-    private float boss_Speed;　　　　　　　　　 //ボスの速さ
-    private bool isResting = false;　　　　　　 //ボスの動くかどうかの判定
-    private Rigidbody rb;
-    private float Wave = 5.0f;                  //揺れ動く回数
-    
+    private int EnemyLeftMax;                 //敵の移動は左の範囲
+    private int EnemyRightMax;　　　　　　　　//敵の移動は右の範囲
+    private float EnemyVertical;              //敵の縦移動
+    private int BossMoveDirection;　　　　　  //敵の動く方向
+    private float BulletTime;　　　　　　　　 //弾を発射するまでの時間
+    private float ActionTime;　　　　　　　　 //休憩時間までの時間
+    private float RestTime;                   //休憩中
+    private float BossSpeed;　　　　　　　　　//ボスの速さ
+    private bool IsResting = false;　　　　　 //ボスの動くかどうかの判定
+    private bool NormalAction = true;         //通常モーションするかどうか
+    private bool AttackAction = false;        //攻撃モーションするかどうか
+    private Rigidbody Rb;
+    private float Wave = 5.0f;                //揺れ動く回数
+    private float Elapsed = 0;
+    private float Duration = 1.5f;      　　　//戻るまでの時間
 
+    Vector3 AncPos;                           //移動用の位置
+    Vector3 StartPos;                         //最初の位置休憩後に戻す
+    
     //初期化処理
     void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        Rb = GetComponent<Rigidbody>();
         Initialize();
 
     }
@@ -39,106 +47,99 @@ public class Boss_20_Controller : MonoBehaviour
 
     void FixedUpdate()
     {
-        Move();
+        if (IsResting) return;
+        Nomal_Move();
+        
     }
 
     //ボスの初期状態の設定
     void Initialize()
     {
-        Bullet_Timer = status.Attack;
-        Boss_Move_Direction = status.LEFT;
-        rest_Timer = status.Rest;
-        boss_Speed = status.Speed;
-        Enemy_Left_Max = status.LEFT_Max;
-        Enemy_Right_Max = status.RIGHT_Max; 
-        Enemy_Vertical = status.Vertical;
-
+        BulletTime = status.Attack;
+        BossMoveDirection = status.LEFT;
+        ActionTime = status.Action_Time;
+        RestTime = status.Rest_Time;
+        BossSpeed = status.Speed;
+        EnemyLeftMax = status.LEFT_Max;
+        EnemyRightMax = status.RIGHT_Max;
+        EnemyVertical = status.Vertical;
+        AncPos = transform.position;
+        StartPos = transform.position;
     }
 
     //ボスの動き
-    void Move()
+    void Nomal_Move()
     {
-        if (!isResting)
+        AncPos += new Vector3(BossSpeed * BossMoveDirection * Time.fixedDeltaTime,
+        Mathf.Sin(Time.time * Wave) * EnemyVertical, 0f);
+        EnemyMovementRange(ref AncPos);
+        Rb.MovePosition(AncPos);
+        ActionTime -=　 Time.fixedDeltaTime;
+        if (ActionTime <= 0f && !IsResting)
         {
-            Vector3 waveMotion = new Vector3(0f, Mathf.Sin(Time.time * Wave) * Enemy_Vertical, 0f);
-
-            Vector3 newPosition = rb.position + new Vector3(boss_Speed * Boss_Move_Direction * Time.fixedDeltaTime, 0f) + waveMotion;
-            EnemyMovementRange(ref newPosition);
-            rb.MovePosition(newPosition);
-            rest_Timer -= Time.fixedDeltaTime;
-        }
-
-        if (rest_Timer <= 0f && !isResting)
-        {
-            isResting = true;
-            StartCoroutine(RestAndResume());
+            IsResting = true; 
+            StartCoroutine(RestAndResume()); 
         }
     }
 
-   
+    void Attack_Move()
+    {
+
+    }
+
 
     //ボスの休憩
     IEnumerator RestAndResume()
     {
-        Debug.Log("減速開始");
-        float decelerationRate = 2f;
+        BossSpeed = 0f;
+        EnemyVertical = 0f;
 
-        while (boss_Speed > 0f)
-        {
-            boss_Speed = Mathf.MoveTowards(boss_Speed, 0f, decelerationRate * Time.fixedDeltaTime);
-            yield return new WaitForFixedUpdate();
-        }
-
-        boss_Speed = 0f;
-        Debug.Log("停止完了");
-        yield return new WaitForSeconds(3f);
-        Debug.Log("休憩終了");
-        boss_Speed = status.Speed;
-        rest_Timer = status.Rest;
-        isResting = false;
+        Rb.MovePosition(StartPos);
+        AncPos = StartPos;
+        yield return new WaitForSeconds(RestTime);
+        BossSpeed = status.Speed;
+        EnemyVertical = status.Vertical;
+        ActionTime = status.Action_Time;
+        IsResting = false;
     }
 
     //動く方向の指定
-     void EnemyMovementRange(ref Vector3 nextPosition)
+    void EnemyMovementRange(ref Vector3 nextPosition)
     {
-        if(nextPosition.x <= Enemy_Left_Max)
-        {
-                      
-            Boss_Move_Direction = status.RIGHT;
-        }
-        
-        else if(nextPosition.x >= Enemy_Right_Max)
-        {
-           
-            Boss_Move_Direction = status.LEFT;
-        }
+       if(nextPosition.x <= EnemyLeftMax) 
+       { 
+         BossMoveDirection = status.RIGHT; 
+       }
+        else if(nextPosition.x >= EnemyRightMax) 
+        { 
+         BossMoveDirection = status.LEFT; 
+        } 
     }
 
     //弾の発射タイミング
     void HandleShooting()
     {
-        Bullet_Timer -= Time.deltaTime;
-        if (Bullet_Timer <= 0f)
+        BulletTime -= Time.deltaTime;
+        if (BulletTime <= 0f)
         {
             Bullet();
-            Bullet_Timer = status.Attack;
+            BulletTime = status.Attack;
         }
     }
 
     //発射　　　　　　　　　　
     void Bullet()
     {
-        if (!isResting)
+        if (IsResting) return;
         {
-          GameObject player = GameObject.FindWithTag("Player");
-          if (player == null) return;
+          if (Player == null) return;
 
           float spacing = 0.5f; // 横の間隔（好みに応じて調整）
 
           Vector3 basePosition = Bullet_Position.position;
           Quaternion rotation = Bullet_Position.rotation;
 
-          // -1.5, -0.5, +0.5, +1.5 にオフセット（左右2個ずつ均等に）
+          // -1.5, +1.5 にオフセット（左右2個ずつ均等に）
           float[] offsets = new float[] { -1.5f, 1.5f };
 
           foreach (float offset in offsets)
