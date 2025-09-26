@@ -59,7 +59,8 @@ Shader "Shader/EdgeDarkDefusion"
 
                 // 四隅を強調した矩形上のマスク
                 float2 offset = abs(uv - center);
-                float dist = length(offset);
+                // float dist = length(offset);
+                float dist = max(offset.x, offset.y); // 矩形的距離でフェード
 
                 float fadeStart = -0.5;    //  フェード開始値(UV座標)
                 float fadeComplete = 0;    //  フェード完了値(UV座標)
