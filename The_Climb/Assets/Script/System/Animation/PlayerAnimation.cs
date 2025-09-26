@@ -212,13 +212,14 @@ public class PlayerAnimation : MonoBehaviour
         wasGrounded = isGrounded;
 
         // 向きの制御
-        if (!crouchStarted && !isJumping && !isMeteorDropping)
+        if (!crouchStarted && !isMeteorDropping)
         {
             if (playerMove.MoveInput > 0f)
                 transform.rotation = Quaternion.Euler(0, 90, 0);
             else if (playerMove.MoveInput < 0f)
                 transform.rotation = Quaternion.Euler(0, -90, 0);
         }
+
 
         // しゃがみ開始
         if (isJumpKeyPressed && isGrounded && !isJumping)
