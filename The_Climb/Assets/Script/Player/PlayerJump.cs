@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class PlayerJump : MonoBehaviour
 {
@@ -6,32 +7,38 @@ public class PlayerJump : MonoBehaviour
     PlayerState state;
     PlayerMove move;
     PlayerSpecialAction special;
+    private PlayerAnimation playerAnimation;
 
-    public bool jumping = false;        //ƒWƒƒƒ“ƒv“ü—Í’†”»’è
-    private float coyoteTime = 0.13f;    //ƒRƒˆ[ƒeƒ^ƒCƒ€
-    public float coyoteCounter = 0f;    //ƒRƒˆ[ƒeƒ^ƒCƒ€ƒJƒEƒ“ƒg
-    private float jumpCoolTime = 0.2f;  //ƒWƒƒƒ“ƒv‚ÌƒN[ƒ‹ƒ^ƒCƒ€
-    private float jumpCoolCounter = 0f;  //ƒWƒƒƒ“‚ÌƒN[ƒ‹ƒ^ƒCƒ€ƒJƒEƒ“ƒg
-    public bool jumpCoolActive = false;  //ƒWƒƒƒ“ƒN[ƒ‹ƒ^ƒCƒ€‚ğn‚ß‚é—p”»’è
-    private bool isJumpQueued = false;   //ƒWƒƒƒ“ƒvƒL[‚ª‰Ÿ‚³‚ê‚½”»’è
-    private float jumpQueueTime = 0.2f;  //ƒWƒƒƒ“ƒvæs“ü—Í—P—\ŠÔ
-    private float jumpQueueCounter = 0f;  //ƒWƒƒƒ“ƒvæs“ü—ÍƒJƒEƒ“ƒ^[
-    private float jumpTime;              //ƒWƒƒƒ“ƒv“ü—ÍŠÔ
-    private float jumpTimeMax = 0.2f;    //Å‘åƒWƒƒƒ“ƒv“ü—ÍŠÔ
-    private float jumpTimeMaxSaving = 0.2f;  //Å‘åƒWƒƒƒ“ƒv“ü—ÍŠÔ‚ğ•Û
-    private float groundJumpPower = 11f;  //ƒWƒƒƒ“ƒv‚ÅƒvƒŒƒCƒ„[‚É‚©‚©‚éã•ûŒü‚Ì—Í
-    private float maxJumpSpeed = 12f;    //‹ó’†‚Å‚Ì‘¬“x§ŒÀ
-    [SerializeField] AnimationCurve jumpCurve = new();  //ƒWƒƒƒ“ƒv‚Ì‘¬“xƒJ[ƒu
 
-    public int landingJumpNumber = 0;   //’…’nƒWƒƒƒ“ƒv‚Ì˜A‘±‰ñ”
-    private float landingLowJumpPower = 13f;  //ˆê‰ñ–Ú’…’nƒWƒƒƒ“ƒv‚Ìƒpƒ[
-    private float landingHighJumpPower = 15f;  //“ñ‰ñ–Ú’…’nƒWƒƒƒ“ƒv‚Ìƒpƒ[
+    public bool jumping = false;        //ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›ä¸­åˆ¤å®š
+    private float coyoteTime = 0.13f;    //ã‚³ãƒ¨ãƒ¼ãƒ†ã‚¿ã‚¤ãƒ 
+    public float coyoteCounter = 0f;    //ã‚³ãƒ¨ãƒ¼ãƒ†ã‚¿ã‚¤ãƒ ã‚«ã‚¦ãƒ³ãƒˆ
+    private float jumpCoolTime = 0.2f;  //ã‚¸ãƒ£ãƒ³ãƒ—ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+    private float jumpCoolCounter = 0f;  //ã‚¸ãƒ£ãƒ³ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚«ã‚¦ãƒ³ãƒˆ
+    public bool jumpCoolActive = false;  //ã‚¸ãƒ£ãƒ³ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚’å§‹ã‚ã‚‹ç”¨åˆ¤å®š
+    private bool isJumpQueued = false;   //ã‚¸ãƒ£ãƒ³ãƒ—ã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸåˆ¤å®š
+    private float jumpQueueTime = 0.2f;  //ã‚¸ãƒ£ãƒ³ãƒ—å…ˆè¡Œå…¥åŠ›çŒ¶äºˆæ™‚é–“
+    private float jumpQueueCounter = 0f;  //ã‚¸ãƒ£ãƒ³ãƒ—å…ˆè¡Œå…¥åŠ›ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
+    private float jumpTime;              //ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›æ™‚é–“
+    private float jumpTimeMax = 0.2f;    //æœ€å¤§ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›æ™‚é–“
+    private float jumpTimeMaxSaving = 0.2f;  //æœ€å¤§ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›æ™‚é–“ã‚’ä¿æŒ
+    private float groundJumpPower = 11f;  //ã‚¸ãƒ£ãƒ³ãƒ—ã§ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ã‹ã‹ã‚‹ä¸Šæ–¹å‘ã®åŠ›
+    private float maxJumpSpeed = 12f;    //ç©ºä¸­ã§ã®é€Ÿåº¦åˆ¶é™
+    [SerializeField] AnimationCurve jumpCurve = new();  //ã‚¸ãƒ£ãƒ³ãƒ—æ™‚ã®é€Ÿåº¦ã‚«ãƒ¼ãƒ–
 
-    public  bool  isOnTrampoline      = false; //ƒgƒ‰ƒ“ƒ|ƒŠƒ“‚Éæ‚Á‚Ä‚¢‚é‚©‚Ì”»’è
-    public  float TrampolinePower     = 1.5f;  //ƒgƒ‰ƒ“ƒ|ƒŠƒ“‚ÌƒWƒƒƒ“ƒv”{—¦
-    private float TrampolineGraceTime = 0.15f; //ƒgƒ‰ƒ“ƒ|ƒŠƒ“‚ÌŒø‰Ê‚ğˆÛ‚·‚éŠÔ
-    private float TrampolineTimer     = 0f;    //ƒgƒ‰ƒ“ƒ|ƒŠƒ“‚ÌŒø‰Ê‚ğŠÇ—‚·‚éƒ^ƒCƒ}[
-    private bool  TrampolineJumping   = false; //ƒgƒ‰ƒ“ƒ|ƒŠƒ“‚ÌƒWƒƒƒ“ƒv’†”»’è
+    public int landingJumpNumber = 0;   //ç€åœ°ã‚¸ãƒ£ãƒ³ãƒ—ã®é€£ç¶šå›æ•°
+    private float landingLowJumpPower = 13f;  //ä¸€å›ç›®ç€åœ°ã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒ‘ãƒ¯ãƒ¼
+    private float landingHighJumpPower = 15f;  //äºŒå›ç›®ç€åœ°ã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒ‘ãƒ¯ãƒ¼
+
+    public  bool  isOnTrampoline      = false; //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ã«ä¹—ã£ã¦ã„ã‚‹ã‹ã®åˆ¤å®š
+    public  float TrampolinePower     = 1.5f;  //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ã®ã‚¸ãƒ£ãƒ³ãƒ—å€ç‡
+    private float TrampolineGraceTime = 0.15f; //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ã®åŠ¹æœã‚’ç¶­æŒã™ã‚‹æ™‚é–“
+    private float TrampolineTimer     = 0f;    //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ã®åŠ¹æœã‚’ç®¡ç†ã™ã‚‹ã‚¿ã‚¤ãƒãƒ¼
+    private bool  TrampolineJumping   = false; //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ã®ã‚¸ãƒ£ãƒ³ãƒ—ä¸­åˆ¤å®š
+
+    public float highJumpChargeTime = 0.5f; // ä¾‹ï¼šå¿…è¦ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“
+
+    public event Action OnJumped;   //ã‚¸ãƒ£ãƒ³ãƒ—ã—ãŸç¬é–“ã‚’é€šçŸ¥ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
 
     void Start()
     {
@@ -39,14 +46,16 @@ public class PlayerJump : MonoBehaviour
         state = GetComponent<PlayerState>();
         move = gameObject.GetComponent<PlayerMove>();
         special = gameObject.GetComponent<PlayerSpecialAction>();
+        playerAnimation = GetComponent<PlayerAnimation>();
+
     }
 
     void Update()
     {
-        //ƒWƒƒƒ“ƒvƒL[‘€ì
+        //ã‚¸ãƒ£ãƒ³ãƒ—ã‚­ãƒ¼æ“ä½œ
         JumpOperation();
 
-        //ƒWƒƒƒ“ƒv‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+        //ã‚¸ãƒ£ãƒ³ãƒ—ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
         if (jumpCoolActive)
         {
             jumpCoolCounter += Time.deltaTime;
@@ -64,7 +73,7 @@ public class PlayerJump : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //ƒWƒƒƒ“ƒv
+        //ã‚¸ãƒ£ãƒ³ãƒ—
         if (jumping)
         {
             jumpTime += Time.fixedDeltaTime;
@@ -85,7 +94,7 @@ public class PlayerJump : MonoBehaviour
                 JumpPower = groundJumpPower; 
             }
 
-            //ƒgƒ‰ƒ“ƒ|ƒŠƒ“‚Éæ‚Á‚Ä‚¢‚½‚çƒgƒ‰ƒ“ƒ|ƒŠƒ“‚ÌŒø‰Ê‚ğ”½‰f
+            //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ã«ä¹—ã£ã¦ã„ãŸã‚‰ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ã®åŠ¹æœã‚’åæ˜ 
             if (isOnTrampoline)
             {
                 TrampolineJumping = true;
@@ -95,7 +104,7 @@ public class PlayerJump : MonoBehaviour
             Jump(JumpPower);
         }
 
-        //ƒgƒ‰ƒ“ƒ|ƒŠƒ“Œø‰Ê‚Ìƒ^ƒCƒ}[
+        //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³åŠ¹æœã®ã‚¿ã‚¤ãƒãƒ¼
         if(TrampolineJumping)
         {
             TrampolineTimer -= Time.fixedDeltaTime;
@@ -108,17 +117,17 @@ public class PlayerJump : MonoBehaviour
 
     private void JumpOperation()
     {
-        //ƒWƒƒƒ“ƒvƒL[‰Ÿ‚³‚ê‚½
+        //ã‚¸ãƒ£ãƒ³ãƒ—ã‚­ãƒ¼æŠ¼ã•ã‚ŒãŸ
         if (Input.GetKeyDown(state.keyBind.playerJump) && !special.meteorHighJumpOK && !isJumpQueued)
         {
             isJumpQueued = true;
             jumpQueueCounter = 0f;
         }
 
-        //ƒWƒƒƒ“ƒv‚Ì”»’è‚ğŠJn‚³‚¹‚é
+        //ã‚¸ãƒ£ãƒ³ãƒ—ã®åˆ¤å®šã‚’é–‹å§‹ã•ã›ã‚‹
         if ((coyoteCounter <= coyoteTime || state.isJumpMoveOK) && !jumpCoolActive && special.highJumpChargeCounter < special.highJumpChargeTime)
         {
-            //’ÊíƒWƒƒƒ“ƒv‚Æ’…’nƒWƒƒƒ“ƒv
+            //é€šå¸¸ã‚¸ãƒ£ãƒ³ãƒ—ã¨ç€åœ°ã‚¸ãƒ£ãƒ³ãƒ—
             if (isJumpQueued)
             {
                 jumping = true;
@@ -126,23 +135,27 @@ public class PlayerJump : MonoBehaviour
                 jumpTime = 0f;
                 jumpTimeMax = jumpTimeMaxSaving;
                 isJumpQueued = false;
-                //Debug.Log(RigidBody.linearVelocity.y);
-                //Debug.Log("trueŒã"+special.headingAttack);
 
-                //’…’nƒWƒƒƒ“ƒv
+                //ã‚¤ãƒ™ãƒ³ãƒˆã‚’é€šçŸ¥
+                OnJumped?.Invoke();
+                //Debug.Log(RigidBody.linearVelocity.y);
+                //Debug.Log("trueå¾Œ"+special.headingAttack);
+
+                //ç€åœ°ã‚¸ãƒ£ãƒ³ãƒ—
                 if (state.landingJumpOn)
                 {
-                    landingJumpNumber++;
+                    //landingJumpNumber++;
                     state.LandingJumpReset();
                 }
             }
-            else if (Input.GetKey(state.keyBind.playerJump) && special.meteorHighJumpOK && state.landingJumpOn)  //ƒƒeƒIƒhƒƒbƒv‚©‚ç‚ÌƒnƒCƒWƒƒƒ“ƒv
+            else if (Input.GetKey(state.keyBind.playerJump) && special.meteorHighJumpOK && state.landingJumpOn)  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã‹ã‚‰ã®ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—
             {
                 if (special.meteorDropCounter >= special.meteorDropTime)
                 {
                     jumpCoolActive = true;
                     special.meteorHighJump = true;
                     landingJumpNumber++;
+                    OnJumped!.Invoke();
                     special.headingAttack.SetActive(true);
                 }
                 special.meteorHighJumpOK = false;
@@ -150,7 +163,7 @@ public class PlayerJump : MonoBehaviour
             }
         }
 
-        //ƒWƒƒƒ“ƒvƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‘±‚¯‚Ä‚é
+        //ã‚¸ãƒ£ãƒ³ãƒ—ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œç¶šã‘ã¦ã‚‹
         if (jumping)
         {
             if (Input.GetKeyUp(state.keyBind.playerJump) && jumpTime <= jumpTimeMaxSaving * 1 / 2)
@@ -159,7 +172,7 @@ public class PlayerJump : MonoBehaviour
             }
         }
 
-        //ƒWƒƒƒ“ƒvæs“ü—Í‚ÌƒJƒEƒ“ƒg
+        //ã‚¸ãƒ£ãƒ³ãƒ—å…ˆè¡Œå…¥åŠ›ã®ã‚«ã‚¦ãƒ³ãƒˆ
         if (isJumpQueued)
         {
             jumpQueueCounter += Time.deltaTime;
@@ -176,13 +189,15 @@ public class PlayerJump : MonoBehaviour
         //Debug.Log($"[Jump] Power: {jumpPower}, Time: {jumpTime}, Max: {jumpTimeMax}");
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
 
-        //ƒgƒ‰ƒ“ƒ|ƒŠƒ“‚Éæ‚Á‚Ä‚¢‚éê‡ƒWƒƒƒ“ƒv—Í‚ğã‚°‚é
+
+
+        //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ã«ä¹—ã£ã¦ã„ã‚‹å ´åˆã‚¸ãƒ£ãƒ³ãƒ—åŠ›ã‚’ä¸Šã’ã‚‹
         if(TrampolineJumping)
         {
             jumpPower *= TrampolinePower;
         }
 
-        // ƒWƒƒƒ“ƒv‚Ì‘¬“x‚ğƒAƒjƒ[ƒVƒ‡ƒ“ƒJ[ƒu‚©‚çæ“¾
+        // ã‚¸ãƒ£ãƒ³ãƒ—ã®é€Ÿåº¦ã‚’ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚«ãƒ¼ãƒ–ã‹ã‚‰å–å¾—
         float time = jumpTime / jumpTimeMaxSaving;
         float power = jumpPower * jumpCurve.Evaluate(time);
 
@@ -193,11 +208,13 @@ public class PlayerJump : MonoBehaviour
 
         RigidBody.AddForce(power * Vector3.up, ForceMode.Impulse);
 
-        // Å‘åƒWƒƒƒ“ƒv‘¬“x‚ğ§ŒÀ
+        // æœ€å¤§ã‚¸ãƒ£ãƒ³ãƒ—é€Ÿåº¦ã‚’åˆ¶é™
         Vector3 horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
         if (horizontalVelocity.magnitude > maxJumpSpeed)
         {
             RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * maxJumpSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
         }
+
     }
 }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

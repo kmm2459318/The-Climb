@@ -9,8 +9,6 @@ public interface ITimeProvider
     int CurrentDayProperty { get; }
     //  夜かどうかのプロパティ
     bool IsNightProperty { get; set; }
-    //  夜になった時の処理
-    event Action<bool> OnChangedNight;
     //  時間加速ラッパー関数
     void StartTimeAcceleration(float TargetTime, float Duration);
 }
