@@ -5,19 +5,25 @@ public class TimeChange : MonoBehaviour
 {
     [Header("ステージセレクト")]
     [SerializeField] private GameObject[] MapPrefabs; // プレハブ登録用
-
+    private GameObject CurrentMapInstance; // 生成したマップの参照
+    [Header("プレイヤーの参照")]
+    [SerializeField] private Transform Player;
+    [Tooltip("KeyBindのスクリプト")]
+    public KeyBind KeyBind;
+    
     public int[] CurrentMapIndex = { 0, 1 };
     private int CurrentActiveIndex = 0;
 
-    private GameObject CurrentMapInstance; // 生成したマップの参照
+    
 
     void Start()
     {
+        KeyBind = GameObject.Find("KeyManager").GetComponent<KeyBind>();
         LoadMap(CurrentMapIndex[CurrentActiveIndex]);
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        //if (Input.GetKeyDown(KeyBind.timeSwitch))
         {
             Debug.Log("変わりました");
             SwitchToNextMap();
@@ -43,7 +49,7 @@ public class TimeChange : MonoBehaviour
         LoadMap(CurrentMapIndex[CurrentActiveIndex]);
     }
 
- 
+
     private void LoadMap(int MapIndex)
     {
         if (MapIndex >= 0 && MapIndex < MapPrefabs.Length)
