@@ -23,7 +23,7 @@ public class TimeChange : MonoBehaviour
     }
     void Update()
     {
-        //if (Input.GetKeyDown(KeyBind.timeSwitch))
+        if (Input.GetKeyDown(KeyBind.timeSwitch))
         {
             Debug.Log("•Ï‚í‚è‚Ü‚µ‚½");
             SwitchToNextMap();
