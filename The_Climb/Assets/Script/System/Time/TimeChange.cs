@@ -21,14 +21,14 @@ public class TimeChange : MonoBehaviour
         KeyBind = GameObject.Find("KeyManager").GetComponent<KeyBind>();
         LoadMap(CurrentMapIndex[CurrentActiveIndex]);
     }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyBind.timeSwitch))
-        {
-            Debug.Log("•Ï‚í‚è‚Ü‚µ‚½");
-            SwitchToNextMap();
-        }
-    }
+    //void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyBind.timeSwitch))
+    //    {
+    //        Debug.Log("•Ï‚í‚è‚Ü‚µ‚½");
+    //        SwitchToNextMap();
+    //    }
+    //}
 
     public void SwitchToNextMap()
     {
