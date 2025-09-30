@@ -5,21 +5,30 @@ public class TimeChange : MonoBehaviour
 {
     [Header("ステージセレクト")]
     [SerializeField] private GameObject[] MapPrefabs; // プレハブ登録用
-    private GameObject CurrentMapInstance; // 生成したマップの参照
+    private GameObject[] MapInstance;   // 生成したマップの参照
     [Header("プレイヤーの参照")]
     [SerializeField] private Transform Player;
     [Tooltip("KeyBindのスクリプト")]
     public KeyBind KeyBind;
-    
+
     public int[] CurrentMapIndex = { 0, 1 };
     private int CurrentActiveIndex = 0;
 
-    
+
 
     void Start()
     {
         KeyBind = GameObject.Find("KeyManager").GetComponent<KeyBind>();
-        LoadMap(CurrentMapIndex[CurrentActiveIndex]);
+        // マップを全部生成して非表示にする
+        MapInstance = new GameObject[MapPrefabs.Length];
+        for (int i = 0; i < MapPrefabs.Length; i++)
+        {
+            MapInstance[i] = Instantiate(MapPrefabs[i], Vector3.zero, Quaternion.identity);
+            MapInstance[i].SetActive(false);
+        }
+
+        // 最初のマップだけ有効化
+        MapInstance[CurrentActiveIndex].SetActive(true);
     }
     void Update()
     {
@@ -32,36 +41,25 @@ public class TimeChange : MonoBehaviour
 
     public void SwitchToNextMap()
     {
-        // 現在のマップを削除
-        if (CurrentMapInstance != null)
-        {
-            Destroy(CurrentMapInstance);
-        }
+        // 現在のマップを非表示
+        MapInstance[CurrentActiveIndex].SetActive(false);
 
-        // 次のインデックスに進める
+        // 次のマップに進める
         CurrentActiveIndex++;
-        if (CurrentActiveIndex >= CurrentMapIndex.Length)
+        if (CurrentActiveIndex >= MapInstance.Length)
         {
             CurrentActiveIndex = 0;
         }
 
-        // 新しいマップを生成
-        LoadMap(CurrentMapIndex[CurrentActiveIndex]);
-    }
-
-
-    private void LoadMap(int MapIndex)
-    {
-        if (MapIndex >= 0 && MapIndex < MapPrefabs.Length)
-        {
-            CurrentMapInstance = Instantiate(MapPrefabs[MapIndex], Vector3.zero, Quaternion.identity);
-        }
-
-        else
-        {
-            Debug.LogWarning("指定されたマップインデックスが範囲外です: " + MapIndex);
-        }
+        // 新しいマップを表示
+        MapInstance[CurrentActiveIndex].SetActive(true);
     }
 }
+
+
+  
+
+
+
 
 
