@@ -35,6 +35,7 @@ public class PlayerSpecialAction : MonoBehaviour
     public bool meteorHighJump = false;  //メテオドロップ後のハイジャンプ
     public float meteorDropTime = 0.37f;  //メテオドロップからのハイジャンプに移行できるまでの時間
     public float meteorDropCounter = 0f;  //メテオドロップのカウンター
+    internal bool playHighJumpAnim;
 
     void Start()
     {
@@ -114,13 +115,14 @@ public class PlayerSpecialAction : MonoBehaviour
         {
             highJumpChargeCounter = 0f;
         }
-        else if (Input.GetKeyUp(state.keyBind.playerJump))　//ハイジャンプ放す
+        else if (Input.GetKeyUp(state.keyBind.playerJump)) // ハイジャンプ放す
         {
             if (highJumpChargeCounter >= highJumpChargeTime)
             {
                 highJump = true;
                 highJumpUsed = true;
                 headingAttack.SetActive(true);
+                playHighJumpAnim = true; // アニメーション再生フラグ
             }
             //else
             //{
@@ -190,7 +192,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void MeteorDropUse()
     {
-        RigidBody.useGravity = false;
+        //RigidBody.useGravity = false;
         RigidBody.linearVelocity = new Vector3(0, 0, 0);
         meteorDropCounter += Time.fixedDeltaTime;
 
