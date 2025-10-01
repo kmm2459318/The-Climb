@@ -1,8 +1,7 @@
-using NUnit.Framework.Internal;
 using System;
 
 //  返り値ありの関数実行クラス
-public class FuncCommand<T> : ICommand
+public class FuncCommand<T> : ICommand_Enemy
 {
     Func<T> _Func;    //  
 

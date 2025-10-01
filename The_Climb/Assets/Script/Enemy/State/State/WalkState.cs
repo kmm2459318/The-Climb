@@ -1,6 +1,3 @@
-using System;
-using UnityEngine;
-
 //    “GƒLƒƒƒ‰•àsó‘Ô
 public class WalkState : IEnemyState
 {
