@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class KeyBind : MonoBehaviour
 {
+
     public KeyCode playerLMove = KeyCode.A;
     public KeyCode playerRMove = KeyCode.D;
     public KeyCode playerJump = KeyCode.Space;
