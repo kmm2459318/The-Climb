@@ -110,7 +110,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             RigidBody.AddForce(force);
             RigidBody.linearVelocity = new Vector3(force.x * Time.deltaTime * 1000.0f, RigidBody.linearVelocity.y, 0f);
         }
-        else if(!special.meteorHighJump && !jump.jumpCoolActive)
+        else if(!special.meteorHighJump && !jump.jumpCoolActive && RigidBody.linearVelocity.x != 0f)
         {
             RigidBody.linearVelocity = new Vector3(0f, RigidBody.linearVelocity.y, 0f);
         }
