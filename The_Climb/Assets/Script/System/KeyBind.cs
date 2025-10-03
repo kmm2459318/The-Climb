@@ -8,6 +8,7 @@ public class KeyBind : MonoBehaviour
     public KeyCode playerJump = KeyCode.Space;
     public KeyCode highJump = KeyCode.W;
     public KeyCode meteorDrop = KeyCode.S;
+    public KeyCode timeSwitch = KeyCode.Q;
 
     public void Save()
     {
@@ -16,6 +17,7 @@ public class KeyBind : MonoBehaviour
         PlayerPrefs.SetString("playerJump", playerJump.ToString());
         PlayerPrefs.SetString("highJump", highJump.ToString());
         PlayerPrefs.SetString("meteorDrop", meteorDrop.ToString());
+        PlayerPrefs.SetInt("timetravel", (int)timeSwitch);
     }
 
     public void Load()
@@ -25,5 +27,6 @@ public class KeyBind : MonoBehaviour
         playerJump = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("playerJump", playerJump.ToString()));
         highJump = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("highJump", highJump.ToString()));
         meteorDrop = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("meteorDrop", meteorDrop.ToString()));
+        timeSwitch = (KeyCode)PlayerPrefs.GetInt("timetravel", (int)timeSwitch);
     }
 }
