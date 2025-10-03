@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;  // シーンをリロードするために必要
 
 public class DeathZone : MonoBehaviour
 {
@@ -8,27 +9,35 @@ public class DeathZone : MonoBehaviour
     [Header("ゲームオーバーUI（Canvasなど）")]
     public GameObject gameOverUI;  // InspectorでCanvasを登録
 
+    private bool isGameOver = false;
+
     private void OnTriggerEnter(Collider other)
     {
+        if (isGameOver) return; // 二重処理防止
+
         Debug.Log("DeathZoneに入った: " + other.name);
 
-        // プレイヤー配列の中にいるか判定
         foreach (GameObject player in players)
         {
-            if (other.gameObject == player 
-             || other.transform.root.gameObject == player) // 子オブジェクトにも対応
+            if (other.gameObject == player || other.transform.root.gameObject == player)
             {
-                // プレイヤーを消す
                 player.SetActive(false);
 
-                // ゲームオーバーUIを表示
                 if (gameOverUI != null)
                 {
                     gameOverUI.SetActive(true);
                 }
 
+                isGameOver = true;
                 Debug.Log(player.name + " が奈落に落下 → ゲームオーバー！");
             }
         }
+    }
+
+    // UIのボタンにこのメソッドを登録すればリスタート可能
+    public void RestartGame()
+    {
+        Debug.Log("シーンをリスタートします");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
