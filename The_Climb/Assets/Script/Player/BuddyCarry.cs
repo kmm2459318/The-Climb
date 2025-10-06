@@ -32,7 +32,7 @@ public class BuddyCarry : MonoBehaviour
         }
 
         //Carryボタン（仮）
-        if (Input.GetKeyDown(KeyCode.C) && state.isGrounded)
+        if (Input.GetKeyDown(KeyCode.U) && state.isGrounded)
         {
             if (carryingBuddy)  //おんぶしてる場合、バディを降ろす
             {
@@ -49,7 +49,7 @@ public class BuddyCarry : MonoBehaviour
         }
 
         //ベルを鳴らしてバディを誘導
-        if (!carryingBuddy && Input.GetKeyDown(KeyCode.B))
+        if (!carryingBuddy && Input.GetKeyDown(KeyCode.I))
         {
             buddyController.GuideTo(gameObject.transform.position.x);
         }
