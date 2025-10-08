@@ -36,7 +36,7 @@ public class SunMoveCommander : MonoBehaviour
             SunAngleX = Mathf.Lerp(sunStat.DayTimeStartAngle, sunStat.DayTimeLastAngle, DayTimeProgress);
         }
         else if (TimeProvider.CurrentTimeProperty <= TimeConfig.OneDayTimeProperty)
-        {     
+        {
             TimeProvider.IsNightProperty = true;
             float NightTime = TimeProvider.CurrentTimeProperty - TimeConfig.DayTimeProperty;
             float t = NightTime / TimeConfig.NightTimeProperty;

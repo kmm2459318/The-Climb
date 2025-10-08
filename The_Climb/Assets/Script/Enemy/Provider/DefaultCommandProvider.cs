@@ -1,10 +1,10 @@
 using System.Collections.Generic;
+using UnityEngine;
 using static KickerMoveCommander;
 
-//  デフォルトコマンド提供クラス
 public class DefaultCommandProvider : ICommandProvider
 {
-    readonly KickerMoveCommander _KicekrMoveCommander;    //  キッカームーブコマンダーインスタンス
+    readonly KickerMoveCommander _KicekrMoveCommander;
 
     public DefaultCommandProvider(KickerMoveCommander kickerMoveCommander)
     {
