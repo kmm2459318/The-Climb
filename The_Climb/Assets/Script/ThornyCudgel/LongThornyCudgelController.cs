@@ -9,13 +9,13 @@ public class LongThornyCudgelController : MonoBehaviour
     public float cooldown1 = 1f;
     public float shortStretchDuration = 0.2f;
     public float cooldown2 = 1f;
-    public float longStretchDuration = 2f;
+    public float longStretchDuration = 4f;
     public float cooldown3 = 1f;
-    public float shrinkDuration = 4f;
+    public float shrinkDuration = 6f;
 
     [Header("移動距離")]
     public float shortStretchDistance = 2f;
-    public float longStretchDistance = 75f;
+    public float longStretchDistance = 150f;
 
     [Header("回転速度（度/秒）")]
     public float stretchRotationSpeed = 360f;  // 左回転
@@ -74,7 +74,7 @@ public class LongThornyCudgelController : MonoBehaviour
                     timer = 0f;
                     currentState = State.Cooldown2;
                 });
-                RotateContinuous(-stretchRotationSpeed);
+                RotateContinuous(stretchRotationSpeed);
                 break;
 
             case State.Cooldown2:
@@ -88,7 +88,7 @@ public class LongThornyCudgelController : MonoBehaviour
                     timer = 0f;
                     currentState = State.Cooldown3;
                 });
-                RotateContinuous(-stretchRotationSpeed);
+                RotateContinuous(stretchRotationSpeed);
                 break;
 
             case State.Cooldown3:
@@ -105,7 +105,7 @@ public class LongThornyCudgelController : MonoBehaviour
                     currentYRotation = 0f;
                     ApplyRotation();
                 });
-                RotateContinuous(shrinkRotationSpeed);
+                RotateContinuous(-shrinkRotationSpeed);
                 break;
         }
     }
