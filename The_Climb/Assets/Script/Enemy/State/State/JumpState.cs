@@ -1,13 +1,13 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  “GƒLƒƒƒ‰ˆÚ“®ó‘Ô
+//  æ•µã‚­ãƒ£ãƒ©ç§»å‹•çŠ¶æ…‹
 public class JumpState : IEnemyState
 {
-    KickerMoveCommander _kickerMoveCommander;    //  KickerMoveCommander‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
-    EnemyStateMachine _enemyStateMachine;    //  EnemyStateMachine‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
-    System.Action LamdGroundListener;    //  ’n–Ê’…’n‚µ‚½Žž‚Ì”­‰Î‚ð‘Ò‚Â•Ï”
+    KickerMoveCommander _kickerMoveCommander;    //  KickerMoveCommanderã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+    EnemyStateMachine _enemyStateMachine;    //  EnemyStateMachineã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+    System.Action LamdGroundListener;    //  åœ°é¢ç€åœ°ã—ãŸæ™‚ã®ç™ºç«ã‚’å¾…ã¤å¤‰æ•°
     
-    //  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    //  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     public JumpState(KickerMoveCommander kickerMoveCommander, EnemyStateMachine enemyStateMachine, IEnemyStateFactory enemyStateFactory)
     {
         _kickerMoveCommander = kickerMoveCommander;
@@ -24,7 +24,7 @@ public class JumpState : IEnemyState
     }
     public void FixedUpdate()
     {
-        //  ˆÚ“®
+        //  ç§»å‹•
         _kickerMoveCommander.CommanderMethodMap[KickerMoveCommander.KickerCommanderMethod.MOVE].Execute();
     }
     public void Exit()
@@ -32,6 +32,6 @@ public class JumpState : IEnemyState
         _kickerMoveCommander.OnLandGround -= LamdGroundListener;
     }
 }
-//  ˆÈ‰ºƒR[ƒh•Û‘¶Š  //
-//  Œ»Ý‚ÌˆÚ“®ó‘Ô‚ð•Ô‚·
+//  ä»¥ä¸‹ã‚³ãƒ¼ãƒ‰ä¿å­˜æ‰€  //
+//  ç¾åœ¨ã®ç§»å‹•çŠ¶æ…‹ã‚’è¿”ã™
 //public EnemyMovingState EnemyMovingStateProperty => EnemyMovingState.JUMP_STATE;

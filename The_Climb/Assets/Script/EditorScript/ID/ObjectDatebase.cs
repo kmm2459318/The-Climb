@@ -1,30 +1,30 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
-//   ƒIƒuƒWƒFƒNƒgƒf[ƒ^ƒx[ƒX
+//   ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹
 [CreateAssetMenu(fileName = "ObjectDatabase", menuName = "GameData/ID Object Database")]
 public class ObjectDatabase : ScriptableObject
 {
-    [Header("ƒIƒuƒWƒFƒNƒgID(Tool‚©‚çæ“¾)")]
-    [SerializeField] private List<string> ObjectIDs = new();    //  ƒIƒuƒWƒFƒNƒgIDƒŠƒXƒg
+    [Header("ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆID(Toolã‹ã‚‰å–å¾—)")]
+    [SerializeField] private List<string> ObjectIDs = new();    //  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆIDãƒªã‚¹ãƒˆ
    
-    //  ObjectIdsƒvƒƒpƒeƒB
+    //  ObjectIdsãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     public List<string> ObjectIDsProperty => ObjectIDs;
 
-    //  ƒIƒuƒWƒFƒNƒgID‚ğˆêŠ‡İ’è
+    //  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆIDã‚’ä¸€æ‹¬è¨­å®š
     public void SetIDs(List<string> IDs)
     {
         ObjectIDs = IDs;
     }
 }
-//    ƒR[ƒh•Û‘¶Š    ////
-//// ID‚©‚çƒf[ƒ^‚ğæ“¾
+//    ã‚³ãƒ¼ãƒ‰ä¿å­˜æ‰€    ////
+//// IDã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
 //public ObjectData GetDataByID(string id)
 //{
 //    return objects.Find(obj => obj.id == id);
 //}
 
-//// ƒvƒŒƒnƒuæ“¾i•K—v‚È‚çj
+//// ãƒ—ãƒ¬ãƒãƒ–å–å¾—ï¼ˆå¿…è¦ãªã‚‰ï¼‰
 //public GameObject GetPrefabByID(string id)
 //{
 //    var data = GetDataByID(id);

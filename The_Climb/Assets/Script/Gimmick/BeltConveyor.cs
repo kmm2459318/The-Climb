@@ -1,22 +1,22 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class BeltConveyor : MonoBehaviour
 {
-    //ƒxƒ‹ƒg‚ª“®‚­•ûŒü
+    //ãƒ™ãƒ«ãƒˆãŒå‹•ãæ–¹å‘
     public enum BeltDirection
     {
         Right,
         Left,
     }
 
-    public float BeltPower = 100f;   //ƒxƒ‹ƒg‚ªƒvƒŒƒCƒ„[‚É—^‚¦‚é—Í
-    public BeltDirection beltDirection = BeltDirection.Right;  //ƒCƒ“ƒXƒyƒNƒ^[‚Å‘I‘ğ‰Â”\‚Èƒxƒ‹ƒg‚Ì•ûŒü
+    public float BeltPower = 100f;   //ãƒ™ãƒ«ãƒˆãŒãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ä¸ãˆã‚‹åŠ›
+    public BeltDirection beltDirection = BeltDirection.Right;  //ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§é¸æŠå¯èƒ½ãªãƒ™ãƒ«ãƒˆã®æ–¹å‘
 
-    //‘I‘ğ‚³‚ê‚½•ûŒü‚ÉŠî‚Ã‚¢‚ÄÀÛ‚ÌƒxƒNƒgƒ‹‚ğ•Ô‚·
+    //é¸æŠã•ã‚ŒãŸæ–¹å‘ã«åŸºã¥ã„ã¦å®Ÿéš›ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¿”ã™
     private Vector3 Direction => (beltDirection == BeltDirection.Right) ? Vector3.right : Vector3.left;
 
 
-    //ƒvƒŒƒCƒ„[‚ªƒxƒ‹ƒg‚Éæ‚Á‚Ä‚¢‚éŠÔA–ˆƒtƒŒ[ƒ€’Ê’m‚ğ‘—‚é
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒ™ãƒ«ãƒˆã«ä¹—ã£ã¦ã„ã‚‹é–“ã€æ¯ãƒ•ãƒ¬ãƒ¼ãƒ é€šçŸ¥ã‚’é€ã‚‹
     private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -24,13 +24,13 @@ public class BeltConveyor : MonoBehaviour
             var BeltReceiver = other.GetComponent<IConveyorReceiver>();
             if(BeltReceiver != null)
             {
-                //ƒvƒŒƒCƒ„[‚Éuƒxƒ‹ƒg‚Éæ‚Á‚Ä‚¢‚év‚Æ’Ê’m‚µAƒxƒ‹ƒg‚Ì‘¬“x‚ğ“n‚·
+                //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ã€Œãƒ™ãƒ«ãƒˆã«ä¹—ã£ã¦ã„ã‚‹ã€ã¨é€šçŸ¥ã—ã€ãƒ™ãƒ«ãƒˆã®é€Ÿåº¦ã‚’æ¸¡ã™
                 BeltReceiver.SetOnBelt(true, Direction.normalized * BeltPower);
             }
         }
     }
 
-    //ƒvƒŒƒCƒ„[‚ªƒxƒ‹ƒg‚©‚ç—£‚ê‚½‚É’Ê’m
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒ™ãƒ«ãƒˆã‹ã‚‰é›¢ã‚ŒãŸæ™‚ã«é€šçŸ¥
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -38,7 +38,7 @@ public class BeltConveyor : MonoBehaviour
             var BeltReceiver = other.GetComponent<IConveyorReceiver>();
             if(BeltReceiver != null)
             {
-                //ƒxƒ‹ƒg‚Ì‰e‹¿‚ğ‰ğœ
+                //ãƒ™ãƒ«ãƒˆã®å½±éŸ¿ã‚’è§£é™¤
                 BeltReceiver.SetOnBelt(false, Vector3.zero);
             }
         }

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
@@ -15,7 +15,7 @@ public class MovingPlatform : MonoBehaviour
 
     private Vector3 StartPosition;
     private Rigidbody Rigidbody;
-    private Rigidbody PlayerRigidbody; //ƒvƒŒƒCƒ„[‚ÌRigidbody‚ğ•Û
+    private Rigidbody PlayerRigidbody; //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Rigidbodyã‚’ä¿æŒ
     private float ElapsedTime = 0f;
 
     private Vector3 PreviousPosition;
@@ -38,7 +38,7 @@ public class MovingPlatform : MonoBehaviour
 
         Vector3 delta = targetPos - PreviousPosition;
 
-        //ˆÚ“®ˆ—
+        //ç§»å‹•å‡¦ç†
         Rigidbody.MovePosition(targetPos);
 
         if(PlayerRigidbody != null && IsPlayerOnTop)
@@ -47,7 +47,7 @@ public class MovingPlatform : MonoBehaviour
             PlayerRigidbody.MovePosition(PlayerRigidbody.position + adjustedDelta);
         }
 
-        //ŸƒtƒŒ[ƒ€‚Ì‚½‚ß‚É•Û‘¶
+        //æ¬¡ãƒ•ãƒ¬ãƒ¼ãƒ ã®ãŸã‚ã«ä¿å­˜
         PreviousPosition = targetPos;
         IsPlayerOnTop = false;
     }
@@ -58,10 +58,10 @@ public class MovingPlatform : MonoBehaviour
         {
             foreach(ContactPoint contact in collision.contacts)
             {
-                //‘«ê‚Ìã•ûŒü‚É‹ß‚¢–@ü‚©(ã‚É‚Ì‚Á‚Ä‚¢‚é‚©)
+                //è¶³å ´ã®ä¸Šæ–¹å‘ã«è¿‘ã„æ³•ç·šã‹(ä¸Šã«ã®ã£ã¦ã„ã‚‹ã‹)
                 if(Vector3.Dot(-contact.normal, Vector3.up) > 0.5f)
                 {
-                    Debug.Log("ƒvƒŒƒCƒ„[‚ª“®‚­‘«ê‚Ìã‚Éæ‚Á‚½");
+                    Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒå‹•ãè¶³å ´ã®ä¸Šã«ä¹—ã£ãŸ");
                     PlayerRigidbody = collision.gameObject.GetComponent<Rigidbody>();
                     IsPlayerOnTop = true;
                     break;

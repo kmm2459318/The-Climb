@@ -1,13 +1,13 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ‘¾—z‚ÌƒXƒNƒŠƒvƒ^ƒuƒ‹ƒIƒuƒWƒFƒNƒgİ’èƒXƒNƒŠƒvƒg
+//  å¤ªé™½ã®ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ–ãƒ«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè¨­å®šã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 [CreateAssetMenu(fileName = "SunStat", menuName = "GameData/SunStat")]
 public class SunStat : ScriptableObject
 {
-    [Header("‘¾—z‚ÌŠp“xİ’è(X)")]
-    public float InitializeAngle;    //  ‰ŠúˆÊ’u
-    public float DayTimeStartAngle;    //  ‘¾—z‚ª¸‚é‚Æ‚«‚ÌÅ‰‚ÌƒAƒ“ƒOƒ‹
-    public float DayTimeLastAngle;    //  ‘¾—z‚ª’¾‚Ş‚Æ‚«‚ÌÅŒã‚ÌƒAƒ“ƒOƒ‹
-    public float NightTimeStartAngle;    //  ‘¾—z‚ª’¾‚ñ‚Ä‚¢‚é‚Æ‚«‚ÌÅ‰‚ÌƒAƒ“ƒOƒ‹
-    public float NightTimeLastAngle;    //  ‘¾—z‚ª¸‚é‘O‚ÌÅŒã‚ÌƒAƒ“ƒOƒ‹
+    [Header("å¤ªé™½ã®è§’åº¦è¨­å®š(X)")]
+    public float InitializeAngle;    //  åˆæœŸä½ç½®
+    public float DayTimeStartAngle;    //  å¤ªé™½ãŒæ˜‡ã‚‹ã¨ãã®æœ€åˆã®ã‚¢ãƒ³ã‚°ãƒ«
+    public float DayTimeLastAngle;    //  å¤ªé™½ãŒæ²ˆã‚€ã¨ãã®æœ€å¾Œã®ã‚¢ãƒ³ã‚°ãƒ«
+    public float NightTimeStartAngle;    //  å¤ªé™½ãŒæ²ˆã‚“ã¦ã„ã‚‹ã¨ãã®æœ€åˆã®ã‚¢ãƒ³ã‚°ãƒ«
+    public float NightTimeLastAngle;    //  å¤ªé™½ãŒæ˜‡ã‚‹å‰ã®æœ€å¾Œã®ã‚¢ãƒ³ã‚°ãƒ«
 }

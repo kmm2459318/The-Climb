@@ -1,11 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class LongThornyCudgelController : MonoBehaviour
 {
-    [Header("‰‰ñƒN[ƒ‹ƒ^ƒCƒ€i•bj")]
+    [Header("åˆå›ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ï¼ˆç§’ï¼‰")]
     public float initialCooldown = 1f;
 
-    [Header("ŠeƒtƒF[ƒYŠÔi•bj")]
+    [Header("å„ãƒ•ã‚§ãƒ¼ã‚ºæ™‚é–“ï¼ˆç§’ï¼‰")]
     public float cooldown1 = 1f;
     public float shortStretchDuration = 0.2f;
     public float cooldown2 = 1f;
@@ -13,13 +13,13 @@ public class LongThornyCudgelController : MonoBehaviour
     public float cooldown3 = 1f;
     public float shrinkDuration = 6f;
 
-    [Header("ˆÚ“®‹——£")]
+    [Header("ç§»å‹•è·é›¢")]
     public float shortStretchDistance = 2f;
     public float longStretchDistance = 150f;
 
-    [Header("‰ñ“]‘¬“xi“x/•bj")]
-    public float stretchRotationSpeed = 360f;  // ¶‰ñ“]
-    public float shrinkRotationSpeed = 180f;   // ‰E‰ñ“]
+    [Header("å›è»¢é€Ÿåº¦ï¼ˆåº¦/ç§’ï¼‰")]
+    public float stretchRotationSpeed = 360f;  // å·¦å›è»¢
+    public float shrinkRotationSpeed = 180f;   // å³å›è»¢
 
     private enum State
     {
@@ -101,7 +101,7 @@ public class LongThornyCudgelController : MonoBehaviour
                 {
                     timer = 0f;
                     currentState = State.Cooldown1;
-                    // k‚İI‚í‚è‚Å‰ñ“]ƒŠƒZƒbƒg
+                    // ç¸®ã¿çµ‚ã‚ã‚Šã§å›è»¢ãƒªã‚»ãƒƒãƒˆ
                     currentYRotation = 0f;
                     ApplyRotation();
                 });

@@ -1,10 +1,10 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 
 public class KeyBind : MonoBehaviour
 {
-    //Å[Å[Å[Å[Å[Å[Å[Å[âºìríÜÅ[Å[Å[Å[Å[Å[Å[Å[Å[Å[
+    //„Éº„Éº„Éº„Éº„Éº„Éº„Éº„Éº‰ªÆÈÄî‰∏≠„Éº„Éº„Éº„Éº„Éº„Éº„Éº„Éº„Éº„Éº
     [SerializeField] private InputActionReference jumpAction;
 
     public KeyCode playerLMove = KeyCode.A;

@@ -1,14 +1,14 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class RespawnGroundCheck : MonoBehaviour
 {
-    public bool isRespawnGrounded = false; //ƒŠƒXƒ|[ƒ“‚·‚é’n“_‚É“K‚µ‚Ä‚¢‚é‚©”»’è
+    public bool isRespawnGrounded = false; //ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åœ°ç‚¹ã«é©ã—ã¦ã„ã‚‹ã‹åˆ¤å®š
 
     private int groundLayer;
 
     void Start()
     {
-        //Ground ƒŒƒCƒ„[”Ô†‚ğæ“¾
+        //Ground ãƒ¬ã‚¤ãƒ¤ãƒ¼ç•ªå·ã‚’å–å¾—
         groundLayer = LayerMask.NameToLayer("Ground");
     }
 

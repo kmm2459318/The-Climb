@@ -1,9 +1,9 @@
-//  “G‚Ìó‘Ô‚ÌƒCƒ“ƒ^[ƒtƒFƒCƒX
+ï»¿//  æ•µã®çŠ¶æ…‹ã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ã‚¤ã‚¹
 public interface IEnemyState
 {
     void Enter();
     void FixedUpdate();
     void Exit();
 }
-//  ˆÈ‰ºƒR[ƒh•Û‘¶Š  //
+//  ä»¥ä¸‹ã‚³ãƒ¼ãƒ‰ä¿å­˜æ‰€  //
 //EnemyMovingState EnemyMovingStateProperty { get; }

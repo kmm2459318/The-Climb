@@ -1,23 +1,23 @@
-#if UNITY_EDITOR
+ï»¿#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-//  IDƒf[ƒ^ƒx[ƒX\’z
+//  IDãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹æ§‹ç¯‰
 public class IDDataBaseCreater
 {
-    //   ƒf[ƒ^ƒx[ƒX\’z
+    //   ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹æ§‹ç¯‰
     public static void BuildDatabase()
     {
         ObjectDatabase myObjectDateBase = AssetDatabase.LoadAssetAtPath<ObjectDatabase>("Assets/Script/System/ID/ScriptableObject/ObjectDatabase.asset");
         if (myObjectDateBase == null)
         {
-            Debug.LogError("w’è‚³‚ê‚½path‚ÉMyObjectDateBase‚ª‚ ‚è‚Ü‚¹‚ñ");
+            Debug.LogError("æŒ‡å®šã•ã‚ŒãŸpathã«MyObjectDateBaseãŒã‚ã‚Šã¾ã›ã‚“");
             return;
         }
 
-        IDGenerater[] allIDObjects = Object.FindObjectsByType<IDGenerater>(FindObjectsSortMode.None);    //  ID‚ª‚ ‚éƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é
-        List<string> ids = new();    //  ID•¶š—ñ‚ÌList
+        IDGenerater[] allIDObjects = Object.FindObjectsByType<IDGenerater>(FindObjectsSortMode.None);    //  IDãŒã‚ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
+        List<string> ids = new();    //  IDæ–‡å­—åˆ—ã®List
         foreach (var idObj in allIDObjects)
         {
             if (!string.IsNullOrEmpty(idObj.IDProperty))
@@ -27,7 +27,7 @@ public class IDDataBaseCreater
         myObjectDateBase.SetIDs(ids);
         EditorUtility.SetDirty(myObjectDateBase);
         AssetDatabase.SaveAssets();
-        Debug.Log("ID ƒf[ƒ^ƒx[ƒXXVŠ®—¹F" + ids.Count + " Œ");
+        Debug.Log("ID ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹æ›´æ–°å®Œäº†ï¼š" + ids.Count + " ä»¶");
     }
 }
 #endif

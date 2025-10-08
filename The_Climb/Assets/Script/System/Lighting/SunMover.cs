@@ -1,20 +1,20 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//    ‘¾—zˆÚ“®ƒXƒNƒŠƒvƒg
+//    å¤ªé™½ç§»å‹•ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 public class SunMover : MonoBehaviour
 {
-    Transform sunTransform;    //  ‘¾—z‚ÌTF
+    Transform sunTransform;    //  å¤ªé™½ã®TF
     void Awake()
     {
-        //  ‰Šú‰»
+        //  åˆæœŸåŒ–
         Initialize();
     }
-    //  ‰Šú‰»
+    //  åˆæœŸåŒ–
     void Initialize()
     {
         sunTransform = transform;
     }
-    //  Šp“x•ÏX
+    //  è§’åº¦å¤‰æ›´
     public void ChangeAngle(float SunNewRotX)
     {
         sunTransform.rotation = Quaternion.Euler(SunNewRotX, 0f, 0f);

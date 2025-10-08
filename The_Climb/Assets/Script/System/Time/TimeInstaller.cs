@@ -1,19 +1,19 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Zenject;
 
-//  ŠÔŒn“‚ğƒoƒCƒ“ƒh‚·‚é
+//  æ™‚é–“ç³»çµ±ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
 public class TimeInstaller : MonoInstaller
 {
-    [SerializeField] private TimeSetting timeSettings;    //  ŠÔİ’è
+    [SerializeField] private TimeSetting timeSettings;    //  æ™‚é–“è¨­å®š
 
-    //  ŠÔŒnƒoƒCƒ“ƒh
+    //  æ™‚é–“ç³»ãƒã‚¤ãƒ³ãƒ‰
     public override void InstallBindings()
     {
         Container.BindInterfacesAndSelfTo<TimeManager>().FromComponentInHierarchy().AsSingle();
         Container.Bind<ITimeConfig>().To<TimeSettingWrapper>().AsSingle().WithArguments(timeSettings);
     }
 }
-//    ˆÈ‰ºƒR[ƒh•Û‘¶Š    //
+//    ä»¥ä¸‹ã‚³ãƒ¼ãƒ‰ä¿å­˜æ‰€    //
 //Container.Bind<TimeManager>().FromComponentInHierarchy().AsSingle();
 
 //Container.Bind<ITimeProvider>().To<TimeManager>().AsSingle();
