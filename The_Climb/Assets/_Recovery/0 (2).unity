@@ -456,6 +456,10 @@ PrefabInstance:
       propertyPath: groundCheckCollider
       value: 
       objectReference: {fileID: 1198276195}
+    - target: {fileID: 8265955754314674708, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_Name
+      value: PlayerModel 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8443442042839938066, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       propertyPath: highJumpOn
       value: 1
@@ -961,7 +965,7 @@ Transform:
   m_GameObject: {fileID: 1307859628}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -10, z: 0}
+  m_LocalPosition: {x: 7, y: -8, z: 0.1}
   m_LocalScale: {x: 999999, y: 2, z: 999999}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1032,6 +1036,10 @@ PrefabInstance:
       propertyPath: groundCheckCollider
       value: 
       objectReference: {fileID: 1894505598}
+    - target: {fileID: 8265955754314674708, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
+      propertyPath: m_Name
+      value: PlayerModel 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8443442042839938066, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       propertyPath: highJumpOn
       value: 1
@@ -1059,9 +1067,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1216215297}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8265955754314674708, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1627394887}
     - targetCorrespondingSourceObject: {fileID: 6123871795154524803, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1894505598}
@@ -1207,29 +1212,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 858820367639580394, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
   m_PrefabInstance: {fileID: 1376118172}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1627394877 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8265955754314674708, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
-  m_PrefabInstance: {fileID: 1376118172}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1627394887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1627394877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ee79e9ead9db6f4ea586a6830c6ef98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovenishiyama
-  groundMaxSpeed: 6.459797
-  airMaxSpeed: 10
-  slipping: 0
-  slipVelocity: {x: 0, y: 0, z: 0}
-  PlayerAnimation2: {fileID: 0}
-  reverseHorizontal: 1
 --- !u!1001 &1877064905
 PrefabInstance:
   m_ObjectHideFlags: 0

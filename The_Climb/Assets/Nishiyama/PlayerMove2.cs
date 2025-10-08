@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class PlayerMove : MonoBehaviour, IConveyorReceiver
+public class PlayerMove2 : MonoBehaviour, IConveyorReceiver
 {
     Rigidbody RigidBody;
     PlayerState state;
@@ -20,11 +20,14 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     public Vector3 slipVelocity;                //滑り時のVelocity
 
     public float MoveInput => moveInput; // ←読み取り専用プロパティ
-    public PlayerAnimation PlayerAnimation;
+    public PlayerAnimation2 PlayerAnimation2;
     public PlayerState State => state;
 
     private bool OnBelt = false;                 //ベルトコンベアに乗っているか
     private Vector3 BeltVelocity = Vector3.zero; //ベルトコンベアの速度(未接触時はゼロ)
+
+    [SerializeField] private bool reverseHorizontal = false;
+
 
 
     void Start()
@@ -34,7 +37,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         jump = gameObject.GetComponent<PlayerJump>();
         special = gameObject.GetComponent<PlayerSpecialAction>();
 
-        PlayerAnimation = GameObject.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
+        PlayerAnimation2 = GameObject.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation2>();
     }
 
     private void Update()
@@ -44,7 +47,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         {
             MoveOperation();
         }
-
     }
 
     void FixedUpdate()
@@ -90,7 +92,16 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         {
             moveInput = 0f;
         }
+
+        // 横反転スイッチ（true のとき反対方向に動く）
+        if (reverseHorizontal)
+        {
+            moveInput *= -1f;
+        }
+
+
     }
+
 
     private void GroundPlayerMove()
     {
@@ -215,6 +226,13 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             }
         }
     }
+
+
+    public void SetMoveInput(float input)
+    {
+        moveInput = input;
+    }
+
 
     public void SetOnBelt(bool OnBelt, Vector3 velocity)
     {
