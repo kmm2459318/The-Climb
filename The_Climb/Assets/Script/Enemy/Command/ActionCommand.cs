@@ -1,7 +1,7 @@
 using System;
 
 //  返り値なしの関数実行クラス
-public class ActionCommand : ICommand
+public class ActionCommand : ICommand_Enemy
 {
     Action _Action;    //  関数保有変数
 
