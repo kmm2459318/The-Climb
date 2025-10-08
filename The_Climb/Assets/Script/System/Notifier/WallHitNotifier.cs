@@ -1,11 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  •Ç‚Ö‚ÌÕ“Ë‚ğ’Ê’m
+//  å£ã¸ã®è¡çªã‚’é€šçŸ¥
 public class WallHitNotifier : CollisionNotifier<IWallHitTable>
 {
     void OnCollisionEnter(Collision collision)
     {
-        //  •Ç‚É“–‚½‚Á‚½‚Ìˆ—‚ğÀs
+        //  å£ã«å½“ãŸã£ãŸæ™‚ã®å‡¦ç†ã‚’å®Ÿè¡Œ
         NotifyIfTagMatches(collision, TagName.Wall, h => h.OnHitWall());
     }
 }

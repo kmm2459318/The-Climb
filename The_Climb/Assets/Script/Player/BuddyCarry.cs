@@ -1,15 +1,15 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.Animations;
 
 public class BuddyCarry : MonoBehaviour
 {
-    private GameObject buddy;             //Buddy‚ÌƒQ[ƒ€ƒIƒuƒWƒFƒNƒg
-    private BuddyController buddyController;  //Buddy‚ÌƒXƒNƒŠƒvƒg
-    private PositionConstraint buddyPos;  //Buddy‚ÌPositionConstrainti‚¨‚ñ‚Ô‚Ég‚Á‚Ä‚é’Ç]‚ÌƒRƒ“ƒ|[ƒlƒ“ƒgj
+    private GameObject buddy;             //Buddyã®ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+    private BuddyController buddyController;  //Buddyã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
+    private PositionConstraint buddyPos;  //Buddyã®PositionConstraintï¼ˆãŠã‚“ã¶ã«ä½¿ã£ã¦ã‚‹è¿½å¾“ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆï¼‰
     PlayerState state;
 
-    public bool carryingBuddy = true;    //Buddy‚ğ‚¨‚ñ‚Ô‚µ‚Ä‚éó‘Ô‚©”»’è
-    private bool nearBuddy = false;       //Buddy‚ª‹ß‚­‚É‚¢‚é‚©”»’è
+    public bool carryingBuddy = true;    //Buddyã‚’ãŠã‚“ã¶ã—ã¦ã‚‹çŠ¶æ…‹ã‹åˆ¤å®š
+    private bool nearBuddy = false;       //BuddyãŒè¿‘ãã«ã„ã‚‹ã‹åˆ¤å®š
 
     void Start()
     {
@@ -21,7 +21,7 @@ public class BuddyCarry : MonoBehaviour
 
     void Update()
     {
-        //Œü‚¢‚Ä‚é•ûŒü‚É‚æ‚Á‚Ä‚¨‚ñ‚Ô‚µ‚Ä‚éƒoƒfƒB‚ÌêŠ‚ğ’²®
+        //å‘ã„ã¦ã‚‹æ–¹å‘ã«ã‚ˆã£ã¦ãŠã‚“ã¶ã—ã¦ã‚‹ãƒãƒ‡ã‚£ã®å ´æ‰€ã‚’èª¿æ•´
         if (buddyPos != null && state.playerDirectionRight)
         {
             buddyPos.translationOffset = new Vector3(-0.4f, 1f, 0f);
@@ -31,16 +31,16 @@ public class BuddyCarry : MonoBehaviour
             buddyPos.translationOffset = new Vector3(0.4f, 1f, 0f);
         }
 
-        //Carryƒ{ƒ^ƒ“i‰¼j
+        //Carryãƒœã‚¿ãƒ³ï¼ˆä»®ï¼‰
         if (Input.GetKeyDown(KeyCode.U) && state.isGrounded)
         {
-            if (carryingBuddy)  //‚¨‚ñ‚Ô‚µ‚Ä‚éê‡AƒoƒfƒB‚ğ~‚ë‚·
+            if (carryingBuddy)  //ãŠã‚“ã¶ã—ã¦ã‚‹å ´åˆã€ãƒãƒ‡ã‚£ã‚’é™ã‚ã™
             {
                 carryingBuddy = false;
                 buddyPos.constraintActive = false;
                 buddy.transform.position = transform.position + Vector3.up * 0.5f;
             }
-            else if (nearBuddy)  //‚¨‚ñ‚Ô‚µ‚Ä‚È‚¢ê‡AƒoƒfƒB‚ğ‚¨‚ñ‚Ô‚·‚é
+            else if (nearBuddy)  //ãŠã‚“ã¶ã—ã¦ãªã„å ´åˆã€ãƒãƒ‡ã‚£ã‚’ãŠã‚“ã¶ã™ã‚‹
             {
                 carryingBuddy = true;
                 buddyPos.constraintActive = true;
@@ -48,7 +48,7 @@ public class BuddyCarry : MonoBehaviour
             }
         }
 
-        //ƒxƒ‹‚ğ–Â‚ç‚µ‚ÄƒoƒfƒB‚ğ—U“±
+        //ãƒ™ãƒ«ã‚’é³´ã‚‰ã—ã¦ãƒãƒ‡ã‚£ã‚’èª˜å°
         if (!carryingBuddy && Input.GetKeyDown(KeyCode.I))
         {
             buddyController.GuideTo(gameObject.transform.position.x);
@@ -59,7 +59,7 @@ public class BuddyCarry : MonoBehaviour
     {
         if (other.CompareTag("Buddy"))
         {
-            nearBuddy = true;  //Buddy‚ª‹ß‚­‚É‚¢‚é
+            nearBuddy = true;  //BuddyãŒè¿‘ãã«ã„ã‚‹
         }
     }
 
@@ -67,7 +67,7 @@ public class BuddyCarry : MonoBehaviour
     {
         if (other.CompareTag("Buddy"))
         {
-            nearBuddy = false;  //Buddy‚ª‹ß‚­‚É‚¢‚È‚¢
+            nearBuddy = false;  //BuddyãŒè¿‘ãã«ã„ãªã„
         }
     }
 }

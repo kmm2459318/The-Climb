@@ -1,4 +1,4 @@
-public interface IDownFading
+﻿public interface IDownFading
 {
     void StartDownFading();
 }

@@ -1,9 +1,9 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ID‚©‚çƒIƒuƒWƒFƒNƒg•\¦
+//  IDã‹ã‚‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè¡¨ç¤º
 public class IDShower
 {
-    //  ID‚ğŠ‚µ‚Ä‚¢‚éƒIƒuƒWƒFƒNƒg‚ğ•\¦
+    //  IDã‚’æ‰€æŒã—ã¦ã„ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¡¨ç¤º
     public static void ShowObjID()
     {
         IDGenerater[] allID = GameObject.FindObjectsByType<IDGenerater>(FindObjectsSortMode.None);

@@ -1,18 +1,18 @@
-//  ƒ^ƒO‚Ì–¼‘Oˆê——
+ï»¿//  ã‚¿ã‚°ã®åå‰ä¸€è¦§
 public readonly struct TagName
 {
-    public static readonly TagName Wall = new TagName("Wall");    //  •Ç‚Ìƒ^ƒO‚Ì–¼‘O
-    public static readonly TagName Ground = new TagName("Ground");    //  ’n–Ê‚Ìƒ^ƒO‚Ì–¼‘O
-    public static readonly TagName Enemy = new TagName("Enemy");    //  “G‚Ìƒ^ƒO‚Ì–¼‘O
-    public static readonly TagName Player = new TagName("Player");    //  ƒvƒŒƒCƒ„[‚Ìƒ^ƒO‚Ì–¼‘O
-    public static readonly TagName SearchItem = new TagName("SearchItem");    //  ’TõƒAƒCƒeƒ€‚Ìƒ^ƒO‚Ì–¼‘O
-    public static readonly TagName Platform = new TagName("Platform");    //  ’TõƒAƒCƒeƒ€‚Ìƒ^ƒO‚Ì–¼‘O
+    public static readonly TagName Wall = new TagName("Wall");    //  å£ã®ã‚¿ã‚°ã®åå‰
+    public static readonly TagName Ground = new TagName("Ground");    //  åœ°é¢ã®ã‚¿ã‚°ã®åå‰
+    public static readonly TagName Enemy = new TagName("Enemy");    //  æ•µã®ã‚¿ã‚°ã®åå‰
+    public static readonly TagName Player = new TagName("Player");    //  ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¿ã‚°ã®åå‰
+    public static readonly TagName SearchItem = new TagName("SearchItem");    //  æŽ¢ç´¢ã‚¢ã‚¤ãƒ†ãƒ ã®ã‚¿ã‚°ã®åå‰
+    public static readonly TagName Platform = new TagName("Platform");    //  æŽ¢ç´¢ã‚¢ã‚¤ãƒ†ãƒ ã®ã‚¿ã‚°ã®åå‰
     public string Value { get; }
 
-    //  Value‚Évalue‚ðƒZƒbƒg‚·‚éƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    //  Valueã«valueã‚’ã‚»ãƒƒãƒˆã™ã‚‹ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     private TagName(string value) => Value = value;
-    //  ToString‚ÅValue‚ð•Ô‚·‚æ‚¤‚ÉƒI[ƒo[ƒ‰ƒCƒh
+    //  ToStringã§Valueã‚’è¿”ã™ã‚ˆã†ã«ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
     public override string ToString() => Value;
-    //  TagNameŒ^‚Å‚Í‚È‚­StringŒ^‚ð•Ô‚·‚æ‚¤‚É•ÏX
+    //  TagNameåž‹ã§ã¯ãªãStringåž‹ã‚’è¿”ã™ã‚ˆã†ã«å¤‰æ›´
     public static implicit operator string(TagName Tag) => Tag.Value;
 }

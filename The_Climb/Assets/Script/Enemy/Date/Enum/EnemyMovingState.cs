@@ -1,6 +1,6 @@
-//  ŽG‹›“G‚ÌˆÚ“®ƒ‚[ƒhˆê——
+ï»¿//  é›‘é­šæ•µã®ç§»å‹•ãƒ¢ãƒ¼ãƒ‰ä¸€è¦§
 public enum EnemyMovingState
 {
-    WALK_STATE,    //  •àsó‘Ô
-    JUMP_STATE,    //  ƒWƒƒƒ“ƒvó‘Ô
+    WALK_STATE,    //  æ­©è¡ŒçŠ¶æ…‹
+    JUMP_STATE,    //  ã‚¸ãƒ£ãƒ³ãƒ—çŠ¶æ…‹
 }

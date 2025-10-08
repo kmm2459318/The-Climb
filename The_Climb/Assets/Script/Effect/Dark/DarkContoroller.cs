@@ -1,36 +1,36 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ˆÅ‚Ìis“x‚ğ’²®‚·‚é
+//  é—‡ã®é€²è¡Œåº¦ã‚’èª¿æ•´ã™ã‚‹
 public class DarknessController : MonoBehaviour
 {
-    [SerializeField] EdgeDarkStatus edgeDarkStatus;    //  ˆÅ‚ÌƒXƒe[ƒ^ƒX
-    EdgeDarkStatBlock edgeDarkStatBlock;    //  ˆÅ‚ÌƒXƒe[ƒ^ƒXƒNƒ‰ƒX
-    Material OverLayMaterial;    //  l‹÷‚©‚çis‚µ‚Ä‚­‚éˆÅ‚Ìƒ}ƒeƒŠƒAƒ‹
+    [SerializeField] EdgeDarkStatus edgeDarkStatus;    //  é—‡ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+    EdgeDarkStatBlock edgeDarkStatBlock;    //  é—‡ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚¯ãƒ©ã‚¹
+    Material OverLayMaterial;    //  å››éš…ã‹ã‚‰é€²è¡Œã—ã¦ãã‚‹é—‡ã®ãƒãƒ†ãƒªã‚¢ãƒ«
 
-    [Header("ˆÅis“x")]
-    [SerializeField, Range(0, 1)] float CurrentProgress;    //  ˆÅis“x
-    float CurrentProgressRate_Sec;    //  •bŠÔ‚ÌˆÅis‘¬“x(Š„‡’l)
+    [Header("é—‡é€²è¡Œåº¦")]
+    [SerializeField, Range(0, 1)] float CurrentProgress;    //  é—‡é€²è¡Œåº¦
+    float CurrentProgressRate_Sec;    //  ç§’é–“ã®é—‡é€²è¡Œé€Ÿåº¦(å‰²åˆå€¤)
 
     void Awake()
     {
         edgeDarkStatBlock = edgeDarkStatus.GetStats(FloorType.NOMAL_FLOOR);
         OverLayMaterial = edgeDarkStatBlock.OverLayMaterial;
 
-        //  ‰Šú‰»
+        //  åˆæœŸåŒ–
         Initialize();
     }
     void Update()
     {
-        //  ˆÅ‚ğŠÔŒo‰ß‚Åis
+        //  é—‡ã‚’æ™‚é–“çµŒéã§é€²è¡Œ
         ProgressEdgeDark();
     }
-    //  ‰Šú‰»
+    //  åˆæœŸåŒ–
     void Initialize()
     {
         CurrentProgress = edgeDarkStatBlock.Progress;
         CurrentProgressRate_Sec = edgeDarkStatBlock.DarkProgressRate_Sec;
     }
-    //  ˆÅ‚ğŠÔŒo‰ß‚Åis
+    //  é—‡ã‚’æ™‚é–“çµŒéã§é€²è¡Œ
     void ProgressEdgeDark()
     {
         CurrentProgress -= CurrentProgressRate_Sec * Time.deltaTime;

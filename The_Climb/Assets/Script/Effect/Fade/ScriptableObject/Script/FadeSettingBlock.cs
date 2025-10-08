@@ -1,15 +1,15 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ˆÅ‚ÌƒXƒe[ƒ^ƒXƒuƒƒbƒN
+//  é—‡ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ–ãƒ­ãƒƒã‚¯
 [System.Serializable]
 [CreateAssetMenu(fileName = "FadeSetting", menuName = "GameDate/Effect/FadeSetting")]
 public class FadeSetting : ScriptableObject
 {
-    [Header("ƒtƒF[ƒh‚·‚éƒ}ƒeƒŠƒAƒ‹")]
-    public Material OverLayMaterial;    //  l‹÷‚©‚çis‚µ‚Ä‚­‚éˆÅ‚Ìƒ}ƒeƒŠƒAƒ‹
-    [Header("ƒtƒF[ƒhis’l")]
+    [Header("ãƒ•ã‚§ãƒ¼ãƒ‰ã™ã‚‹ãƒãƒ†ãƒªã‚¢ãƒ«")]
+    public Material OverLayMaterial;    //  å››éš…ã‹ã‚‰é€²è¡Œã—ã¦ãã‚‹é—‡ã®ãƒãƒ†ãƒªã‚¢ãƒ«
+    [Header("ãƒ•ã‚§ãƒ¼ãƒ‰é€²è¡Œå€¤")]
     [Range(0, 1)]
-    public float Progress;    //  ˆÅis“x
-    [Header("•bŠÔ‚ÌisŠ„‡")]
-    public float FadeProgressRate_Sec; //  •bŠÔ‚ÌˆÅis‘¬“x(Š„‡’l)
+    public float Progress;    //  é—‡é€²è¡Œåº¦
+    [Header("ç§’é–“ã®é€²è¡Œå‰²åˆ")]
+    public float FadeProgressRate_Sec; //  ç§’é–“ã®é—‡é€²è¡Œé€Ÿåº¦(å‰²åˆå€¤)
 }

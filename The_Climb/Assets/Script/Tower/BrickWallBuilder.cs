@@ -1,25 +1,25 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class BrickWallBuilder : MonoBehaviour
 {
-    [Header("ƒŒƒ“ƒKİ’è")]
+    [Header("ãƒ¬ãƒ³ã‚¬è¨­å®š")]
     public GameObject brickPrefab;
 
-    [Header("“ƒ‚Ì\‘¢")]
-    public int bricksPerLayer = 122;         // 1’i‚ÌƒŒƒ“ƒK”iŒË”j
-    public int heightLayers = 120;           // c‚Ì’i”
-    public float radius = 20f;               // ”¼Œa
-    public float verticalSpacing = 0.39f;    // ã‰º‚ÌŠÔŠu
-    public float totalAngle = 360f;          // ˆÍ‚ŞŠp“xi—áF360‚Å‰~A180‚Å”¼‰~j
+    [Header("å¡”ã®æ§‹é€ ")]
+    public int bricksPerLayer = 122;         // 1æ®µã®ãƒ¬ãƒ³ã‚¬æ•°ï¼ˆæˆ¸æ•°ï¼‰
+    public int heightLayers = 120;           // ç¸¦ã®æ®µæ•°
+    public float radius = 20f;               // åŠå¾„
+    public float verticalSpacing = 0.39f;    // ä¸Šä¸‹ã®é–“éš”
+    public float totalAngle = 360f;          // å›²ã‚€è§’åº¦ï¼ˆä¾‹ï¼š360ã§å††ã€180ã§åŠå††ï¼‰
 
-    [Header("“ƒ‚Ì’†SˆÊ’uiƒŒƒ“ƒK‚Ì’†SŠî€j")]
-    public Vector3 baseCenterPosition = new Vector3(0f, -20f, 0f); // “ƒ‚Ìˆê”Ô‰º’i‚Ì’†SˆÊ’u
+    [Header("å¡”ã®ä¸­å¿ƒä½ç½®ï¼ˆãƒ¬ãƒ³ã‚¬ã®ä¸­å¿ƒåŸºæº–ï¼‰")]
+    public Vector3 baseCenterPosition = new Vector3(0f, -20f, 0f); // å¡”ã®ä¸€ç•ªä¸‹æ®µã®ä¸­å¿ƒä½ç½®
 
     void Start()
     {
         if (brickPrefab == null)
         {
-            Debug.LogError("brickPrefab ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+            Debug.LogError("brickPrefab ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
             return;
         }
 
@@ -34,7 +34,7 @@ public class BrickWallBuilder : MonoBehaviour
         {
             float currentHeight = baseCenterPosition.y + y * verticalSpacing;
 
-            // ‹ô”’i‚Í”¼•ª‚¸‚ç‚µ‚ÄƒŒƒ“ƒKÏ‚İ‚É
+            // å¶æ•°æ®µã¯åŠåˆ†ãšã‚‰ã—ã¦ãƒ¬ãƒ³ã‚¬ç©ã¿ã«
             float angleOffset = (y % 2 == 1) ? angleStep / 2f : 0f;
 
             for (int i = 0; i < bricksPerLayer; i++)
@@ -42,7 +42,7 @@ public class BrickWallBuilder : MonoBehaviour
                 float angleDeg = -totalAngle / 2f + i * angleStep + angleOffset;
                 float angleRad = angleDeg * Mathf.Deg2Rad;
 
-                // “ƒ‚Ì’†SˆÊ’u‚©‚çƒIƒtƒZƒbƒg‚µ‚Ä”z’u
+                // å¡”ã®ä¸­å¿ƒä½ç½®ã‹ã‚‰ã‚ªãƒ•ã‚»ãƒƒãƒˆã—ã¦é…ç½®
                 Vector3 position = new Vector3(
                     baseCenterPosition.x + Mathf.Cos(angleRad) * radius,
                     currentHeight,

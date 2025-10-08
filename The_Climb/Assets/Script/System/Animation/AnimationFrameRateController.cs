@@ -1,6 +1,6 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-[RequireComponent(typeof(Animation))] // AnimationƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ©“®“I‚Éæ“¾‚µ‚Ä•K—v‚ÈƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ“n‚µ‚Ä‚­‚ê‚é‚·‚²‚¢‚â‚Â
+[RequireComponent(typeof(Animation))] // Animationã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’è‡ªå‹•çš„ã«å–å¾—ã—ã¦å¿…è¦ãªã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’æ¸¡ã—ã¦ãã‚Œã‚‹ã™ã”ã„ã‚„ã¤
 public class AnimationFrameRateController : MonoBehaviour
 {
     [SerializeField, Range(1, 30)]
@@ -8,10 +8,10 @@ public class AnimationFrameRateController : MonoBehaviour
 
     Animator _animator;
 
-    /// <summary>‚µ‚«‚¢’lŠÔ</summary>
+    /// <summary>ã—ãã„å€¤æ™‚é–“</summary>
     float _thresholdTime;
 
-    /// <summary>ƒXƒLƒbƒv‚³‚ê‚½XVŠÔ</summary>
+    /// <summary>ã‚¹ã‚­ãƒƒãƒ—ã•ã‚ŒãŸæ›´æ–°æ™‚é–“</summary>
     float _skippedTime;
 
     private void Awake()
@@ -22,7 +22,7 @@ public class AnimationFrameRateController : MonoBehaviour
     }
 
     /// <summary>
-    /// ‚µ‚«‚¢’lŠÔ‚Ì‰Šú‰»
+    /// ã—ãã„å€¤æ™‚é–“ã®åˆæœŸåŒ–
     /// </summary>
     void InitializeThresholdTime()
     {
@@ -38,13 +38,13 @@ public class AnimationFrameRateController : MonoBehaviour
             return;
         }
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŠÔ‚ğŒvZ‚·‚é
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®æ™‚é–“ã‚’è¨ˆç®—ã™ã‚‹
         _animator.Update(_skippedTime);
         _skippedTime = 0f;
     }
 
     /// <summary>
-    /// Inspector‚Ì’l•ÏX‚Ìˆ—
+    /// Inspectorã®å€¤å¤‰æ›´æ™‚ã®å‡¦ç†
     /// </summary>
     private void OnValidate()
     {

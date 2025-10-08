@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class BossWeakPoint : MonoBehaviour
 {
@@ -9,7 +9,7 @@ public class BossWeakPoint : MonoBehaviour
         boss = GetComponentInParent<BossEnemy_HevvyMovement>();
         if (boss == null)
         {
-            Debug.LogError("[WeakPoint] BossEnemy_HevvyMovement ‚ªe‚ÉŒ©‚Â‚©‚è‚Ü‚¹‚ñI");
+            Debug.LogError("[WeakPoint] BossEnemy_HevvyMovement ãŒè¦ªã«è¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼");
         }
     }
 
@@ -17,7 +17,7 @@ public class BossWeakPoint : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            boss?.OnHit(); // e‚Ìƒ_ƒ[ƒWˆ—‚ğŒÄ‚Ño‚·
+            boss?.OnHit(); // è¦ªã®ãƒ€ãƒ¡ãƒ¼ã‚¸å‡¦ç†ã‚’å‘¼ã³å‡ºã™
         }
     }
 

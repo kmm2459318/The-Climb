@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UIElements;
 
 public class BuddyController : MonoBehaviour
@@ -6,24 +6,24 @@ public class BuddyController : MonoBehaviour
     private Rigidbody RigidBody;
     private BuddyCarry buddyCarry;
 
-    private bool buddyDirectionRight;  //ƒoƒfƒB‚ª‰EŒü‚¢‚Ä‚é‚©”»’èAfalse‚È‚ç¶Œü‚«
-    public bool moving = false;        //Buddy‚ª“®‚¢‚Ä‚é‚©”»’è
-    private float speed = 4f;          //Buddy‚ÌˆÚ“®ƒXƒs[ƒh
-    public float buddyTargetX = 0f;    //Buddy‚ªŒü‚©‚¤XÀ•W
+    private bool buddyDirectionRight;  //ãƒãƒ‡ã‚£ãŒå³å‘ã„ã¦ã‚‹ã‹åˆ¤å®šã€falseãªã‚‰å·¦å‘ã
+    public bool moving = false;        //BuddyãŒå‹•ã„ã¦ã‚‹ã‹åˆ¤å®š
+    private float speed = 4f;          //Buddyã®ç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰
+    public float buddyTargetX = 0f;    //BuddyãŒå‘ã‹ã†Xåº§æ¨™
 
-    [SerializeField] private bool isLeftWall;          //¶•Ç”»’è
-    [SerializeField] private bool isRightWall;         //‰E•Ç”»’è
-    private LayerMask groundLayer;     //’n–ÊƒŒƒCƒ„[
+    [SerializeField] private bool isLeftWall;          //å·¦å£åˆ¤å®š
+    [SerializeField] private bool isRightWall;         //å³å£åˆ¤å®š
+    private LayerMask groundLayer;     //åœ°é¢ãƒ¬ã‚¤ãƒ¤ãƒ¼
 
-    private float buddyFallSpeed = -19f;  //ƒvƒŒƒCƒ„[‚Ì—‰º‘¬“x
+    private float buddyFallSpeed = -19f;  //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è½ä¸‹é€Ÿåº¦
 
-    //ƒoƒfƒB‚ª—U“±‚³‚ê‚é’n“_w’è
+    //ãƒãƒ‡ã‚£ãŒèª˜å°ã•ã‚Œã‚‹åœ°ç‚¹æŒ‡å®š
     public void GuideTo(float x)
     {
         buddyTargetX = x;
         moving = true;
 
-        //ƒoƒfƒB‚ÌŒü‚©‚¤•ûŒü‚©‚ç‚Ç‚Á‚¿Œü‚­‚©Œˆ‚ß‚é
+        //ãƒãƒ‡ã‚£ã®å‘ã‹ã†æ–¹å‘ã‹ã‚‰ã©ã£ã¡å‘ãã‹æ±ºã‚ã‚‹
         if (buddyTargetX - transform.position.x > 0)
         {
             buddyDirectionRight = true;
@@ -43,12 +43,12 @@ public class BuddyController : MonoBehaviour
 
     void Update()
     {
-        //¶•Ç”»’èiƒJƒvƒZƒ‹Œ`j
+        //å·¦å£åˆ¤å®šï¼ˆã‚«ãƒ—ã‚»ãƒ«å½¢ï¼‰
         isLeftWall = Physics.CheckCapsule(transform.position + Vector3.left * 0.3f + Vector3.up * 0.49f, transform.position + Vector3.left * 0.3f + Vector3.down * 0.49f, 0.001f, groundLayer);
-        //‰E•Ç”»’èiƒJƒvƒZƒ‹Œ`j
+        //å³å£åˆ¤å®šï¼ˆã‚«ãƒ—ã‚»ãƒ«å½¢ï¼‰
         isRightWall = Physics.CheckCapsule(transform.position + Vector3.right * 0.3f + Vector3.up * 0.49f, transform.position + Vector3.right * 0.3f + Vector3.down * 0.49f, 0.001f, groundLayer);
 
-        //‚¨‚ñ‚Ô‚³‚ê‚Ä‚é‚Æ‚«d—Í“­‚©‚È‚¢‚æ‚¤‚É
+        //ãŠã‚“ã¶ã•ã‚Œã¦ã‚‹ã¨ãé‡åŠ›åƒã‹ãªã„ã‚ˆã†ã«
         if (buddyCarry.carryingBuddy)
         {
             RigidBody.useGravity = false;
@@ -58,25 +58,25 @@ public class BuddyController : MonoBehaviour
             RigidBody.useGravity = true;
         }
 
-        //—U“±‚É‚æ‚è“®‚­
+        //èª˜å°ã«ã‚ˆã‚Šå‹•ã
         if (moving)
         {
             BuddyMove();
         }
 
-        //—‰º‘¬“x’²®
+        //è½ä¸‹é€Ÿåº¦èª¿æ•´
         if (RigidBody.linearVelocity.y < buddyFallSpeed)
         {
             RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, buddyFallSpeed, 0);
         }
     }
 
-    //—U“±’n“_‚ÉŒü‚©‚Á‚Ä“®‚­
+    //èª˜å°åœ°ç‚¹ã«å‘ã‹ã£ã¦å‹•ã
     private void BuddyMove()
     {
         Vector3 pos = transform.position;
         Vector3 target = new Vector3(buddyTargetX, pos.y, pos.z);
-        //ˆÚ“®
+        //ç§»å‹•
         transform.position = Vector3.MoveTowards(pos, target, speed * Time.deltaTime);
 
         if (Mathf.Abs(transform.position.x - buddyTargetX) < 0.05f || (isLeftWall && !buddyDirectionRight) || (isRightWall && buddyDirectionRight))

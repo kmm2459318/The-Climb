@@ -1,8 +1,8 @@
-//  “GƒLƒƒƒ‰ó‘Ô¶¬ƒCƒ“ƒ^[ƒtƒF[ƒX
+ï»¿//  æ•µã‚­ãƒ£ãƒ©çŠ¶æ…‹ç”Ÿæˆã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 public interface IEnemyStateFactory
 {
-    //  ˆÚ“®ó‘Ô¶¬
+    //  ç§»å‹•çŠ¶æ…‹ç”Ÿæˆ
     IEnemyState CreateWalkState();
-    //  ƒWƒƒƒ“ƒvó‘Ô¶¬
+    //  ã‚¸ãƒ£ãƒ³ãƒ—çŠ¶æ…‹ç”Ÿæˆ
     IEnemyState CreateJumpState();
 }

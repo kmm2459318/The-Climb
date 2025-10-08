@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class BossBullet : MonoBehaviour
 {
@@ -26,7 +26,7 @@ public class BossBullet : MonoBehaviour
         transform.position += moveDirection * speed * Time.deltaTime;
         if(playerTransform != null && Vector3.Distance(transform.position, playerTransform.position) < hitRadious)
         {
-            Debug.Log("ƒqƒbƒgIiŽ©ì•¨—j");
+            Debug.Log("ãƒ’ãƒƒãƒˆï¼ï¼ˆè‡ªä½œç‰©ç†ï¼‰");
             Destroy(gameObject);
         }
     }

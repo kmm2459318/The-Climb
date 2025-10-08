@@ -1,4 +1,4 @@
-using Zenject;
+ï»¿using Zenject;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,47 +13,47 @@ using UnityEngine;
 [RequireComponent(typeof(CollideEnemyNotifier))]
 [RequireComponent(typeof(PlayerCollisionNotifier))]
 [RequireComponent(typeof(CharacterStateVisualizer))]
-//  ˆÚ“®ƒXƒNƒŠƒvƒg‚ÉˆÚ“®’l‚ğ“n‚·
+//  ç§»å‹•ã‚¹ã‚¯ãƒªãƒ—ãƒˆã«ç§»å‹•å€¤ã‚’æ¸¡ã™
 public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler, IBlowable, ICollideEnemy
 {
-    public enum KickerCommanderMethod    //  ‚±‚ÌƒNƒ‰ƒX“à‚ÌŠÖ”ˆê——
+    public enum KickerCommanderMethod    //  ã“ã®ã‚¯ãƒ©ã‚¹å†…ã®é–¢æ•°ä¸€è¦§
     {
-        MOVE,    //  Šî‘bˆÚ“®
-        IS_EDGE_POS,    //  ’[‚©”»’è
-        FLIP_MOVE_DIR,    //  ˆÚ“®•ûŒü”½“]
-        JUMP,    //  ƒWƒƒƒ“ƒv
+        MOVE,    //  åŸºç¤ç§»å‹•
+        IS_EDGE_POS,    //  ç«¯ã‹åˆ¤å®š
+        FLIP_MOVE_DIR,    //  ç§»å‹•æ–¹å‘åè»¢
+        JUMP,    //  ã‚¸ãƒ£ãƒ³ãƒ—
     }
     
     [Header("Instance")]
-    [SerializeField] [Inject] internal KickerStatus kickerStatus;    //  ƒLƒbƒJ[ƒXƒe[ƒ^ƒX
-    KickerStatBlock kickerStatBlock;    //  ƒLƒbƒJ[ƒXƒe[ƒ^ƒXƒNƒ‰ƒX
-    EnemyMover enemyMover;    //  ƒGƒlƒ~[ƒ€[ƒo[
-    CharacterGroundChecker characterGroundChecker;    //  ƒOƒ‰ƒEƒ“ƒhƒ`ƒFƒbƒJ[
-    EnemyStateMachine enemyStateMachine;    //  ƒGƒlƒ~[ƒXƒe[ƒgƒ}ƒV[ƒ“
-    TimeManager timeManager;    //  ƒ^ƒCƒ€ƒ}ƒl[ƒWƒƒ[
-    PlayerState playerState;    //  ƒvƒŒƒCƒ„[ƒXƒe[ƒg
-    CharacterStateVisualizer characterStateVisualizer;    //  ƒLƒƒƒ‰ƒNƒ^[ƒXƒe[ƒgƒrƒWƒ…ƒAƒ‰ƒCƒU[
-    public Dictionary<KickerCommanderMethod, ICommand_Enemy> CommanderMethodMap;    //  ‚±‚ÌƒXƒNƒŠƒvƒg‚ÌŠÖ”‚Ì«‘
-    public event Action OnJumpTime;    //  ƒWƒƒƒ“ƒvƒ^ƒCƒ€‚ÌƒTƒuƒXƒN
-    public event Action OnLandGround;    //  ’n–Ê’…’n‚ÌƒTƒuƒXƒN
-    Coroutine JumpLoop;    //  ƒWƒƒƒ“ƒvƒ‹[ƒvƒRƒ‹[ƒ`ƒ“‚Ì•Ï”
+    [SerializeField] [Inject] internal KickerStatus kickerStatus;    //  ã‚­ãƒƒã‚«ãƒ¼ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+    KickerStatBlock kickerStatBlock;    //  ã‚­ãƒƒã‚«ãƒ¼ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚¯ãƒ©ã‚¹
+    EnemyMover enemyMover;    //  ã‚¨ãƒãƒŸãƒ¼ãƒ ãƒ¼ãƒãƒ¼
+    CharacterGroundChecker characterGroundChecker;    //  ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ãƒã‚§ãƒƒã‚«ãƒ¼
+    EnemyStateMachine enemyStateMachine;    //  ã‚¨ãƒãƒŸãƒ¼ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ¼ãƒ³
+    TimeManager timeManager;    //  ã‚¿ã‚¤ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
+    PlayerState playerState;    //  ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¹ãƒ†ãƒ¼ãƒˆ
+    CharacterStateVisualizer characterStateVisualizer;    //  ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚¹ãƒ†ãƒ¼ãƒˆãƒ“ã‚¸ãƒ¥ã‚¢ãƒ©ã‚¤ã‚¶ãƒ¼
+    public Dictionary<KickerCommanderMethod, ICommand_Enemy> CommanderMethodMap;    //  ã“ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®é–¢æ•°ã®è¾æ›¸
+    public event Action OnJumpTime;    //  ã‚¸ãƒ£ãƒ³ãƒ—ã‚¿ã‚¤ãƒ ã®ã‚µãƒ–ã‚¹ã‚¯
+    public event Action OnLandGround;    //  åœ°é¢ç€åœ°ã®ã‚µãƒ–ã‚¹ã‚¯
+    Coroutine JumpLoop;    //  ã‚¸ãƒ£ãƒ³ãƒ—ãƒ«ãƒ¼ãƒ—ã‚³ãƒ«ãƒ¼ãƒãƒ³ã®å¤‰æ•°
 
-    ICommandProvider commandProvider;    //  ƒCƒ“ƒ^[ƒtƒF[ƒXŒ^•Ï”
-    IEnemyStateFactory enemyStateFactory;    //  ƒCƒ“ƒ^[ƒtƒF[ƒXŒ^•Ï”
-    ITimeProvider TimeProvider;    //  ŠÔ’l’ñ‹ŸƒCƒ“ƒ^[ƒtƒF[ƒX
-    IDownFading DownFading;    //  ƒ_ƒEƒ“ƒtƒF[ƒhƒCƒ“ƒ^[ƒtƒF[ƒX
-    EnemyMode CurrentEnemyMode;    //  Œ»İ‚Ì“Gó‘Ô@
+    ICommandProvider commandProvider;    //  ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹å‹å¤‰æ•°
+    IEnemyStateFactory enemyStateFactory;    //  ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹å‹å¤‰æ•°
+    ITimeProvider TimeProvider;    //  æ™‚é–“å€¤æä¾›ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
+    IDownFading DownFading;    //  ãƒ€ã‚¦ãƒ³ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
+    EnemyMode CurrentEnemyMode;    //  ç¾åœ¨ã®æ•µçŠ¶æ…‹ã€€
 
-    Vector3 Velocity;    //  ƒLƒƒƒ‰ƒNƒ^[ˆÚ“®’l
-    Vector3 EdgeRayOffset;    //  ’[‚ğŒŸ’m‚·‚éRay‚ÌƒIƒtƒZƒbƒg
+    Vector3 Velocity;    //  ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ç§»å‹•å€¤
+    Vector3 EdgeRayOffset;    //  ç«¯ã‚’æ¤œçŸ¥ã™ã‚‹Rayã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 
     [Header("Move Value")]
-    [SerializeField] MoveDir CurrentMoveDir;    //  Œ»İ‚Ì“®‚­•ûŒü(X²)
-    float CurrentMoveSpd;    //  Œ»İ‚ÌˆÚ“®‘¬“x
-    float CurrentJumpForce;    //  Œ»İ‚ÌƒWƒƒƒ“ƒv—Í
-    float CurrentJumpFrequency;    //  Œ»İ‚ÌƒWƒƒƒ“ƒv•p“x
+    [SerializeField] MoveDir CurrentMoveDir;    //  ç¾åœ¨ã®å‹•ãæ–¹å‘(Xè»¸)
+    float CurrentMoveSpd;    //  ç¾åœ¨ã®ç§»å‹•é€Ÿåº¦
+    float CurrentJumpForce;    //  ç¾åœ¨ã®ã‚¸ãƒ£ãƒ³ãƒ—åŠ›
+    float CurrentJumpFrequency;    //  ç¾åœ¨ã®ã‚¸ãƒ£ãƒ³ãƒ—é »åº¦
 
-    //  ƒCƒ“ƒWƒFƒNƒg‚É‚æ‚é‰Šú‰»
+    //  ã‚¤ãƒ³ã‚¸ã‚§ã‚¯ãƒˆã«ã‚ˆã‚‹åˆæœŸåŒ–
     [Inject]
     void Construct(
         TimeManager timeManager,
@@ -88,14 +88,14 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         CurrentEnemyMode = EnemyMode.NORMAL;
         characterStateVisualizer = GetComponent<CharacterStateVisualizer>();
 
-        //  ‰Šúó‘Ô‚ğWalk‚É•ÏX
+        //  åˆæœŸçŠ¶æ…‹ã‚’Walkã«å¤‰æ›´
         CommanderMethodMap =commandProvider.GetCommandMap();
         enemyStateMachine.ChangeState(enemyStateFactory.CreateWalkState());
         
-        //  ”’l‰Šú‰»
+        //  æ•°å€¤åˆæœŸåŒ–
         Initialize();
     }
-    //  ƒeƒXƒg‚Ì‚½‚ß‚Ì‰Šú‰»
+    //  ãƒ†ã‚¹ãƒˆã®ãŸã‚ã®åˆæœŸåŒ–
     internal void InitializeForTest(KickerStatus status)
     {
         enemyMover = GetComponent<EnemyMover>();
@@ -109,17 +109,17 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         characterStateVisualizer = GetComponent<CharacterStateVisualizer>();
 
 
-        //  ‰Šúó‘Ô‚ğWalk‚É•ÏX
+        //  åˆæœŸçŠ¶æ…‹ã‚’Walkã«å¤‰æ›´
         CommanderMethodMap = commandProvider.GetCommandMap();
         enemyStateMachine.ChangeState(enemyStateFactory.CreateWalkState());
 
-        //  ”’l‰Šú‰»
+        //  æ•°å€¤åˆæœŸåŒ–
         Initialize();
     }
 
     void Start()
     {
-        //  ’èŠú“I‚ÈƒWƒƒƒ“ƒv‚Ìƒ‹[ƒv‚ğŠJn
+        //  å®šæœŸçš„ãªã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒ«ãƒ¼ãƒ—ã‚’é–‹å§‹
         JumpLoop = StartCoroutine(PeriodicallyJump());
     }
     void FixedUpdate()
@@ -129,7 +129,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         enemyStateMachine.FixedUpdate();
         characterStateVisualizer.MoveDirectionPropety(Velocity);
     }
-    //  ‰Šú‰»
+    //  åˆæœŸåŒ–
     void Initialize()
     {
         EdgeRayOffset = kickerStatBlock.EdgeRayOffset;
@@ -143,7 +143,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         CurrentJumpForce = kickerStatBlock.JumpForce;
         CurrentJumpFrequency = kickerStatBlock.JumpFrequency;
     }
-    //  ’èŠú“I‚ÈƒWƒƒƒ“ƒv”­‰Îƒ‹[ƒv
+    //  å®šæœŸçš„ãªã‚¸ãƒ£ãƒ³ãƒ—ç™ºç«ãƒ«ãƒ¼ãƒ—
     IEnumerator PeriodicallyJump()
     {
         while (true)
@@ -155,25 +155,25 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
             }
         }
     }
-    //  ˆÚ“®
+    //  ç§»å‹•
     public void Move()
     {
         Velocity = new Vector3(CurrentMoveSpd * (int)CurrentMoveDir * Time.fixedDeltaTime, Velocity.y, 0f);
-        //  Šî–{ˆÚ“®
+        //  åŸºæœ¬ç§»å‹•
         enemyMover.BaseMove(Velocity);
     }
-    //  ’n–Ê‚©”»’è‚·‚é
+    //  åœ°é¢ã‹åˆ¤å®šã™ã‚‹
     public bool IsGround()
     {
         return characterGroundChecker.CheckIsGround();
     }
-    //  ’[‚©”»’è‚·‚é
+    //  ç«¯ã‹åˆ¤å®šã™ã‚‹
     public bool IsEdgePos()
     {
         return !characterGroundChecker.CheckIsGround(EdgeRayOffset + this.transform.position) &&
                 characterGroundChecker.CheckIsGround();
     }
-    //  ˆÚ“®•ûŒü”½“]
+    //  ç§»å‹•æ–¹å‘åè»¢
     public void FlipMoveDir()
     {
         CurrentMoveDir = CurrentMoveDir switch
@@ -184,12 +184,12 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         };
         EdgeRayOffset.x *= -1f;
     }
-    //  ƒWƒƒƒ“ƒv
+    //  ã‚¸ãƒ£ãƒ³ãƒ—
     public void Jump()
     {
         enemyMover.Jump(CurrentJumpForce);
     }
-    //  •Ç‚É“–‚½‚Á‚½‚Ìˆ—
+    //  å£ã«å½“ãŸã£ãŸæ™‚ã®å‡¦ç†
     public void OnHitWall()
     {
         if(CurrentMoveDir != MoveDir.NONE && CurrentMoveDir == MoveDir.RIGHT)
@@ -202,31 +202,31 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         }
         EdgeRayOffset.x *= -1f;
     }
-    //    ƒXƒe[ƒW‚É’…’n‚µ‚½‚Ìˆ—
+    //    ã‚¹ãƒ†ãƒ¼ã‚¸ã«ç€åœ°ã—ãŸæ™‚ã®å‡¦ç†
     public void OnLandStage()
     {
         OnLandGround?.Invoke();
     }
-    //  ‚«”ò‚Î‚µˆ—
+    //  å¹ãé£›ã°ã—å‡¦ç†
     public void Blow(Rigidbody rigidbody, float Direction)
     {
-        if(timeManager.IsNightProperty@&& !timeManager.IsPlayerAttackedProperty)
+        if(timeManager.IsNightPropertyã€€&& !timeManager.IsPlayerAttackedProperty)
         {
             timeManager.StartTimeAcceleration(0, 1);
             DownFading.StartDownFading();
             timeManager.IsPlayerAttackedProperty = true;
             return;
         }
-        float CurrentBlowForceX = kickerStatBlock.BlowForceX;    //  X²‚Ì‚«”ò‚Î‚µ—Í
-        float CurrentBlowForceY = kickerStatBlock.BlowForceY;    //  Y²‚Ì‚«”ò‚Î‚µ—Í
-        float PlayerResistPowerX = 100f;    //  ƒvƒŒƒCƒ„[ƒXƒe[ƒ^ƒX‚É’Ç‰Á—\’è
-        float EffectiveForceX = MathF.Max(0, CurrentBlowForceX - PlayerResistPowerX);    //  ÀÛ‚É“K‰‚³‚ê‚é—Í
+        float CurrentBlowForceX = kickerStatBlock.BlowForceX;    //  Xè»¸ã®å¹ãé£›ã°ã—åŠ›
+        float CurrentBlowForceY = kickerStatBlock.BlowForceY;    //  Yè»¸ã®å¹ãé£›ã°ã—åŠ›
+        float PlayerResistPowerX = 100f;    //  ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã«è¿½åŠ äºˆå®š
+        float EffectiveForceX = MathF.Max(0, CurrentBlowForceX - PlayerResistPowerX);    //  å®Ÿéš›ã«é©å¿œã•ã‚Œã‚‹åŠ›
 
-        ForceMode GroundBlowMode = kickerStatBlock.GroundBlowMode;    //  ’nã‚Ì‚Á”ò‚Î‚µ•û
-        ForceMode AriBlowMode = kickerStatBlock.AirBlowMode;    //  ‹ó’†‚Ì‚Á”ò‚Î‚µ•û
+        ForceMode GroundBlowMode = kickerStatBlock.GroundBlowMode;    //  åœ°ä¸Šæ™‚ã®å¹ã£é£›ã°ã—æ–¹
+        ForceMode AriBlowMode = kickerStatBlock.AirBlowMode;    //  ç©ºä¸­æ™‚ã®å¹ã£é£›ã°ã—æ–¹
 
-        Vector3 GroundTotalBlowForce = new Vector3(Direction * (EffectiveForceX), 0, 0);    //  ’nã‚Ì‚«”ò‚Î‚µ—Í‡Œv
-        Vector3 AirTotalBlowForce = new Vector3(Direction * CurrentBlowForceX, Direction * CurrentBlowForceY, 0f);    //  ‹ó’†‚Ì‚«”ò‚Î‚µ—Í‡Œv
+        Vector3 GroundTotalBlowForce = new Vector3(Direction * (EffectiveForceX), 0, 0);    //  åœ°ä¸Šæ™‚ã®å¹ãé£›ã°ã—åŠ›åˆè¨ˆ
+        Vector3 AirTotalBlowForce = new Vector3(Direction * CurrentBlowForceX, Direction * CurrentBlowForceY, 0f);    //  ç©ºä¸­æ™‚ã®å¹ãé£›ã°ã—åŠ›åˆè¨ˆ
 
         if (playerState.isGrounded)
         {
@@ -238,12 +238,12 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
             Debug.DrawRay(ObjectRegistry.Get("Player_Spine_c0c99d2d").transform.position, AirTotalBlowForce, Color.blue, 0.5f);
             rigidbody.AddForce(AirTotalBlowForce, ForceMode.Impulse);
         }
-        FlipMoveDir();  //  ˆÚ“®•ûŒü”½“]
+        FlipMoveDir();  //  ç§»å‹•æ–¹å‘åè»¢
     }
-    //  “G‚Æ“–‚½‚Á‚½‚ÉÀs‚³‚ê‚éƒCƒ“ƒ^[ƒtƒFƒCƒXŠÖ”
+    //  æ•µã¨å½“ãŸã£ãŸæ™‚ã«å®Ÿè¡Œã•ã‚Œã‚‹ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ã‚¤ã‚¹é–¢æ•°
     public void OnCollideEnemy()
     {
-        FlipMoveDir();  //  ˆÚ“®•ûŒü”½“]
+        FlipMoveDir();  //  ç§»å‹•æ–¹å‘åè»¢
     }
     private void ChangeToNightMode(bool IsNight)
     {

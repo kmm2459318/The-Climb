@@ -1,11 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Zenject;
 
-//  G‹›“GƒCƒ“ƒXƒg[ƒ‰[
+//  é›‘é­šæ•µã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ©ãƒ¼
 public class EnemyInstaller : MonoInstaller
 {
-    [SerializeField] KickerStatus kickerStatus;    //  ƒLƒbƒJ[‚ÌƒXƒe[ƒ^ƒX
-    //  ƒoƒCƒ“ƒhˆ—
+    [SerializeField] KickerStatus kickerStatus;    //  ã‚­ãƒƒã‚«ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+    //  ãƒã‚¤ãƒ³ãƒ‰å‡¦ç†
     public override void InstallBindings()
     {
         Container.Bind<KickerMoveCommander>().FromComponentInHierarchy().AsSingle();

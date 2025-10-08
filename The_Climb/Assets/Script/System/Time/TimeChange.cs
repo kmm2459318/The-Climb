@@ -1,20 +1,20 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class TimeChange : MonoBehaviour
 {
-    [Header("ƒXƒe[ƒWƒZƒŒƒNƒg")]
+    [Header("ã‚¹ãƒ†ãƒ¼ã‚¸ã‚»ãƒ¬ã‚¯ãƒˆ")]
     [SerializeField] private GameObject[] MapPrefabs;
     private GameObject[] MapInstance;
 
-    [Header("ƒvƒŒƒCƒ„[‚ÌQÆ")]
+    [Header("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‚ç…§")]
     [SerializeField] private Transform Player;
 
     public KeyBind KeyBind;
 
-    [Header("ƒtƒF[ƒh§Œä")]
+    [Header("ãƒ•ã‚§ãƒ¼ãƒ‰åˆ¶å¾¡")]
     [SerializeField] private ScreenFader fader;
 
-    [Header("ƒN[ƒ‹ƒ_ƒEƒ“ŠÔ(•b)")]
+    [Header("ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³æ™‚é–“(ç§’)")]
     [SerializeField] private float switchCooldown = 2f;
 
     private int CurrentActiveIndex = 0;
@@ -55,7 +55,7 @@ public class TimeChange : MonoBehaviour
 
         MapInstance[CurrentActiveIndex].SetActive(true);
 
-        // ˆÀ‘S‚ÈˆÊ’u‚ÉC³
+        // å®‰å…¨ãªä½ç½®ã«ä¿®æ­£
         if (spawner != null)
         {
             Player.position = spawner.FindSafePosition(Player.position);

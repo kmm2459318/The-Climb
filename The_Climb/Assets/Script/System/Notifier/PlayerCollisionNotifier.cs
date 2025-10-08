@@ -1,6 +1,6 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ƒvƒŒƒCƒ„[‚Ö‚ÌÕ“Ë‚ğ’Ê’m
+//  ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¸ã®è¡çªã‚’é€šçŸ¥
 public class PlayerCollisionNotifier : CollisionNotifier<IBlowable>
 {
     void OnCollisionEnter(Collision collision)
@@ -10,10 +10,10 @@ public class PlayerCollisionNotifier : CollisionNotifier<IBlowable>
             return;
         }
 
-        float Direction = Mathf.Sign(ObjectRegistry.Get("Player_Spine_c0c99d2d").transform.position.x - transform.position.x);    //  ‚«”ò‚Î‚µ•ûŒü
-        //  •Ç‚É“–‚½‚Á‚½‚Ìˆ—‚ğÀs
+        float Direction = Mathf.Sign(ObjectRegistry.Get("Player_Spine_c0c99d2d").transform.position.x - transform.position.x);    //  å¹ãé£›ã°ã—æ–¹å‘
+        //  å£ã«å½“ãŸã£ãŸæ™‚ã®å‡¦ç†ã‚’å®Ÿè¡Œ
         NotifyIfTagMatches(collision, TagName.Player, h => h.Blow(collision.rigidbody, Direction));
     }
 }
-//  ˆÈ‰ºƒR[ƒh•Û‘¶Š // 
-//Vector3 Direction = ObjectRegistry.Get("PlayerSkin_Shirt_28fe1bb6").transform.position - transform.position;    //  ‚«”ò‚Î‚µ•ûŒü
+//  ä»¥ä¸‹ã‚³ãƒ¼ãƒ‰ä¿å­˜æ‰€ // 
+//Vector3 Direction = ObjectRegistry.Get("PlayerSkin_Shirt_28fe1bb6").transform.position - transform.position;    //  å¹ãé£›ã°ã—æ–¹å‘

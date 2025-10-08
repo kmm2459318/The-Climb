@@ -1,8 +1,8 @@
-using Zenject;
+ï»¿using Zenject;
 
 public class PlayerInstaller : MonoInstaller
 {
-    //  ƒvƒŒƒCƒ„[ŠÖŒW‚ÌƒoƒCƒ“ƒh
+    //  ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼é–¢ä¿‚ã®ãƒã‚¤ãƒ³ãƒ‰
     public override void InstallBindings()
     {
         Container.Bind<PlayerState>().FromComponentInHierarchy().AsSingle();

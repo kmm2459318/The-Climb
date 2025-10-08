@@ -1,15 +1,15 @@
-//  ŠÔ‚Ìƒf[ƒ^
+ï»¿//  æ™‚é–“ã®ãƒ‡ãƒ¼ã‚¿
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TimeSetting", menuName = "GameData/TimeSetting")]
 public class TimeSetting : ScriptableObject
 {
-    [Header("‰ŠúŠÔ")]
-    public float InitializeTime;    //  ‰ŠúŠÔ
-    public int InitializeDate;    //  ‰Šú“ú
-    [Header("1“ú‚ÌŠÔ")]
-    public float OneDayTime;    //  1“ú‚Ì‡ŒvŠÔ
-    public float DayTime;    //  ’‹‚ÌÀŠÔ
-    public float NightTime;    //  –é‚ÌÀŠÔ
-    [HideInInspector] public readonly float TimeProgressValue = 10.0f;  //  ˆê•b‚ ‚½‚è‚ÌŠÔVs“à
+    [Header("åˆæœŸæ™‚é–“")]
+    public float InitializeTime;    //  åˆæœŸæ™‚é–“
+    public int InitializeDate;    //  åˆæœŸæ—¥
+    [Header("1æ—¥ã®æ™‚é–“")]
+    public float OneDayTime;    //  1æ—¥ã®åˆè¨ˆæ™‚é–“
+    public float DayTime;    //  æ˜¼ã®å®Ÿæ™‚é–“
+    public float NightTime;    //  å¤œã®å®Ÿæ™‚é–“
+    [HideInInspector] public readonly float TimeProgressValue = 10.0f;  //  ä¸€ç§’ã‚ãŸã‚Šã®æ™‚é–“æ–°è¡Œå†…
 }
