@@ -1,20 +1,20 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [RequireComponent(typeof(ObjectRegistry))]
-//  ƒIƒuƒWƒFƒNƒgID©“®¶¬
+//  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆIDè‡ªå‹•ç”Ÿæˆ
 [ExecuteInEditMode]
 public class IDGenerater : MonoBehaviour
 {
-    [SerializeField] private IDCategory Category = IDCategory.UNDEFINED;   // í—Ş—áFPlayer, Enemy
-    [SerializeField] private IDLabel Label = IDLabel.UNDNAMED;        // ˆÓ–¡—áFMain, Boss
-    [SerializeField] private string ID = "";            // ©“®¶¬‚³‚ê‚éID
+    [SerializeField] private IDCategory Category = IDCategory.UNDEFINED;   // ç¨®é¡ä¾‹ï¼šPlayer, Enemy
+    [SerializeField] private IDLabel Label = IDLabel.UNDNAMED;        // æ„å‘³ä¾‹ï¼šMain, Boss
+    [SerializeField] private string ID = "";            // è‡ªå‹•ç”Ÿæˆã•ã‚Œã‚‹ID
 
-    public IDCategory CategoryProperty => Category;    //  ƒJƒeƒSƒŠ[ƒvƒƒpƒeƒB
-    public IDLabel LabelProperty => Label;    //  ƒ‰ƒxƒ‹ƒvƒƒpƒeƒB
+    public IDCategory CategoryProperty => Category;    //  ã‚«ãƒ†ã‚´ãƒªãƒ¼ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
+    public IDLabel LabelProperty => Label;    //  ãƒ©ãƒ™ãƒ«ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
 
-    public string CategoryAsStringProperty => IDEnumToString.ToString(Category);    //  ƒJƒeƒSƒŠƒvƒƒpƒeƒB(•¶š—ño—Í)
-    public string LabelAsStringProperty => IDEnumToString.ToString(Label);    //  ƒ‰ƒxƒ‹ƒvƒƒpƒeƒB(•¶š—ño—Í)
-    public string IDProperty => ID;    //  IDƒvƒƒpƒeƒB
+    public string CategoryAsStringProperty => IDEnumToString.ToString(Category);    //  ã‚«ãƒ†ã‚´ãƒªãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(æ–‡å­—åˆ—å‡ºåŠ›)
+    public string LabelAsStringProperty => IDEnumToString.ToString(Label);    //  ãƒ©ãƒ™ãƒ«ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(æ–‡å­—åˆ—å‡ºåŠ›)
+    public string IDProperty => ID;    //  IDãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     private void OnValidate()
     {
         if (string.IsNullOrEmpty(ID))
@@ -26,31 +26,31 @@ public class IDGenerater : MonoBehaviour
         }
     }
 }
-//  ˆÈ‰ºƒR[ƒh•Û‘¶Š  //
-//if (string.IsNullOrEmpty(ID))    ID‚ª‚È‚©‚Á‚½‚çÀs
+//  ä»¥ä¸‹ã‚³ãƒ¼ãƒ‰ä¿å­˜æ‰€  //
+//if (string.IsNullOrEmpty(ID))    IDãŒãªã‹ã£ãŸã‚‰å®Ÿè¡Œ
 //{
 //    ID = $"{CategoryProperty}_{LabelProperty}_{System.Guid.NewGuid().ToString("N").Substring(0, 8)}";
 //#if UNITY_EDITOR
 //    UnityEditor.EditorUtility.SetDirty(this);
 //#endif
 //}
-//[SerializeField, HideInInspector] private IDCategory prevCategory = IDCategory.UNDEFINED;    //  ‘O‰ñ‚ÌƒJƒeƒSƒŠ[‚ğ•Û
-//[SerializeField, HideInInspector] private IDLabel prevLabel = IDLabel.UNDNAMED;    //  ‘O‰ñ‚Ìƒ‰ƒxƒ‹‚ğ•Û
+//[SerializeField, HideInInspector] private IDCategory prevCategory = IDCategory.UNDEFINED;    //  å‰å›ã®ã‚«ãƒ†ã‚´ãƒªãƒ¼ã‚’ä¿æŒ
+//[SerializeField, HideInInspector] private IDLabel prevLabel = IDLabel.UNDNAMED;    //  å‰å›ã®ãƒ©ãƒ™ãƒ«ã‚’ä¿æŒ
 
-//public IDCategory CategoryProperty => Category;    //  ƒJƒeƒSƒŠ[ƒvƒƒpƒeƒB
-//public IDLabel LabelProperty => Label;    //  ƒ‰ƒxƒ‹ƒvƒƒpƒeƒB
+//public IDCategory CategoryProperty => Category;    //  ã‚«ãƒ†ã‚´ãƒªãƒ¼ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
+//public IDLabel LabelProperty => Label;    //  ãƒ©ãƒ™ãƒ«ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
 
-//public string CategoryAsStringProperty => IDEnumToString.ToString(Category);    //  ƒJƒeƒSƒŠƒvƒƒpƒeƒB(•¶š—ño—Í)
-//public string LabelAsStringProperty => IDEnumToString.ToString(Label);    //  ƒ‰ƒxƒ‹ƒvƒƒpƒeƒB(•¶š—ño—Í)
-//public string IDProperty => ID;    //  IDƒvƒƒpƒeƒB
+//public string CategoryAsStringProperty => IDEnumToString.ToString(Category);    //  ã‚«ãƒ†ã‚´ãƒªãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(æ–‡å­—åˆ—å‡ºåŠ›)
+//public string LabelAsStringProperty => IDEnumToString.ToString(Label);    //  ãƒ©ãƒ™ãƒ«ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(æ–‡å­—åˆ—å‡ºåŠ›)
+//public string IDProperty => ID;    //  IDãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
 //private void OnValidate()
 //{
-//    // ƒJƒeƒSƒŠ[‚©ƒ‰ƒxƒ‹‚ª•Ï‚í‚Á‚½‚Æ‚«‚Æ—¼•û–¢’è‹`‚ÌID‚ğÄ¶¬
+//    // ã‚«ãƒ†ã‚´ãƒªãƒ¼ã‹ãƒ©ãƒ™ãƒ«ãŒå¤‰ã‚ã£ãŸã¨ãã¨ä¸¡æ–¹æœªå®šç¾©ã®æ™‚IDã‚’å†ç”Ÿæˆ
 //    if (Category != prevCategory || Label != prevLabel || (Category == IDCategory.UNDEFINED && Label == IDLabel.UNDNAMED))
 //    {
 //        ID = $"{CategoryAsStringProperty}_{LabelAsStringProperty}_{System.Guid.NewGuid().ToString("N").Substring(0, 8)}";
 
-//        // ‘O‰ñ’l‚ğXV
+//        // å‰å›å€¤ã‚’æ›´æ–°
 //        prevCategory = Category;
 //        prevLabel = Label;
 //#if UNITY_EDITOR

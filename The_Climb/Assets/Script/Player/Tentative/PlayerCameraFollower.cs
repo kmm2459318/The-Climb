@@ -1,11 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class PlayerCameraFollower : MonoBehaviour
 {
-    [Header("’Ç]‚³‚¹‚éƒJƒƒ‰")]
+    [Header("è¿½å¾“ã•ã›ã‚‹ã‚«ãƒ¡ãƒ©")]
     public Camera targetCamera;
 
-    [Header("Še²‚Ì’Ç]‚ğ—LŒø‚É‚·‚é‚©")]
+    [Header("å„è»¸ã®è¿½å¾“ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã‹")]
     public bool followX = true;
     public bool followY = true;
     public bool followZ = true;
@@ -16,11 +16,11 @@ public class PlayerCameraFollower : MonoBehaviour
     {
         if (targetCamera == null)
         {
-            Debug.LogWarning("[PlayerCameraFollower] ƒJƒƒ‰‚ªw’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+            Debug.LogWarning("[PlayerCameraFollower] ã‚«ãƒ¡ãƒ©ãŒæŒ‡å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
             return;
         }
 
-        // ‰ŠúƒIƒtƒZƒbƒgiƒJƒƒ‰ - ƒvƒŒƒCƒ„[‚Ì·j‚ğ•Û‘¶
+        // åˆæœŸã‚ªãƒ•ã‚»ãƒƒãƒˆï¼ˆã‚«ãƒ¡ãƒ© - ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å·®ï¼‰ã‚’ä¿å­˜
         initialOffset = targetCamera.transform.position - transform.position;
     }
 
@@ -30,7 +30,7 @@ public class PlayerCameraFollower : MonoBehaviour
 
         Vector3 targetPosition = targetCamera.transform.position;
 
-        // ƒvƒŒƒCƒ„[‚ÌˆÊ’u‚ÉƒIƒtƒZƒbƒg‚ğ‘«‚·iŠe²‚²‚Æ‚ÉğŒ•ªŠòj
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ã«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’è¶³ã™ï¼ˆå„è»¸ã”ã¨ã«æ¡ä»¶åˆ†å²ï¼‰
         Vector3 desiredPosition = targetPosition;
 
         if (followX)

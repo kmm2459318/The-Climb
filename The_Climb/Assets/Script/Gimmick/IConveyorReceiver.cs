@@ -1,8 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-//�x���g�R���x�A�̉e�����󂯂�I�u�W�F�N�g�Ɏ���������C���^�[�t�F�[�X
+//ベルトコンベアの影響を受けるオブジェクトに実装させるインターフェース
 public interface IConveyorReceiver
 {
-    //�x���g�ɏ���Ă��邩�ǂ����̔���ƃx���g�̑��x��n��
+    //ベルトに乗っているかどうかの判定とベルトの速度を渡す
     void SetOnBelt(bool OnBelt, Vector3 BeltVelocity);
 }

@@ -1,18 +1,18 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ’n–Ê‚É’…’n‚µ‚½‚±‚Æ‚ğ’Ê’m
+//  åœ°é¢ã«ç€åœ°ã—ãŸã“ã¨ã‚’é€šçŸ¥
 public class LandGroundNotifier : CollisionNotifier<ILandingHandler>
 {
-    CharacterGroundChecker characterGroundChecker;    //  ƒOƒ‰ƒEƒ“ƒhƒ`ƒFƒbƒN‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+    CharacterGroundChecker characterGroundChecker;    //  ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ãƒã‚§ãƒƒã‚¯ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
     protected override void Awake()
     {
-        //  Awakeˆ—Às
+        //  Awakeå‡¦ç†å®Ÿè¡Œ
         base.Awake();
         characterGroundChecker = GetComponent<CharacterGroundChecker>();
     }
     void OnCollisionEnter(Collision collision)
     {
-        //    OnLandStageÀs
+        //    OnLandStageå®Ÿè¡Œ
         NotifyIfTagMatches(collision, TagName.Platform, h => {
             if (characterGroundChecker.CheckIsGround())
                 h.OnLandStage();

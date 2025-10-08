@@ -1,29 +1,29 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "KickerStat", menuName = "GameDate/Enemy/KickerStat")]
-//  ƒLƒbƒJ[‚ÌƒXƒe[ƒ^ƒX
+//  ã‚­ãƒƒã‚«ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 public class KickerStatus : ScriptableObject
 {
-    //  “G‚Ìó‘Ô‚ÆƒXƒe[ƒ^ƒX‚ğ‚à‚ÂƒNƒ‰ƒX
+    //  æ•µã®çŠ¶æ…‹ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’ã‚‚ã¤ã‚¯ãƒ©ã‚¹
     [System.Serializable]
     public class StateStatPair
     {
-        public EnemyMode enemyMode;    //  “G‚Ìó‘Ô(’Êí‚Æ‹¶–\‰»)
-        public KickerStatBlock Stats;    //  ƒXƒe[ƒ^ƒX‚ğ‚ÂƒNƒ‰ƒX
+        public EnemyMode enemyMode;    //  æ•µã®çŠ¶æ…‹(é€šå¸¸æ™‚ã¨ç‹‚æš´åŒ–)
+        public KickerStatBlock Stats;    //  ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æŒã¤ã‚¯ãƒ©ã‚¹
     }
 
     [Header("Kicker Status")]
-    public List<StateStatPair> StateStats = new();    //  ó‘Ô‚ÆƒXƒe[ƒ^ƒX‚ğ‚ÂƒNƒ‰ƒX‚ÌƒŠƒXƒg(ƒf[ƒ^“ü—Í—p)
+    public List<StateStatPair> StateStats = new();    //  çŠ¶æ…‹ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æŒã¤ã‚¯ãƒ©ã‚¹ã®ãƒªã‚¹ãƒˆ(ãƒ‡ãƒ¼ã‚¿å…¥åŠ›ç”¨)
 
-    Dictionary<EnemyMode, KickerStatBlock> StatMap;    //  ó‘Ô‚ÆƒXƒe[ƒ^ƒX‚Ì«‘(ˆ——p)
+    Dictionary<EnemyMode, KickerStatBlock> StatMap;    //  çŠ¶æ…‹ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¾æ›¸(å‡¦ç†ç”¨)
 
     void OnEnable()
     {
-        //  ƒX[ƒe[ƒ^ƒXƒ}ƒbƒv‚Ì‰Šú‰»
+        //  ã‚¹ãƒ¼ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒƒãƒ—ã®åˆæœŸåŒ–
         BuildStatMap();
     }
-    //  ƒXƒe[ƒ^ƒXƒ}ƒbƒv‰Šú‰»
+    //  ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒƒãƒ—åˆæœŸåŒ–
     void BuildStatMap()
     {
         StatMap = new();
@@ -35,7 +35,7 @@ public class KickerStatus : ScriptableObject
             }
         }
     }
-    //  ó‘Ô‚É‰‚¶‚½ƒXƒe[ƒ^ƒX‚Ìæ“¾
+    //  çŠ¶æ…‹ã«å¿œã˜ãŸã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®å–å¾—
     public KickerStatBlock GetStats(EnemyMode State)
     {
         return StatMap.TryGetValue(State, out KickerStatBlock stats) ? stats : null;

@@ -1,14 +1,14 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class LightDarkWorld : MonoBehaviour
 {
     private BuddyCarry buddyCarry;
 
-    public enum brightness {Dark, Light};  //Œõ‚ÆˆÅ
-    private brightness brightnessState = brightness.Dark;  //Œ»İ‚Ì¢ŠE‚Ì‹P“x
+    public enum brightness {Dark, Light};  //å…‰ã¨é—‡
+    private brightness brightnessState = brightness.Dark;  //ç¾åœ¨ã®ä¸–ç•Œã®è¼åº¦
 
-    private float lightDuration = 15f;     // Œõ‚ÌŒp‘±ŠÔ
-    private float lightTimer = 0f;         //Œõ‚Ì¢ŠE‚ÌŠÔ
+    private float lightDuration = 15f;     // å…‰ã®ç¶™ç¶šæ™‚é–“
+    private float lightTimer = 0f;         //å…‰ã®ä¸–ç•Œã®æ™‚é–“
 
     void Start()
     {
@@ -17,25 +17,25 @@ public class LightDarkWorld : MonoBehaviour
 
     void Update()
     {
-        //Œõ‚ÆˆÅØ‚è‘Ö‚¦
+        //å…‰ã¨é—‡åˆ‡ã‚Šæ›¿ãˆ
         if (Input.GetKeyDown(KeyCode.J))
         {
-            if (brightnessState == brightness.Dark)  //ˆÅ¨Œõ
+            if (brightnessState == brightness.Dark)  //é—‡â†’å…‰
             {
                 LightDarkChange(brightness.Light);
             }
-            else  //Œõ¨ˆÅ
+            else  //å…‰â†’é—‡
             {
                 LightDarkChange(brightness.Dark);
             }
         }
 
-        //ŒõˆÅ¢ŠE‚Ìˆá‚¢
-        if (brightnessState == brightness.Dark)  //ˆÅ‚Ì¢ŠE
+        //å…‰é—‡ä¸–ç•Œã®é•ã„
+        if (brightnessState == brightness.Dark)  //é—‡ã®ä¸–ç•Œ
         {
 
         }
-        else  //Œõ‚Ì¢ŠE
+        else  //å…‰ã®ä¸–ç•Œ
         {
             lightTimer -= Time.deltaTime;
             if (lightTimer <= 0)
@@ -47,19 +47,19 @@ public class LightDarkWorld : MonoBehaviour
 
     private void LightDarkChange(brightness s)
     {
-        if (brightnessState == brightness.Dark && s == brightness.Light)  //ˆÅ¨Œõ
+        if (brightnessState == brightness.Dark && s == brightness.Light)  //é—‡â†’å…‰
         {
-            if (buddyCarry.carryingBuddy)  //Buddy‚¨‚ñ‚Ô‚µ‚Ä‚é‚Æ‚«
+            if (buddyCarry.carryingBuddy)  //BuddyãŠã‚“ã¶ã—ã¦ã‚‹ã¨ã
             {
                 brightnessState = brightness.Light;
-                Debug.Log("¡¡¡–‚–@u”j‰ó’´—zŒõv¡¡¡");
+                Debug.Log("â– â– â– é­”æ³•ã€Œç ´å£Šè¶…é™½å…‰ã€â– â– â– ");
                 lightTimer = lightDuration;
             }
         }
-        else if (brightnessState == brightness.Light && s == brightness.Dark)  //Œõ¨ˆÅ
+        else if (brightnessState == brightness.Light && s == brightness.Dark)  //å…‰â†’é—‡
         {
             brightnessState = brightness.Dark;
-            Debug.Log("   êK•„uƒAƒ“ƒfƒBƒtƒ@ƒCƒ“ƒhƒ_[ƒNƒlƒXv   ");
+            Debug.Log("â–¡â–¡â–¡éµºç¬¦ã€Œã‚¢ãƒ³ãƒ‡ã‚£ãƒ•ã‚¡ã‚¤ãƒ³ãƒ‰ãƒ€ãƒ¼ã‚¯ãƒã‚¹ã€â–¡â–¡â–¡");
         }
     }
 }

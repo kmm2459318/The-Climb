@@ -1,21 +1,21 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(BoxCollider))]
 
-//  “GƒLƒƒƒ‰ƒNƒ^[‚ğÀÛ‚É“®‚©‚·ƒXƒNƒŠƒvƒg
+//  æ•µã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’å®Ÿéš›ã«å‹•ã‹ã™ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 public class EnemyMover : MonoBehaviour
 {
-    Rigidbody RB;    //  ƒŠƒWƒbƒhƒ{ƒfƒBƒCƒ“ƒXƒ^ƒ“ƒX
+    Rigidbody RB;    //  ãƒªã‚¸ãƒƒãƒ‰ãƒœãƒ‡ã‚£ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
     void Awake()
     {
         RB = GetComponent<Rigidbody>();
     }
-    //  Šî–{ˆÚ“®
+    //  åŸºæœ¬ç§»å‹•
     public void BaseMove(Vector3 Velocity)
     {
         RB.MovePosition(RB.position + Velocity);
     }
-    //  ƒWƒƒƒ“ƒv
+    //  ã‚¸ãƒ£ãƒ³ãƒ—
     public void Jump(float JumpForce)
     {
         Vector3 Velocity = RB.linearVelocity;

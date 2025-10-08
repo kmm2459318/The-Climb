@@ -1,8 +1,8 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class FloorData : MonoBehaviour
 {
-    [Header("Šeíƒ|ƒCƒ“ƒg‚ğƒZƒbƒg‚µ‚Ä‚­‚¾‚³‚¢")]
+    [Header("å„ç¨®ãƒã‚¤ãƒ³ãƒˆã‚’ã‚»ãƒƒãƒˆã—ã¦ãã ã•ã„")]
     public Transform spawnPoint;
     public Transform startPoint;
     public Transform goalPoint;
@@ -15,7 +15,7 @@ public class FloorData : MonoBehaviour
 
         if (spawnPoint == null || startPoint == null || goalPoint == null)
         {
-            Debug.LogWarning($"[FloorData] {gameObject.name} ‚Ì SpawnPoint, StartPoint, GoalPoint ‚Ì‚¢‚¸‚ê‚©‚ª–¢İ’è‚Å‚·B", this);
+            Debug.LogWarning($"[FloorData] {gameObject.name} ã® SpawnPoint, StartPoint, GoalPoint ã®ã„ãšã‚Œã‹ãŒæœªè¨­å®šã§ã™ã€‚", this);
             hasWarned = true;
         }
     }

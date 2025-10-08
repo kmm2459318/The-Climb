@@ -1,21 +1,21 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Zenject;
 
 [RequireComponent(typeof(SunMover))]
-//  ‘¾—z‚ÉˆÚ“®w¦‚ğo‚·
+//  å¤ªé™½ã«ç§»å‹•æŒ‡ç¤ºã‚’å‡ºã™
 public class SunMoveCommander : MonoBehaviour
 {
-    SunStat sunStat;    //  ‘¾—z‚ÌƒXƒe[ƒ^ƒX
-    SunMover sunMover;    //  ‘¾—zˆÚ“®ƒCƒ“ƒXƒ^ƒ“ƒX
-    public ITimeProvider TimeProvider;    //  ŠÔ’lƒvƒƒoƒCƒ_
-    ITimeConfig TimeConfig;    //  “ú•t‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+    SunStat sunStat;    //  å¤ªé™½ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+    SunMover sunMover;    //  å¤ªé™½ç§»å‹•ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+    public ITimeProvider TimeProvider;    //  æ™‚é–“å€¤ãƒ—ãƒ­ãƒã‚¤ãƒ€
+    ITimeConfig TimeConfig;    //  æ—¥ä»˜ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 
     [Inject]
     public void Construct(
-    SunStat sunStat,    //  ‘¾—z‚ÌƒXƒe[ƒ^ƒX
-    SunMover sunMover,    //  ‘¾—zˆÚ“®ƒCƒ“ƒXƒ^ƒ“ƒX
-    ITimeProvider TimeProvider,    //  ŠÔ’lƒvƒƒoƒCƒ_
-    ITimeConfig TimeConfig    //  “ú•t‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+    SunStat sunStat,    //  å¤ªé™½ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+    SunMover sunMover,    //  å¤ªé™½ç§»å‹•ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+    ITimeProvider TimeProvider,    //  æ™‚é–“å€¤ãƒ—ãƒ­ãƒã‚¤ãƒ€
+    ITimeConfig TimeConfig    //  æ—¥ä»˜ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
     )
     {
         this.sunStat = sunStat;
@@ -24,7 +24,7 @@ public class SunMoveCommander : MonoBehaviour
         this.TimeConfig = TimeConfig;
     }
 
-    float SunAngleX;    //  ‘¾—z‚ÌƒAƒ“ƒOƒ‹(X)
+    float SunAngleX;    //  å¤ªé™½ã®ã‚¢ãƒ³ã‚°ãƒ«(X)
 
 
     void Update()

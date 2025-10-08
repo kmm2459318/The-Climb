@@ -1,36 +1,36 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
-//  ˆÅ‚Ìis“x‚ğ’²®‚·‚é
+//  é—‡ã®é€²è¡Œåº¦ã‚’èª¿æ•´ã™ã‚‹
 public class FadeContoroller : MonoBehaviour, IDownFading
 {
-    [SerializeField] FadeSetting fadeSetting;    //  ƒtƒF[ƒhİ’è
-    Material OverLayMaterial;    //  l‹÷‚©‚çƒtƒF[ƒh‚·‚é‚Ìƒ}ƒeƒŠƒAƒ‹
-    Coroutine downFadeCoroutine;    //  ƒ_ƒEƒ“ƒtƒF[ƒhƒRƒ‹[ƒ`ƒ“
+    [SerializeField] FadeSetting fadeSetting;    //  ãƒ•ã‚§ãƒ¼ãƒ‰è¨­å®š
+    Material OverLayMaterial;    //  å››éš…ã‹ã‚‰ãƒ•ã‚§ãƒ¼ãƒ‰ã™ã‚‹ã®ãƒãƒ†ãƒªã‚¢ãƒ«
+    Coroutine downFadeCoroutine;    //  ãƒ€ã‚¦ãƒ³ãƒ•ã‚§ãƒ¼ãƒ‰ã‚³ãƒ«ãƒ¼ãƒãƒ³
 
-    [Header("Œ»İ‚ÌƒtƒF[ƒhis“x")]
-    [SerializeField, Range(0, 1)] float CurrentProgress;    //  ƒtƒF[ƒhis“x
-    float CurrentProgressRate_Sec;    //  •bŠÔ‚ÌƒtƒF[ƒhis‘¬“x(Š„‡’l)
+    [Header("ç¾åœ¨ã®ãƒ•ã‚§ãƒ¼ãƒ‰é€²è¡Œåº¦")]
+    [SerializeField, Range(0, 1)] float CurrentProgress;    //  ãƒ•ã‚§ãƒ¼ãƒ‰é€²è¡Œåº¦
+    float CurrentProgressRate_Sec;    //  ç§’é–“ã®ãƒ•ã‚§ãƒ¼ãƒ‰é€²è¡Œé€Ÿåº¦(å‰²åˆå€¤)
 
     void Awake()
     {
         OverLayMaterial = fadeSetting.OverLayMaterial;
 
-        //  ‰Šú‰»
+        //  åˆæœŸåŒ–
         Initialize();
     }
-    //  ‰Šú‰»
+    //  åˆæœŸåŒ–
     void Initialize()
     {
         CurrentProgress = fadeSetting.Progress;
         CurrentProgressRate_Sec = fadeSetting.FadeProgressRate_Sec;
     }
-    //  ƒ_ƒEƒ“ƒtƒF[ƒhƒ‰ƒbƒp[
+    //  ãƒ€ã‚¦ãƒ³æ™‚ãƒ•ã‚§ãƒ¼ãƒ‰ãƒ©ãƒƒãƒ‘ãƒ¼
     public void StartDownFading()
     {
         CoroutineUtility.SafeStartCoroutine(this, ref downFadeCoroutine, DownFading());
     }
-    //  ƒtƒF[ƒhƒAƒEƒgˆ—
+    //  ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆå‡¦ç†
     public IEnumerator DownFading()
     {
         FadeSetter.ApplyToSceneFadeQuad();

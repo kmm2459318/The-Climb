@@ -1,4 +1,4 @@
-//  “G‚Ìó‘Ô‚ğ¶¬‚·‚éƒtƒ@ƒNƒgƒŠ[
+ï»¿//  æ•µã®çŠ¶æ…‹ã‚’ç”Ÿæˆã™ã‚‹ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼
 public class EnemyStateFactory : IEnemyStateFactory
 {
     readonly KickerMoveCommander _kickerMoveCommander;
@@ -10,13 +10,13 @@ public class EnemyStateFactory : IEnemyStateFactory
         _enemyStateMachine = enemyStateMachine;
     }
 
-    //  ˆÚ“®ó‘Ô¶¬
+    //  ç§»å‹•çŠ¶æ…‹ç”Ÿæˆ
     public IEnemyState CreateWalkState()
     {
         return new WalkState(_kickerMoveCommander, _enemyStateMachine, this);
     }
     
-    //  ƒWƒƒƒ“ƒvó‘Ô¶¬
+    //  ã‚¸ãƒ£ãƒ³ãƒ—çŠ¶æ…‹ç”Ÿæˆ
     public IEnemyState CreateJumpState()
     {
         return new JumpState(_kickerMoveCommander, _enemyStateMachine, this);

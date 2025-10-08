@@ -1,5 +1,5 @@
-using System.Collections.Generic;
-//    ƒRƒ}ƒ“ƒhŒ^«‘’ñ‹ŸƒvƒƒoƒCƒ_[
+ï»¿using System.Collections.Generic;
+//    ã‚³ãƒãƒ³ãƒ‰å‹è¾æ›¸æä¾›ãƒ—ãƒ­ãƒã‚¤ãƒ€ãƒ¼
 
 public interface ICommandProvider
 {

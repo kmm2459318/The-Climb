@@ -1,20 +1,20 @@
-using NUnit.Framework;
+ï»¿using NUnit.Framework;
 using UnityEngine;
 
-//  ƒLƒbƒJ[ˆÚ“®ƒeƒXƒg
+//  ã‚­ãƒƒã‚«ãƒ¼ç§»å‹•ãƒ†ã‚¹ãƒˆ
 public class KickerMoveCommanderTest
 {
-    GameObject testKicker;    //  ƒeƒXƒgƒLƒbƒJ[ƒCƒ“ƒXƒ^ƒ“ƒX
-    KickerMoveCommander kickerMoveCommander;    //  ƒLƒbƒJ[ƒ€[ƒuƒRƒ}ƒ“ƒ_[ƒCƒ“ƒXƒ^ƒ“ƒX    
-    EnemyMover enemyMover;    //  ƒGƒlƒ~[ƒ€[ƒo[ƒCƒ“ƒXƒ^ƒ“ƒX
+    GameObject testKicker;    //  ãƒ†ã‚¹ãƒˆã‚­ãƒƒã‚«ãƒ¼ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+    KickerMoveCommander kickerMoveCommander;    //  ã‚­ãƒƒã‚«ãƒ¼ãƒ ãƒ¼ãƒ–ã‚³ãƒãƒ³ãƒ€ãƒ¼ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹    
+    EnemyMover enemyMover;    //  ã‚¨ãƒãƒŸãƒ¼ãƒ ãƒ¼ãƒãƒ¼ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 
     [SetUp]
     public void Setup()
     {
-        //  ƒeƒXƒg—pƒLƒbƒJ[¶¬
+        //  ãƒ†ã‚¹ãƒˆç”¨ã‚­ãƒƒã‚«ãƒ¼ç”Ÿæˆ
         testKicker = new GameObject("testKicker");
 
-        // ƒRƒ“ƒ|[ƒlƒ“ƒg’Ç‰Á
+        // ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆè¿½åŠ 
         testKicker.AddComponent<Rigidbody>();
         testKicker.AddComponent<BoxCollider>();
         testKicker.AddComponent<EnemyMover>();
@@ -22,13 +22,13 @@ public class KickerMoveCommanderTest
         testKicker.AddComponent<KickerMoveCommander>();
         testKicker.AddComponent<CharacterStateVisualizer>();
 
-        // ƒfƒtƒHƒ‹ƒgó‘Ô‚É‰Šú‰»
+        // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆçŠ¶æ…‹ã«åˆæœŸåŒ–
         kickerMoveCommander = testKicker.GetComponent<KickerMoveCommander>();
         enemyMover = testKicker.GetComponent<EnemyMover>();
 
         testKicker.AddComponent<LandGroundNotifier>();
 
-        // ƒXƒe[ƒ^ƒX·‚µ‘Ö‚¦
+        // ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å·®ã—æ›¿ãˆ
         var kickerStatus = ScriptableObject.CreateInstance<KickerStatus>();
         kickerStatus.StateStats.Add(new KickerStatus.StateStatPair
         {
@@ -46,7 +46,7 @@ public class KickerMoveCommanderTest
             }
         });
 
-        // AwakeÄÀs—p‚ÉŒÄ‚Ño‚µ
+        // Awakeå†å®Ÿè¡Œç”¨ã«å‘¼ã³å‡ºã—
         kickerMoveCommander.kickerStatus = kickerStatus;
         kickerMoveCommander.InitializeForTest(kickerStatus);
     }
@@ -80,6 +80,6 @@ public class KickerMoveCommanderTest
         Assert.AreEqual(MoveDir.LEFT, dir);
     }
 }
-//  ˆÈ‰ºƒR[ƒh•Û‘¶Š  //
+//  ä»¥ä¸‹ã‚³ãƒ¼ãƒ‰ä¿å­˜æ‰€  //
 //kickerMoveCommander.GetType().GetField("kickerStatus", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(kickerMoveCommander, kickerStatus);
 //kickerMoveCommander.GetType().GetMethod("InitializeForTest", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(kickerMoveCommander, new object[] { kickerStatus });

@@ -1,6 +1,6 @@
-//  �G�ƏՓ˂����Ƃ��̃C���^�[�t�F�[�X
+﻿//  敵と衝突したときのインターフェース
 public interface ICollideEnemy
 {
-    //  �G�ƏՓ˂������̊֐�
+    //  敵と衝突した時の関数
     void OnCollideEnemy();
 }

@@ -1,4 +1,4 @@
-//  ’…’n‚µ‚½‚ÌƒCƒ“ƒ^[ƒtƒFƒCƒX
+ï»¿//  ç€åœ°ã—ãŸæ™‚ã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ã‚¤ã‚¹
 public interface ILandingHandler
 {
     void OnLandStage();

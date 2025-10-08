@@ -1,6 +1,6 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ˆÚ“®•ûŒüˆê——
+//  ç§»å‹•æ–¹å‘ä¸€è¦§
 public enum MoveDir
 {
     LEFT = -1,
