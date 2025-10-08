@@ -33,7 +33,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     TimeManager timeManager;    //  タイムマネージャー
     PlayerState playerState;    //  プレイヤーステート
     CharacterStateVisualizer characterStateVisualizer;    //  キャラクターステートビジュアライザー
-    public Dictionary<KickerCommanderMethod, ICommand> CommanderMethodMap;    //  このスクリプトの関数の辞書
+    public Dictionary<KickerCommanderMethod, ICommand_Enemy> CommanderMethodMap;    //  このスクリプトの関数の辞書
     public event Action OnJumpTime;    //  ジャンプタイムのサブスク
     public event Action OnLandGround;    //  地面着地のサブスク
     Coroutine JumpLoop;    //  ジャンプループコルーチンの変数

@@ -11,9 +11,9 @@ public class DefaultCommandProvider : ICommandProvider
         _KicekrMoveCommander = kickerMoveCommander;
     }
 
-    public Dictionary<KickerMoveCommander.KickerCommanderMethod, ICommand> GetCommandMap()
+    public Dictionary<KickerMoveCommander.KickerCommanderMethod, ICommand_Enemy> GetCommandMap()
     {
-        return new Dictionary<KickerMoveCommander.KickerCommanderMethod, ICommand>
+        return new Dictionary<KickerMoveCommander.KickerCommanderMethod, ICommand_Enemy>
         {
             {KickerCommanderMethod.MOVE, new ActionCommand(_KicekrMoveCommander.Move)},
             {KickerCommanderMethod.IS_EDGE_POS, new FuncCommand<bool>(_KicekrMoveCommander.IsEdgePos) },
