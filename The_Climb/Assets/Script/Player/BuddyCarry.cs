@@ -8,7 +8,6 @@ public class BuddyCarry : MonoBehaviour
     private PositionConstraint buddyPos;  //BuddyのPositionConstraint（おんぶに使ってる追従のコンポーネント）
     PlayerState state;
 
-    public bool carryingBuddy = true;    //Buddyをおんぶしてる状態か判定
     private bool nearBuddy = false;       //Buddyが近くにいるか判定
 
     void Start()
@@ -34,22 +33,22 @@ public class BuddyCarry : MonoBehaviour
         //Carryボタン（仮）
         if (Input.GetKeyDown(KeyCode.U) && state.isGrounded)
         {
-            if (carryingBuddy)  //おんぶしてる場合、バディを降ろす
+            if (state.carryingBuddy)  //おんぶしてる場合、バディを降ろす
             {
-                carryingBuddy = false;
+                state.carryingBuddy = false;
                 buddyPos.constraintActive = false;
                 buddy.transform.position = transform.position + Vector3.up * 0.5f;
             }
             else if (nearBuddy)  //おんぶしてない場合、バディをおんぶする
             {
-                carryingBuddy = true;
+                state.carryingBuddy = true;
                 buddyPos.constraintActive = true;
                 buddyController.moving = false;
             }
         }
 
         //ベルを鳴らしてバディを誘導
-        if (!carryingBuddy && Input.GetKeyDown(KeyCode.I))
+        if (!state.carryingBuddy && Input.GetKeyDown(KeyCode.I))
         {
             buddyController.GuideTo(gameObject.transform.position.x);
         }

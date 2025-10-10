@@ -15,9 +15,6 @@ public class PlayerState : MonoBehaviour
     PlayerSpecialAction special;
     [HideInInspector] public PlayerAnimation PlayerAnimation;
 
-    public float erosionLevel = 0;       //プレイヤーの侵蝕度
-    public int sanityLevel = 100;        //プレイヤーの正気度
-
     public bool playerDirectionRight = true;  //プレイヤーの見ている方向が右ならtrue、左ならfalse
     private bool wasGrounded = false;    //前フレームの地面状態
     public bool landing = false;         //着地判定
@@ -38,6 +35,10 @@ public class PlayerState : MonoBehaviour
     public bool isAir = false;           //空中判定
 
     private float playerFallSpeed = -19f;  //プレイヤーの落下速度
+
+    public float erosionLevel = 0;       //プレイヤーの侵蝕度
+    public int sanityLevel = 100;        //プレイヤーの正気度
+    public bool carryingBuddy = true;    //Buddyをおんぶしてる状態か判定
 
     void Start()
     {

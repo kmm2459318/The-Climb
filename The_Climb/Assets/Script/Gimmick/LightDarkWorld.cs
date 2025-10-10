@@ -2,7 +2,7 @@
 
 public class LightDarkWorld : MonoBehaviour
 {
-    private BuddyCarry buddyCarry;
+    private PlayerState state;
 
     public enum brightness {Dark, Light};  //光と闇
     public brightness brightnessState = brightness.Dark;  //現在の世界の輝度
@@ -12,7 +12,7 @@ public class LightDarkWorld : MonoBehaviour
 
     void Start()
     {
-        buddyCarry = GameObject.Find("PlayerModel").GetComponent<BuddyCarry>();
+        state = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
     }
 
     void Update()
@@ -49,7 +49,7 @@ public class LightDarkWorld : MonoBehaviour
     {
         if (brightnessState == brightness.Dark && s == brightness.Light)  //闇→光
         {
-            if (buddyCarry.carryingBuddy)  //Buddyおんぶしてるとき
+            if (state.carryingBuddy)  //Buddyおんぶしてるとき
             {
                 brightnessState = brightness.Light;
                 Debug.Log("■■■魔法「破壊超陽光」■■■");
