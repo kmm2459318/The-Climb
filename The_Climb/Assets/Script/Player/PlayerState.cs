@@ -8,31 +8,34 @@ public class PlayerState : MonoBehaviour
     public bool quickJumpOn = false;     //クイックジャンプ可能か
     public bool meteorDropOn = false;    //メテオドロップ叶か
 
-    public Rigidbody RigidBody;
-    public InputManager inputManager;
+    [HideInInspector] public Rigidbody RigidBody;
+    [HideInInspector] public InputManager inputManager;
     PlayerMove move;
     PlayerJump jump;
-    PlayerSpecialAction special; 
-    public PlayerAnimation PlayerAnimation;
+    PlayerSpecialAction special;
+    [HideInInspector] public PlayerAnimation PlayerAnimation;
+
+    public float erosionLevel = 0;       //プレイヤーの侵蝕度
+    public int sanityLevel = 100;        //プレイヤーの正気度
 
     public bool playerDirectionRight = true;  //プレイヤーの見ている方向が右ならtrue、左ならfalse
     private bool wasGrounded = false;    //前フレームの地面状態
     public bool landing = false;         //着地判定
     private float landingJumpTime = 0.1f;  //着地ジャンプの猶予タイム
     private float landingJumpCounter = 0f;  //着地ジャンプの猶予カウンター
-    public bool landingJumpOn = false;  //着地ジャンプのカウントを始める用
+    public bool landingJumpOn = false;   //着地ジャンプのカウントを始める用
 
-    public Transform groundCheck;        //プレイヤー足元の地面判定用オブジェクト
+    [HideInInspector] public Transform groundCheck;        //プレイヤー足元の地面判定用オブジェクト
     public bool isGrounded;              //地面判定
-    public Transform jumpMoveOKCheck;    //プレイヤー足元のジャンプ判定用オブジェクト
+    [HideInInspector] public Transform jumpMoveOKCheck;    //プレイヤー足元のジャンプ判定用オブジェクト
     public bool isJumpMoveOK;            //ジャンプOK判定
-    public Transform leftWallCheck;      //プレイヤー足元の左壁判定用オブジェクト
+    [HideInInspector] public Transform leftWallCheck;      //プレイヤー足元の左壁判定用オブジェクト
     public bool isLeftWall;              //左壁判定
-    public Transform rightWallCheck;     //プレイヤー足元の右壁判定用オブジェクト
+    [HideInInspector] public Transform rightWallCheck;     //プレイヤー足元の右壁判定用オブジェクト
     public bool isRightWall;             //右壁判定
-    public LayerMask groundLayer;  //地面レイヤー
+    [HideInInspector] public LayerMask groundLayer;        //地面レイヤー
     private float groundCheckRadius = 0.1f;  //地面判定の半径
-    public bool isAir = false;          //空中判定
+    public bool isAir = false;           //空中判定
 
     private float playerFallSpeed = -19f;  //プレイヤーの落下速度
 
@@ -106,12 +109,18 @@ public class PlayerState : MonoBehaviour
             RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerFallSpeed, 0);
         }
 
+        //正気度０もしくは侵蝕度１００で死
+        if (sanityLevel <= 0 || erosionLevel >= 100)
+        {
+            PlayerDead();
+        }
+
         //壁に当たるのならば強制停止
-    //    if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
-    //(isRightWall && RigidBody.linearVelocity.x > 0))
-    //    {
-    //        RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
-    //    }
+        //    if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
+        //(isRightWall && RigidBody.linearVelocity.x > 0))
+        //    {
+        //        RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
+        //    }
 
         //前フレームの接地判定
         wasGrounded = isGrounded;
@@ -159,6 +168,11 @@ public class PlayerState : MonoBehaviour
         special.quickJumpUsed = false;
         special.meteorDropUsed = false;
         special.meteorDropCounter = 0;
+    }
+
+    private void PlayerDead()
+    {
+        Debug.Log("栗松、帰国の準備をしろ。");
     }
 
     private void OnTriggerEnter(Collider other)

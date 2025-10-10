@@ -5,9 +5,9 @@ public class LightDarkWorld : MonoBehaviour
     private BuddyCarry buddyCarry;
 
     public enum brightness {Dark, Light};  //光と闇
-    private brightness brightnessState = brightness.Dark;  //現在の世界の輝度
+    public brightness brightnessState = brightness.Dark;  //現在の世界の輝度
 
-    private float lightDuration = 15f;     // 光の継続時間
+    private float lightDuration = 15f;     //光の継続時間
     private float lightTimer = 0f;         //光の世界の時間
 
     void Start()
