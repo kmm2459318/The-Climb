@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class PlayerJump2 : MonoBehaviour
+public class PlayerJump : MonoBehaviour
 {
     Rigidbody RigidBody;
     PlayerState state;

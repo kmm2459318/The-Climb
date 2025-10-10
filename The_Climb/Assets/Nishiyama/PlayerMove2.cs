@@ -28,6 +28,8 @@ public class PlayerMove2 : MonoBehaviour, IConveyorReceiver
 
     [SerializeField] private bool reverseHorizontal = false;
 
+    [SerializeField] private bool reverseGravity = false; // ← チェックで上下反転ON
+    private float originalGravityScale;
 
 
     void Start()
@@ -38,6 +40,18 @@ public class PlayerMove2 : MonoBehaviour, IConveyorReceiver
         special = gameObject.GetComponent<PlayerSpecialAction>();
 
         PlayerAnimation2 = GameObject.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation2>();
+
+        // ★重力反転チェック
+        if (reverseGravity)
+        {
+            Physics.gravity = new Vector3(0, 9.81f, 0); // 通常は -9.81f
+            transform.rotation = Quaternion.Euler(0, 0, 180); // キャラを上下反転
+        }
+        else
+        {
+            Physics.gravity = new Vector3(0, -9.81f, 0);
+        }
+
     }
 
     private void Update()
