@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NUnit.Framework;
+using UnityEngine;
 
 public class LightDarkWorld : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class LightDarkWorld : MonoBehaviour
     void Start()
     {
         state = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
+        LayerChange(false);
     }
 
     void Update()
@@ -54,12 +56,42 @@ public class LightDarkWorld : MonoBehaviour
                 brightnessState = brightness.Light;
                 Debug.Log("■■■魔法「破壊超陽光」■■■");
                 lightTimer = lightDuration;
+                LayerChange(true);
             }
         }
         else if (brightnessState == brightness.Light && s == brightness.Dark)  //光→闇
         {
             brightnessState = brightness.Dark;
             Debug.Log("□□□鵺符「アンディファインドダークネス」□□□");
+            LayerChange(false);
+        }
+    }
+
+    private void LayerChange(bool isLight)
+    {
+        int player = LayerMask.NameToLayer("Player");
+        int ground = LayerMask.NameToLayer("Ground");
+        int whiteGround = LayerMask.NameToLayer("WhiteGround");
+        int blackGround = LayerMask.NameToLayer("BlackGround");
+        int lightOther = LayerMask.NameToLayer("WhiteOther");
+        int darkOther = LayerMask.NameToLayer("BlackOther");
+
+        //物理的な当たり判定制御
+        Physics.IgnoreLayerCollision(player, whiteGround, !isLight);
+        Physics.IgnoreLayerCollision(player, blackGround, isLight);
+        Physics.IgnoreLayerCollision(player, lightOther, !isLight);
+        Physics.IgnoreLayerCollision(player, darkOther, isLight);
+
+        //判定用LayerMaskの設定
+        if (isLight)
+        {
+            state.groundLayerMask =
+                (1 << ground) | (1 << whiteGround);
+        }
+        else
+        {
+            state.groundLayerMask =
+                (1 << ground) | (1 << blackGround);
         }
     }
 }

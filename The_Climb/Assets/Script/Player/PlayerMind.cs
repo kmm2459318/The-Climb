@@ -7,6 +7,7 @@ public class PlayerMind : MonoBehaviour
     private PlayerState playerState;
     private LightDarkWorld lightDarkWorld;
 
+    private int sanityMax = 100;             //正気度の最大値
     private float SANDecreaseCoolTime = 0f;  //正気度減少のクールタイム
     private float SANDecreaseDuration = 5f;  //正気度減少の間隔
     private bool inFog = false;              //霧の中
@@ -19,6 +20,17 @@ public class PlayerMind : MonoBehaviour
 
     void Update()
     {
+        //正気度１００超えたら１００にする
+        if (playerState.sanityLevel > sanityMax)
+        {
+            playerState.sanityLevel = sanityMax;
+        }
+        //侵蝕度０下回ったら０にする
+        if (playerState.erosionLevel < 0)
+        {
+            playerState.erosionLevel = 0;
+        }
+
         //暗い闇の中で侵蝕度増加
         if (lightDarkWorld.brightnessState == LightDarkWorld.brightness.Dark)
         {
@@ -46,6 +58,7 @@ public class PlayerMind : MonoBehaviour
     private void ErosionReset()
     {
         playerState.erosionLevel = 0;
+        SANDecreaseCoolTime = 0f;
     }
 
     //正気度減少
@@ -58,6 +71,15 @@ public class PlayerMind : MonoBehaviour
             //減少
             playerState.sanityLevel--;
             SANDecreaseCoolTime = 0f;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("SanityHealItem"))
+        {
+            playerState.sanityLevel += 5;
+            Destroy(other.gameObject);
         }
     }
 

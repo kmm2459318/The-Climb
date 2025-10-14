@@ -31,6 +31,9 @@ public class PlayerState : MonoBehaviour
     [HideInInspector] public Transform rightWallCheck;     //プレイヤー足元の右壁判定用オブジェクト
     public bool isRightWall;             //右壁判定
     [HideInInspector] public LayerMask groundLayer;        //地面レイヤー
+    [HideInInspector] public int whiteGround;
+    [HideInInspector] public int blackGround;
+    public int groundLayerMask;
     private float groundCheckRadius = 0.1f;  //地面判定の半径
     public bool isAir = false;           //空中判定
 
@@ -51,6 +54,8 @@ public class PlayerState : MonoBehaviour
         PlayerAnimation = transform.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
 
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
+        whiteGround = 1 << LayerMask.NameToLayer("WhiteGround");
+        blackGround = 1 << LayerMask.NameToLayer("BlackGround");
 
         // インスペクターまたはスクリプトで設定
         //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
@@ -63,9 +68,9 @@ public class PlayerState : MonoBehaviour
     private void Update()
     {
         // 左壁判定（カプセル形）
-        isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.60f, leftWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayer);
+        isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.60f, leftWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayerMask);
         // 右壁判定（カプセル形）
-        isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.60f, rightWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayer);
+        isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.60f, rightWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayerMask);
 
         if (jump.jumpCoolActive || jump.jumping)
         {
@@ -74,57 +79,57 @@ public class PlayerState : MonoBehaviour
         else
         {
             // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
-        }
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayerMask);
 
-        //空中時、isJumpOKを反応させない
-        if (isAir)
-        {
-            isJumpMoveOK = false;
-        }
-        else
-        {
-            // ジャンプOK判定（カプセル形）
-            isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, 0.19f, groundLayer);
-        }
+            //空中時、isJumpOKを反応させない
+            if (isAir)
+            {
+                isJumpMoveOK = false;
+            }
+            else
+            {
+                // ジャンプOK判定（カプセル形）
+                isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, 0.19f, groundLayerMask);
+            }
 
-        //着地チェック
-        if (!jump.jumpCoolActive)
-        {
-            LandingCheck();
-        }
+            //着地チェック
+            if (!jump.jumpCoolActive)
+            {
+                LandingCheck();
+            }
 
-        //空中判定
-        if (!isGrounded && !isJumpMoveOK)
-        {
-            isAir = true;
-        }
-        else
-        {
-            isAir = false;
-        }
-        
-        //落下速度調整
-        if (RigidBody.linearVelocity.y < playerFallSpeed && !isGrounded && !jump.jumping && !landing)
-        {
-            RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerFallSpeed, 0);
-        }
+            //空中判定
+            if (!isGrounded && !isJumpMoveOK)
+            {
+                isAir = true;
+            }
+            else
+            {
+                isAir = false;
+            }
 
-        //正気度０もしくは侵蝕度１００で死
-        if (sanityLevel <= 0 || erosionLevel >= 100)
-        {
-            PlayerDead();
+            //落下速度調整
+            if (RigidBody.linearVelocity.y < playerFallSpeed && !isGrounded && !jump.jumping && !landing)
+            {
+                RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerFallSpeed, 0);
+            }
+
+            //正気度０もしくは侵蝕度１００で死
+            if (sanityLevel <= 0 || erosionLevel >= 100)
+            {
+                PlayerDead();
+            }
+
+            //壁に当たるのならば強制停止
+            //    if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
+            //(isRightWall && RigidBody.linearVelocity.x > 0))
+            //    {
+            //        RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
+            //    }
+
+            //前フレームの接地判定
+            wasGrounded = isGrounded;
         }
-
-        //壁に当たるのならば強制停止
-        //    if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
-        //(isRightWall && RigidBody.linearVelocity.x > 0))
-        //    {
-        //        RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
-        //    }
-
-        //前フレームの接地判定
-        wasGrounded = isGrounded;
     }
 
     private void LandingCheck()
