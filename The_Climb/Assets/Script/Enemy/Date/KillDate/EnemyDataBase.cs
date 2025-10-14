@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using SQLite4Unity3d;
 using System.IO;
 using System.Linq;
@@ -8,24 +8,36 @@ public class EnemyDataBase : MonoBehaviour
    private SQLiteConnection _connection;
 
     /// <summary>
-    /// ƒf[ƒ^ƒx[ƒX‚Ì•Û‘¶êŠ
+    /// ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã®ä¿å­˜å ´æ‰€
     /// </summary>
     private void Awake()
     {
         string DbPath = Path.Combine(Application.persistentDataPath, "EnemyKillData.db");
+        //é–‹ç™ºç‰ˆ
+#if UNITY_EDTITOR
+        if (File.Exists(DbPath))
+        {
+            Debug.LogWarning($"æ—¢å­˜ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤ã—ã¾ã—ãŸ:{DbPath}");
+            File.Delete(DbPath);
+        }
+
+        Debug.Log($"âœ… EnemyKillData.db ã‚’åˆæœŸåŒ–ã—ã¾ã—ãŸã€‚ãƒ‘ã‚¹: {DbPath}");
+
+#endif
+       //æ–°ã—ã„ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆ
         _connection = new SQLiteConnection(DbPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
 
-        //ƒe[ƒuƒ‹‚ª–³‚¯‚ê‚Îì¬
+        // ãƒ†ãƒ¼ãƒ–ãƒ«ä½œæˆï¼ˆå­˜åœ¨ã—ãªã‘ã‚Œã°ä½œæˆï¼‰
         _connection.CreateTable<EnemyKillData>();
-        
-    }
-    
+
+        Debug.Log($"âœ… EnemyKillData.db ã‚’åˆæœŸåŒ–ã—ã¾ã—ãŸã€‚ãƒ‘ã‚¹: {DbPath}");
+    }  
     ///<summray>
-    ///“GŒ‚”jƒf[ƒ^‚ğ’Ç‰Á–”‚ÍXV
+    ///æ•µæ’ƒç ´ãƒ‡ãƒ¼ã‚¿ã‚’è¿½åŠ åˆã¯æ›´æ–°
     ///</summray>
     public void AddOrUpdateKillData(EnemyStats stats, string areaName)
     {
-        //Šù‘¶ƒf[ƒ^ŒŸõ
+        //æ—¢å­˜ãƒ‡ãƒ¼ã‚¿æ¤œç´¢
         var existingDate = _connection.Table<EnemyKillData>()
         .FirstOrDefault(e => e.EnemyID == stats.ID && e.AreaName == areaName);
 
@@ -36,16 +48,16 @@ public class EnemyDataBase : MonoBehaviour
             existingDate.KillCount += 1;
             existingDate.LastKillTime = now;
             _connection.Update(existingDate);
-            Debug.Log($"yŒ‚”j‹L˜^z{existingDate.EnemyName} ‚ğ“|‚µ‚½I " +
-                  $"êŠ: {existingDate.AreaName} / —İŒv: {existingDate.KillCount} ‰ñ / ÅI: {existingDate.LastKillTime}");
+            Debug.Log($"ã€æ’ƒç ´è¨˜éŒ²ã€‘{existingDate.EnemyName} ã‚’å€’ã—ãŸï¼ " +
+                  $"å ´æ‰€: {existingDate.AreaName} / ç´¯è¨ˆ: {existingDate.KillCount} å› / æœ€çµ‚: {existingDate.LastKillTime}");
         }
 
         else
         {
             var newDate = new EnemyKillData(stats, areaName, 1, now);
             _connection.Insert(newDate);
-            Debug.Log($"yŒ‚”j‹L˜^z{newDate.EnemyName} ‚ğ“|‚µ‚½I " +
-                 $"êŠ: {newDate.AreaName} / —İŒv: {newDate.KillCount} ‰ñ / ÅI: {newDate.LastKillTime}");
+            Debug.Log($"ã€æ’ƒç ´è¨˜éŒ²ã€‘{newDate.EnemyName} ã‚’å€’ã—ãŸï¼ " +
+                 $"å ´æ‰€: {newDate.AreaName} / ç´¯è¨ˆ: {newDate.KillCount} å› / æœ€çµ‚: {newDate.LastKillTime}");
         }
     }
 }
