@@ -52,7 +52,7 @@ public class LightDarkWorld : MonoBehaviour
     {
         if (brightnessState == brightness.Dark && s == brightness.Light)  //闇→光
         {
-            if (state.carryingBuddy)  //Buddyおんぶしてるとき
+            if (state.carryingBuddy || state.nearBell)  //Buddyおんぶしてるとき
             {
                 brightnessState = brightness.Light;
                 Debug.Log("■■■魔法「破壊超陽光」■■■");

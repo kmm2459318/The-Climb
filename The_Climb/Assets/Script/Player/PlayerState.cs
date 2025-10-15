@@ -42,6 +42,7 @@ public class PlayerState : MonoBehaviour
     public float erosionLevel = 0;       //プレイヤーの侵蝕度
     public int sanityLevel = 100;        //プレイヤーの正気度
     public bool carryingBuddy = true;    //Buddyをおんぶしてる状態か判定
+    public bool nearBell = false;       //WhiteBellの近くか判定
 
     void Start()
     {
@@ -186,6 +187,18 @@ public class PlayerState : MonoBehaviour
         if (other.gameObject.CompareTag("SearchItem"))
         {
             Destroy(other.gameObject);
+        }
+        else if (other.gameObject.CompareTag("WhiteBell"))
+        {
+            nearBell = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("WhiteBell"))
+        {
+            nearBell = false;
         }
     }
 }
