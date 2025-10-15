@@ -1,135 +1,144 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
+ï»¿using UnityEngine;
 
 public class PlayerState : MonoBehaviour
 {
-    public bool highJumpOn = false;      //ƒnƒCƒWƒƒƒ“ƒv‰Â”\‚©
-    public bool quickJumpOn = false;     //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‰Â”\‚©
-    public bool meteorDropOn = false;    //ƒƒeƒIƒhƒƒbƒvŠ‚©
+    [Header("ç‰¹æ®Šã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®å¯å¦")]
+    public bool highJumpOn = false;
+    public bool quickJumpOn = false;
+    public bool meteorDropOn = false;
 
+    [Header("å‚ç…§")]
     public Rigidbody RigidBody;
     public KeyBind keyBind;
-    PlayerMove move;
-    PlayerJump jump;
-    PlayerSpecialAction special; 
+    public PlayerMove move;
+    public PlayerJump jump;
+    public PlayerSpecialAction special;
     public PlayerAnimation PlayerAnimation;
 
-    public bool playerDirectionRight = true;  //ƒvƒŒƒCƒ„[‚ÌŒ©‚Ä‚¢‚é•ûŒü‚ª‰E‚È‚çtrueA¶‚È‚çfalse
-    private bool wasGrounded = false;    //‘OƒtƒŒ[ƒ€‚Ì’n–Êó‘Ô
-    public bool landing = false;         //’…’n”»’è
-    private float landingJumpTime = 0.1f;  //’…’nƒWƒƒƒ“ƒv‚Ì—P—\ƒ^ƒCƒ€
-    private float landingJumpCounter = 0f;  //’…’nƒWƒƒƒ“ƒv‚Ì—P—\ƒJƒEƒ“ƒ^[
-    public bool landingJumpOn = false;  //’…’nƒWƒƒƒ“ƒv‚ÌƒJƒEƒ“ƒg‚ğn‚ß‚é—p
+    [Header("æ–¹å‘ãƒ»æ¥åœ°çŠ¶æ…‹")]
+    public bool playerDirectionRight = true;
+    public bool isGrounded;
+    public bool isJumpMoveOK;
+    public bool isLeftWall;
+    public bool isRightWall;
+    public bool isAir;
+    private bool wasGrounded = false;
+    public bool landing = false;
+    public bool landingJumpOn = false;
 
-    public Transform groundCheck;        //ƒvƒŒƒCƒ„[‘«Œ³‚Ì’n–Ê”»’è—pƒIƒuƒWƒFƒNƒg
-    public bool isGrounded;              //’n–Ê”»’è
-    public Transform jumpMoveOKCheck;    //ƒvƒŒƒCƒ„[‘«Œ³‚ÌƒWƒƒƒ“ƒv”»’è—pƒIƒuƒWƒFƒNƒg
-    public bool isJumpMoveOK;            //ƒWƒƒƒ“ƒvOK”»’è
-    public Transform leftWallCheck;      //ƒvƒŒƒCƒ„[‘«Œ³‚Ì¶•Ç”»’è—pƒIƒuƒWƒFƒNƒg
-    public bool isLeftWall;              //¶•Ç”»’è
-    public Transform rightWallCheck;     //ƒvƒŒƒCƒ„[‘«Œ³‚Ì‰E•Ç”»’è—pƒIƒuƒWƒFƒNƒg
-    public bool isRightWall;             //‰E•Ç”»’è
-    public LayerMask groundLayer;  //’n–ÊƒŒƒCƒ„[
-    private float groundCheckRadius = 0.1f;  //’n–Ê”»’è‚Ì”¼Œa
-    public bool isAir = false;          //‹ó’†”»’è
+    [Header("åˆ¤å®šä½ç½®")]
+    public Transform groundCheck;
+    public Transform jumpMoveOKCheck;
+    public Transform leftWallCheck;
+    public Transform rightWallCheck;
 
-    private float playerFallSpeed = -19f;  //ƒvƒŒƒCƒ„[‚Ì—‰º‘¬“x
-    public bool justLanded = false; // ¡ƒtƒŒ[ƒ€’…’n‚µ‚½‚©
+    [Header("ãƒ¬ã‚¤ãƒ¤ãƒ¼è¨­å®š")]
+    public LayerMask groundLayer;
 
+    [Header("åˆ¤å®šè¨­å®š")]
+    private float groundCheckRadius = 0.1f;
+    private Collider[] _hitBuffer = new Collider[8];
+
+    [Header("ã‚¸ãƒ£ãƒ³ãƒ—çŒ¶äºˆé–¢é€£")]
+    private float landingJumpTime = 0.1f;
+    private float landingJumpCounter = 0f;
+
+    [Header("è½ä¸‹åˆ¶å¾¡")]
+    private float playerFallSpeed = -19f;
 
     void Start()
     {
-        keyBind = GameObject.Find("KeyManager").GetComponent<KeyBind>();
-        RigidBody = GetComponent<Rigidbody>();
-        move = GetComponent<PlayerMove>();
-        jump = GetComponent<PlayerJump>();
-        special = GetComponent<PlayerSpecialAction>();
-
-        PlayerAnimation = transform.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
+        if (!RigidBody) RigidBody = GetComponent<Rigidbody>();
+        if (!move) move = GetComponent<PlayerMove>();
+        if (!jump) jump = GetComponent<PlayerJump>();
+        if (!special) special = GetComponent<PlayerSpecialAction>();
+        if (!PlayerAnimation) PlayerAnimation = GetComponent<PlayerAnimation>();
+        if (!keyBind) keyBind = GameObject.Find("KeyManager").GetComponent<KeyBind>();
 
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
 
-        // ƒCƒ“ƒXƒyƒNƒ^[‚Ü‚½‚ÍƒXƒNƒŠƒvƒg‚Åİ’è
-        //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         RigidBody.interpolation = RigidbodyInterpolation.Interpolate;
-
-        Physics.gravity = new Vector3(0, -45F, 0); // G‚ğ”{‚É‚·‚é
+        Physics.gravity = new Vector3(0, -45f, 0);
     }
 
-    private void Update()
+    void Update()
     {
-        // ¶•Ç”»’èiƒJƒvƒZƒ‹Œ`j
-        isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.60f, leftWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayer);
-        // ‰E•Ç”»’èiƒJƒvƒZƒ‹Œ`j
-        isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.60f, rightWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayer);
+        // å£åˆ¤å®š
+        isLeftWall = CheckHitCapsule(leftWallCheck.position + Vector3.up * 0.6f, leftWallCheck.position + Vector3.down * 0.6f, 0.001f, groundLayer);
+        isRightWall = CheckHitCapsule(rightWallCheck.position + Vector3.up * 0.6f, rightWallCheck.position + Vector3.down * 0.6f, 0.001f, groundLayer);
 
+        // åœ°é¢åˆ¤å®š
         if (jump.jumpCoolActive || jump.jumping)
-        {
             isGrounded = false;
-        }
         else
-        {
-            // ’n–Ê”»’èiƒJƒvƒZƒ‹Œ`j
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
-        }
+            isGrounded = CheckHitCapsule(groundCheck.position + Vector3.up * 0f, groundCheck.position + Vector3.down * 0.5f, groundCheckRadius, groundLayer);
 
-        //‹ó’†AisJumpOK‚ğ”½‰‚³‚¹‚È‚¢
+        // ã‚¸ãƒ£ãƒ³ãƒ—å¯èƒ½åˆ¤å®š
         if (isAir)
-        {
             isJumpMoveOK = false;
-        }
         else
-        {
-            // ƒWƒƒƒ“ƒvOK”»’èiƒJƒvƒZƒ‹Œ`j
-            isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, 0.19f, groundLayer);
-        }
+            isJumpMoveOK = CheckHitSphere(jumpMoveOKCheck.position, 0.19f, groundLayer);
 
-        //’…’nƒ`ƒFƒbƒN
+        // ç€åœ°ãƒã‚§ãƒƒã‚¯
         if (!jump.jumpCoolActive)
-        {
             LandingCheck();
-        }
 
-        //‹ó’†”»’è
-        if (!isGrounded && !isJumpMoveOK)
-        {
-            isAir = true;
-        }
-        else
-        {
-            isAir = false;
-        }
-        
-        //—‰º‘¬“x’²®
+        // ç©ºä¸­åˆ¤å®š
+        isAir = !isGrounded && !isJumpMoveOK;
+
+        // è½ä¸‹é€Ÿåº¦åˆ¶å¾¡
         if (RigidBody.linearVelocity.y < playerFallSpeed && !isGrounded && !jump.jumping && !landing)
         {
             RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerFallSpeed, 0);
         }
 
-        //•Ç‚É“–‚½‚é‚Ì‚È‚ç‚Î‹­§’â~
-    //    if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
-    //(isRightWall && RigidBody.linearVelocity.x > 0))
-    //    {
-    //        RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
-    //    }
-
-        //‘OƒtƒŒ[ƒ€‚ÌÚ’n”»’è
         wasGrounded = isGrounded;
+    }
 
+    // å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚‚å«ã‚ã¦ãƒ¬ã‚¤ãƒ¤ãƒ¼åˆ¤å®š
+    private bool CheckHitCapsule(Vector3 start, Vector3 end, float radius, LayerMask layer)
+    {
+        int count = Physics.OverlapCapsuleNonAlloc(start, end, radius, _hitBuffer);
+        for (int i = 0; i < count; i++)
+        {
+            if (IsObjectOrChildOnLayer(_hitBuffer[i].gameObject, layer))
+                return true;
+        }
+        return false;
+    }
+
+    private bool CheckHitSphere(Vector3 center, float radius, LayerMask layer)
+    {
+        int count = Physics.OverlapSphereNonAlloc(center, radius, _hitBuffer);
+        for (int i = 0; i < count; i++)
+        {
+            if (IsObjectOrChildOnLayer(_hitBuffer[i].gameObject, layer))
+                return true;
+        }
+        return false;
+    }
+
+    private bool IsObjectOrChildOnLayer(GameObject obj, LayerMask mask)
+    {
+        Transform t = obj.transform;
+        while (t != null)
+        {
+            if (((1 << t.gameObject.layer) & mask) != 0)
+                return true;
+            t = t.parent;
+        }
+        return false;
     }
 
     private void LandingCheck()
     {
         landing = false;
+
         if (!wasGrounded && isGrounded)
         {
             landing = true;
-
-            //  ’…’nƒWƒƒƒ“ƒv‰ñ”‚ğ‘‚â‚·iÅ‘å2‚Ü‚Åj
             jump.landingJumpNumber = Mathf.Min(jump.landingJumpNumber + 1, 2);
-
             landingJumpCounter = 0f;
             landingJumpOn = true;
             isLeftWall = false;
@@ -142,34 +151,26 @@ public class PlayerState : MonoBehaviour
             }
         }
 
-        // —P—\ŠÔƒJƒEƒ“ƒgiƒI[ƒo[‚µ‚½‚çƒŠƒZƒbƒgj
         if (landingJumpOn)
         {
             landingJumpCounter += Time.deltaTime;
-
             if (landingJumpCounter > landingJumpTime)
             {
                 jump.landingJumpNumber = 0;
                 special.meteorHighJumpOK = false;
-                LandingJumpReset();
+                landingJumpOn = false;
             }
         }
     }
 
-
+    // ----------------------------------------------------------
+    // PlayerJump ã‹ã‚‰å‘¼ã¹ã‚‹ã‚ˆã†ã«è¿½åŠ 
+    // ----------------------------------------------------------
     public void LandingJumpReset()
     {
         landingJumpOn = false;
         special.quickJumpUsed = false;
         special.meteorDropUsed = false;
-        special.meteorDropCounter = 0;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("SearchItem"))
-        {
-            Destroy(other.gameObject);
-        }
+        special.meteorDropCounter = 0f;
     }
 }
