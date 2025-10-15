@@ -251,6 +251,54 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2272384167279023827, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
   m_PrefabInstance: {fileID: 769747898}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &540497647
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 540497649}
+  - component: {fileID: 540497648}
+  m_Layer: 0
+  m_Name: MirrorMove
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &540497648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540497647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1b373f67a679de48a4ee78da6558fd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MirrorMove
+  player1: {fileID: 600808809}
+  player2: {fileID: 436473674}
+  moveSpeed: 5
+  moveAction: {fileID: 0}
+--- !u!4 &540497649
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540497647}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 17.69037, y: 13.28188, z: -123.39486}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &600808809 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2272384167279023827, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
@@ -1241,7 +1289,7 @@ MonoBehaviour:
   slipping: 0
   slipVelocity: {x: 0, y: 0, z: 0}
   PlayerAnimation: {fileID: 0}
-  reverseControl: 1
+  reverseHorizontal: 1
 --- !u!1 &1924900343
 GameObject:
   m_ObjectHideFlags: 0
@@ -1418,3 +1466,4 @@ SceneRoots:
   - {fileID: 769747898}
   - {fileID: 865651752}
   - {fileID: 786854208}
+  - {fileID: 540497649}
