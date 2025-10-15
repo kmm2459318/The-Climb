@@ -17,6 +17,7 @@ public class EnemyKillAnalyzer : MonoBehaviour
         _connection.CreateTable<EnemyKillData>();
     }
 
+
     /// <summary>
     /// 敵の撃破データの割合を計算して表示
     /// </summary>
