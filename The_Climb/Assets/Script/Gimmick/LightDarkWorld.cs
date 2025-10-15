@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using UnityEditor.Rendering.Universal;
 using UnityEngine;
 
 public class LightDarkWorld : MonoBehaviour
@@ -70,20 +71,32 @@ public class LightDarkWorld : MonoBehaviour
     private void LayerChange(bool isLight)
     {
         int player = LayerMask.NameToLayer("Player");
+        int buddy = LayerMask.NameToLayer("Buddy");
         int ground = LayerMask.NameToLayer("Ground");
         int whiteGround = LayerMask.NameToLayer("WhiteGround");
         int blackGround = LayerMask.NameToLayer("BlackGround");
-        int lightOther = LayerMask.NameToLayer("WhiteOther");
-        int darkOther = LayerMask.NameToLayer("BlackOther");
+        int whiteOther = LayerMask.NameToLayer("WhiteOther");
+        int blackOther = LayerMask.NameToLayer("BlackOther");
+
+        int[] target = { player, buddy };  //動く側のレイヤー
+        (int layer, bool whatBrightness)[] obj = {
+            (whiteGround, true),
+            (blackGround, false),
+            (whiteOther, true),
+            (blackOther, false)
+        };  //白黒のレイヤーたち
 
         //物理的な当たり判定制御
-        Physics.IgnoreLayerCollision(player, whiteGround, !isLight);
-        Physics.IgnoreLayerCollision(player, blackGround, isLight);
-        Physics.IgnoreLayerCollision(player, lightOther, !isLight);
-        Physics.IgnoreLayerCollision(player, darkOther, isLight);
+        foreach (int t in target)
+        {
+            foreach (var (lay, what) in obj)
+            {
+                Physics.IgnoreLayerCollision(t, lay, isLight == what);
+            }
+        }
 
         //判定用LayerMaskの設定
-        if (isLight)
+        if (!isLight)
         {
             state.groundLayerMask =
                 (1 << ground) | (1 << whiteGround);
