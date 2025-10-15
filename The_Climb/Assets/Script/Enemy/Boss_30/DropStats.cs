@@ -1,28 +1,28 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [CreateAssetMenu(menuName = "EnemyStats/DropStats")]
 public class DropStats : ScriptableObject
 {
-    [Header("“Ëiİ’è")]
-    public float RushSpeed = 10f;//‰•œ‘¬“x
-    public int DiagonalRushCount = 3;//‰•œ‰ñ”i•Ğ“¹‚¸‚Â‚ÌƒJƒEƒ“ƒgj
-    public float PointA_X = -10f;  // ¶’[iA’n“_j
-    public float PointB_X = 10f;   // ‰E’[iB’n“_j
+    [Header("çªé€²è¨­å®š")]
+    public float RushSpeed = 10f;//å¾€å¾©é€Ÿåº¦
+    public int DiagonalRushCount = 3;//å¾€å¾©å›æ•°ï¼ˆç‰‡é“ãšã¤ã®ã‚«ã‚¦ãƒ³ãƒˆï¼‰
+    public float PointA_X = -10f;  // å·¦ç«¯ï¼ˆAåœ°ç‚¹ï¼‰
+    public float PointB_X = 10f;   // å³ç«¯ï¼ˆBåœ°ç‚¹ï¼‰
 
-    [Header("ƒƒeƒIƒhƒƒbƒvİ’è")]
-    public float MeteorDropSpeed = 20f;//ƒƒeƒIƒhƒƒbƒv‚Ì‘¬“x
+    [Header("ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—è¨­å®š")]
+    public float MeteorDropSpeed = 20f;//ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®é€Ÿåº¦
     public int meteorDropCount = 2;
     public float RiseSpeed = 5f;
     public float WaitBeforeMeteor = 1.5f;
-    public float HoverHeight = 20f; // ƒƒeƒI‘O‚Ìƒzƒo[ƒ|ƒWƒVƒ‡ƒ“Y
+    public float HoverHeight = 20f; // ãƒ¡ãƒ†ã‚ªå‰ã®ãƒ›ãƒãƒ¼ãƒã‚¸ã‚·ãƒ§ãƒ³Y
 
-    [Header("ƒƒeƒIƒhƒƒbƒv‚ÌƒGƒCƒ€’†‚Ìİ’è")]
-    public float AimMoveLeftX = -3f;  // ‘_‚¢“®ì‚Ì¶’[
-    public float AimMoveRightX = 3f;  // ‘_‚¢“®ì‚Ì‰E’[
-    public float AimMoveSpeed = 5f;   // ‘_‚¢“®ì‚ÌƒXƒs[ƒh
-    public int AimMoveCount = 3;      // ‰•œ‰ñ”i•Ğ“¹ = 1 ‰ñj
+    [Header("ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®ã‚¨ã‚¤ãƒ ä¸­ã®è¨­å®š")]
+    public float AimMoveLeftX = -3f;  // ç‹™ã„å‹•ä½œã®å·¦ç«¯
+    public float AimMoveRightX = 3f;  // ç‹™ã„å‹•ä½œã®å³ç«¯
+    public float AimMoveSpeed = 5f;   // ç‹™ã„å‹•ä½œã®ã‚¹ãƒ”ãƒ¼ãƒ‰
+    public int AimMoveCount = 3;      // å¾€å¾©å›æ•°ï¼ˆç‰‡é“ = 1 å›ï¼‰
 
-    [Header("•â‘«Ú×İ’è")]
-    public float GroundY = 0f;     // ’n–ÊYÀ•WiÚ’n”»’è‚â—‰º’â~—pj
+    [Header("è£œè¶³è©³ç´°è¨­å®š")]
+    public float GroundY = 0f;     // åœ°é¢Yåº§æ¨™ï¼ˆæ¥åœ°åˆ¤å®šã‚„è½ä¸‹åœæ­¢ç”¨ï¼‰
         
 }

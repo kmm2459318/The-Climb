@@ -1,32 +1,32 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class BossBullet : MonoBehaviour
 {
     public Boss_20_StatusObjectScript status;
-    private float Speed;
-    public float LifeTime = 5f;
-    public float HitRadious = 5.0f;
-    private Transform PlayerTransform;
-    private Vector3 MoveDirection;
-    private bool Initialized = false;
+    private float speed;
+    public float lifeTime = 5f;
+    public float hitRadious = 5.0f;
+    private Transform playerTransform;
+    private Vector3 moveDirection;
+    private bool initialized = false;
 
     public void Initialize(Transform player)
     {
-        PlayerTransform = player;
-        Speed = status.Attack_Speed;
-        MoveDirection = (player.position - transform.position).normalized;
-        Initialized = true;
+        playerTransform = player;
+        speed = status.Attack_Speed;
+        moveDirection = (player.position - transform.position).normalized;
+        initialized = true;
 
-        Destroy(gameObject, LifeTime);
+        Destroy(gameObject, lifeTime);
     }
 
     void Update()
     {
-        if (!Initialized) return;
-        transform.position += MoveDirection * Speed * Time.deltaTime;
-        if(PlayerTransform != null && Vector3.Distance(transform.position, PlayerTransform.position) < HitRadious)
+        if (!initialized) return;
+        transform.position += moveDirection * speed * Time.deltaTime;
+        if(playerTransform != null && Vector3.Distance(transform.position, playerTransform.position) < hitRadious)
         {
-            Debug.Log("ƒqƒbƒgIiŽ©ì•¨—j");
+            Debug.Log("ãƒ’ãƒƒãƒˆï¼ï¼ˆè‡ªä½œç‰©ç†ï¼‰");
             Destroy(gameObject);
         }
     }

@@ -1,5 +1,5 @@
-//  ƒLƒƒƒ“ƒoƒX–¼ˆê——
+ï»¿//  ã‚­ãƒ£ãƒ³ãƒã‚¹åä¸€è¦§
 public static class CanvasName
 {
-    public const string EdgeDarkCacvas = "EdgeDarkCanvas";    //  ’[‚ÌˆÅ‚ÌƒLƒƒƒ“ƒoƒX
+    public const string EdgeDarkCacvas = "EdgeDarkCanvas";    //  ç«¯ã®é—‡ã®ã‚­ãƒ£ãƒ³ãƒã‚¹
 }

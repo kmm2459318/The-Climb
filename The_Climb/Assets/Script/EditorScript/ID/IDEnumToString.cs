@@ -1,26 +1,26 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 
-//  ID‚Ég‚¤ƒJƒeƒSƒŠ[‚âƒxƒ‹‚Ç‚Ì—ñ‹“Œ^‚ğƒXƒgƒŠƒ“ƒO‚É•ÏŠ·
+//  IDã«ä½¿ã†ã‚«ãƒ†ã‚´ãƒªãƒ¼ã‚„ãƒ™ãƒ«ã©ã®åˆ—æŒ™å‹ã‚’ã‚¹ãƒˆãƒªãƒ³ã‚°ã«å¤‰æ›
 public class IDEnumToString
 {
-    private static readonly Dictionary<IDCategory, string> IDCategoryMap = new()    //  ID¶¬‚Ég‚¤ƒJƒeƒSƒŠ[ƒ}ƒbƒv
+    private static readonly Dictionary<IDCategory, string> IDCategoryMap = new()    //  IDç”Ÿæˆã«ä½¿ã†ã‚«ãƒ†ã‚´ãƒªãƒ¼ãƒãƒƒãƒ—
     {
         { IDCategory.UNDEFINED, "Undefined" },
         { IDCategory.EFFECT, "Effect" },
         { IDCategory.PLAYER, "Player" },
     };
-    private static readonly Dictionary<IDLabel, string> IDLabelMap = new()    //  ID¶¬‚Ég‚¤ƒ‰ƒxƒ‹ƒ}ƒbƒv
+    private static readonly Dictionary<IDLabel, string> IDLabelMap = new()    //  IDç”Ÿæˆã«ä½¿ã†ãƒ©ãƒ™ãƒ«ãƒãƒƒãƒ—
     {
         { IDLabel.UNDNAMED, "Unnamed" },
         { IDLabel.DARK, "Dark" },
         { IDLabel.SPINE, "Spine" },
         { IDLabel.FADE, "Fade" },
     };
-    //  IDƒJƒeƒSƒŠ[‚É‰‚¶‚Ä«‘Œ^‚©‚çƒL[‚ğo—Í
+    //  IDã‚«ãƒ†ã‚´ãƒªãƒ¼ã«å¿œã˜ã¦è¾æ›¸å‹ã‹ã‚‰ã‚­ãƒ¼ã‚’å‡ºåŠ›
     public static string ToString(IDCategory category) =>
         IDCategoryMap.TryGetValue(category, out var result) ? result : "Undefined";
 
-    //  IDƒ‰ƒxƒ‹‚É‰‚¶‚Ä«‘Œ^‚©‚çƒL[‚ğo—Í
+    //  IDãƒ©ãƒ™ãƒ«ã«å¿œã˜ã¦è¾æ›¸å‹ã‹ã‚‰ã‚­ãƒ¼ã‚’å‡ºåŠ›
     public static string ToString(IDLabel label) =>
         IDLabelMap.TryGetValue(label, out var result) ? result : "Unnamed";
 }

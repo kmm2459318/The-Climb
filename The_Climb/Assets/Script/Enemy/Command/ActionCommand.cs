@@ -1,16 +1,16 @@
-using System;
+ï»¿using System;
 
-//  •Ô‚è’l‚È‚µ‚ÌŠÖ”ÀsƒNƒ‰ƒX
-public class ActionCommand : ICommand
+//  è¿”ã‚Šå€¤ãªã—ã®é–¢æ•°å®Ÿè¡Œã‚¯ãƒ©ã‚¹
+public class ActionCommand : ICommand_Enemy
 {
-    Action _Action;    //  ŠÖ”•Û—L•Ï”
+    Action _Action;    //  é–¢æ•°ä¿æœ‰å¤‰æ•°
 
-    //  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    //  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     public ActionCommand(Action Action)
     {
         _Action = Action;
     }
-    //  ŠÖ”Às
+    //  é–¢æ•°å®Ÿè¡Œ
     public object Execute()
     {
         _Action();

@@ -1,19 +1,19 @@
-//using UnityEngine;
+ï»¿//using UnityEngine;
 //using System.Collections;
 
-////  ƒtƒF[ƒhƒAƒEƒgis“xƒRƒ“ƒgƒ[ƒ‹
+////  ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆé€²è¡Œåº¦ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«
 //public class FadeController : MonoBehaviour
 //{
 //    CustomFadeFeature customFadeFeature;
-//    public Material fadeMaterial;    //  ƒtƒF[ƒhƒAƒEƒg‚·‚éƒ}ƒeƒŠƒAƒ‹
-//    private Material runtimeMaterial;    //  Às‚Ìƒ}ƒeƒŠƒAƒ‹
-//    Coroutine fade;    //  ƒtƒF[ƒhƒRƒ‹[ƒ`ƒ“
+//    public Material fadeMaterial;    //  ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã™ã‚‹ãƒãƒ†ãƒªã‚¢ãƒ«
+//    private Material runtimeMaterial;    //  å®Ÿè¡Œæ™‚ã®ãƒãƒ†ãƒªã‚¢ãƒ«
+//    Coroutine fade;    //  ãƒ•ã‚§ãƒ¼ãƒ‰ã‚³ãƒ«ãƒ¼ãƒãƒ³
 
-//    [SerializeField] float FadeDuration;    //  ƒtƒF[ƒh‚·‚é
+//    [SerializeField] float FadeDuration;    //  ãƒ•ã‚§ãƒ¼ãƒ‰ã™ã‚‹
 
 //    void Awake()
 //    {
-//        // ‹¤—Lƒ}ƒeƒŠƒAƒ‹‚ğ‰˜‚³‚È‚¢‚½‚ßƒCƒ“ƒXƒ^ƒ“ƒX‰»
+//        // å…±æœ‰ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’æ±šã•ãªã„ãŸã‚ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–
 //        runtimeMaterial = new Material(fadeMaterial);
 
 //        Initialize();
@@ -22,15 +22,15 @@
 //    {
 //        fade = StartCoroutine(Fade(1f, 0f));
 //    }
-//    //  ‰Šú‰»ŠÖ”
+//    //  åˆæœŸåŒ–é–¢æ•°
 //    void Initialize()
 //    {
 //        FadeDuration = 1.0f;  
 //    }
-//    //  ƒtƒF[ƒhƒ‹[ƒ`ƒ“
+//    //  ãƒ•ã‚§ãƒ¼ãƒ‰ãƒ«ãƒ¼ãƒãƒ³
 //    public IEnumerator Fade(float from, float to)
 //    {
-//        float FadingTime = 0f;    //  ŠÔƒJƒEƒ“ƒg
+//        float FadingTime = 0f;    //  æ™‚é–“ã‚«ã‚¦ãƒ³ãƒˆ
 //        while (FadingTime < FadeDuration)
 //        {
 //            FadingTime += Time.deltaTime;

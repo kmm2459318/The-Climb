@@ -1,24 +1,24 @@
-//  ŽžŠÔÝ’è‚ð’ñ‹Ÿ‚Å‚«‚é‚æ‚¤‚ÉÝ’è
+ï»¿//  æ™‚é–“è¨­å®šã‚’æä¾›ã§ãã‚‹ã‚ˆã†ã«è¨­å®š
 public class TimeSettingWrapper : ITimeConfig
 {
-    private readonly TimeSetting timeSetting;    //  ŽžŠÔÝ’è
+    private readonly TimeSetting timeSetting;    //  æ™‚é–“è¨­å®š
 
-    //  Ý’è‘ã“üƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    //  è¨­å®šä»£å…¥ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     public TimeSettingWrapper(TimeSetting _timeSetting)
     {
         timeSetting = _timeSetting;
     }
 
-    //  ‰ŠúŽžŠÔƒvƒƒpƒeƒB
+    //  åˆæœŸæ™‚é–“ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     public float InitializeTimeProperty => timeSetting.InitializeTime;
-    //  1“ú‚Ì‘ŽÀŽžŠÔƒvƒƒpƒeƒB
+    //  1æ—¥ã®ç·å®Ÿæ™‚é–“ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     public float OneDayTimeProperty => timeSetting.OneDayTime;
-    //  1“ú‚Ì“ú’†‚ÌŽÀŽžŠÔƒvƒƒpƒeƒB
+    //  1æ—¥ã®æ—¥ä¸­ã®å®Ÿæ™‚é–“ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     public float DayTimeProperty => timeSetting.DayTime;
-    //  1“ú‚Ì–é‚ÌŽÀŽžŠÔƒvƒƒpƒeƒB
+    //  1æ—¥ã®å¤œã®å®Ÿæ™‚é–“ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     public float NightTimeProperty => timeSetting.NightTime;
-    //  1•b‚ ‚½‚è‚ÌisŽžŠÔ
+    //  1ç§’ã‚ãŸã‚Šã®é€²è¡Œæ™‚é–“
     public float ProgressTimeProperty => timeSetting.TimeProgressValue;
-    //  ‰Šú“ú•tƒvƒƒpƒeƒB
+    //  åˆæœŸæ—¥ä»˜ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     public int InitializeDateProperty => timeSetting.InitializeDate;
 }

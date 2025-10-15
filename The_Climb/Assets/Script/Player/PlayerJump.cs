@@ -1,8 +1,8 @@
-using UnityEngine;
-using System;
+Ôªøusing UnityEngine;
 
 public class PlayerJump : MonoBehaviour
 {
+<<<<<<< HEAD
     // ==========================================================
     // éQè∆
     // ==========================================================
@@ -21,6 +21,13 @@ public class PlayerJump : MonoBehaviour
     public float landingHighJumpPower = 15f;
     public float maxJumpSpeed = 12f;
     [SerializeField] private AnimationCurve jumpCurve = new AnimationCurve();
+=======
+    Rigidbody RigidBody;
+    PlayerState state;
+    PlayerMove move;
+    PlayerSpecialAction special;
+    PlayerKnockBack knock;
+>>>>>>> 54d0e82e499ed78363d7d179fe2ab1d876978995
 
     // ==========================================================
     // ÉWÉÉÉìÉvèÛë‘ÅiInspectorï\é¶Åj
@@ -54,6 +61,7 @@ public class PlayerJump : MonoBehaviour
     private float TrampolineGraceTime = 0.15f;
     private float TrampolineTimer = 0f;
 
+<<<<<<< HEAD
     // ==========================================================
     // ÉCÉxÉìÉg
     // ==========================================================
@@ -62,13 +70,21 @@ public class PlayerJump : MonoBehaviour
     // ==========================================================
     // èâä˙âª
     // ==========================================================
+=======
+>>>>>>> 54d0e82e499ed78363d7d179fe2ab1d876978995
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();
         state = GetComponent<PlayerState>();
+<<<<<<< HEAD
         move = GetComponent<PlayerMove>();
         special = GetComponent<PlayerSpecialAction>();
         playerAnimation = GetComponent<PlayerAnimation>();
+=======
+        move = gameObject.GetComponent<PlayerMove>();
+        special = gameObject.GetComponent<PlayerSpecialAction>();
+        knock = gameObject.GetComponent<PlayerKnockBack>();
+>>>>>>> 54d0e82e499ed78363d7d179fe2ab1d876978995
     }
 
     // ==========================================================
@@ -76,7 +92,15 @@ public class PlayerJump : MonoBehaviour
     // ==========================================================
     void Update()
     {
+<<<<<<< HEAD
         JumpOperation();
+=======
+        //„Ç∏„É£„É≥„Éó„Ç≠„ÉºÊìç‰Ωú
+        if (!knock.knockBacking)„ÄÄ//„Éé„ÉÉ„ÇØ„Éê„ÉÉ„ÇØ‰∏≠„ÅØ‰∏çÂèØ
+        {
+            JumpOperation();
+        }
+>>>>>>> 54d0e82e499ed78363d7d179fe2ab1d876978995
 
         // ÉWÉÉÉìÉvÉNÅ[ÉãÉ^ÉCÉÄä«óù
         if (jumpCoolActive)
@@ -127,7 +151,12 @@ public class PlayerJump : MonoBehaviour
     // ==========================================================
     private void JumpOperation()
     {
+<<<<<<< HEAD
         if (Input.GetKeyDown(state.keyBind.playerJump) && !special.meteorHighJumpOK && !isJumpQueued)
+=======
+        //„Ç∏„É£„É≥„Éó„Ç≠„ÉºÊäº„Åï„Çå„Åü
+        if (state.inputManager.jumpDown && !special.meteorHighJumpOK && !isJumpQueued)
+>>>>>>> 54d0e82e499ed78363d7d179fe2ab1d876978995
         {
             isJumpQueued = true;
             jumpQueueCounter = 0f;
@@ -142,21 +171,38 @@ public class PlayerJump : MonoBehaviour
                 jumpTime = 0f;
                 jumpTimeMax = jumpTimeMaxSaving;
                 isJumpQueued = false;
+<<<<<<< HEAD
                 OnJumped?.Invoke();
+=======
+                //Debug.Log(RigidBody.linearVelocity.y);
+                //Debug.Log("trueÂæå"+special.headingAttack);
+>>>>>>> 54d0e82e499ed78363d7d179fe2ab1d876978995
 
                 if (state.landingJumpOn)
                 {
+<<<<<<< HEAD
                     state.LandingJumpReset();
                 }
             }
             else if (Input.GetKey(state.keyBind.playerJump) && special.meteorHighJumpOK && state.landingJumpOn)
+=======
+                    landingJumpNumber++;
+                    state.LandingJumpReset();
+                }
+            }
+            else if (state.inputManager.jumpHeld && special.meteorHighJumpOK && state.landingJumpOn)  //„É°„ÉÜ„Ç™„Éâ„É≠„ÉÉ„Éó„Åã„Çâ„ÅÆ„Éè„Ç§„Ç∏„É£„É≥„Éó
+>>>>>>> 54d0e82e499ed78363d7d179fe2ab1d876978995
             {
                 if (special.meteorDropCounter >= special.meteorDropTime)
                 {
                     jumpCoolActive = true;
                     special.meteorHighJump = true;
                     landingJumpNumber++;
+<<<<<<< HEAD
                     OnJumped?.Invoke();
+=======
+                    special.headingAttack.SetActive(true);
+>>>>>>> 54d0e82e499ed78363d7d179fe2ab1d876978995
                 }
                 special.meteorHighJumpOK = false;
                 state.LandingJumpReset();
@@ -165,7 +211,11 @@ public class PlayerJump : MonoBehaviour
 
         if (jumping)
         {
+<<<<<<< HEAD
             if (Input.GetKeyUp(state.keyBind.playerJump) && jumpTime <= jumpTimeMaxSaving * 0.5f)
+=======
+            if (state.inputManager.jumpUp && jumpTime <= jumpTimeMaxSaving * 1 / 2)
+>>>>>>> 54d0e82e499ed78363d7d179fe2ab1d876978995
             {
                 jumpTimeMax = jumpTimeMaxSaving * 0.5f;
             }
@@ -188,7 +238,13 @@ public class PlayerJump : MonoBehaviour
     {
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
 
+<<<<<<< HEAD
         if (TrampolineJumping)
+=======
+        //„Éà„É©„É≥„Éù„É™„É≥„Å´‰πó„Å£„Å¶„ÅÑ„ÇãÂ†¥Âêà„Ç∏„É£„É≥„ÉóÂäõ„Çí‰∏ä„Åí„Çã
+        if(TrampolineJumping)
+        {
+>>>>>>> 54d0e82e499ed78363d7d179fe2ab1d876978995
             jumpPower *= TrampolinePower;
 
         float time = jumpTime / jumpTimeMaxSaving;

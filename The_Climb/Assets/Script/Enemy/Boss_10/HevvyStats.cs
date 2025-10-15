@@ -1,30 +1,30 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [CreateAssetMenu(fileName = "HevvyStats", menuName = "BossStats/HevvyStats")]
 public class HevvyStats : ScriptableObject
 {
-    [Header("ˆÚ“®EƒWƒƒƒ“ƒvŠÖ˜A")]
+    [Header("ç§»å‹•ãƒ»ã‚¸ãƒ£ãƒ³ãƒ—é–¢é€£")]
     public float hopSpeed = 2f;
     public float verticalJumpForce = 12f;
     public float arcJumpForce = 8f;
     public float arcJumpHeight = 5f;
     public float smallHopForce = 1.5f;          //
 
-    [Header("ƒzƒbƒvˆÚ“®iƒWƒƒƒ“ƒvŒ^ˆÚ“®j")]
-    public int hopMoveCount = 3;                 // ƒzƒbƒv‚Ì‰ñ”
-    public float hopMoveForce = 3f;              // ‘O•ûŒü‚Ì—Í
-    public float hopMoveHeight = 4f;             // ã•ûŒü‚ÌƒWƒƒƒ“ƒv—Í
+    [Header("ãƒ›ãƒƒãƒ—ç§»å‹•ï¼ˆã‚¸ãƒ£ãƒ³ãƒ—å‹ç§»å‹•ï¼‰")]
+    public int hopMoveCount = 3;                 // ãƒ›ãƒƒãƒ—ã®å›æ•°
+    public float hopMoveForce = 3f;              // å‰æ–¹å‘ã®åŠ›
+    public float hopMoveHeight = 4f;             // ä¸Šæ–¹å‘ã®ã‚¸ãƒ£ãƒ³ãƒ—åŠ›
 
-    [Header("ƒ`ƒƒ[ƒWEƒXƒ^ƒ“ŠÔ")]
+    [Header("ãƒãƒ£ãƒ¼ã‚¸ãƒ»ã‚¹ã‚¿ãƒ³æ™‚é–“")]
     public float chargeTime = 1.5f;
     public float stunDuration = 3f;
 
-    [Header("‹——£ƒgƒŠƒK[")]
-    public float nearTriggerDistance = 3f;@@@ //
-    public float farTriggerDistance = 6f;@@@@//ƒ{ƒX‚Ì‚’¼ƒWƒƒƒ“ƒv‚ÌƒGƒŠƒA”ÍˆÍ
+    [Header("è·é›¢ãƒˆãƒªã‚¬ãƒ¼")]
+    public float nearTriggerDistance = 3f;ã€€ã€€ã€€ //
+    public float farTriggerDistance = 6f;ã€€ã€€ã€€ã€€//ãƒœã‚¹ã®å‚ç›´ã‚¸ãƒ£ãƒ³ãƒ—ã®ã‚¨ãƒªã‚¢ç¯„å›²
 
-    [Header("•K—vƒqƒbƒg”")]
-    public int requiredHitsToDefeat = 3;         //ƒ{ƒX‚Ìƒ‰ƒCƒt
+    [Header("å¿…è¦ãƒ’ãƒƒãƒˆæ•°")]
+    public int requiredHitsToDefeat = 3;         //ãƒœã‚¹ã®ãƒ©ã‚¤ãƒ•
 
 
 }

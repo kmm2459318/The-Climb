@@ -1,8 +1,8 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ‚«”ò‚Î‚µƒCƒ“ƒ^[ƒtƒF[ƒX
+//  å¹ãé£›ã°ã—ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 public interface IBlowable
 {
-    //  ‚Á”ò‚Î‚·ŠÖ”
+    //  å¹ã£é£›ã°ã™é–¢æ•°
     void Blow(Rigidbody blowTagert, float Direction);
 }

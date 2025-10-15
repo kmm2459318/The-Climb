@@ -1,14 +1,14 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ˆÅ‚ÌƒXƒe[ƒ^ƒXƒuƒƒbƒN
+//  é—‡ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ–ãƒ­ãƒƒã‚¯
 [System.Serializable]
 public class EdgeDarkStatBlock
 {
-    [Header("ˆÅ‚Ìƒ}ƒeƒŠƒAƒ‹")]
-    public Material OverLayMaterial;    //  l‹÷‚©‚çis‚µ‚Ä‚­‚éˆÅ‚Ìƒ}ƒeƒŠƒAƒ‹
-    [Header("ˆÅ‚Ìis’l")]
+    [Header("é—‡ã®ãƒãƒ†ãƒªã‚¢ãƒ«")]
+    public Material OverLayMaterial;    //  å››éš…ã‹ã‚‰é€²è¡Œã—ã¦ãã‚‹é—‡ã®ãƒãƒ†ãƒªã‚¢ãƒ«
+    [Header("é—‡ã®é€²è¡Œå€¤")]
     [Range(0, 1)]
-    public float Progress;    //  ˆÅis“x
-    [Header("•bŠÔ‚ÌisŠ„‡")]
-    public float DarkProgressRate_Sec; //  •bŠÔ‚ÌˆÅis‘¬“x(Š„‡’l)
+    public float Progress;    //  é—‡é€²è¡Œåº¦
+    [Header("ç§’é–“ã®é€²è¡Œå‰²åˆ")]
+    public float DarkProgressRate_Sec; //  ç§’é–“ã®é—‡é€²è¡Œé€Ÿåº¦(å‰²åˆå€¤)
 }
