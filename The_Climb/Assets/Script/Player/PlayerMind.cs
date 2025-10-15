@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 public class PlayerMind : MonoBehaviour
 {
-    private PlayerState playerState;
+    private PlayerState state;
     private LightDarkWorld lightDarkWorld;
 
     private int sanityMax = 100;             //正気度の最大値
@@ -14,21 +14,21 @@ public class PlayerMind : MonoBehaviour
 
     void Start()
     {
-        playerState = GetComponent<PlayerState>();
+        state = GetComponent<PlayerState>();
         lightDarkWorld = GameObject.Find("LightDarkWorld").GetComponent<LightDarkWorld>();
     }
 
     void Update()
     {
         //正気度１００超えたら１００にする
-        if (playerState.sanityLevel > sanityMax)
+        if (state.sanityLevel > sanityMax)
         {
-            playerState.sanityLevel = sanityMax;
+            state.sanityLevel = sanityMax;
         }
         //侵蝕度０下回ったら０にする
-        if (playerState.erosionLevel < 0)
+        if (state.erosionLevel < 0)
         {
-            playerState.erosionLevel = 0;
+            state.erosionLevel = 0;
         }
 
         //暗い闇の中で侵蝕度増加
@@ -42,43 +42,49 @@ public class PlayerMind : MonoBehaviour
         }
 
         //侵蝕があったら正気度減少
-        if (playerState.erosionLevel > 0)
+        if (state.erosionLevel > 0)
         {
-            sanityDecrease();
+            SanityDecrease();
         }
     }
 
     //侵蝕度増加
     private void ErosionIncrease()
     {
-        playerState.erosionLevel += Time.deltaTime;
+        state.erosionLevel += Time.deltaTime;
     }
 
     //侵蝕度リセット
     private void ErosionReset()
     {
-        playerState.erosionLevel = 0;
+        state.erosionLevel = 0;
         SANDecreaseCoolTime = 0f;
     }
 
     //正気度減少
-    private void sanityDecrease()
+    private void SanityDecrease()
     {
         //クールタイム
         SANDecreaseCoolTime += Time.deltaTime;
         if (SANDecreaseCoolTime >= SANDecreaseDuration)
         {
             //減少
-            playerState.sanityLevel--;
+            state.sanityLevel--;
             SANDecreaseCoolTime = 0f;
         }
+    }
+
+    //エリア切り替え時の正気度最大値減少
+    public void SanityMaxDecrease()
+    {
+        sanityMax -= 5;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("SanityHealItem"))
         {
-            playerState.sanityLevel += 5;
+            state.sanityLevel += 5;
             Destroy(other.gameObject);
         }
     }
