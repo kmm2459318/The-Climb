@@ -5,7 +5,8 @@ using UnityEngine;
 public class EnemyStats : ScriptableObject
 {
     public int ID;                   //番号
-    public  string EnemyName;        //名前
+    public string EnemyName;         //名前
+    public string Period;            //時代
     public int HP;　　　　　　　     //体力
     public int AttackPower;　　　　　//攻撃力
     public float Speed;　　　　　　　//速さ

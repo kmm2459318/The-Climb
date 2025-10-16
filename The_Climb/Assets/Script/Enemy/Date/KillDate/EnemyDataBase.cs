@@ -5,10 +5,13 @@ using System.Linq;
 using System;
 public class EnemyDataBase : MonoBehaviour
 {
-    private SQLiteConnection _connection;
-    private string SaveDbPath;
-    private string TempDbPath;
+    public  SQLiteConnection _connection;
+    [HideInInspector]
+    public  string SaveDbPath;
+    [HideInInspector]
+    public  string TempDbPath;
     private bool IsSaveConfirmed = false;
+
 
     /// <summary>
     /// データベースの保存場所
@@ -35,6 +38,12 @@ public class EnemyDataBase : MonoBehaviour
         if (_connection == null)
         {
             Debug.Log("初期化されてません");
+            return;
+        }
+
+        if(stats.Period != "過去")
+        {
+            Debug.Log($"{"stats.EnemyName"}は{stats.Period}の敵のため記録しません");
             return;
         }
 

@@ -2,19 +2,24 @@
 using SQLite4Unity3d;
 using System.Linq;
 using System.IO;
+using System.Collections.Generic;
+using UnityEditor.Overlays;
 
 public class EnemyKillAnalyzer : MonoBehaviour
 {
-    private SQLiteConnection _connection;
+    private EnemyDataBase dbManager;
+    private SQLiteConnection Connection;
 
     private void Awake()
     {
-        // データベースの分析
-        string DbPath = Path.Combine(Application.persistentDataPath, "EnemyKillData.db");
-        _connection = new SQLiteConnection(DbPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
+        dbManager = FindFirstObjectByType<EnemyDataBase>();
+        if(dbManager == null)
+        {
+            Debug.LogError("EnemyDataBaseが見つけられません");
+            return;
+        }
 
-        // テーブルがない場合は作成
-        _connection.CreateTable<EnemyKillData>();
+        Connection = dbManager._connection;
     }
 
 
@@ -24,34 +29,67 @@ public class EnemyKillAnalyzer : MonoBehaviour
     [ContextMenu("Show Kill Ratio")]
     public void ShowKillRatio()
     {
-        var allData = _connection.Table<EnemyKillData>().ToList();
-
-        if (allData.Count == 0)
+        if(Connection == null)
         {
-            Debug.Log("⚠ データがまだありません。敵を倒してから再度お試しください。");
+            Debug.Log("DB接続がありません");
             return;
         }
 
-        // ✅ ① 先に合計撃破数を求める
-        int totalKills = allData.Sum(e => e.KillCount);
+        string TempPath = dbManager.TempDbPath;
+        string SavePath = dbManager.SaveDbPath;
 
-        // ✅ ② 敵ごとに集計
-        var result = allData
+        List<EnemyKillData> tempData = new List<EnemyKillData>();
+        if (File.Exists(TempPath))
+        {
+            using (var tempConn = new SQLiteConnection(TempPath, SQLiteOpenFlags.ReadWrite))
+            {
+                tempData = tempConn.Table<EnemyKillData>().ToList();
+            }
+        }
+
+  
+        List<EnemyKillData> saveData = new List<EnemyKillData>();
+        if (File.Exists(SavePath))
+        {
+            using (var saveConn = new SQLiteConnection(SavePath, SQLiteOpenFlags.ReadWrite))
+            {
+                saveData = saveConn.Table<EnemyKillData>().ToList();
+            }
+        }
+
+        // 両方を統合
+        var allData = tempData.Concat(saveData)
             .GroupBy(e => e.EnemyName)
-            .Select(g => new
+            .Select(g => new EnemyKillData
             {
                 EnemyName = g.Key,
-                TotalKills = g.Sum(e => e.KillCount),
-                Ratio = (float)g.Sum(e => e.KillCount) / totalKills * 100f
+                KillCount = g.Sum(x => x.KillCount)
             })
-            .OrderByDescending(x => x.TotalKills)
             .ToList();
 
-        // ✅ ③ 結果をログに出力
+        if (allData.Count == 0)
+        {
+            Debug.Log("データがまだありません。敵を倒してから再度お試しください。");
+            return;
+        }
+
+        // 合計撃破数
+        int totalKills = allData.Sum(e => e.KillCount);
+
+        // 割合を計算してログ出力
+        var result = allData
+            .OrderByDescending(e => e.KillCount)
+            .Select(e => new
+            {
+                e.EnemyName,
+                e.KillCount,
+                Ratio = (float)e.KillCount / totalKills * 100f
+            }).ToList();
+
         Debug.Log($"📊 撃破データ分析結果（合計 {totalKills} 体）");
         foreach (var r in result)
         {
-            Debug.Log($"・{r.EnemyName}：{r.TotalKills}体 ({r.Ratio:F1}%)");
+            Debug.Log($"・{r.EnemyName}：{r.KillCount}体 ({r.Ratio:F1}%)");
         }
     }
 }
