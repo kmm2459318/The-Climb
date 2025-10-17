@@ -1,20 +1,18 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 
 public class EnemyGeneration : MonoBehaviour
 {
-    [Header("“G‚Ìƒf[ƒ^ƒŠƒXƒg")]
+    [Header("æ•µã®ãƒ‡ãƒ¼ã‚¿ãƒªã‚¹ãƒˆ")]
     [SerializeField] private List<EnemyStats> EnemyStatsList = new List<EnemyStats>();
 
-    [Header("“G‚ÌoŒ»êŠ‚Ìİ’è")]
+    [Header("æ•µã®å‡ºç¾å ´æ‰€ã®è¨­å®š")]
     [SerializeField] private List<Transform> EnemySpotList = new List<Transform>();
 
-    [Header("ƒtƒB[ƒ‹ƒhã‚Ì“G‚ÌƒŠƒXƒg")]
+    [Header("ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ä¸Šã®æ•µã®ãƒªã‚¹ãƒˆ")]
     private List<GameObject> FieldEnemies = new List<GameObject>(); 
-    [Header("ƒtƒB[ƒ‹ƒhã‚Ì“G")]
-    private List<GameObject> fieldEnemies = new List<GameObject>();
-
+  
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,42 +22,43 @@ public class EnemyGeneration : MonoBehaviour
 
 
     ///<summy>
-    ///“G‚Ì¶¬
+    ///æ•µã®ç”Ÿæˆ
     ///</summy>>
     void CreateEnemy()
     {
         if (EnemyStatsList.Count == 0 || EnemySpotList.Count == 0)
         {
-            Debug.Log("“G‚Ìƒf[ƒ^‚ÆƒXƒ|ƒbƒg‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+            Debug.Log("æ•µã®ãƒ‡ãƒ¼ã‚¿ã¨ã‚¹ãƒãƒƒãƒˆãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
+            return;
         }
 
-        //ƒ‰ƒ“ƒ_ƒ€‚È“G‚Ìƒf[ƒ^‚Æ“G‚Ì‘I‘ğ
-        EnemyStats EnmeyData = EnemyStatsList[Random.Range(0, EnemyStatsList.Count)];
+        //ãƒ©ãƒ³ãƒ€ãƒ ãªæ•µã®ãƒ‡ãƒ¼ã‚¿ã¨æ•µã®é¸æŠ
+        EnemyStats EnemeyData = EnemyStatsList[Random.Range(0, EnemyStatsList.Count)];
         Transform Gate = EnemySpotList[Random.Range(0, EnemySpotList.Count)];
 
-        //“G‚Ì¶¬
-        GameObject obj = Instantiate(EnmeyData.EnemyPrefab, Gate.position, Quaternion.identity);
-        obj.name = EnmeyData.EnemyName;
+        //æ•µã®ç”Ÿæˆ
+        GameObject obj = Instantiate(EnemeyData.EnemyPrefab, Gate.position, Quaternion.identity);
+        obj.name = EnemeyData.EnemyName;
 
-        //ƒf[ƒ^‚ª‚ ‚é‚©Šm”F
-        //Enemy _enemyBase = obj.GetComponent<EnemyStats>();
-        //if (Enemy != null)
-        //{
-        //    Enemy.Setup(EnemyDataBase, this);
+        //ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚‹ã‹ç¢ºèªEnmeyData
+        Enemy EnemyBase = obj.GetComponent<Enemy>();
+        if (EnemyBase != null)
+        {
+            EnemyBase.SetUp(EnemeyData, this);
 
-        //    fieldEnemies.Add(obj);
-        //}
+            FieldEnemies.Add(obj);
+        }
     }
 
         /// <summary>
-        /// “Gíœ‚ÉŒÄ‚Î‚ê‚é
+        /// æ•µå‰Šé™¤æ™‚ã«å‘¼ã°ã‚Œã‚‹
         /// </summary>
         public void RemoveEnemy(GameObject enemy)
         {
-            if (fieldEnemies.Contains(enemy))
+            if (FieldEnemies.Contains(enemy))
             {
-                fieldEnemies.Remove(enemy);
-                Debug.Log($"“G {enemy.name} ‚ğíœ‚µ‚Ü‚µ‚½BŒ»İ‚Ì“G”: {fieldEnemies.Count}");
+                FieldEnemies.Remove(enemy);
+                Debug.Log($"æ•µ {enemy.name} ã‚’å‰Šé™¤ã—ã¾ã—ãŸã€‚ç¾åœ¨ã®æ•µæ•°: {FieldEnemies.Count}");
             }
         }
     }

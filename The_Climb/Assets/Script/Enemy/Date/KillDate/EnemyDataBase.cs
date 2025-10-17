@@ -43,7 +43,7 @@ public class EnemyDataBase : MonoBehaviour
 
         if(stats.Period != "過去")
         {
-            Debug.Log($"{"stats.EnemyName"}は{stats.Period}の敵のため記録しません");
+            Debug.Log($"{stats.EnemyName}は{stats.Period}の敵のため記録しません");
             return;
         }
 

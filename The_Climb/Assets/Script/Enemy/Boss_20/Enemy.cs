@@ -3,12 +3,10 @@
 public class Enemy : MonoBehaviour
 {
 
-    [Header("敵の基本情報")]
-    public EnemyStats stats;
-
     [Header("この敵がいるエリア名")]
-    public string areaName = "草原";
-
+    public string areaName = "草原"; 
+    private EnemyStats stats;
+    private EnemyGeneration Generate;
     private EnemyDataBase dbManager;
 
     private void Start()
@@ -22,11 +20,20 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void SetUp(EnemyStats data , EnemyGeneration Spawner)
+    {
+        stats = data;
+        Generate = Spawner;
+
+        Debug.Log($"{stats.EnemyName}（HP:{stats.HP} 攻撃:{stats.AttackPower}）生成");
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             dbManager.AddOrUpdateKillData(stats, areaName);
+            Generate.RemoveEnemy(gameObject); // リストから削除
             Destroy(gameObject);
         }
     }
