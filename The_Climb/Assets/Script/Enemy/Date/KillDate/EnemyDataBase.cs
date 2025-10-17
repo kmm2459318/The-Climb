@@ -53,6 +53,7 @@ public class EnemyDataBase : MonoBehaviour
 
         string now = DateTime.Now.ToString("yyy/MM/dd HH:mm:ss");
 
+        //1度倒したことがある敵
         if (existingDate != null)
         {
             existingDate.KillCount += 1;
@@ -62,6 +63,7 @@ public class EnemyDataBase : MonoBehaviour
                   $"場所: {existingDate.AreaName} / 累計: {existingDate.KillCount} 回 / 最終: {existingDate.LastKillTime}");
         }
 
+        //初めて倒した敵
         else
         {
             var newDate = new EnemyKillData(stats, areaName, 1, now);
