@@ -41,7 +41,7 @@ public class PlayerState : MonoBehaviour
 
     public float erosionLevel = 0;       //プレイヤーの侵蝕度
     public int sanityLevel = 100;        //プレイヤーの正気度
-    public bool carryingBuddy = true;    //Buddyをおんぶしてる状態か判定
+    public bool carryingBuddy = false;    //Buddyをおんぶしてる状態か判定
     public bool nearBell = false;       //WhiteBellの近くか判定
 
     void Start()
