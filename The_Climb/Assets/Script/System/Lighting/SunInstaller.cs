@@ -1,11 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Zenject;
 
 public class SunInstaller : MonoInstaller
 {
-    [SerializeField] SunStat sunStat;    //  ‘¾—z‚ÌƒXƒe[ƒ^ƒX
+    [SerializeField] SunStat sunStat;    //  å¤ªé™½ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 
-    //  ‘¾—zŠÖŒW‚ÌƒoƒCƒ“ƒh
+    //  å¤ªé™½é–¢ä¿‚ã®ãƒã‚¤ãƒ³ãƒ‰
     public override void InstallBindings()
     {
         Container.Bind<SunMoveCommander>().FromComponentInHierarchy().AsSingle();

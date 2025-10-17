@@ -1,19 +1,19 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using TMPro;
 
 public class CoinController : MonoBehaviour
 {
-    [Header("‰ñ“]İ’è")]
+    [Header("å›è»¢è¨­å®š")]
     public float rotationSpeed = 90f;
 
-    [Header("ƒRƒCƒ“æ“¾İ’è")]
+    [Header("ã‚³ã‚¤ãƒ³å–å¾—è¨­å®š")]
     public AudioClip pickupSound;
     public float respawnTime = -1f;
 
-    [Header("UIİ’èi”CˆÓj")]
+    [Header("UIè¨­å®šï¼ˆä»»æ„ï¼‰")]
     public TextMeshProUGUI coinText;
 
-    [Header("‹——£”»’è")]
+    [Header("è·é›¢åˆ¤å®š")]
     public float pickupRadius = 1.5f;
 
     private static int totalCoins = 0;
@@ -28,19 +28,19 @@ public class CoinController : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         myRenderers = GetComponentsInChildren<Renderer>();
 
-        // ƒvƒŒƒCƒ„[‚ğƒ^ƒO‚ÅŒŸõ
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ã‚¿ã‚°ã§æ¤œç´¢
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
             player = playerObj.transform;
         else
-            Debug.LogWarning("Playerƒ^ƒO‚Ì•t‚¢‚½ƒIƒuƒWƒFƒNƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+            Debug.LogWarning("Playerã‚¿ã‚°ã®ä»˜ã„ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
 
         UpdateUIText();
     }
 
     void Update()
     {
-        // ‰ñ“]
+        // å›è»¢
         transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
 
         if (!isCollected && player != null)
@@ -48,7 +48,7 @@ public class CoinController : MonoBehaviour
             float distance = Vector3.Distance(transform.position, player.position);
             if (distance <= pickupRadius)
             {
-                Debug.Log("”¼Œa0.5mˆÈ“à‚ÉƒvƒŒƒCƒ„[‚ª“ü‚è‚Ü‚µ‚½");
+                Debug.Log("åŠå¾„0.5mä»¥å†…ã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒå…¥ã‚Šã¾ã—ãŸ");
                 CollectCoin();
             }
         }
@@ -62,7 +62,7 @@ public class CoinController : MonoBehaviour
             audioSource.PlayOneShot(pickupSound);
 
         totalCoins++;
-        Debug.Log("ƒRƒCƒ“Šl“¾I‡Œv: " + totalCoins);
+        Debug.Log("ã‚³ã‚¤ãƒ³ç²å¾—ï¼åˆè¨ˆ: " + totalCoins);
         UpdateUIText();
 
         foreach (var r in myRenderers)

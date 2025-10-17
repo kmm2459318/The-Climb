@@ -1,10 +1,9 @@
-using Zenject;
+ï»¿using Zenject;
 
-//  ƒtƒF[ƒhŠÖŒW‚ÌƒoƒCƒ“ƒh
 public class FadingInstalelr : MonoInstaller
 {
     public override void InstallBindings()
     {
-        Container.Bind<IDownFading>().To<FadeController>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<IDownFading>().To<FadeContoroller>().FromComponentInHierarchy().AsSingle();
     }
 }

@@ -1,16 +1,16 @@
-//    ���Ԑݒ�񋟃C���^�[�t�F�[�X
+﻿//    時間設定提供インターフェース
 public interface ITimeConfig
 {
-    //  1���̑������ԃv���p�e�B
+    //  1日の総実時間プロパティ
     float InitializeTimeProperty { get; }
-    //  1���̑������ԃv���p�e�B
+    //  1日の総実時間プロパティ
     float OneDayTimeProperty { get; }
-    //  1���̓����̎����ԃv���p�e�B
+    //  1日の日中の実時間プロパティ
     float DayTimeProperty { get; }
-    //  1���̖�̎����ԃv���p�e�B
+    //  1日の夜の実時間プロパティ
     float NightTimeProperty { get; }
-    //  1�b������̐i�s����
+    //  1秒あたりの進行時間
     float ProgressTimeProperty { get; }
-    //  1���̑������ԃv���p�e�B
+    //  1日の総実時間プロパティ
     int InitializeDateProperty { get; }
 }

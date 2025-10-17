@@ -1,18 +1,18 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(KickerMoveCommander))]
-//  ƒLƒbƒJ[ó‘ÔˆÙí‚ğŠÄ‹EC³
+//  ã‚­ãƒƒã‚«ãƒ¼çŠ¶æ…‹ç•°å¸¸ã‚’ç›£è¦–ãƒ»ä¿®æ­£
 public class KickerStateWatchDog : MonoBehaviour
 {
-    KickerMoveCommander kickerMoveCommander;    //  ƒLƒbƒJ[ƒ€[ƒuƒRƒ}ƒ“ƒ_[‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
-    EnemyStateMachine enemyStateMachine;    //  ƒGƒlƒ~[ƒXƒe[ƒgƒ}ƒV[ƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
-    Coroutine JumpMonitaringCoroutines;    //  ƒWƒƒƒ“ƒvŠÄ‹ƒ‹[ƒ`ƒ“‚Ì•Ï”
+    KickerMoveCommander kickerMoveCommander;    //  ã‚­ãƒƒã‚«ãƒ¼ãƒ ãƒ¼ãƒ–ã‚³ãƒãƒ³ãƒ€ãƒ¼ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+    EnemyStateMachine enemyStateMachine;    //  ã‚¨ãƒãƒŸãƒ¼ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ¼ãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+    Coroutine JumpMonitaringCoroutines;    //  ã‚¸ãƒ£ãƒ³ãƒ—ç›£è¦–ãƒ«ãƒ¼ãƒãƒ³ã®å¤‰æ•°
 
-    ILandingHandler KickerLandingHandler;    //  ƒLƒbƒJ[‚Ìƒ‰ƒ“ƒfƒBƒ“ƒOƒnƒ“ƒhƒ‰[
+    ILandingHandler KickerLandingHandler;    //  ã‚­ãƒƒã‚«ãƒ¼ã®ãƒ©ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ãƒãƒ³ãƒ‰ãƒ©ãƒ¼
 
-    [Header("ƒWƒƒƒ“ƒvó‘Ô‚É“ü‚Á‚ÄAÚ’n”»’è‚·‚é‚Ü‚Å‚ÌƒfƒBƒŒƒC")]
-    [SerializeField] float AbnormalJumpStateMonitaringTime;    //  ˆÙí‚ÈƒWƒƒƒ“ƒvó‘Ô‚ğŠÄ‹‚·‚éŠÔ
+    [Header("ã‚¸ãƒ£ãƒ³ãƒ—çŠ¶æ…‹ã«å…¥ã£ã¦ã€æ¥åœ°åˆ¤å®šã™ã‚‹ã¾ã§ã®ãƒ‡ã‚£ãƒ¬ã‚¤")]
+    [SerializeField] float AbnormalJumpStateMonitaringTime;    //  ç•°å¸¸ãªã‚¸ãƒ£ãƒ³ãƒ—çŠ¶æ…‹ã‚’ç›£è¦–ã™ã‚‹æ™‚é–“
 
     void Awake()
     {
@@ -24,17 +24,17 @@ public class KickerStateWatchDog : MonoBehaviour
         enemyStateMachine = kickerMoveCommander.EnemyStateMachineProperty;
         enemyStateMachine.OnStateChanged += StartStateMonitaring;
     }
-    //  ƒWƒƒƒ“ƒvó‘Ô‚ğŠÄ‹EC³‚·‚éˆ—
+    //  ã‚¸ãƒ£ãƒ³ãƒ—çŠ¶æ…‹ã‚’ç›£è¦–ãƒ»ä¿®æ­£ã™ã‚‹å‡¦ç†
     IEnumerator JumpStateWatch()
     {
         yield return new WaitForSeconds(AbnormalJumpStateMonitaringTime);
         if (enemyStateMachine.CurrentStateProperty is JumpState && kickerMoveCommander.IsGround())
         {
-            Debug.Log("ˆÙí‚ÈƒWƒƒƒ“ƒvó‘Ô‚ğŒŸ’mAó‘Ô‚ğ•àsó‘Ô‚É•ÏX");
+            Debug.Log("ç•°å¸¸ãªã‚¸ãƒ£ãƒ³ãƒ—çŠ¶æ…‹ã‚’æ¤œçŸ¥ã€çŠ¶æ…‹ã‚’æ­©è¡ŒçŠ¶æ…‹ã«å¤‰æ›´");
             KickerLandingHandler.OnLandStage();
         }
     }
-    //  ó‘ÔŠÄ‹‚ğŠJn‚·‚é
+    //  çŠ¶æ…‹ç›£è¦–ã‚’é–‹å§‹ã™ã‚‹
     void StartStateMonitaring(IEnemyState newState)
     {
         if (newState is JumpState)
@@ -46,7 +46,7 @@ public class KickerStateWatchDog : MonoBehaviour
             JumpMonitaringCoroutines = StartCoroutine(JumpStateWatch());
         }
     }
-    //  ”j‰ó‚Ìˆ—
+    //  ç ´å£Šæ™‚ã®å‡¦ç†
     void OnDestroy()
     {
         enemyStateMachine.OnStateChanged -= StartStateMonitaring;

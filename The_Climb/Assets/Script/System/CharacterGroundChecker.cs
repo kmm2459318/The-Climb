@@ -1,18 +1,18 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ƒLƒƒƒ‰ƒNƒ^[Ú’n”»’èŠm”F
+//  ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼æ¥åœ°åˆ¤å®šç¢ºèª
 public class CharacterGroundChecker : MonoBehaviour
 {
-    [SerializeField] float GroundCheckDis;    //  Ú’n”»’è‚Ég‚¤Œõü‚Ì’·‚³
+    [SerializeField] float GroundCheckDis;    //  æ¥åœ°åˆ¤å®šã«ä½¿ã†å…‰ç·šã®é•·ã•
 
-    //  Ú’n”»’è‚Ég‚¤Œõü‚Ì’·‚³‚ÌƒQƒbƒ^[
+    //  æ¥åœ°åˆ¤å®šã«ä½¿ã†å…‰ç·šã®é•·ã•ã®ã‚²ãƒƒã‚¿ãƒ¼
     public float GroundCheckDisProperty => GroundCheckDis;
-    //  Ú’n”»’è
+    //  æ¥åœ°åˆ¤å®š
     public bool CheckIsGround(Vector3? position = null)
     {
-        Debug.Log(GroundCheckDis);
-        RaycastHit Hit;    //  Œõü‚ª“–‚½‚Á‚½ƒIƒuƒWƒFƒNƒg‚Ì•Ï”
-        Vector3 CheckPos = position ?? this.transform.position;    //  Œõü‚ğo‚·ƒ|ƒWƒVƒ‡ƒ“
+        //Debug.Log(GroundCheckDis);
+        RaycastHit Hit;    //  å…‰ç·šãŒå½“ãŸã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¤‰æ•°
+        Vector3 CheckPos = position ?? this.transform.position;    //  å…‰ç·šã‚’å‡ºã™ãƒã‚¸ã‚·ãƒ§ãƒ³
         if (Physics.Raycast(CheckPos, Vector3.down, out Hit, GroundCheckDis, GameLayer.ToMask(GameLayers.GROUND)))
         {
             if (Hit.collider.CompareTag(TagName.Ground) || Hit.collider.CompareTag(TagName.Platform))
@@ -23,5 +23,5 @@ public class CharacterGroundChecker : MonoBehaviour
         return false;
     }
 }
-//  ˆÈ‰ºƒR[ƒh•Û‘¶Š  //
+//  ä»¥ä¸‹ã‚³ãƒ¼ãƒ‰ä¿å­˜æ‰€  //
 //return Physics.Raycast(CheckPos, Vector3.down, GroundCheckDis, GameLayer.ToMask(GameLayers.GROUND));

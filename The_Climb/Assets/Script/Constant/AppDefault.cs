@@ -1,5 +1,5 @@
-using UnityEngine;
-//  ƒAƒvƒŠ‚ÌƒfƒtƒHƒ‹ƒgƒf[ƒ^ˆê——
+ï»¿using UnityEngine;
+//  ã‚¢ãƒ—ãƒªã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ‡ãƒ¼ã‚¿ä¸€è¦§
 public static class AppDefault
 {
     public static readonly ScreenResolution DefaultResolution = new ScreenResolution(1920f, 1080f);

@@ -1,5 +1,4 @@
-using UnityEngine;
-using System;
+﻿using UnityEngine;
 
 public class PlayerJump : MonoBehaviour
 {
@@ -7,8 +6,7 @@ public class PlayerJump : MonoBehaviour
     PlayerState state;
     PlayerMove move;
     PlayerSpecialAction special;
-    private PlayerAnimation playerAnimation;
-
+    PlayerKnockBack knock;
 
     public bool jumping = false;        //ジャンプ入力中判定
     private float coyoteTime = 0.13f;    //コヨーテタイム
@@ -36,24 +34,22 @@ public class PlayerJump : MonoBehaviour
     private float TrampolineTimer     = 0f;    //トランポリンの効果を管理するタイマー
     private bool  TrampolineJumping   = false; //トランポリンのジャンプ中判定
 
-    public float highJumpChargeTime = 0.5f; // 例：必要チャージ時間
-
-    public event Action OnJumped;   //ジャンプした瞬間を通知するイベント
-
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();
         state = GetComponent<PlayerState>();
         move = gameObject.GetComponent<PlayerMove>();
         special = gameObject.GetComponent<PlayerSpecialAction>();
-        playerAnimation = GetComponent<PlayerAnimation>();
-
+        knock = gameObject.GetComponent<PlayerKnockBack>();
     }
 
     void Update()
     {
         //ジャンプキー操作
-        JumpOperation();
+        if (!knock.knockBacking)　//ノックバック中は不可
+        {
+            JumpOperation();
+        }
 
         //ジャンプのクールタイム
         if (jumpCoolActive)
@@ -118,7 +114,7 @@ public class PlayerJump : MonoBehaviour
     private void JumpOperation()
     {
         //ジャンプキー押された
-        if (Input.GetKeyDown(state.keyBind.playerJump) && !special.meteorHighJumpOK && !isJumpQueued)
+        if (state.inputManager.jumpDown && !special.meteorHighJumpOK && !isJumpQueued)
         {
             isJumpQueued = true;
             jumpQueueCounter = 0f;
@@ -135,27 +131,23 @@ public class PlayerJump : MonoBehaviour
                 jumpTime = 0f;
                 jumpTimeMax = jumpTimeMaxSaving;
                 isJumpQueued = false;
-
-                //イベントを通知
-                OnJumped?.Invoke();
                 //Debug.Log(RigidBody.linearVelocity.y);
                 //Debug.Log("true後"+special.headingAttack);
 
                 //着地ジャンプ
                 if (state.landingJumpOn)
                 {
-                    //landingJumpNumber++;
+                    landingJumpNumber++;
                     state.LandingJumpReset();
                 }
             }
-            else if (Input.GetKey(state.keyBind.playerJump) && special.meteorHighJumpOK && state.landingJumpOn)  //メテオドロップからのハイジャンプ
+            else if (state.inputManager.jumpHeld && special.meteorHighJumpOK && state.landingJumpOn)  //メテオドロップからのハイジャンプ
             {
                 if (special.meteorDropCounter >= special.meteorDropTime)
                 {
                     jumpCoolActive = true;
                     special.meteorHighJump = true;
                     landingJumpNumber++;
-                    OnJumped!.Invoke();
                     special.headingAttack.SetActive(true);
                 }
                 special.meteorHighJumpOK = false;
@@ -166,7 +158,7 @@ public class PlayerJump : MonoBehaviour
         //ジャンプボタンが押され続けてる
         if (jumping)
         {
-            if (Input.GetKeyUp(state.keyBind.playerJump) && jumpTime <= jumpTimeMaxSaving * 1 / 2)
+            if (state.inputManager.jumpUp && jumpTime <= jumpTimeMaxSaving * 1 / 2)
             {
                 jumpTimeMax = jumpTimeMaxSaving * 1 / 2;
             }
@@ -188,8 +180,6 @@ public class PlayerJump : MonoBehaviour
     {
         //Debug.Log($"[Jump] Power: {jumpPower}, Time: {jumpTime}, Max: {jumpTimeMax}");
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
-
-
 
         //トランポリンに乗っている場合ジャンプ力を上げる
         if(TrampolineJumping)
@@ -214,7 +204,5 @@ public class PlayerJump : MonoBehaviour
         {
             RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * maxJumpSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
         }
-
     }
 }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

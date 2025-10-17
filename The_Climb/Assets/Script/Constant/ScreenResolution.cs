@@ -1,20 +1,20 @@
-//  ƒXƒNƒŠ[ƒ“‚Ìƒf[ƒ^ˆê——
+ï»¿//  ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®ãƒ‡ãƒ¼ã‚¿ä¸€è¦§
 using UnityEngine;
 
 public readonly struct ScreenResolution
 {
-    public float Width { get; }    //  ‰¡‚Ì‰ð‘œ“xŽæ“¾
-    public float Height { get; }    //  c‚Ì‰ð‘œ“xŽæ“¾
+    public float Width { get; }    //  æ¨ªã®è§£åƒåº¦å–å¾—
+    public float Height { get; }    //  ç¸¦ã®è§£åƒåº¦å–å¾—
 
-    //  ƒXƒNƒŠ[ƒ“‚Ì‚‚³‚Æ‰¡•‚Ìƒf[ƒ^‚ð“ü‚ê‚éƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    //  ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®é«˜ã•ã¨æ¨ªå¹…ã®ãƒ‡ãƒ¼ã‚¿ã‚’å…¥ã‚Œã‚‹ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     public ScreenResolution(float width, float height)
     {
         Width = width;
         Height = height;
     }
 
-    //  ƒXƒNƒŠ[ƒ“‚Ì‚‚³‚Æ‰¡•‚ðo—Í
+    //  ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®é«˜ã•ã¨æ¨ªå¹…ã‚’å‡ºåŠ›
     public Vector2 ToVector2() => new Vector2(Width, Height);
-    //  ƒXƒNƒŠ[ƒ“‚Ì‚‚³‚Æ‰¡•‚ð•¶Žš—ñ‚Åo—Í
+    //  ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®é«˜ã•ã¨æ¨ªå¹…ã‚’æ–‡å­—åˆ—ã§å‡ºåŠ›
     public override string ToString() => $"{Width} x {Height}";
 }

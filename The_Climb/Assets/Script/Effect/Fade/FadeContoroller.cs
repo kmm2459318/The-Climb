@@ -1,75 +1,51 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
-//  ˆÅ‚Ìis“x‚ð’²®‚·‚é
-public class FadeController : MonoBehaviour, IDownFading
+//  é—‡ã®é€²è¡Œåº¦ã‚’èª¿æ•´ã™ã‚‹
+public class FadeContoroller : MonoBehaviour, IDownFading
 {
-    [SerializeField] FadeSetting fadeSetting;    //  ƒtƒF[ƒhÝ’è
-    [SerializeField] GameObject fadeQuad;    //  ƒtƒF[ƒh”Â
-    Material overLayMaterial;    //  Žl‹÷‚©‚çƒtƒF[ƒh‚·‚é‚Ìƒ}ƒeƒŠƒAƒ‹
-    Coroutine downFadeCoroutine;    //  ƒ_ƒEƒ“ƒtƒF[ƒhƒRƒ‹[ƒ`ƒ“
-    Coroutine fadeCoroutine;    //  ƒ_ƒEƒ“ƒtƒF[ƒhƒRƒ‹[ƒ`ƒ“
+    [SerializeField] FadeSetting fadeSetting;    //  ãƒ•ã‚§ãƒ¼ãƒ‰è¨­å®š
+    Material OverLayMaterial;    //  å››éš…ã‹ã‚‰ãƒ•ã‚§ãƒ¼ãƒ‰ã™ã‚‹ã®ãƒžãƒ†ãƒªã‚¢ãƒ«
+    Coroutine downFadeCoroutine;    //  ãƒ€ã‚¦ãƒ³ãƒ•ã‚§ãƒ¼ãƒ‰ã‚³ãƒ«ãƒ¼ãƒãƒ³
 
-    [Header("Œ»Ý‚ÌƒtƒF[ƒhis“x")]
-    [SerializeField, Range(0, 1)] float CurrentProgress;    //  ƒtƒF[ƒhis“x
-    float CurrentProgressRate_Sec;    //  •bŠÔ‚ÌƒtƒF[ƒhis‘¬“x(Š„‡’l)
+    [Header("ç¾åœ¨ã®ãƒ•ã‚§ãƒ¼ãƒ‰é€²è¡Œåº¦")]
+    [SerializeField, Range(0, 1)] float CurrentProgress;    //  ãƒ•ã‚§ãƒ¼ãƒ‰é€²è¡Œåº¦
+    float CurrentProgressRate_Sec;    //  ç§’é–“ã®ãƒ•ã‚§ãƒ¼ãƒ‰é€²è¡Œé€Ÿåº¦(å‰²åˆå€¤)
 
     void Awake()
     {
-        overLayMaterial = fadeSetting.OverLayMaterial;
+        OverLayMaterial = fadeSetting.OverLayMaterial;
 
-        //  ‰Šú‰»
-        InitializeValue();
+        //  åˆæœŸåŒ–
+        Initialize();
     }
-    //  ‰Šú‰»
-    void InitializeValue()
+    //  åˆæœŸåŒ–
+    void Initialize()
     {
         CurrentProgress = fadeSetting.Progress;
         CurrentProgressRate_Sec = fadeSetting.FadeProgressRate_Sec;
     }
-    //  ƒ_ƒEƒ“ŽžƒtƒF[ƒhƒ‰ƒbƒp[
+    //  ãƒ€ã‚¦ãƒ³æ™‚ãƒ•ã‚§ãƒ¼ãƒ‰ãƒ©ãƒƒãƒ‘ãƒ¼
     public void StartDownFading()
     {
-        //CoroutineUtility.SafeStartCoroutine(this, ref downFadeCoroutine, DownFading());
-        CoroutineUtility.SafeStartCoroutine(this, ref fadeCoroutine, DownFading());
+        CoroutineUtility.SafeStartCoroutine(this, ref downFadeCoroutine, DownFading());
     }
-    //  ƒtƒF[ƒhƒAƒEƒgˆ—
+    //  ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆå‡¦ç†
     public IEnumerator DownFading()
     {
+        FadeSetter.ApplyToSceneFadeQuad();
         while(CurrentProgress > 0)
         {
-            FadeSetter.AdjustFadeQuadPosition(fadeQuad);
             CurrentProgress -= CurrentProgressRate_Sec * Time.deltaTime;
-            overLayMaterial.SetFloat("_Progress", CurrentProgress);
+            OverLayMaterial.SetFloat("_Progress", CurrentProgress);
             yield return null;
         }
         while (CurrentProgress <= 1)
         {
-            FadeSetter.AdjustFadeQuadPosition(fadeQuad);
             CurrentProgress += CurrentProgressRate_Sec * Time.deltaTime;
-            overLayMaterial.SetFloat("_Progress", CurrentProgress);
+            OverLayMaterial.SetFloat("_Progress", CurrentProgress);
             yield return null;
         }
         downFadeCoroutine = null;
-    }
-    //  ƒtƒF[ƒhƒ‹[ƒ`ƒ“
-    private IEnumerator FadeRoutine(float from, float to)
-    {
-        CurrentProgress = from;
-        overLayMaterial.SetFloat("_Progress", CurrentProgress);
-        FadeSetter.AdjustFadeQuadPosition(fadeQuad);
-
-        float direction = Mathf.Sign(to - from);
-
-        while (direction > 0 ? CurrentProgress < to : CurrentProgress > to)
-        {
-            CurrentProgress += CurrentProgressRate_Sec * direction * Time.deltaTime;
-            CurrentProgress = Mathf.Clamp01(CurrentProgress);
-
-            overLayMaterial.SetFloat("_Progress", CurrentProgress);
-            yield return null;
-        }
-
-        fadeCoroutine = null;
     }
 }

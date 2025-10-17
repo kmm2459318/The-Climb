@@ -1,24 +1,24 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [CreateAssetMenu(menuName = "BossStats/RockStats")]
 public class RockStats : ScriptableObject
 {
-    [Header("ˆÚ“®İ’è")]
+    [Header("ç§»å‹•è¨­å®š")]
     public float crawlSpeed = 2f;
     public Vector3[] crawlPoints;
 
-    [Header("Šš‚İ‚Â‚«iƒWƒƒƒ“ƒvUŒ‚jİ’è")]
+    [Header("å™›ã¿ã¤ãï¼ˆã‚¸ãƒ£ãƒ³ãƒ—æ”»æ’ƒï¼‰è¨­å®š")]
     public float lungeSpeed = 10f;
     public float biteRange = 2f;
     public float waitBeforeLunge = 1.5f;
 
-    [Header("Šš‚İ‚Â‚«¬Œ÷‰‰o")]
+    [Header("å™›ã¿ã¤ãæˆåŠŸæ™‚æ¼”å‡º")]
     public float spinDuration = 1.5f;
     public float throwForce = 25f;
 
-    [Header("Šš‚İ‚Â‚«¸”s‚ÌƒXƒ^ƒ“")]
+    [Header("å™›ã¿ã¤ãå¤±æ•—æ™‚ã®ã‚¹ã‚¿ãƒ³")]
     public float staggerDuration = 2.5f;
 
-    [Header("”í’e”»’è")]
+    [Header("è¢«å¼¾åˆ¤å®š")]
     public int maxMeteorHits = 3;
 }

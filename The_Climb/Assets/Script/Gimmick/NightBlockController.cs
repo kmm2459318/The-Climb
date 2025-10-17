@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class NightBlockController : MonoBehaviour
 {
@@ -21,7 +21,7 @@ public class NightBlockController : MonoBehaviour
 
         if (TimeManager == null)
         {
-            Debug.LogError("TimeManager‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+            Debug.LogError("TimeManagerãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
             return;
         }
 
@@ -46,12 +46,12 @@ public class NightBlockController : MonoBehaviour
         {
             if (pair.DayTimeBlock != null)
             {
-                pair.DayTimeBlock.SetActive(!TimeManager.IsNightProperty); // ’‹‚Ì‚İ•\¦
+                pair.DayTimeBlock.SetActive(!TimeManager.IsNightProperty); // æ˜¼ã®ã¿è¡¨ç¤º
             }
 
             if (pair.NightBlock != null)
             {
-                pair.NightBlock.SetActive(TimeManager.IsNightProperty);    // –é‚Ì‚İ•\¦
+                pair.NightBlock.SetActive(TimeManager.IsNightProperty);    // å¤œã®ã¿è¡¨ç¤º
             }
         }
     }

@@ -1,7 +1,7 @@
-public enum IDLabel    //  ƒIƒuƒWƒFƒNƒg‚Ìƒ‰ƒxƒ‹[ˆê——
+ï»¿public enum IDLabel    //  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ©ãƒ™ãƒ«ãƒ¼ä¸€è¦§
 {
-    UNDNAMED,    //  –¢’è‹`
-    DARK,    //  ˆÅ
-    SPINE,    //  ƒVƒƒƒc
-    FADE,    //  ƒtƒF[ƒh
+    UNDNAMED,    //  æœªå®šç¾©
+    DARK,    //  é—‡
+    SPINE,    //  ã‚·ãƒ£ãƒ„
+    FADE,    //  ãƒ•ã‚§ãƒ¼ãƒ‰
 }

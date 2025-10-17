@@ -1,28 +1,28 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "DarkStat", menuName = "GameDate/Dark/EdgeDarkStat")]
 public class EdgeDarkStatus : ScriptableObject
 {
-    //  ŠK‘wó‘Ô‚ÆƒXƒe[ƒ^ƒX‚ğ‚ÂƒNƒ‰ƒX
+    //  éšå±¤çŠ¶æ…‹ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æŒã¤ã‚¯ãƒ©ã‚¹
     [System.Serializable]
     public class StateStatPair
     {
-        public FloorType floorType;    //  ƒtƒƒA‚Ìó‘Ô
-        public EdgeDarkStatBlock EdgeDarkStats;    //  ƒXƒe[ƒ^ƒX‚ğ‚ÂƒNƒ‰ƒX
+        public FloorType floorType;    //  ãƒ•ãƒ­ã‚¢ã®çŠ¶æ…‹
+        public EdgeDarkStatBlock EdgeDarkStats;    //  ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æŒã¤ã‚¯ãƒ©ã‚¹
     }
 
     [Header("EdgeDark Status")]
-    public List<StateStatPair> StateStats = new();    //  ƒtƒƒAó‘Ô‚ÆƒXƒe[ƒ^ƒX‚ğ‚ÂƒNƒ‰ƒX‚ÌƒŠƒXƒg(ƒf[ƒ^“ü—Í—p)
+    public List<StateStatPair> StateStats = new();    //  ãƒ•ãƒ­ã‚¢çŠ¶æ…‹ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æŒã¤ã‚¯ãƒ©ã‚¹ã®ãƒªã‚¹ãƒˆ(ãƒ‡ãƒ¼ã‚¿å…¥åŠ›ç”¨)
 
-    Dictionary<FloorType, EdgeDarkStatBlock> StatMap;    //  ƒtƒƒAó‘Ô‚ÆƒXƒe[ƒ^ƒX‚Ì«‘(ˆ——p)
+    Dictionary<FloorType, EdgeDarkStatBlock> StatMap;    //  ãƒ•ãƒ­ã‚¢çŠ¶æ…‹ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¾æ›¸(å‡¦ç†ç”¨)
 
     void OnEnable()
     {
-        //  ƒX[ƒe[ƒ^ƒXƒ}ƒbƒv‚Ì‰Šú‰»
+        //  ã‚¹ãƒ¼ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒƒãƒ—ã®åˆæœŸåŒ–
         BuildStatMap();
     }
-    //  ƒXƒe[ƒ^ƒXƒ}ƒbƒv‰Šú‰»
+    //  ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒƒãƒ—åˆæœŸåŒ–
     void BuildStatMap()
     {
         StatMap = new();
@@ -34,7 +34,7 @@ public class EdgeDarkStatus : ScriptableObject
             }
         }
     }
-    //  ó‘Ô‚É‰‚¶‚½ƒXƒe[ƒ^ƒX‚Ìæ“¾
+    //  çŠ¶æ…‹ã«å¿œã˜ãŸã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®å–å¾—
     public EdgeDarkStatBlock GetStats(FloorType State)
     {
         return StatMap.TryGetValue(State, out EdgeDarkStatBlock stats) ? stats : null;

@@ -1,15 +1,15 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 [CreateAssetMenu(fileName = "EdgeDarkCanvasSetting", menuName = "GameData/Dark/EdgeDarkCanvasSetting")]
 public class EdgeDarkCanvasSetting : ScriptableObject
 {
     [Header("CanvasScaler Settings")]
-    public CanvasScaler.ScaleMode ScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;    //  CanvasScaler‚Ìƒ‚[ƒh
+    public CanvasScaler.ScaleMode ScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;    //  CanvasScalerã®ãƒ¢ãƒ¼ãƒ‰
     
-    public Vector2 ReferenceResolution = new Vector2(1920, 1080);    //  CanvasScaler‚ÌReferenceResolution‚Ì’l
+    public Vector2 ReferenceResolution = new Vector2(1920, 1080);    //  CanvasScalerã®ReferenceResolutionã®å€¤
 
     [Range(0f, 1f)]
-    public float MatchWidthOrHeight = 0.5f;    //  c‰¡‚Ç‚¿‚ç‚É‡‚í‚¹‚é‚©‚Ì”äd’l
+    public float MatchWidthOrHeight = 0.5f;    //  ç¸¦æ¨ªã©ã¡ã‚‰ã«åˆã‚ã›ã‚‹ã‹ã®æ¯”é‡å€¤
     
-    public CanvasScaler.ScreenMatchMode ScreenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;    //  CanvasScaler‚ÌScreenMatchMode‚ğ•ÏX
+    public CanvasScaler.ScreenMatchMode ScreenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;    //  CanvasScalerã®ScreenMatchModeã‚’å¤‰æ›´
 }
