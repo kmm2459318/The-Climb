@@ -32,25 +32,30 @@ public class EnemyGeneration : MonoBehaviour
             return;
         }
 
-        //ランダムな敵のデータと敵の選択
-        EnemyStats EnemeyData = EnemyStatsList[Random.Range(0, EnemyStatsList.Count)];
-        Transform Gate = EnemySpotList[Random.Range(0, EnemySpotList.Count)];
-
-        //敵の生成
-        GameObject obj = Instantiate(EnemeyData.EnemyPrefab, Gate.position, Quaternion.identity);
-        obj.name = EnemeyData.EnemyName;
-
-        //データがあるか確認EnmeyData
-        Enemy EnemyBase = obj.GetComponent<Enemy>();
-        if (EnemyBase != null)
+        foreach(Transform spot in EnemySpotList)
         {
-            EnemyBase.SetUp(EnemeyData, this);
+            EnemyStats EnemeyData = EnemyStatsList[Random.Range(0, EnemyStatsList.Count)];
 
-            FieldEnemies.Add(obj);
+            //敵の生成
+            GameObject obj = Instantiate(EnemeyData.EnemyPrefab, spot.position, Quaternion.identity);
+            obj.name = EnemeyData.EnemyName;
+
+            //データがあるか確認EnmeyData
+            Enemy EnemyBase = obj.GetComponent<Enemy>();
+            if (EnemyBase != null)
+            {
+                EnemyBase.SetUp(EnemeyData, this);
+
+                FieldEnemies.Add(obj);
+            }
         }
     }
 
-        /// <summary>
+    ///<summy>
+    ///時間の切り替えで敵を削除
+    ///</summy>
+
+        /// <summary> 
         /// 敵削除時に呼ばれる
         /// </summary>
         public void RemoveEnemy(GameObject enemy)
