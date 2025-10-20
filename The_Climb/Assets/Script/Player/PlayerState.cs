@@ -44,6 +44,11 @@ public class PlayerState : MonoBehaviour
     public bool carryingBuddy = false;    //Buddyをおんぶしてる状態か判定
     public bool nearBell = false;       //WhiteBellの近くか判定
 
+    private void Awake()
+    {
+        //PlayerContext.Instance.RegistController(this);
+    }
+
     void Start()
     {
         inputManager = GameObject.Find("KeyManager").GetComponent<InputManager>();

@@ -1,20 +1,26 @@
 ﻿using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEditor.Rendering.Universal;
 using UnityEngine;
 
 public class LightDarkWorld : MonoBehaviour
 {
-    private PlayerState state;
+    private GameObject player;
+    private PlayerState playerState;
+    private BuddyCarry buddyCarry;
 
     public enum brightness {Dark, Light};  //光と闇
     public brightness brightnessState = brightness.Dark;  //現在の世界の輝度
 
     private float lightDuration = 15f;     //光の継続時間
-    private float lightTimer = 0f;         //光の世界の時間
+    private float lightTimer = 0f;         //光の世界の時間private
+    //public List<GameObject> targetRenderers = new List<GameObject>();
 
     void Start()
     {
-        state = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
+        player = GameObject.Find("PlayerModel");
+        playerState = player.GetComponent<PlayerState>();
+        buddyCarry = player.GetComponent<BuddyCarry>();
         LayerChange(false);
     }
 
@@ -52,7 +58,7 @@ public class LightDarkWorld : MonoBehaviour
     {
         if (brightnessState == brightness.Dark && s == brightness.Light)  //闇→光
         {
-            if (state.carryingBuddy || state.nearBell)  //Buddyおんぶしてるとき
+            if (playerState.carryingBuddy || playerState.nearBell || buddyCarry.nearBuddy)  //Buddyおんぶしてるとき
             {
                 brightnessState = brightness.Light;
                 Debug.Log("■■■魔法「破壊超陽光」■■■");
@@ -98,12 +104,12 @@ public class LightDarkWorld : MonoBehaviour
         //判定用LayerMaskの設定
         if (!isLight)
         {
-            state.groundLayerMask =
+            playerState.groundLayerMask =
                 (1 << ground) | (1 << whiteGround);
         }
         else
         {
-            state.groundLayerMask =
+            playerState.groundLayerMask =
                 (1 << ground) | (1 << blackGround);
         }
     }

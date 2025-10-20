@@ -206,7 +206,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7738019847170628624}
   - {fileID: 2859567070095328864}
@@ -449,6 +449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a657b268b60d034bb556ab9fd6a5245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nearBuddy: 0
 --- !u!114 &9178113623799957216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -502,7 +503,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Radius: 0.19
-  m_Center: {x: 0, y: 0.19, z: 0}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!54 &7246862423334343013
 Rigidbody:
   m_ObjectHideFlags: 0

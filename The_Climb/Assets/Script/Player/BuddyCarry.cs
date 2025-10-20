@@ -8,7 +8,9 @@ public class BuddyCarry : MonoBehaviour
     private PositionConstraint buddyPos;  //BuddyのPositionConstraint（おんぶに使ってる追従のコンポーネント）
     PlayerState state;
 
-    private bool nearBuddy = false;       //Buddyが近くにいるか判定
+    public bool nearBuddy = false;       //Buddyが近くにいるか判定
+    private bool nearCallBell = false;    //CallBellが近くにあるか判定
+    private float callBellPosX = 0;       //CallBellのX座標
 
     void Start()
     {
@@ -48,9 +50,9 @@ public class BuddyCarry : MonoBehaviour
         }
 
         //ベルを鳴らしてバディを誘導
-        if (!state.carryingBuddy && Input.GetKeyDown(KeyCode.I))
+        if (!state.carryingBuddy && Input.GetKeyDown(KeyCode.I) && nearCallBell)
         {
-            buddyController.GuideTo(gameObject.transform.position.x);
+            buddyController.GuideTo(callBellPosX);
         }
     }
 
@@ -60,6 +62,11 @@ public class BuddyCarry : MonoBehaviour
         {
             nearBuddy = true;  //Buddyが近くにいる
         }
+        else if (other.CompareTag("CallBell"))
+        {
+            nearCallBell = true;  //CallBellが近くにある
+            callBellPosX = other.transform.position.x;
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -67,6 +74,10 @@ public class BuddyCarry : MonoBehaviour
         if (other.CompareTag("Buddy"))
         {
             nearBuddy = false;  //Buddyが近くにいない
+        }
+        else if (other.CompareTag("CallBell"))
+        {
+            nearCallBell = false;  //CallBellが近くにない
         }
     }
 }

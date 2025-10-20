@@ -12,7 +12,9 @@ public class PressureButton : MonoBehaviour
     public GimmickType type;  //ボタンの種類
 
     private GameObject target;  //ギミックの対象物
+    private GameObject buttonModel;  //ボタンのモデル
 
+    private int pressCount = 0;  //現在押してる数
     private float posY = 0;  //ボタンのＹ座標
     private bool isPress = false;  //押してるか押してないか判定
 
@@ -22,7 +24,10 @@ public class PressureButton : MonoBehaviour
 
         //targetを子オブジェクトから取得
         if (transform.childCount > 0)
+        {
             target = transform.GetChild(0).gameObject;
+            buttonModel = transform.GetChild(1).gameObject;
+        }
 
         if (target == null)
             Debug.LogError(gameObject.name + "のtargetがnullです。ばーか❤");
@@ -33,17 +38,17 @@ public class PressureButton : MonoBehaviour
         //押されてるとき
         //if (isPress)
         //{
-        //    //PressSwtich();
+        //    PressSwtich();
         //}
         //else  //押されてないとき
         //{
-        //    //PullSwitch();
+        //    PullSwitch();
         //}
     }
 
     private void PressSwtich()  //押されているとき
     {
-        gameObject.transform.position = new Vector3(transform.position.x,  posY - 0.18f, 0);
+        buttonModel.transform.position = new Vector3(transform.position.x,  posY - 0.18f, 0);
 
         switch (type)
         {
@@ -56,7 +61,7 @@ public class PressureButton : MonoBehaviour
 
     private void PullSwitch()  //押されていないとき
     {
-        gameObject.transform.position = new Vector3(transform.position.x, posY, 0);
+        buttonModel.transform.position = new Vector3(transform.position.x, posY, 0);
 
         switch (type)
         {
@@ -76,16 +81,17 @@ public class PressureButton : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Buddy"))
         {
-            isPress = false;
-            PullSwitch();
+            pressCount--;
+            if (pressCount == 0)
+                PullSwitch();
         }
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Buddy"))
         {
-            isPress = true;
+            pressCount++;
             PressSwtich();
         }
     }
