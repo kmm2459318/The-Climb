@@ -1,22 +1,21 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using TheClimb.Player;
 
 namespace TheClimb.Astral
 {
-    public class VectorToPlanetCalculator    //  “V‘Ì‚Ü‚Å‚ÌƒxƒNƒgƒ‹‚ğŒvZ
+    public class VectorToPlanetCalculator    //  å¤©ä½“ã¾ã§ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
     {
-        private readonly IPlanetDataProvider _planetDataProvider;           //  “V‘Ì‚Ìƒf[ƒ^ƒvƒƒoƒCƒ_[
-        private readonly IPlayerDataProvider _playerDataProvider;    //  ƒvƒŒƒCƒ„[‚Ìƒf[ƒ^ƒvƒƒoƒCƒ_[
+        private readonly IPlanetDataProvider _planetDataProvider;    //  å¤©ä½“ã®ãƒ‡ãƒ¼ã‚¿ãƒ—ãƒ­ãƒã‚¤ãƒ€ãƒ¼
+        private readonly IPlayerDataProvider _playerDataProvider;    //  ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ‡ãƒ¼ã‚¿ãƒ—ãƒ­ãƒã‚¤ãƒ€ãƒ¼
 
-        public VectorToPlanetCalculator(IPlanetDataProvider planetDataProvider, IPlayerDataProvider playerDataProvider)    //  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        public VectorToPlanetCalculator(IPlanetDataProvider planetDataProvider, IPlayerDataProvider playerDataProvider)    //  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
         {
             _planetDataProvider = planetDataProvider;
-            _playerDataProvider = playerDataProvider;
+            _playerDataProvider = playerDataProvider;            
         }
-        public Vector2 CaluclateVaector()    //  “V‘Ì‚Ü‚Å‚ÌƒxƒNƒgƒ‹‚ğ•Ô‚·
+        public Vector2 CaluclateVaector()    //  å¤©ä½“ã¾ã§ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¿”ã™
         {
-            Debug.Log(22);
-            return _planetDataProvider.PostionProperty - _playerDataProvider.PostionProperty;
+            return _planetDataProvider.PositionProperty - _playerDataProvider.PositionProperty;
         }
     }
 }

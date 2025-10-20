@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-namespace TheClimb.Player
+namespace TheClimb.Astral
 {
-    public class PlayerDataProvider : IPlayerDataProvider    //  プレイヤーの情報を提供する
+    public class PlanetDataProvider : IPlanetDataProvider    //  天体のデータを提供する
     {
         private readonly Transform _planetTransform;
 
-        public PlayerDataProvider(Transform planetTransform)    //  コンストラクタ
+        public PlanetDataProvider(Transform planetTransform)    //  コンストラクタ
         {
             _planetTransform = planetTransform;
         }
