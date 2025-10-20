@@ -1,31 +1,31 @@
-using Unity.VisualScripting;
+ï»¿using Unity.VisualScripting;
 using UnityEngine;
 
 public class CollapseBlock : MonoBehaviour
 {
-    public float CollapseDelay = 1f;   //•ö‚ê‚é‚Ü‚Å‚Ì’x‰„ŠÔ
-    public float RespawnDelay  = 3f;@ //ƒŠƒXƒ|[ƒ“‚·‚é‚Ü‚Å‚ÌŠÔ
+    public float CollapseDelay = 1f;   //å´©ã‚Œã‚‹ã¾ã§ã®é…å»¶æ™‚é–“
+    public float RespawnDelay  = 3f;ã€€ //ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹ã¾ã§ã®æ™‚é–“
 
-    private bool IsCollapsing = false; //•ö‚ê‚éˆ—‚ªis’†‚©”»’è
-    private float CollapseTimer;       //•ö‚ê‚é‚Ü‚Å‚Ìƒ^ƒCƒ}[
-    private float RespawnTimer;        //ƒŠƒXƒ|[ƒ“‚Ü‚Å‚Ìƒ^ƒCƒ}[
+    private bool IsCollapsing = false; //å´©ã‚Œã‚‹å‡¦ç†ãŒé€²è¡Œä¸­ã‹åˆ¤å®š
+    private float CollapseTimer;       //å´©ã‚Œã‚‹ã¾ã§ã®ã‚¿ã‚¤ãƒãƒ¼
+    private float RespawnTimer;        //ãƒªã‚¹ãƒãƒ¼ãƒ³ã¾ã§ã®ã‚¿ã‚¤ãƒãƒ¼
 
-    private GameObject VisualPart;     //Œ©‚½–Ú—p‚ÌqƒIƒuƒWƒFƒNƒg(‘«ê‚ÌŒ©‚½–Ú•”•ª)
-    private Collider HitBoxCollider;   //“–‚½‚è”»’è—pƒRƒ‰ƒCƒ_[
+    private GameObject VisualPart;     //è¦‹ãŸç›®ç”¨ã®å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ(è¶³å ´ã®è¦‹ãŸç›®éƒ¨åˆ†)
+    private Collider HitBoxCollider;   //å½“ãŸã‚Šåˆ¤å®šç”¨ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 
     void Start()
     {
-        VisualPart = transform.GetChild(0).gameObject; //”ñ•\¦‚É‚·‚é‘«ê‚ÌŒ©‚½–Ú(qƒIƒuƒWƒFƒNƒg)‚ğæ“¾
-        HitBoxCollider = GetComponent<Collider>();     //©g‚ÌƒRƒ‰ƒCƒ_[‚ğæ“¾
-        CollapseTimer = CollapseDelay;                 //ƒ^ƒCƒ}[‚ğ‰Šú‰»
+        VisualPart = transform.GetChild(0).gameObject; //éè¡¨ç¤ºã«ã™ã‚‹è¶³å ´ã®è¦‹ãŸç›®(å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ)ã‚’å–å¾—
+        HitBoxCollider = GetComponent<Collider>();     //è‡ªèº«ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’å–å¾—
+        CollapseTimer = CollapseDelay;                 //ã‚¿ã‚¤ãƒãƒ¼ã‚’åˆæœŸåŒ–
     }
 
     void Update()
     {
-        //ƒvƒŒƒCƒ„[‚ªæ‚Á‚½A•ö‚ê‚é‚Ü‚Å‚Ìƒ^ƒCƒ}[‚ği‚ß‚é
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä¹—ã£ãŸæ™‚ã€å´©ã‚Œã‚‹ã¾ã§ã®ã‚¿ã‚¤ãƒãƒ¼ã‚’é€²ã‚ã‚‹
         if(IsCollapsing)
         {
-            Debug.Log("isCollapse“à");
+            Debug.Log("isCollapseå†…");
             CollapseTimer -= Time.deltaTime;
             if(CollapseTimer <= 0)
             {
@@ -33,10 +33,10 @@ public class CollapseBlock : MonoBehaviour
             }
         }
 
-        //”ñƒAƒNƒeƒBƒuAƒŠƒXƒ|[ƒ“ƒ^ƒCƒ}[‚ği‚ß‚é
+        //éã‚¢ã‚¯ãƒ†ã‚£ãƒ–æ™‚ã€ãƒªã‚¹ãƒãƒ¼ãƒ³ã‚¿ã‚¤ãƒãƒ¼ã‚’é€²ã‚ã‚‹
         if (VisualPart != null && !VisualPart.activeSelf)
         {
-            Debug.Log("”ñƒAƒNƒeƒBƒu’†‚ÌƒŠƒXƒ|[ƒ“ˆ—");
+            Debug.Log("éã‚¢ã‚¯ãƒ†ã‚£ãƒ–ä¸­ã®ãƒªã‚¹ãƒãƒ¼ãƒ³å‡¦ç†");
             RespawnTimer -= Time.deltaTime;
             if(RespawnTimer <=0)
             {
@@ -45,7 +45,7 @@ public class CollapseBlock : MonoBehaviour
         }
     }
 
-    //ƒvƒŒƒCƒ„[‚ªã‚Éæ‚Á‚½‚É•ö‚ê‚éˆ—‚ğis
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä¸Šã«ä¹—ã£ãŸæ™‚ã«å´©ã‚Œã‚‹å‡¦ç†ã‚’é€²è¡Œ
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.CompareTag("Player") && !IsCollapsing)
@@ -61,17 +61,17 @@ public class CollapseBlock : MonoBehaviour
         }
     }
 
-    //‘«ê‚ğ•ö‚·ˆ—
+    //è¶³å ´ã‚’å´©ã™å‡¦ç†
     void Collapse()
     {
 
-        //ƒRƒ‰ƒCƒ_[‚ğ–³Œø‰»
+        //ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ç„¡åŠ¹åŒ–
         if (HitBoxCollider != null)
         {
             HitBoxCollider.enabled = false;
         }
 
-        //Œ©‚½–Ú‚ğ”ñ•\¦(qƒIƒuƒWƒFƒNƒg)
+        //è¦‹ãŸç›®ã‚’éè¡¨ç¤º(å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ)
         if(VisualPart != null)
         {
             VisualPart.SetActive(false);
@@ -82,7 +82,7 @@ public class CollapseBlock : MonoBehaviour
         RespawnTimer = RespawnDelay;
     }
 
-    //‘«ê‚ğŒ³‚É–ß‚·ˆ—
+    //è¶³å ´ã‚’å…ƒã«æˆ»ã™å‡¦ç†
     void Respawn()
     {
         if (HitBoxCollider != null)

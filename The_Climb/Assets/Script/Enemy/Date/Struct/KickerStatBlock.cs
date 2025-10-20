@@ -1,18 +1,18 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  ƒLƒbƒJ[‚ÌƒXƒe[ƒ^ƒXƒuƒƒbƒN
+//  ã‚­ãƒƒã‚«ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ–ãƒ­ãƒƒã‚¯
 [System.Serializable]
 public class KickerStatBlock
 {
-    [Header("’[‚ğ”»’è‚·‚éŒõü‚ÌˆÊ’u")]
-    public Vector3 EdgeRayOffset;    //  ’[”»’è‚ÌRay‚ÌƒIƒtƒZƒbƒg
-    [Header("ˆÚ“®’l")]
-    public float MoveSpd;    //  ˆÚ“®‘¬“x
-    public float JumpForce;    //  ƒWƒƒƒ“ƒv—Í
-    public float JumpFrequency;    //  ƒWƒƒƒ“ƒv•p“x
-    [Header("‚Á”ò‚Î‚µ")]
-    public float BlowForceX;    //  X²‚Ì‚Á”ò‚Î‚µ—Í
-    public float BlowForceY;    //  Y²‚Ì‚Á”ò‚Î‚µ—Í
-    public ForceMode GroundBlowMode;  //  ‚«”ò‚Î‚µ•û®
-    public ForceMode AirBlowMode;  //  ‚«”ò‚Î‚µ•û®
+    [Header("ç«¯ã‚’åˆ¤å®šã™ã‚‹å…‰ç·šã®ä½ç½®")]
+    public Vector3 EdgeRayOffset;    //  ç«¯åˆ¤å®šã®Rayã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ
+    [Header("ç§»å‹•å€¤")]
+    public float MoveSpd;    //  ç§»å‹•é€Ÿåº¦
+    public float JumpForce;    //  ã‚¸ãƒ£ãƒ³ãƒ—åŠ›
+    public float JumpFrequency;    //  ã‚¸ãƒ£ãƒ³ãƒ—é »åº¦
+    [Header("å¹ã£é£›ã°ã—")]
+    public float BlowForceX;    //  Xè»¸ã®å¹ã£é£›ã°ã—åŠ›
+    public float BlowForceY;    //  Yè»¸ã®å¹ã£é£›ã°ã—åŠ›
+    public ForceMode GroundBlowMode;  //  å¹ãé£›ã°ã—æ–¹å¼
+    public ForceMode AirBlowMode;  //  å¹ãé£›ã°ã—æ–¹å¼
 }

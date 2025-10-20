@@ -1,20 +1,20 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 
-//  NotifierŒn‚©‚ç“n‚³‚ê‚½ŠÖ”‚ğÀs‚·‚é
+//  Notifierç³»ã‹ã‚‰æ¸¡ã•ã‚ŒãŸé–¢æ•°ã‚’å®Ÿè¡Œã™ã‚‹
 public abstract class CollisionNotifier<T> : MonoBehaviour where T : class
 {
-    protected T handler;    //  “n‚³‚ê‚½ƒCƒ“ƒ^[ƒtƒF[ƒXŒ^‚Ì•Ï”
+    protected T handler;    //  æ¸¡ã•ã‚ŒãŸã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹å‹ã®å¤‰æ•°
 
     protected virtual void Awake()
     {
         handler = GetComponent<T>();
         if (handler == null)
         {
-            Debug.LogWarning($"{typeof(T).Name} ‚ªƒAƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ", this);
+            Debug.LogWarning($"{typeof(T).Name} ãŒã‚¢ã‚¿ãƒƒãƒã•ã‚Œã¦ã„ã¾ã›ã‚“", this);
         }
     }
-    //  “n‚³‚ê‚½ŠÖ”‚ğğŒ‚ğŒ©‚ÄÀs‚·‚é
+    //  æ¸¡ã•ã‚ŒãŸé–¢æ•°ã‚’æ¡ä»¶ã‚’è¦‹ã¦å®Ÿè¡Œã™ã‚‹
     protected void NotifyIfTagMatches(Collision collision, string tag, Action<T> action)
     {
         if (collision.gameObject.CompareTag(tag) && handler != null)

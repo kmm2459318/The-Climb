@@ -1,20 +1,20 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "Boss_20_StatusObjectScript", menuName = "Scriptable Objects/Boss_20_StatusObjectScript")]
 public class Boss_20_StatusObjectScript : ScriptableObject
 {
-    public string NAME;               //“G‚Ì–¼‘O
-    public int    HP;@@@           //“G‚ÌHP
-    public float  Speed;              //“G‚Ì‘¬‚³
-    public int    Blow_away;          //‚Á”ò‚Î‚µ—Í
-    public int    LEFT;               //¶‚ÌˆÚ“®
-    public int    LEFT_Max;           //¶‚ÌˆÚ“®‚Ì“®‚¯‚é”ÍˆÍ
-    public int    RIGHT;@@@@@@  //‰E‚ÌˆÚ“®
-    public int    RIGHT_Max;          //‰E‚ÌˆÚ“®‚Ì“®‚¯‚é”ÍˆÍ
-    public int    Rest;               //‹xŒe‚Ìƒ^ƒCƒ~ƒ“ƒO
-    public float  Vertical;           //cˆÚ“®
-    public int    Attack;             //‰“‹——£UŒ‚‚Ìƒ^ƒCƒ~ƒ“ƒO
-    public float  Attack_Speed;       //‰“‹——£UŒ‚‚Ì‘¬‚³
+    public string NAME;               //æ•µã®åå‰
+    public int    HP;ã€€ã€€ã€€           //æ•µã®HP
+    public float  Speed;              //æ•µã®é€Ÿã•
+    public int    Blow_away;          //å¹ã£é£›ã°ã—åŠ›
+    public int    LEFT;               //å·¦ã®ç§»å‹•
+    public int    LEFT_Max;           //å·¦ã®ç§»å‹•ã®å‹•ã‘ã‚‹ç¯„å›²
+    public int    RIGHT;ã€€ã€€ã€€ã€€ã€€ã€€  //å³ã®ç§»å‹•
+    public int    RIGHT_Max;          //å³ã®ç§»å‹•ã®å‹•ã‘ã‚‹ç¯„å›²
+    public int    Rest;               //ä¼‘æ†©ã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°
+    public float  Vertical;           //ç¸¦ç§»å‹•
+    public int    Attack;             //é è·é›¢æ”»æ’ƒã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°
+    public float  Attack_Speed;       //é è·é›¢æ”»æ’ƒã®é€Ÿã•
 }

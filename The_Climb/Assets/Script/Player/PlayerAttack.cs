@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
@@ -25,14 +25,14 @@ public class PlayerAttack : MonoBehaviour
     {
         if (jump.jumpCoolActive)
         {
-            headingSafeCounter = headingSafeTime;  //ƒWƒƒƒ“ƒvŠJn‚ÉƒŠƒZƒbƒg
+            headingSafeCounter = headingSafeTime;  //ã‚¸ãƒ£ãƒ³ãƒ—é–‹å§‹æ™‚ã«ãƒªã‚»ãƒƒãƒˆ
         }
         else if (headingSafeCounter > 0f)
         {
             headingSafeCounter -= Time.deltaTime;
         }
 
-        //Še”»’è‚ğI—¹‚³‚¹‚é
+        //å„åˆ¤å®šã‚’çµ‚äº†ã•ã›ã‚‹
         if (gameObject.name == "HeadingAttack")
         {
             //Debug.Log(state.RigidBody.linearVelocity.y);
@@ -57,7 +57,7 @@ public class PlayerAttack : MonoBehaviour
     private void HeadingFalse()
     {
         gameObject.SetActive(false);
-        //Debug.Log("falseŒã" + special.headingAttack);
+        //Debug.Log("falseå¾Œ" + special.headingAttack);
     }
 
     private void MeteorDropFalse()
@@ -84,9 +84,9 @@ public class PlayerAttack : MonoBehaviour
 
     private IEnumerator HitStop()
     {
-        Vector3 PlayerVelocity = state.RigidBody.linearVelocity; //’¼‘O‚Ì“®‚«‚ğ•Û‘¶
+        Vector3 PlayerVelocity = state.RigidBody.linearVelocity; //ç›´å‰ã®å‹•ãã‚’ä¿å­˜
 
-        //‚»‚µ‚Ä3f‚®‚ç‚¢~‚ß‚é‚æ
+        //ãã—ã¦3fãã‚‰ã„æ­¢ã‚ã‚‹ã‚ˆ
         for (int i = 0; i <= 3; i++)
         {
             //Debug.Log("stop");
@@ -94,27 +94,27 @@ public class PlayerAttack : MonoBehaviour
             yield return null;
         }
 
-        //“®‚«‚ğ–ß‚·
+        //å‹•ãã‚’æˆ»ã™
         state.RigidBody.linearVelocity = PlayerVelocity;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //‚Ô‚Â‚©‚Á‚½‚Æ‚«‚Ì“Ë‚Á‚©‚©‚è‚ğÁ‚·(y‚Ì“®‚«‚ğƒŠƒZƒbƒg)@¦“ä‚Ì‚Â‚Á‚©‚©‚è‚ªo‚½ê‡‚Í‚±‚±‚ÌğŒ‚ğ‚¢‚¶‚Á‚Ä‚­‚¾‚³‚¢
+        //ã¶ã¤ã‹ã£ãŸã¨ãã®çªã£ã‹ã‹ã‚Šã‚’æ¶ˆã™(yã®å‹•ãã‚’ãƒªã‚»ãƒƒãƒˆ)ã€€â€»è¬ã®ã¤ã£ã‹ã‹ã‚ŠãŒå‡ºãŸå ´åˆã¯ã“ã“ã®æ¡ä»¶ã‚’ã„ã˜ã£ã¦ãã ã•ã„
         if (gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem") && !special.highJumpUsed && 
             !other.CompareTag("RespawnArea"))
         {
             PlayerYMoveReset();
         }
 
-        //“G‚Ö‚Ìi’©‘S•”A–é’ÊíƒWƒƒƒ“ƒvˆÈŠO‚Å‚ÌjUŒ‚A”j‰ó‰Â”\ƒuƒƒbƒN‚Ö‚ÌƒnƒCƒWƒƒƒ“ƒv‚ÆƒƒeƒI‚Å‚ÌUŒ‚‚ÅÁ‚·
+        //æ•µã¸ã®ï¼ˆæœå…¨éƒ¨ã€å¤œé€šå¸¸ã‚¸ãƒ£ãƒ³ãƒ—ä»¥å¤–ã§ã®ï¼‰æ”»æ’ƒã€ç ´å£Šå¯èƒ½ãƒ–ãƒ­ãƒƒã‚¯ã¸ã®ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã¨ãƒ¡ãƒ†ã‚ªã§ã®æ”»æ’ƒã§æ¶ˆã™
         if (other.gameObject.CompareTag("Enemy") &&
             (!sunMoveCommander.TimeProvider.IsNightProperty || (sunMoveCommander.TimeProvider.IsNightProperty && (special.highJumpUsed || special.meteorDrop || special.quickJumpUsed))) ||
             (other.gameObject.CompareTag("BreakBlock") && (special.highJumpUsed || special.meteorDrop)))
         {
             Destroy(other.gameObject);
 
-            //ƒqƒbƒgƒXƒgƒbƒv
+            //ãƒ’ãƒƒãƒˆã‚¹ãƒˆãƒƒãƒ—
             StartCoroutine(HitStop());
         }
     }

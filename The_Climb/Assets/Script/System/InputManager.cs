@@ -1,23 +1,23 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    [SerializeField] private InputActionReference leftMoveAction;   //¶ˆÚ“®ƒ{ƒ^ƒ“/A
-    [SerializeField] private InputActionReference rightMoveAction;  //‰EˆÚ“®ƒ{ƒ^ƒ“/D
-    [SerializeField] private InputActionReference jumpAction;       //ƒWƒƒƒ“ƒvƒ{ƒ^ƒ“/Space
-    [SerializeField] private InputActionReference downAction;       //‰ºƒ{ƒ^ƒ“/S
+    [SerializeField] private InputActionReference leftMoveAction;   //å·¦ç§»å‹•ãƒœã‚¿ãƒ³/A
+    [SerializeField] private InputActionReference rightMoveAction;  //å³ç§»å‹•ãƒœã‚¿ãƒ³/D
+    [SerializeField] private InputActionReference jumpAction;       //ã‚¸ãƒ£ãƒ³ãƒ—ãƒœã‚¿ãƒ³/Space
+    [SerializeField] private InputActionReference downAction;       //ä¸‹ãƒœã‚¿ãƒ³/S
 
-    //GetKey ‘Š“–
+    //GetKey ç›¸å½“
     public bool leftHeld => leftMoveAction.action.IsPressed();
     public bool rightHeld => rightMoveAction.action.IsPressed();
     public bool jumpHeld => jumpAction.action.IsPressed(); 
     public bool downHeld => downAction.action.IsPressed();
 
-    //GetKeyDown ‘Š“–
+    //GetKeyDown ç›¸å½“
     public bool jumpDown => jumpAction.action.WasPerformedThisFrame();
 
-    //GetKeyUp ‘Š“–
+    //GetKeyUp ç›¸å½“
     public bool jumpUp => jumpAction.action.WasReleasedThisFrame();
 
     private void OnEnable() 

@@ -1,25 +1,25 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameLayers    //  ƒQ[ƒ€‚ÌƒŒƒCƒ„[ˆê——
+public enum GameLayers    //  ã‚²ãƒ¼ãƒ ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼ä¸€è¦§
 {
     GROUND,
 }
 
-public static class LayerNames    //  ƒŒƒCƒ„[–¼ˆê——
+public static class LayerNames    //  ãƒ¬ã‚¤ãƒ¤ãƒ¼åä¸€è¦§
 {
     public const string Ground = "Ground";
 }
-public static class GameLayer    //  ƒŒƒCƒ„[ƒf[ƒ^
+public static class GameLayer    //  ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ‡ãƒ¼ã‚¿
 {
-    public static readonly Dictionary<GameLayers, string> LayerEnumToName = new()    //  ƒŒƒCƒ„[enum‚Æstring‚Ì«‘Œ^
+    public static readonly Dictionary<GameLayers, string> LayerEnumToName = new()    //  ãƒ¬ã‚¤ãƒ¤ãƒ¼enumã¨stringã®è¾æ›¸å‹
     {
         { GameLayers.GROUND, LayerNames.Ground },
     };
-    public static readonly Dictionary<GameLayers, int> LayerEnumToIndex = new();    //  ƒŒƒCƒ„[enum‚ÆƒŒƒCƒ„[ƒCƒ“ƒfƒbƒNƒX‚Ì«‘Œ^
-    public static readonly Dictionary<GameLayers, LayerMask> LayerEnumToMask = new();    //  ƒŒƒCƒ„[enum‚ÆƒŒƒCƒ„[ƒ}ƒXƒN‚Ì«‘Œ^
+    public static readonly Dictionary<GameLayers, int> LayerEnumToIndex = new();    //  ãƒ¬ã‚¤ãƒ¤ãƒ¼enumã¨ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®è¾æ›¸å‹
+    public static readonly Dictionary<GameLayers, LayerMask> LayerEnumToMask = new();    //  ãƒ¬ã‚¤ãƒ¤ãƒ¼enumã¨ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒã‚¹ã‚¯ã®è¾æ›¸å‹
 
-    //  «‘İ’è
+    //  è¾æ›¸è¨­å®š
     static GameLayer()
     {
         foreach(KeyValuePair<GameLayers, string> kvp in LayerEnumToName)
@@ -39,7 +39,7 @@ public static class GameLayer    //  ƒŒƒCƒ„[ƒf[ƒ^
     public static LayerMask ToMask(GameLayers layer) => LayerEnumToMask[layer];
     public static int ToIndex(GameLayers layer) => LayerEnumToIndex[layer];
     public static string ToName(GameLayers layer) => LayerEnumToName[layer];
-    //  ƒŒƒCƒ„[ƒCƒ“ƒfƒbƒNƒX‚©‚çƒŒƒCƒ„[æ“¾
+    //  ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‹ã‚‰ãƒ¬ã‚¤ãƒ¤ãƒ¼å–å¾—
     public static GameLayers? FromIndex(int index)
     {
         foreach (KeyValuePair<GameLayers, int> kvp in LayerEnumToIndex)
@@ -51,7 +51,7 @@ public static class GameLayer    //  ƒŒƒCƒ„[ƒf[ƒ^
         }
         return null;
     }
-    //  ƒŒƒCƒ„[–¼‚©‚çƒŒƒCƒ„[æ“¾
+    //  ãƒ¬ã‚¤ãƒ¤ãƒ¼åã‹ã‚‰ãƒ¬ã‚¤ãƒ¤ãƒ¼å–å¾—
     public static GameLayers? FromName(string layerName)
     {
         foreach(KeyValuePair<GameLayers, string> kvp in LayerEnumToName)

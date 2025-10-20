@@ -1,4 +1,4 @@
-//  �ǂɓ����������̃C���^�[�t�F�[�X
+﻿//  壁に当たった時のインターフェース
 public interface IWallHitTable
 {
     void OnHitWall();

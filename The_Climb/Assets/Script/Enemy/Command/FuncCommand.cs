@@ -1,15 +1,15 @@
-using System;
+ï»¿using System;
 
-//  •Ô‚è’l‚ ‚è‚ÌŠÖ”ÀsƒNƒ‰ƒX
+//  è¿”ã‚Šå€¤ã‚ã‚Šã®é–¢æ•°å®Ÿè¡Œã‚¯ãƒ©ã‚¹
 public class FuncCommand<T> : ICommand_Enemy
 {
     Func<T> _Func;    //  
 
-    //  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    //  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     public FuncCommand(Func<T> Func)
     {
         _Func = Func;
     }
 
-    public object Execute() => _Func();    //  ŠÖ”‚Ì•Ô‚è’l‚ğæ“¾
+    public object Execute() => _Func();    //  é–¢æ•°ã®è¿”ã‚Šå€¤ã‚’å–å¾—
 }

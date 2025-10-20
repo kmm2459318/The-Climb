@@ -1,10 +1,10 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class PlayerRespawn : MonoBehaviour
 {
     Rigidbody rb;
 
-    private Vector3 lastSavePos; //ƒŠƒXƒ|[ƒ“ˆÊ’u
+    private Vector3 lastSavePos; //ãƒªã‚¹ãƒãƒ¼ãƒ³ä½ç½®
 
     void Start()
     {
@@ -14,24 +14,24 @@ public class PlayerRespawn : MonoBehaviour
 
     void Update()
     {
-        //—‚¿‚½”»’è(¡‚ÍŠÈˆÕ)
+        //è½ã¡ãŸåˆ¤å®š(ä»Šã¯ç°¡æ˜“)
         if (transform.position.y < -4.3f)
         {
             if (rb != null)
             {
-                rb.linearVelocity = Vector3.zero;  // ‘¬“xƒŠƒZƒbƒg
-                rb.MovePosition(lastSavePos);      // •¨—“I‚Éƒ[ƒv
+                rb.linearVelocity = Vector3.zero;  // é€Ÿåº¦ãƒªã‚»ãƒƒãƒˆ
+                rb.MovePosition(lastSavePos);      // ç‰©ç†çš„ã«ãƒ¯ãƒ¼ãƒ—
             }
             else
             {
-                transform.position = lastSavePos;  // Rigidbody‚ª‚È‚¢‚È‚ç‚±‚Á‚¿
+                transform.position = lastSavePos;  // RigidbodyãŒãªã„ãªã‚‰ã“ã£ã¡
             }
         } 
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //ƒŠƒXƒ|[ƒ“ƒGƒŠƒA’Ê‰ß‚ÅƒŠƒXƒ|[ƒ“’n“_XV
+        //ãƒªã‚¹ãƒãƒ¼ãƒ³ã‚¨ãƒªã‚¢é€šéã§ãƒªã‚¹ãƒãƒ¼ãƒ³åœ°ç‚¹æ›´æ–°
         if (other.CompareTag("RespawnArea"))
         {
             lastSavePos = other.transform.position;

@@ -1,12 +1,12 @@
-//  ƒCƒ[ƒW‚Ì–¼‘Oˆê——
+ï»¿//  ã‚¤ãƒ¡ãƒ¼ã‚¸ã®åå‰ä¸€è¦§
 public readonly struct ImgName
 {
-    public static readonly ImgName EdgeDark = new ImgName("EdgeDark");    //  ’[‚©‚ç”—‚éˆÅ‚ÌƒCƒ[ƒW
+    public static readonly ImgName EdgeDark = new ImgName("EdgeDark");    //  ç«¯ã‹ã‚‰è¿«ã‚‹é—‡ã®ã‚¤ãƒ¡ãƒ¼ã‚¸
     public string Value { get; }
-    //  Value‚Évalue‚ðƒZƒbƒg‚·‚éƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    //  Valueã«valueã‚’ã‚»ãƒƒãƒˆã™ã‚‹ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     private ImgName(string value) => Value = value;
-    //  ToString‚ÅValue‚ð•Ô‚·‚æ‚¤‚ÉƒI[ƒo[ƒ‰ƒCƒh
+    //  ToStringã§Valueã‚’è¿”ã™ã‚ˆã†ã«ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
     public override string ToString() => Value;
-    //  ImgNameŒ^‚Å‚Í‚È‚­StringŒ^‚ð•Ô‚·‚æ‚¤‚É•ÏX
+    //  ImgNameåž‹ã§ã¯ãªãStringåž‹ã‚’è¿”ã™ã‚ˆã†ã«å¤‰æ›´
     public static implicit operator string(ImgName Img) => Img.Value;
 }

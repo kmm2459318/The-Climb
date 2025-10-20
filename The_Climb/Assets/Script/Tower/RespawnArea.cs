@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class RespawnArea : MonoBehaviour
@@ -11,7 +11,7 @@ public class RespawnArea : MonoBehaviour
     {
         //if (respawnPosition == new Vector3(0, 0, 0))
         //{
-        //    Debug.LogError(this.gameObject + "‚ÌƒŠƒXƒ|[ƒ“ˆÊ’u‚ªİ’è‚³‚ê‚Ä‚Ü‚¹‚ñB");
+        //    Debug.LogError(this.gameObject + "ã®ãƒªã‚¹ãƒãƒ¼ãƒ³ä½ç½®ãŒè¨­å®šã•ã‚Œã¦ã¾ã›ã‚“ã€‚");
         //}
 
         rayStart = new Vector3(GetComponent<BoxCollider>().bounds.min.x, GetComponent<BoxCollider>().bounds.max.y, 0f);
@@ -29,7 +29,7 @@ public class RespawnArea : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning(this.gameObject.name + "‚ÌƒŠƒXƒ|[ƒ“ˆÊ’uŒ©‚Â‚©‚ñ‚È‚¢");
+            Debug.LogWarning(this.gameObject.name + "ã®ãƒªã‚¹ãƒãƒ¼ãƒ³ä½ç½®è¦‹ã¤ã‹ã‚“ãªã„");
         }
     }
 

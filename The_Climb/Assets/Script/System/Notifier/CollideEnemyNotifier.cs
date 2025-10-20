@@ -1,6 +1,6 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-//  “G‚ÆÕ“Ë‚µ‚½‚±‚Æ‚ğ’Ê’m
+//  æ•µã¨è¡çªã—ãŸã“ã¨ã‚’é€šçŸ¥
 public class CollideEnemyNotifier : CollisionNotifier<ICollideEnemy>
 {
     void OnCollisionEnter(Collision collision)
@@ -9,7 +9,7 @@ public class CollideEnemyNotifier : CollisionNotifier<ICollideEnemy>
         {
             return;
         }
-        //  •Ç‚É“–‚½‚Á‚½‚Ìˆ—‚ğÀs
+        //  å£ã«å½“ãŸã£ãŸæ™‚ã®å‡¦ç†ã‚’å®Ÿè¡Œ
         NotifyIfTagMatches(collision, TagName.Enemy, h => h.OnCollideEnemy());
     }
 }

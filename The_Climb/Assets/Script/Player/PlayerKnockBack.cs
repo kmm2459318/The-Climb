@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class PlayerKnockBack : MonoBehaviour
@@ -8,8 +8,8 @@ public class PlayerKnockBack : MonoBehaviour
     private PlayerMove move;
     private PlayerJump jump;
 
-    public bool knockBacking = false;  //ƒmƒbƒNƒoƒbƒN’†ƒtƒ‰ƒO
-    public float knockBackPower = 7f;  //ƒmƒbƒNƒoƒbƒN’†ƒtƒ‰ƒO
+    public bool knockBacking = false;  //ãƒãƒƒã‚¯ãƒãƒƒã‚¯ä¸­ãƒ•ãƒ©ã‚°
+    public float knockBackPower = 7f;  //ãƒãƒƒã‚¯ãƒãƒƒã‚¯ä¸­ãƒ•ãƒ©ã‚°
 
     void Start()
     {
@@ -24,14 +24,14 @@ public class PlayerKnockBack : MonoBehaviour
         PlayerActionReset();
         knockBacking = true;
 
-        //‰¡‘¬“x‚ğƒŠƒZƒbƒg
+        //æ¨ªé€Ÿåº¦ã‚’ãƒªã‚»ãƒƒãƒˆ
         rb.linearVelocity = Vector3.zero;
 
-        //‰¡‚Æã‚ÉƒmƒbƒNƒoƒbƒN
+        //æ¨ªã¨ä¸Šã«ãƒãƒƒã‚¯ãƒãƒƒã‚¯
         Vector3 knockDir = new Vector3(direction * knockBackPower, 8f, 0f);
         rb.AddForce(knockDir, ForceMode.Impulse);
 
-        //ˆê’èŠÔŒã‚É‰ğœi—á: 0.3•bj
+        //ä¸€å®šæ™‚é–“å¾Œã«è§£é™¤ï¼ˆä¾‹: 0.3ç§’ï¼‰
         Invoke(nameof(EndKnockBack), 0.2f);
     }
 
@@ -50,9 +50,9 @@ public class PlayerKnockBack : MonoBehaviour
     {
         if (collision.gameObject.tag == "Enemy" && !knockBacking)
         {
-            //“G‚ÆƒvƒŒƒCƒ„[‚ÌˆÊ’u‚ÅƒmƒbƒNƒoƒbƒN‚Ì•ûŒü‚ğŒˆ‚ß‚é
+            //æ•µã¨ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ã§ãƒãƒƒã‚¯ãƒãƒƒã‚¯ã®æ–¹å‘ã‚’æ±ºã‚ã‚‹
             int dir = transform.position.x - collision.gameObject.transform.position.x <= 0 ? -1 : 1;
-            DoKnockBack(dir);@//ƒmƒbƒNƒoƒbƒN
+            DoKnockBack(dir);ã€€//ãƒãƒƒã‚¯ãƒãƒƒã‚¯
         }
     }
 }

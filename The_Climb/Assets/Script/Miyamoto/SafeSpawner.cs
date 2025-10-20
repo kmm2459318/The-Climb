@@ -1,13 +1,13 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class SafeSpawner : MonoBehaviour
 {
     private BoxCollider col;
-    [SerializeField] private LayerMask collisionMask; // •Ç‚â’n–Ê‚ÌƒŒƒCƒ„[
+    [SerializeField] private LayerMask collisionMask; // å£ã‚„åœ°é¢ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼
 
-    [Header("’Tõİ’è")]
-    [SerializeField] private float step = 1.0f;     // ã‚É“®‚©‚·‹——£
-    [SerializeField] private int maxAttempts = 20;  // Å‘ås‰ñ”
+    [Header("æ¢ç´¢è¨­å®š")]
+    [SerializeField] private float step = 1.0f;     // ä¸Šã«å‹•ã‹ã™è·é›¢
+    [SerializeField] private int maxAttempts = 20;  // æœ€å¤§è©¦è¡Œå›æ•°
 
     private void Awake()
     {
@@ -15,7 +15,7 @@ public class SafeSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Œ»İˆÊ’u‚©‚çˆÀ‘S‚ÈƒXƒ|[ƒ“ˆÊ’u‚ğ’T‚·
+    /// ç¾åœ¨ä½ç½®ã‹ã‚‰å®‰å…¨ãªã‚¹ãƒãƒ¼ãƒ³ä½ç½®ã‚’æ¢ã™
     /// </summary>
     public Vector3 FindSafePosition(Vector3 startPos)
     {
@@ -23,9 +23,9 @@ public class SafeSpawner : MonoBehaviour
 
         if (IsColliding(pos))
         {
-            Debug.Log("–„‚Ü‚Á‚Ä‚¢‚é‚Ì‚ÅˆÀ‘S‚ÈˆÊ’u‚ğ’Tõ‚µ‚Ü‚·c");
+            Debug.Log("åŸ‹ã¾ã£ã¦ã„ã‚‹ã®ã§å®‰å…¨ãªä½ç½®ã‚’æ¢ç´¢ã—ã¾ã™â€¦");
 
-            // –„‚Ü‚Á‚Ä‚¢‚éŠÔ‚Í BoxCollider ‚ğ–³Œø‰»
+            // åŸ‹ã¾ã£ã¦ã„ã‚‹é–“ã¯ BoxCollider ã‚’ç„¡åŠ¹åŒ–
             col.enabled = false;
 
             for (int i = 0; i < maxAttempts; i++)
@@ -34,31 +34,31 @@ public class SafeSpawner : MonoBehaviour
 
                 if (!IsColliding(pos))
                 {
-                    Debug.Log("ˆÀ‘S‚ÈˆÊ’u‚ğ”­Œ©I " + pos);
+                    Debug.Log("å®‰å…¨ãªä½ç½®ã‚’ç™ºè¦‹ï¼ " + pos);
 
-                    // ˆÀ‘S‚ÈêŠ‚ğŒ©‚Â‚¯‚½‚ç Collider ‚ğÄ—LŒø‰»
+                    // å®‰å…¨ãªå ´æ‰€ã‚’è¦‹ã¤ã‘ãŸã‚‰ Collider ã‚’å†æœ‰åŠ¹åŒ–
                     col.enabled = true;
                     transform.position = pos;
                     return pos;
                 }
             }
 
-            Debug.LogWarning("ˆÀ‘S‚ÈˆÊ’u‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½BÅŒã‚ÌˆÊ’u‚ğg—p‚µ‚Ü‚·B");
-            col.enabled = true; // ¸”s‚µ‚Ä‚à•K‚¸–ß‚·
+            Debug.LogWarning("å®‰å…¨ãªä½ç½®ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸã€‚æœ€å¾Œã®ä½ç½®ã‚’ä½¿ç”¨ã—ã¾ã™ã€‚");
+            col.enabled = true; // å¤±æ•—ã—ã¦ã‚‚å¿…ãšæˆ»ã™
         }
 
         return pos;
     }
 
     /// <summary>
-    /// ‚»‚ÌˆÊ’u‚É Box ‚ª–„‚Ü‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğ”»’è
+    /// ãã®ä½ç½®ã« Box ãŒåŸ‹ã¾ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’åˆ¤å®š
     /// </summary>
     private bool IsColliding(Vector3 centerPos)
     {
-        // BoxCollider‚Ì‘å‚«‚³‚ğæ“¾
+        // BoxColliderã®å¤§ãã•ã‚’å–å¾—
         Vector3 halfExtents = col.size * 0.5f;
 
-        // ƒ[ƒ‹ƒhÀ•W‚É‡‚í‚¹‚éiBoxCollider‚ÍƒIƒtƒZƒbƒg‚ª‚ ‚éê‡‚ª‚ ‚é‚Ì‚Å’ˆÓj
+        // ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«åˆã‚ã›ã‚‹ï¼ˆBoxColliderã¯ã‚ªãƒ•ã‚»ãƒƒãƒˆãŒã‚ã‚‹å ´åˆãŒã‚ã‚‹ã®ã§æ³¨æ„ï¼‰
         Vector3 worldCenter = centerPos + col.center;
 
         return Physics.CheckBox(worldCenter, halfExtents, transform.rotation, collisionMask);

@@ -1,24 +1,24 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 public class ShortThornyCudgelController : MonoBehaviour
 {
-    [Header("èââÒÉNÅ[ÉãÉ^ÉCÉÄÅiïbÅj")]
+    [Header("ÂàùÂõû„ÇØ„Éº„É´„Çø„Ç§„É†ÔºàÁßíÔºâ")]
     public float initialCooldown = 1f;
 
-    [Header("äeÉtÉFÅ[ÉYéûä‘ÅiïbÅj")]
+    [Header("ÂêÑ„Éï„Çß„Éº„Ç∫ÊôÇÈñìÔºàÁßíÔºâ")]
     public float cooldown1 = 4f;
     public float shortStretchDuration = 0.25f;
     public float longStretchDuration = 0.25f;
     public float cooldown3 = 0f;
     public float shrinkDuration = 1.5f;
 
-    [Header("à⁄ìÆãóó£")]
+    [Header("ÁßªÂãïË∑ùÈõ¢")]
     public float shortStretchDistance = 2f;
     public float longStretchDistance = 23f;
 
-    [Header("âÒì]ë¨ìxÅiìx/ïbÅj")]
-    public float stretchRotationSpeed = 360f;  // ç∂âÒì]
-    public float shrinkRotationSpeed = 180f;   // âEâÒì]
+    [Header("ÂõûËª¢ÈÄüÂ∫¶ÔºàÂ∫¶/ÁßíÔºâ")]
+    public float stretchRotationSpeed = 360f;  // Â∑¶ÂõûËª¢
+    public float shrinkRotationSpeed = 180f;   // Âè≥ÂõûËª¢
 
     private enum State
     {
@@ -67,14 +67,14 @@ public class ShortThornyCudgelController : MonoBehaviour
                 float t1 = Mathf.Clamp01(timer / shortStretchDuration);
                 float easedT1 = Mathf.SmoothStep(0f, 1f, t1);
                 transform.localPosition = Vector3.Lerp(shortStretchStart, shortStretchEnd, easedT1);
-                Rotate(stretchRotationSpeed); // ç∂âÒì]
+                Rotate(stretchRotationSpeed); // Â∑¶ÂõûËª¢
                 timer += Time.deltaTime;
                 if (t1 >= 1f) StartLongStretch();
                 break;
 
             case State.LongStretch:
                 transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetLocalPosition, moveSpeed * Time.deltaTime);
-                Rotate(stretchRotationSpeed); // ç∂âÒì]
+                Rotate(stretchRotationSpeed); // Â∑¶ÂõûËª¢
                 if (Vector3.Distance(transform.localPosition, targetLocalPosition) < 0.01f)
                 {
                     longStretchEnd = transform.localPosition;
@@ -90,7 +90,7 @@ public class ShortThornyCudgelController : MonoBehaviour
             case State.Shrinking:
                 float t3 = Mathf.Clamp01(timer / shrinkDuration);
                 transform.localPosition = Vector3.Lerp(longStretchEnd, baseLocalPosition, t3);
-                Rotate(-shrinkRotationSpeed); // âEâÒì]
+                Rotate(-shrinkRotationSpeed); // Âè≥ÂõûËª¢
                 timer += Time.deltaTime;
                 if (t3 >= 1f)
                 {

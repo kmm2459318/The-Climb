@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
 public class ScreenFader : MonoBehaviour
@@ -6,24 +6,24 @@ public class ScreenFader : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Image fadeImage;
     [SerializeField] private float fadeDuration = 1f;
 
-    private bool isFading = false; // ƒtƒF[ƒh’†‚©‚Ç‚¤‚©
-    public bool IsFading => isFading; // © ŠO•”‚©‚ç“Ç‚İæ‚è—p
+    private bool isFading = false; // ãƒ•ã‚§ãƒ¼ãƒ‰ä¸­ã‹ã©ã†ã‹
+    public bool IsFading => isFading; // â† å¤–éƒ¨ã‹ã‚‰èª­ã¿å–ã‚Šç”¨
 
     private void Awake()
     {
         if (fadeImage != null)
         {
-            // Å‰‚Í“§–¾‚É‚µ‚Ä‚¨‚­
+            // æœ€åˆã¯é€æ˜ã«ã—ã¦ãŠã
             fadeImage.color = new Color(0, 0, 0, 0);
         }
     }
 
     /// <summary>
-    /// ƒtƒF[ƒhƒAƒEƒg ¨ ˆ—Às ¨ ƒtƒF[ƒhƒCƒ“
+    /// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ â†’ å‡¦ç†å®Ÿè¡Œ â†’ ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³
     /// </summary>
     public void FadeAndDo(System.Action onMiddle)
     {
-        if (!isFading) // ƒtƒF[ƒh’†‚Å‚È‚¯‚ê‚ÎÀs
+        if (!isFading) // ãƒ•ã‚§ãƒ¼ãƒ‰ä¸­ã§ãªã‘ã‚Œã°å®Ÿè¡Œ
         {
             StartCoroutine(FadeRoutine(onMiddle));
         }
@@ -31,18 +31,18 @@ public class ScreenFader : MonoBehaviour
 
     private IEnumerator FadeRoutine(System.Action onMiddle)
     {
-        isFading = true; // ƒtƒF[ƒhŠJn
+        isFading = true; // ãƒ•ã‚§ãƒ¼ãƒ‰é–‹å§‹
 
-        // ƒtƒF[ƒhƒAƒEƒg
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ
         yield return StartCoroutine(Fade(0, 1));
 
-        // ’†ŠÔˆ—iƒ}ƒbƒvØ‚è‘Ö‚¦‚È‚Çj
+        // ä¸­é–“å‡¦ç†ï¼ˆãƒãƒƒãƒ—åˆ‡ã‚Šæ›¿ãˆãªã©ï¼‰
         onMiddle?.Invoke();
 
-        // ƒtƒF[ƒhƒCƒ“
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³
         yield return StartCoroutine(Fade(1, 0));
 
-        isFading = false; // ƒtƒF[ƒhI—¹
+        isFading = false; // ãƒ•ã‚§ãƒ¼ãƒ‰çµ‚äº†
     }
 
     private IEnumerator Fade(float start, float end)

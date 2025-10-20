@@ -1,16 +1,16 @@
-using System;
+ï»¿using System;
 
-//  “GƒLƒƒƒ‰‚ÌƒXƒe[ƒgŠÇ—
+//  æ•µã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ãƒˆç®¡ç†
 public class EnemyStateMachine
 {
     public event Action<IEnemyState> OnStateChanged;
 
-    IEnemyState CurrentEnemyState;    //  “GƒLƒƒƒ‰‚ÌŒ»İ‚ÌƒXƒe[ƒg
+    IEnemyState CurrentEnemyState;    //  æ•µã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 
-    //  Œ»İ‚Ìó‘Ô‚ğ•Ô‚·ƒvƒƒpƒeƒB
+    //  ç¾åœ¨ã®çŠ¶æ…‹ã‚’è¿”ã™ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     public IEnemyState CurrentStateProperty => CurrentEnemyState;
     
-    //  ó‘Ô•ÏXŠÖ”
+    //  çŠ¶æ…‹å¤‰æ›´é–¢æ•°
     public void ChangeState(IEnemyState newState)
     {
         CurrentEnemyState?.Exit();
@@ -19,7 +19,7 @@ public class EnemyStateMachine
 
         OnStateChanged?.Invoke(CurrentEnemyState);
     }
-    //  ƒXƒe[ƒg‚²‚Æ‚Ìó‘ÔÀs
+    //  ã‚¹ãƒ†ãƒ¼ãƒˆã”ã¨ã®çŠ¶æ…‹å®Ÿè¡Œ
     public void FixedUpdate()
     {
         CurrentEnemyState?.FixedUpdate();

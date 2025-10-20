@@ -1,20 +1,20 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
-//  ƒIƒuƒWƒFƒNƒg‚ÆID‚ğ«‘“o˜^
+//  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨IDã‚’è¾æ›¸ç™»éŒ²
 public class ObjectRegistry : MonoBehaviour
 {
-    private static Dictionary<string, GameObject> registry = new();    //  ƒIƒuƒWƒFƒNƒg‚ÌID«‘
+    private static Dictionary<string, GameObject> registry = new();    //  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®IDè¾æ›¸
     void Awake()
     {
-        IDGenerater idObject = GetComponent<IDGenerater>();    //  IDObject‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+        IDGenerater idObject = GetComponent<IDGenerater>();    //  IDObjectã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
         if (idObject != null)
         {
-            //  ƒIƒuƒWƒFƒNƒg“o˜^
+            //  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç™»éŒ²
             Register(idObject.IDProperty, GetComponent<IDGenerater>());
         }
     }
-    //  ƒIƒuƒWƒFƒNƒg“o˜^ŠÖ”
+    //  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç™»éŒ²é–¢æ•°
     public static void Register(string id, IDGenerater idGenerator)
     {
         if(string.IsNullOrEmpty(id))
@@ -26,24 +26,24 @@ public class ObjectRegistry : MonoBehaviour
             registry.Add(id, idGenerator.gameObject);
         }
     }
-    //  ID‚ÌƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚ğo—Í
+    //  IDã®ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‡ºåŠ›
     public static GameObject Get(string id)
     {
         return registry.TryGetValue(id, out var go) ? go : null;
     }
 }
-//  ƒR[ƒh•Û‘¶Š  //
-//private static Dictionary<(IDCategory, IDLabel), GameObject> CategoryLabelMap = new();    //  ƒIƒuƒWƒFƒNƒg‚ÌID«‘
+//  ã‚³ãƒ¼ãƒ‰ä¿å­˜æ‰€  //
+//private static Dictionary<(IDCategory, IDLabel), GameObject> CategoryLabelMap = new();    //  ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®IDè¾æ›¸
 //var key = (idGenerator.CategoryProperty, idGenerator.LabelProperty);
 //if (!CategoryLabelMap.ContainsKey(key))
 //    CategoryLabelMap.Add(key, idGenerator.gameObject);
-////  Category‚ÆLabel‚©‚çƒIƒuƒWƒFƒNƒg‚ğæ“¾
+////  Categoryã¨Labelã‹ã‚‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
 //public static GameObject GetObjectByCategoryAndLabel(IDCategory category, IDLabel label)
 //{
 //    if (CategoryLabelMap.TryGetValue((category, label), out var obj))
 //    {
 //        return obj;
 //    }
-//    Debug.LogWarning($"Category+Label ‘g‚İ‡‚í‚¹ {category} / {label} ‚ÉŠY“–‚·‚éƒIƒuƒWƒFƒNƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+//    Debug.LogWarning($"Category+Label çµ„ã¿åˆã‚ã› {category} / {label} ã«è©²å½“ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
 //    return null;
 //}
