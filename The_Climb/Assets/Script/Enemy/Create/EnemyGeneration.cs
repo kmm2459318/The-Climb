@@ -14,7 +14,7 @@ public class EnemyGeneration : MonoBehaviour
     private List<GameObject> FieldEnemies = new List<GameObject>(); 
   
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         CreateEnemy();
@@ -24,7 +24,7 @@ public class EnemyGeneration : MonoBehaviour
     ///<summy>
     ///敵の生成
     ///</summy>>
-    void CreateEnemy()
+    public void CreateEnemy()
     {
         if (EnemyStatsList.Count == 0 || EnemySpotList.Count == 0)
         {
@@ -54,19 +54,31 @@ public class EnemyGeneration : MonoBehaviour
     ///<summy>
     ///時間の切り替えで敵を削除
     ///</summy>
-
-        /// <summary> 
-        /// 敵削除時に呼ばれる
-        /// </summary>
-        public void RemoveEnemy(GameObject enemy)
+    public void ClearAllEnemy()
+    {
+        foreach (GameObject AllEnemy in FieldEnemies)
         {
-            if (FieldEnemies.Contains(enemy))
+            if (AllEnemy != null)
             {
-                FieldEnemies.Remove(enemy);
-                Debug.Log($"敵 {enemy.name} を削除しました。現在の敵数: {FieldEnemies.Count}");
+                Destroy(AllEnemy);
             }
         }
+        FieldEnemies.Clear();
+        Debug.Log("敵を全部消しました");
     }
+
+    /// <summary> 
+    /// 敵削除時に呼ばれる
+    /// </summary>
+    public void RemoveEnemy(GameObject enemy)
+    {
+      if (FieldEnemies.Contains(enemy))
+      {
+            FieldEnemies.Remove(enemy);
+            Debug.Log($"敵 {enemy.name} を削除しました。現在の敵数: {FieldEnemies.Count}");
+      }
+    }
+}
 
   
 

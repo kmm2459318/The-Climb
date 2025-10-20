@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using NUnit.Framework.Constraints;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class TimeChange : MonoBehaviour
 {
@@ -9,13 +12,13 @@ public class TimeChange : MonoBehaviour
     [Header("プレイヤーの参照")]
     [SerializeField] private Transform Player;
 
-    public KeyBind KeyBind;
-
     [Header("フェード制御")]
     [SerializeField] private ScreenFader fader;
 
     [Header("クールダウン時間(秒)")]
     [SerializeField] private float switchCooldown = 2f;
+
+    public KeyBind KeyBind;                   //プレイヤーのキーを取得
 
     private int CurrentActiveIndex = 0;
     //private SafeSpawner spawner;
@@ -47,6 +50,13 @@ public class TimeChange : MonoBehaviour
 
     private void SwitchToNextMap()
     {
+        //シーン内にいるすべての敵を消す
+        EnemyGeneration[] EnemyDelete = Object.FindObjectsByType<EnemyGeneration>(FindObjectsSortMode.InstanceID);
+        foreach (EnemyGeneration Generator in EnemyDelete)
+        {
+            Generator.ClearAllEnemy();
+        }
+
         MapInstance[CurrentActiveIndex].SetActive(false);
 
         CurrentActiveIndex++;
@@ -55,6 +65,14 @@ public class TimeChange : MonoBehaviour
 
         MapInstance[CurrentActiveIndex].SetActive(true);
 
+        //新しいマップの敵生成
+        var Aanlyzer = FindAnyObjectByType<EnemyKillAnalyzer>();
+        var killRatios = Aanlyzer.GetKillRatio();
+        EnemyGeneration[] EnemyGenerate = Object.FindObjectsByType<EnemyGeneration>(FindObjectsSortMode.InstanceID);
+        foreach(EnemyGeneration Generator in EnemyGenerate)
+        {
+            //Generator.AdjustSpawnByKillRatio(killRatios);
+        }
         //// 安全な位置に修正
         //if (spawner != null)
         //{
