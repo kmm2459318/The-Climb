@@ -32,6 +32,12 @@ public class PlayerMove2 : MonoBehaviour, IConveyorReceiver
 
     [SerializeField] private bool reverseHorizontal = false;
 
+    [SerializeField] private bool upsideDown = false; // 天井歩行モード
+    [SerializeField] private float customGravity = 9.81f; // 通常重力に近い値
+
+    public bool IsUpsideDown => upsideDown;
+
+
     void Start()
     {
         RigidBody = GetComponent<Rigidbody>();
@@ -41,6 +47,17 @@ public class PlayerMove2 : MonoBehaviour, IConveyorReceiver
         knock = gameObject.GetComponent<PlayerKnockBack>();
 
         PlayerAnimation = GameObject.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
+
+        if (upsideDown)
+        {
+            // プレイヤーを上下反転表示（天井に張り付くように）
+            Vector3 scale = transform.localScale;
+            scale.y *= -1;
+            transform.localScale = scale;
+        }
+
+        RigidBody.useGravity = false;
+
     }
 
     private void Update()
@@ -57,6 +74,7 @@ public class PlayerMove2 : MonoBehaviour, IConveyorReceiver
         //移動
         if (special.highJumpChargeCounter == 0f)
         {
+
             if ((state.isGrounded || (!state.isGrounded && state.isJumpMoveOK && !state.isLeftWall && !state.isRightWall)) && !knock.knockBacking)
             {
                 jump.coyoteCounter = 0f;
@@ -72,6 +90,8 @@ public class PlayerMove2 : MonoBehaviour, IConveyorReceiver
                 AirPlayerMove();
             }
         }
+
+        ApplyCustomGravity();
     }
 
     private void MoveOperation()
@@ -191,4 +211,19 @@ public class PlayerMove2 : MonoBehaviour, IConveyorReceiver
         this.OnBelt = OnBelt;
         this.BeltVelocity = velocity;
     }
+
+    private void ApplyCustomGravity()
+    {
+        if (upsideDown)
+        {
+            if (!state.isGrounded)
+                RigidBody.AddForce(Vector3.up * customGravity, ForceMode.Acceleration);
+        }
+        else
+        {
+            if (!state.isGrounded)
+                RigidBody.AddForce(Vector3.down * customGravity, ForceMode.Acceleration);
+        }
+    }
+
 }
