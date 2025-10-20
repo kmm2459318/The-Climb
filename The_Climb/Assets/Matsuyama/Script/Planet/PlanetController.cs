@@ -1,5 +1,6 @@
 using UnityEngine;
 using TheClimb.Logging;
+using TheClimb.Player;
 
 namespace TheClimb.Astral
 {
@@ -10,6 +11,8 @@ namespace TheClimb.Astral
         PlanetStateMachine planetStaeMachine;           //  天体のステートマシーン
         PlanetStateFactory planetStateFactory;          //  天体ステートファクトリー
         PlanetCommandProvider planetCommandProvider;    //  天体関数提供クラス
+        public MonoBehaviour planetDataProvider;
+        public MonoBehaviour playerDataProvider;
 
         void Awake()
         {
@@ -17,6 +20,9 @@ namespace TheClimb.Astral
             planetStaeMachine = new PlanetStateMachine();
             planetCommandProvider = new PlanetCommandProvider(planetMover, this.transform, planetStatus.GetStats(PlanetIDs.Earth));
             planetStateFactory = new PlanetStateFactory(this, planetStaeMachine, planetCommandProvider);
+            VectorToPlanetCalculator test = new VectorToPlanetCalculator(planetDataProvider as PlanetDataProvider, playerDataProvider as PlayerDateProvider);
+            Vector2 s = test.CaluclateVaector();
+            
         }
 
         private void Start()

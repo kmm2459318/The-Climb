@@ -1,0 +1,22 @@
+using UnityEngine;
+using TheClimb.Player;
+
+namespace TheClimb.Astral
+{
+    public class VectorToPlanetCalculator    //  天体までのベクトルを計算
+    {
+        private readonly IPlanetDataProvider _planetDataProvider;           //  天体のデータプロバイダー
+        private readonly IPlayerDataProvider _playerDataProvider;    //  プレイヤーのデータプロバイダー
+
+        public VectorToPlanetCalculator(IPlanetDataProvider planetDataProvider, IPlayerDataProvider playerDataProvider)    //  コンストラクタ
+        {
+            _planetDataProvider = planetDataProvider;
+            _playerDataProvider = playerDataProvider;
+        }
+        public Vector2 CaluclateVaector()    //  天体までのベクトルを返す
+        {
+            Debug.Log(22);
+            return _planetDataProvider.PostionProperty - _playerDataProvider.PostionProperty;
+        }
+    }
+}
