@@ -102,7 +102,8 @@ public class PlayerAttackNakamura : MonoBehaviour
     {
         //ぶつかったときの突っかかりを消す(yの動きをリセット)　※謎のつっかかりが出た場合はここの条件をいじってください
         if (gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem") && !special.highJumpUsed && 
-            !other.CompareTag("RespawnArea") && !other.CompareTag("Buddy") && !other.gameObject.CompareTag("Fog"))
+            !other.CompareTag("RespawnArea") && !other.CompareTag("Buddy") && !other.gameObject.CompareTag("Fog") && 
+            !other.gameObject.CompareTag("SanityHealItem") && !other.gameObject.CompareTag("WhiteBell") && !other.gameObject.CompareTag("CallBell"))
         {
             PlayerYMoveReset();
         }
