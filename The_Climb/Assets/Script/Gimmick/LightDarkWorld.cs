@@ -14,13 +14,16 @@ public class LightDarkWorld : MonoBehaviour
 
     private float lightDuration = 15f;     //光の継続時間
     private float lightTimer = 0f;         //光の世界の時間private
-    //public List<GameObject> targetRenderers = new List<GameObject>();
+    private GameObject[] lightWhiteObj;    //
+    private GameObject[] darkBlackObj;     //
 
     void Start()
     {
         player = GameObject.Find("PlayerModel");
         playerState = player.GetComponent<PlayerState>();
         buddyCarry = player.GetComponent<BuddyCarry>();
+        lightWhiteObj = GameObject.FindGameObjectsWithTag("LightWhite");
+        darkBlackObj = GameObject.FindGameObjectsWithTag("DarkBlack");
         LayerChange(false);
     }
 
@@ -106,6 +109,7 @@ public class LightDarkWorld : MonoBehaviour
         {
             playerState.groundLayerMask =
                 (1 << ground) | (1 << whiteGround);
+             //foreach
         }
         else
         {

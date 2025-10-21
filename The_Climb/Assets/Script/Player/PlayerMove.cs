@@ -34,15 +34,15 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private bool OnBelt = false;                 //ベルトコンベアに乗っているか
     private Vector3 BeltVelocity = Vector3.zero; //ベルトコンベアの速度(未接触時はゼロ)
 
-    void Awake()
-    {
-        PlayerContext.Instance.RegistPlayerMove(this);
+    //void Awake()
+    //{
+    //    PlayerContext.Instance.RegistPlayerMove(this);
 
-        PlayerDataProvider = PlayerContext.Instance._PlayerDataProvider;
-        PlanetDataProvider = PlanetContext.Instance._PlanetDataProvider;
+    //    //PlayerDataProvider = PlayerContext.Instance._PlayerDataProvider;
+    //    //PlanetDataProvider = PlanetContext.Instance._PlanetDataProvider;
 
-        vectorToPlanetCaluculator = new VectorToPlanetCalculator(PlanetDataProvider, PlayerDataProvider);
-    }
+    //    vectorToPlanetCaluculator = new VectorToPlanetCalculator(PlanetDataProvider, PlayerDataProvider);
+    //}
 
     void Start()
     {
@@ -121,7 +121,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         {
             // 地上：慣性なし、即応する左右移動
             Vector3 force = new Vector3(moveInput, 0f, 0f) * groundMoveForce;
-            force += vectorToPlanetCaluculator.CaluclateVaector();
+            //force += vectorToPlanetCaluculator.CaluclateVaector();
             RigidBody.AddForce(force);
             RigidBody.linearVelocity = new Vector3(force.x * Time.deltaTime * 1000.0f, RigidBody.linearVelocity.y, 0f);
         }
