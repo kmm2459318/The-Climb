@@ -1,9 +1,9 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace TheClimb.Player
 {
-    public interface IPlayerDataProvider    //  ƒvƒŒƒCƒ„[‚Ìƒf[ƒ^‚ğ’ñ‹Ÿ‚·‚éƒvƒƒpƒeƒB
+    public interface IPlayerDataProvider    //  ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ‡ãƒ¼ã‚¿ã‚’æä¾›ã™ã‚‹ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     {
-        Vector2 PostionProperty { get; }
+        Vector2 PositionProperty { get; }
     }
 }
