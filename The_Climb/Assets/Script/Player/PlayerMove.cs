@@ -121,7 +121,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         {
             // 地上：慣性なし、即応する左右移動
             Vector3 force = new Vector3(moveInput, 0f, 0f) * groundMoveForce;
-            //force += vectorToPlanetCaluculator.CaluclateVaector();
             RigidBody.AddForce(force);
             RigidBody.linearVelocity = new Vector3(force.x * Time.deltaTime * 1000.0f, RigidBody.linearVelocity.y, 0f);
         }
