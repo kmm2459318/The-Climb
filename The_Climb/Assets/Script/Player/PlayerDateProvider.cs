@@ -11,6 +11,6 @@ namespace TheClimb.Player
             _planetTransform = planetTransform;
         }
 
-        public Vector2 PositionProperty => _planetTransform.position;
+        public Vector3 PositionProperty => _planetTransform.position;
     }
 }

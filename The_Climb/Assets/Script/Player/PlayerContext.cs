@@ -1,14 +1,13 @@
-﻿using TheClimb.Astral;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TheClimb.Player
 {
     [DefaultExecutionOrder(-100)]
     public class PlayerContext : MonoBehaviour    //  プレイヤーコンテキスト
     {
-        [SerializeField] Transform PlayerTransform;
+        public Transform playerTransform;    //  プレイヤートランスフォーム
         public static PlayerContext Instance { get; private set; }              //  プロパティ
-        public PlayerController PlayerController { get; private set; }          //  プロパティ
+        public PlayerMove _PlayerMove{ get; private set; }          //  プロパティ
         
         public IPlayerDataProvider _PlayerDataProvider { get; private set; }    //  プロパティ
 
@@ -22,12 +21,12 @@ namespace TheClimb.Player
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            _PlayerDataProvider = new PlayerDataProvider(PlayerTransform);
+            _PlayerDataProvider = new PlayerDataProvider(playerTransform);
         }
 
-        public void RegistController(PlayerController playerController)    //  コントローラー登録メソッド
+        public void RegistPlayerMove(PlayerMove playerMove)    //  コントローラー登録メソッド
         {
-            PlayerController = playerController;
+            _PlayerMove = playerMove;
         }
     }
 }
