@@ -66,13 +66,21 @@ public class TimeChange : MonoBehaviour
         MapInstance[CurrentActiveIndex].SetActive(true);
 
         //新しいマップの敵生成
-        var Aanlyzer = FindAnyObjectByType<EnemyKillAnalyzer>();
-        var killRatios = Aanlyzer.GetKillRatio();
-        EnemyGeneration[] EnemyGenerate = Object.FindObjectsByType<EnemyGeneration>(FindObjectsSortMode.InstanceID);
-        foreach(EnemyGeneration Generator in EnemyGenerate)
+        var Analyzer = FindFirstObjectByType<EnemyKillAnalyzer>();
+        if(Analyzer != null)
         {
-            //Generator.AdjustSpawnByKillRatio(killRatios);
+            var KillRatios = Analyzer.GetKillRatio();
+            var Generator = FindFirstObjectByType<EnemyGeneration>();
+            if(Generator != null)
+            {
+                Generator.AbjustSpawanByKillRatio(KillRatios);
+            }
         }
+
+       
+        
+            
+        
         //// 安全な位置に修正
         //if (spawner != null)
         //{

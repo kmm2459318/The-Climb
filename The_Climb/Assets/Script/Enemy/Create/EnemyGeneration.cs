@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 
 public class EnemyGeneration : MonoBehaviour
@@ -11,12 +12,36 @@ public class EnemyGeneration : MonoBehaviour
     [SerializeField] private List<Transform> EnemySpotList = new List<Transform>();
 
     [Header("フィールド上の敵のリスト")]
-    private List<GameObject> FieldEnemies = new List<GameObject>(); 
-  
+    private List<GameObject> FieldEnemies = new List<GameObject>();
 
+    //出現調整に使う重みデータ
+    private Dictionary<string, float> EnemyWeights= new();
 
     void Start()
     {
+        CreateEnemy();
+    }
+
+    ///<summy>
+    ///撃破率で出現する敵の数を変更
+    ///</summy>
+    public void AbjustSpawanByKillRatio(Dictionary<string,float> KillRatios)
+    {
+        if(KillRatios == null || KillRatios.Count == 0)
+        {
+            Debug.Log("データがない為通常生成を行います");
+            CreateEnemy();
+            return;
+        }
+
+        //初期化
+        EnemyWeights.Clear();
+        foreach( var EnemyList in EnemyStatsList)
+        {
+            float Ratio = KillRatios.ContainsKey(EnemyList.EnemyName) ? KillRatios[EnemyList.EnemyName] : 0f;
+            EnemyWeights[EnemyList.EnemyName] = Mathf.Clamp01(1f - Ratio);
+        }
+
         CreateEnemy();
     }
 
@@ -24,37 +49,50 @@ public class EnemyGeneration : MonoBehaviour
     ///<summy>
     ///敵の生成
     ///</summy>>
-    public void CreateEnemy()
+    void CreateEnemy()
     {
-        if (EnemyStatsList.Count == 0 || EnemySpotList.Count == 0)
+        foreach (Transform spot in EnemySpotList)
         {
-            Debug.Log("敵のデータとスポットが設定されていません");
-            return;
-        }
+            // 重みを考慮して敵を選ぶ
+            EnemyStats enemyData = GetWeightedRandomEnemy();
+            GameObject obj = Instantiate(enemyData.EnemyPrefab, spot.position, Quaternion.identity);
+            obj.name = enemyData.EnemyName;
 
-        foreach(Transform spot in EnemySpotList)
-        {
-            EnemyStats EnemeyData = EnemyStatsList[Random.Range(0, EnemyStatsList.Count)];
-
-            //敵の生成
-            GameObject obj = Instantiate(EnemeyData.EnemyPrefab, spot.position, Quaternion.identity);
-            obj.name = EnemeyData.EnemyName;
-
-            //データがあるか確認EnmeyData
-            Enemy EnemyBase = obj.GetComponent<Enemy>();
-            if (EnemyBase != null)
+            Enemy enemyBase = obj.GetComponent<Enemy>();
+            if (enemyBase != null)
             {
-                EnemyBase.SetUp(EnemeyData, this);
-
+                enemyBase.SetUp(enemyData, this);
                 FieldEnemies.Add(obj);
             }
         }
     }
 
+    // 🔹 重みに応じたランダム選択
+    private EnemyStats GetWeightedRandomEnemy()
+    {
+        if (EnemyWeights.Count == 0)
+            return EnemyStatsList[Random.Range(0, EnemyStatsList.Count)];
+
+        float totalWeight = EnemyWeights.Values.Sum();
+        float random = Random.value * totalWeight;
+        float current = 0;
+
+        foreach (var enemy in EnemyStatsList)
+        {
+            float w = EnemyWeights[enemy.EnemyName];
+            current += w;
+            if (random <= current)
+                return enemy;
+        }
+
+        return EnemyStatsList.Last(); // 保険
+    }
+
+
     ///<summy>
     ///時間の切り替えで敵を削除
     ///</summy>
-    public void ClearAllEnemy()
+public void ClearAllEnemy()
     {
         foreach (GameObject AllEnemy in FieldEnemies)
         {
