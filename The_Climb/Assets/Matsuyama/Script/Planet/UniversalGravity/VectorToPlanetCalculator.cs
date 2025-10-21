@@ -13,7 +13,7 @@ namespace TheClimb.Astral
             _planetDataProvider = planetDataProvider;
             _playerDataProvider = playerDataProvider;            
         }
-        public Vector2 CaluclateVaector()    //  天体までのベクトルを返す
+        public Vector3 CaluclateVaector()    //  天体までのベクトルを返す
         {
             return _planetDataProvider.PositionProperty - _playerDataProvider.PositionProperty;
         }
