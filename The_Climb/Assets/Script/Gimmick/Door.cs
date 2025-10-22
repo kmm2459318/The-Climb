@@ -21,7 +21,7 @@ public class Door : MonoBehaviour
 
     void OnEnable()
     {
-        // 初期保存値を適用（Bridge.Start() の呼び出しと重複しても安全）
+        // 保存値を適用（Bridge.Start() の呼び出しと重複しても安全）
         Bridge?.ApplySavedState();
     }
 

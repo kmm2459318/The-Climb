@@ -4,34 +4,49 @@ public class GimmickSwitch : MonoBehaviour
 {
     [SerializeField] private TimeGimmickBridge Bridge;        // 状態保存ブリッジ
     [SerializeField] private KeyCode ActivateKey = KeyCode.E; // インタラクトキー
-    [SerializeField] private float InteractionRange = 2f;     // インタラクト距離
-    [SerializeField] private Transform PlayerTransform;       // プレイヤーTransform
-    [SerializeField] private GameObject VisualRoot;           // 表示用子オブジェクト
-    [SerializeField] private Collider SwitchCollider;         // スイッチの当たり判定
+
+    [Header("表示用オブジェクト")]
+    [SerializeField] private GameObject SwitchOff;  //スイッチ未作動時に表示するオブジェクト
+    [SerializeField] private GameObject SwitchOn;   //スイッチ作動後に表示するオブジェクト
 
     private bool IsOn = false; // 押されたかどうか（内部状態）
+    private bool CanInteract = false;
 
     private void Awake()
     {
-        if (Bridge     == null) Bridge = GetComponent<TimeGimmickBridge>(); // Bridge 自動取得
-        if (VisualRoot == null) VisualRoot = this.gameObject; // VisualRoot が無ければ自分を代替
+        // Bridge 自動取得
+        if (Bridge == null) Bridge = GetComponent<TimeGimmickBridge>(); 
 
-        if (PlayerTransform == null)
-        {
-            var playerObj = GameObject.FindWithTag("Player"); // Player タグで検索
-            if (playerObj != null) PlayerTransform = playerObj.transform;
-        }
+        SwitchOn.SetActive(false);
     }
 
     private void Update()
     {
         if (IsOn) return; // 既に押されていたら何もしない
-        if (PlayerTransform == null) return;
 
-        float Dist = Vector3.Distance(PlayerTransform.position, transform.position); // 距離計算
-        if (Dist <= InteractionRange && Input.GetKeyDown(ActivateKey))
+        if (CanInteract && Input.GetKeyDown(ActivateKey))
         {
             ActivateSwitch();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("当たった");
+            if (IsOn) return;   //既に押されていたら何もしない
+            CanInteract = true;
+            //ActivateSwitch();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("離れた");
+            CanInteract = false;
         }
     }
 
@@ -41,18 +56,12 @@ public class GimmickSwitch : MonoBehaviour
         IsOn = true;                    // 押された状態にする
         Bridge?.ReportState(true);      // 状態を保存
 
-        // 見た目を消す（オブジェクト自体は有効のまま）
-        if (VisualRoot != null && VisualRoot != this.gameObject)
+        // 見た目を切り替える
+        if (SwitchOff != null && SwitchOn != null)
         {
-            VisualRoot.SetActive(false);
+            SwitchOff.SetActive(false);
+            SwitchOn.SetActive(true);
         }
-        else
-        {
-            var renderers = GetComponentsInChildren<Renderer>(true);
-            foreach (var r in renderers) r.enabled = false;
-        }
-
-        SwitchCollider.enabled = false; 　//当たり判定を消す
 
         // 以後の入力処理を止める（スクリプトを無効化）
         this.enabled = false;
