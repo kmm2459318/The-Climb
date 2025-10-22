@@ -57,34 +57,51 @@ public class TimeChange : MonoBehaviour
             Generator.ClearAllEnemy();
         }
 
-        MapInstance[CurrentActiveIndex].SetActive(false);
 
+        //現代のマップを非表示
+        MapInstance[CurrentActiveIndex].SetActive(false);
+        
+        //次のマップへ切り替え
         CurrentActiveIndex++;
         if (CurrentActiveIndex >= MapInstance.Length)
             CurrentActiveIndex = 0;
 
+        //次のマップの生成
         MapInstance[CurrentActiveIndex].SetActive(true);
 
-        //新しいマップの敵生成
-        var Analyzer = FindFirstObjectByType<EnemyKillAnalyzer>();
-        if(Analyzer != null)
+        //新しいマップの敵生成andマップが現代のマップの時だけ出撃調整する
+        if(CurrentActiveIndex == 1)
         {
-            var KillRatios = Analyzer.GetKillRatio();
-            var Generator = FindFirstObjectByType<EnemyGeneration>();
-            if(Generator != null)
+            var Analyzer = FindFirstObjectByType<EnemyKillAnalyzer>();
+            if(Analyzer != null)
             {
-                Generator.AbjustSpawanByKillRatio(KillRatios);
+                var KillRatios = Analyzer.GetKillRatio();
+                var Generator = FindFirstObjectByType<EnemyGeneration>();
+                if(Generator != null)
+                {
+                    Generator.AbjustSpawanByKillRatio(KillRatios);
+                    Debug.Log("過去のマップなので出撃調整を行いました");
+                }
             }
         }
 
+        //新しいマップの敵生成and通常生成を行う
+        else if(CurrentActiveIndex == 0)
+        {
+            var Generator = FindFirstObjectByType<EnemyGeneration>();
+            if(Generator != null)
+            {
+                Generator.AbjustSpawanByKillRatio(null);
+                Debug.Log("通常マップの生成を行いました");
+            }
+        }
+
+        else
+        {
+            Debug.LogError("EnemyGenerationがHierarchyに存在しません");
+        }
        
-        
-            
-        
-        //// 安全な位置に修正
-        //if (spawner != null)
-        //{
-        //    Player.position = spawner.FindSafePosition(Player.position);
-        //}
+       
+
     }
 }
