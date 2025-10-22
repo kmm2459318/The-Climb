@@ -57,7 +57,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     void Update()
     {
-        if (!knock.knockBacking)  //ノックバック中は不可
+        if (!knock.knockBacking && !state.carryingBuddy)  //ノックバック中は不可
         {
             if (state.highJumpOn)
             {

@@ -73,21 +73,24 @@ public class PlayerJump : MonoBehaviour
         if (jumping)
         {
             jumpTime += Time.fixedDeltaTime;
-            float JumpPower;
+            float JumpPower = groundJumpPower;
 
             special.headingAttack.SetActive(true);
 
-            if (landingJumpNumber >= 2)
+            if (!state.carryingBuddy)  //バディおんぶしていないか
             {
-                JumpPower = landingHighJumpPower;
+                if (landingJumpNumber >= 2)  //三段目ジャンプ
+                {
+                    JumpPower = landingHighJumpPower;
+                }
+                else if (landingJumpNumber == 1)  //二段目ジャンプ
+                {
+                    JumpPower = landingLowJumpPower;
+                }
             }
-            else if (landingJumpNumber == 1)
+            else  //バディおんぶでジャンプ力低下
             {
-                JumpPower = landingLowJumpPower;
-            }
-            else
-            {
-                JumpPower = groundJumpPower; 
+                JumpPower = groundJumpPower * 4 / 5;
             }
 
             //トランポリンに乗っていたらトランポリンの効果を反映
