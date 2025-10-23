@@ -70,7 +70,7 @@ public class TimeChange : MonoBehaviour
         MapInstance[CurrentActiveIndex].SetActive(true);
 
         //新しいマップの敵生成andマップが現代のマップの時だけ出撃調整する
-        if(CurrentActiveIndex == 1)
+        if(CurrentActiveIndex == 0)
         {
             var Analyzer = FindFirstObjectByType<EnemyKillAnalyzer>();
             if(Analyzer != null)
@@ -80,13 +80,13 @@ public class TimeChange : MonoBehaviour
                 if(Generator != null)
                 {
                     Generator.AbjustSpawanByKillRatio(KillRatios);
-                    Debug.Log("過去のマップなので出撃調整を行いました");
+                    Debug.Log("現代のマップなので出撃調整を行いました");
                 }
             }
         }
 
         //新しいマップの敵生成and通常生成を行う
-        else if(CurrentActiveIndex == 0)
+        else if(CurrentActiveIndex == 1)
         {
             var Generator = FindFirstObjectByType<EnemyGeneration>();
             if(Generator != null)

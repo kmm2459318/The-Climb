@@ -33,12 +33,12 @@ public class EnemyGeneration : MonoBehaviour
         if(KillRatios == null || KillRatios.Count == 0)
         {
             Debug.Log("データがない為通常生成を行います");
-            Past = false;
+            Past = true;
             CreateEnemy();
             return;
         }
 
-        Past = true;
+        Past = false;
         //初期化
         EnemyWeights.Clear();
         foreach( var EnemyList in EnemyStatsList)
@@ -80,7 +80,7 @@ public class EnemyGeneration : MonoBehaviour
     //出撃調整
     private EnemyStats GetWeightedRandomEnemy()
     {
-        if (EnemyWeights.Count == 0 || Past == false)
+        if (EnemyWeights.Count == 0 || Past == true)
             return EnemyStatsList[Random.Range(0, EnemyStatsList.Count)];
 
         float totalWeight = EnemyWeights.Values.Sum();
