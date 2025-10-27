@@ -11,11 +11,17 @@ public class SanityErosionCountText : MonoBehaviour
     {
         text = GetComponent<TextMeshProUGUI>();
         playerState = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
-        lightDarkWorld = GameObject.Find("LightDarkWorld").GetComponent<LightDarkWorld>();
+        if (GameObject.Find("LightDarkWorld") != null)
+        {
+            lightDarkWorld = GameObject.Find("LightDarkWorld").GetComponent<LightDarkWorld>();
+        }
     }
 
     void Update()
     {
-        text.text = lightDarkWorld.brightnessState + " SAN : " + playerState.sanityLevel + " ERO : " + playerState.erosionLevel;
+        if (lightDarkWorld != null)
+        {
+            text.text = lightDarkWorld.brightnessState + " SAN : " + playerState.sanityLevel + " ERO : " + playerState.erosionLevel;
+        }
     }
 }

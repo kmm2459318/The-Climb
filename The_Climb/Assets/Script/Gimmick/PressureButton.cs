@@ -31,6 +31,11 @@ public class PressureButton : MonoBehaviour
 
         if (target == null)
             Debug.LogError(gameObject.name + "のtargetがnullです。ばーか❤");
+        else
+        {
+            target.SetActive(false);
+        }
+
     }
 
     void Update()
