@@ -8,16 +8,15 @@ public class LightImpactCollider : MonoBehaviour
 
     [Header("スケール設定")]
     public float minScale = 0.0f;          // 消えた状態の大きさ
-    public float maxScale = 1.0f;          // 光が当たっている時の大きさ
-    public float expandTime = 0.3f;        // 拡大時間
-    public float shrinkSpeed = 0.5f;       // 縮小スピード
+    public float maxScale = 1.5f;          // 拡大後の最大サイズ
+    public float expandTime = 0.1f;        // 拡大にかかる時間
+    public float stayTime = 0.0f;          // 最大サイズで維持する時間
+    public float shrinkTime = 4f;        // 縮小にかかる時間
 
     [Header("検知レイヤー設定")]
     public LayerMask lightLayer;           // LuminaLightBall のレイヤー
 
-    private Coroutine scaleRoutine;
-    private bool isExpanding = false;
-    private int lightCount = 0; // 同時に複数の光が当たった場合も対応
+    private Coroutine effectRoutine;
 
     private void Start()
     {
@@ -27,33 +26,23 @@ public class LightImpactCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // 指定レイヤー以外は無視
         if (((1 << other.gameObject.layer) & lightLayer.value) == 0) return;
 
-        lightCount++;
-        if (lightCount == 1) // 初めて光が当たった
+        // すでにエフェクト中なら再開（リセットではなく中断から拡大）
+        if (effectRoutine != null)
         {
-            if (scaleRoutine != null) StopCoroutine(scaleRoutine);
-            scaleRoutine = StartCoroutine(ExpandRoutine());
+            StopCoroutine(effectRoutine);
         }
+
+        effectRoutine = StartCoroutine(ImpactEffectRoutine());
     }
 
-    private void OnTriggerExit(Collider other)
+    private IEnumerator ImpactEffectRoutine()
     {
-        if (((1 << other.gameObject.layer) & lightLayer.value) == 0) return;
-
-        lightCount = Mathf.Max(0, lightCount - 1);
-        if (lightCount == 0) // 全ての光が離れた
-        {
-            if (scaleRoutine != null) StopCoroutine(scaleRoutine);
-            scaleRoutine = StartCoroutine(ShrinkRoutine());
-        }
-    }
-
-    private IEnumerator ExpandRoutine()
-    {
-        isExpanding = true;
+        // --- 現在スケールから拡大 ---
         float timer = 0f;
-        Vector3 start = floorVisual.localScale;
+        Vector3 start = floorVisual.localScale; // ← 現在のサイズから拡大する
         Vector3 target = Vector3.one * maxScale;
 
         while (timer < expandTime)
@@ -65,27 +54,38 @@ public class LightImpactCollider : MonoBehaviour
         }
 
         floorVisual.localScale = target;
-        isExpanding = false;
-    }
 
-    private IEnumerator ShrinkRoutine()
-    {
-        isExpanding = false;
-        float current = floorVisual.localScale.x;
+        // --- 最大サイズで少し維持 ---
+        yield return new WaitForSeconds(stayTime);
 
-        while (current > minScale)
+        // --- 縮小 ---
+        timer = 0f;
+        start = floorVisual.localScale; // ← 現在のサイズ（max想定）から縮小開始
+        target = Vector3.one * minScale;
+
+        while (timer < shrinkTime)
         {
-            current = Mathf.MoveTowards(current, minScale, Time.deltaTime * shrinkSpeed);
-            floorVisual.localScale = Vector3.one * current;
+            timer += Time.deltaTime;
+            float t = timer / shrinkTime;
+            floorVisual.localScale = Vector3.Lerp(start, target, t);
             yield return null;
         }
 
-        floorVisual.localScale = Vector3.one * minScale;
+        floorVisual.localScale = target;
+        effectRoutine = null;
     }
 
     public void CreateImpact(Vector3 position)
     {
-        // ここにコライダー生成・拡大処理を書く
-        Debug.Log("CreateImpact called at " + position);
+        // オブジェクトを指定位置に移動させてエフェクト発動
+        transform.position = position;
+
+        // 現在スケールを維持したまま再始動
+        if (effectRoutine != null)
+        {
+            StopCoroutine(effectRoutine);
+        }
+
+        effectRoutine = StartCoroutine(ImpactEffectRoutine());
     }
 }

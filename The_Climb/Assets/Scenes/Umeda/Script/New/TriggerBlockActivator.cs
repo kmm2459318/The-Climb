@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// 光や特定のトリガーに反応して、指定ブロック群の表示・当たり判定を切り替える。
+/// GameObject自体は無効化せず、RendererとColliderだけを切り替える軽量版。
+/// </summary>
 [DisallowMultipleComponent]
 public class TriggerBlockActivator : MonoBehaviour
 {
@@ -11,17 +15,17 @@ public class TriggerBlockActivator : MonoBehaviour
 
     private void Start()
     {
-        // 最初は全て無効化
+        // ✅ 初期状態：すべて非表示・当たり判定オフ
         if (targetBlocks != null)
         {
             foreach (var block in targetBlocks)
             {
-                if (block != null)
-                    block.SetActive(false);
+                if (block == null) continue;
+                SetBlockVisible(block, false);
             }
         }
 
-        // Triggerが機能するようにRigidbodyを確認
+        // ✅ Triggerが機能するようにRigidbodyを確認
         Collider col = GetComponent<Collider>();
         if (col != null && col.isTrigger && GetComponent<Rigidbody>() == null)
         {
@@ -34,19 +38,22 @@ public class TriggerBlockActivator : MonoBehaviour
     {
         if (((1 << other.gameObject.layer) & detectableLayers) == 0) return;
 
-        // 有効化
-        SetBlocksActive(true);
+        // ✅ 有効化
+        SetBlocksVisible(true);
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (((1 << other.gameObject.layer) & detectableLayers) == 0) return;
 
-        // 無効化
-        SetBlocksActive(false);
+        // ✅ 無効化
+        SetBlocksVisible(false);
     }
 
-    private void SetBlocksActive(bool active)
+    // -----------------------------------------
+    // 個々のブロックの表示・判定を切り替え
+    // -----------------------------------------
+    private void SetBlocksVisible(bool visible)
     {
         if (targetBlocks == null) return;
 
@@ -54,19 +61,37 @@ public class TriggerBlockActivator : MonoBehaviour
         {
             if (block == null) continue;
 
-            // 🟡 無効化直前に、上のRigidbodyを起こす
-            if (!active)
+            // 🟡 無効化前に上のRigidbodyを起こす
+            if (!visible)
             {
                 WakeUpObjectsAbove(block);
             }
 
-            block.SetActive(active);
+            SetBlockVisible(block, visible);
         }
     }
 
+    // -----------------------------------------
+    // RendererとColliderを切り替える
+    // -----------------------------------------
+    private void SetBlockVisible(GameObject block, bool visible)
+    {
+        // RendererをOFF/ON
+        Renderer renderer = block.GetComponent<Renderer>();
+        if (renderer != null)
+            renderer.enabled = visible;
+
+        // ColliderをOFF/ON
+        Collider collider = block.GetComponent<Collider>();
+        if (collider != null)
+            collider.enabled = visible;
+    }
+
+    // -----------------------------------------
+    // ブロックが消えるとき、上のRigidbodyを起こす
+    // -----------------------------------------
     private void WakeUpObjectsAbove(GameObject block)
     {
-        // 足場の上の物体（Rigidbody）を起こす
         Collider[] hits = Physics.OverlapBox(
             block.transform.position + Vector3.up * 0.5f,
             new Vector3(0.5f, 0.5f, 0.5f),
@@ -78,8 +103,8 @@ public class TriggerBlockActivator : MonoBehaviour
             Rigidbody rb = hit.attachedRigidbody;
             if (rb != null)
             {
-                rb.WakeUp(); // ✅ Rigidbodyを強制的に再アクティブ化
-                rb.AddForce(Vector3.down * 0.01f, ForceMode.VelocityChange); // 少しだけ下に刺激
+                rb.WakeUp();
+                rb.AddForce(Vector3.down * 0.01f, ForceMode.VelocityChange);
             }
         }
     }
