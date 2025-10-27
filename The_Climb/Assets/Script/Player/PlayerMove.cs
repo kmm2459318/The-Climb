@@ -1,6 +1,7 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using TheClimb.Player;
+using TheClimb.Astral;
 
 public class PlayerMove : MonoBehaviour, IConveyorReceiver
 {
@@ -9,9 +10,13 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     PlayerJump jump;
     PlayerSpecialAction special;
     PlayerKnockBack knock;
+    VectorToPlanetCalculator vectorToPlanetCaluculator;    //  天体までのベクトルを計算するクラス
 
     [SerializeField] private InputActionReference leftMoveAction;
     [SerializeField] private InputActionReference rightMoveAction;
+
+    IPlayerDataProvider PlayerDataProvider;    //  プレイヤーのデータプロバイダ
+    IPlanetDataProvider PlanetDataProvider;    //  天体のデータプロバイダ
 
     private float groundMoveForce = 0.7f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
@@ -29,6 +34,15 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private bool OnBelt = false;                 //ベルトコンベアに乗っているか
     private Vector3 BeltVelocity = Vector3.zero; //ベルトコンベアの速度(未接触時はゼロ)
 
+    //void Awake()
+    //{
+    //    PlayerContext.Instance.RegistPlayerMove(this);
+
+    //    //PlayerDataProvider = PlayerContext.Instance._PlayerDataProvider;
+    //    //PlanetDataProvider = PlanetContext.Instance._PlanetDataProvider;
+
+    //    vectorToPlanetCaluculator = new VectorToPlanetCalculator(PlanetDataProvider, PlayerDataProvider);
+    //}
 
     void Start()
     {

@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 public class BuddyController : MonoBehaviour
 {
     private Rigidbody RigidBody;
-    private BuddyCarry buddyCarry;
+    private PlayerState state;
 
     private bool buddyDirectionRight;  //バディが右向いてるか判定、falseなら左向き
     public bool moving = false;        //Buddyが動いてるか判定
@@ -36,7 +36,7 @@ public class BuddyController : MonoBehaviour
 
     void Start()
     {
-        buddyCarry = GameObject.Find("PlayerModel").GetComponent<BuddyCarry>();
+        state = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
         RigidBody = gameObject.GetComponent<Rigidbody>();
     }
@@ -49,7 +49,7 @@ public class BuddyController : MonoBehaviour
         isRightWall = Physics.CheckCapsule(transform.position + Vector3.right * 0.3f + Vector3.up * 0.49f, transform.position + Vector3.right * 0.3f + Vector3.down * 0.49f, 0.001f, groundLayer);
 
         //おんぶされてるとき重力働かないように
-        if (buddyCarry.carryingBuddy)
+        if (state.carryingBuddy)
         {
             RigidBody.useGravity = false;
         }
