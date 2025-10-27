@@ -14,13 +14,17 @@ public class LightDarkWorld : MonoBehaviour
 
     private float lightDuration = 15f;     //光の継続時間
     private float lightTimer = 0f;         //光の世界の時間private
-    //public List<GameObject> targetRenderers = new List<GameObject>();
+    private float transparency = 0.3f;     //白と黒の床壁の透明度
+    private GameObject[] lightWhiteObj;    //白系のオブジェクト
+    private GameObject[] darkBlackObj;     //黒系のオブジェクト
 
     void Start()
     {
         player = GameObject.Find("PlayerModel");
         playerState = player.GetComponent<PlayerState>();
         buddyCarry = player.GetComponent<BuddyCarry>();
+        lightWhiteObj = GameObject.FindGameObjectsWithTag("LightWhite");
+        darkBlackObj = GameObject.FindGameObjectsWithTag("DarkBlack");
         LayerChange(false);
     }
 
@@ -106,11 +110,29 @@ public class LightDarkWorld : MonoBehaviour
         {
             playerState.groundLayerMask =
                 (1 << ground) | (1 << whiteGround);
+
+            ObjectTransparency(lightWhiteObj, 1f);
+            ObjectTransparency(darkBlackObj, transparency);
         }
         else
         {
             playerState.groundLayerMask =
                 (1 << ground) | (1 << blackGround);
+
+            ObjectTransparency(lightWhiteObj, transparency);
+            ObjectTransparency(darkBlackObj, 1f);
+        }
+    }
+
+    private void ObjectTransparency(GameObject[] @object, float tp)
+    {
+        foreach (GameObject obj in @object)
+        {
+            MeshRenderer mr;
+            mr = obj.GetComponent<MeshRenderer>();
+
+            Color currentColor = mr.material.color;
+            mr.material.color = new Color(currentColor.r, currentColor.g, currentColor.b, tp);
         }
     }
 }
