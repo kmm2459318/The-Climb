@@ -28,11 +28,11 @@ public class PlayerJump : MonoBehaviour
     private float landingLowJumpPower = 13f;  //一回目着地ジャンプのパワー
     private float landingHighJumpPower = 15f;  //二回目着地ジャンプのパワー
 
-    public  bool  isOnTrampoline      = false; //トランポリンに乗っているかの判定
-    public  float TrampolinePower     = 1.5f;  //トランポリンのジャンプ倍率
+    public bool isOnTrampoline = false; //トランポリンに乗っているかの判定
+    public float TrampolinePower = 1.5f;  //トランポリンのジャンプ倍率
     private float TrampolineGraceTime = 0.15f; //トランポリンの効果を維持する時間
-    private float TrampolineTimer     = 0f;    //トランポリンの効果を管理するタイマー
-    private bool  TrampolineJumping   = false; //トランポリンのジャンプ中判定
+    private float TrampolineTimer = 0f;    //トランポリンの効果を管理するタイマー
+    private bool TrampolineJumping = false; //トランポリンのジャンプ中判定
 
     void Start()
     {
@@ -73,21 +73,24 @@ public class PlayerJump : MonoBehaviour
         if (jumping)
         {
             jumpTime += Time.fixedDeltaTime;
-            float JumpPower;
+            float JumpPower = groundJumpPower;
 
             special.headingAttack.SetActive(true);
 
-            if (landingJumpNumber >= 2)
+            if (!state.carryingBuddy)  //バディおんぶしていないか
             {
-                JumpPower = landingHighJumpPower;
+                if (landingJumpNumber >= 2)  //三段目ジャンプ
+                {
+                    JumpPower = landingHighJumpPower;
+                }
+                else if (landingJumpNumber == 1)  //二段目ジャンプ
+                {
+                    JumpPower = landingLowJumpPower;
+                }
             }
-            else if (landingJumpNumber == 1)
+            else  //バディおんぶでジャンプ力低下
             {
-                JumpPower = landingLowJumpPower;
-            }
-            else
-            {
-                JumpPower = groundJumpPower; 
+                JumpPower = groundJumpPower * 4 / 5;
             }
 
             //トランポリンに乗っていたらトランポリンの効果を反映
@@ -101,7 +104,7 @@ public class PlayerJump : MonoBehaviour
         }
 
         //トランポリン効果のタイマー
-        if(TrampolineJumping)
+        if (TrampolineJumping)
         {
             TrampolineTimer -= Time.fixedDeltaTime;
             if (TrampolineTimer <= 0)
@@ -168,7 +171,7 @@ public class PlayerJump : MonoBehaviour
         if (isJumpQueued)
         {
             jumpQueueCounter += Time.deltaTime;
-            
+
             if (jumpQueueCounter > jumpQueueTime)
             {
                 isJumpQueued = false;
@@ -178,16 +181,15 @@ public class PlayerJump : MonoBehaviour
 
     public void Jump(float jumpPower)
     {
-        //Debug.Log($"[Jump] Power: {jumpPower}, Time: {jumpTime}, Max: {jumpTimeMax}");
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, RigidBody.linearVelocity.z);
 
         //トランポリンに乗っている場合ジャンプ力を上げる
-        if(TrampolineJumping)
+        if (TrampolineJumping)
         {
             jumpPower *= TrampolinePower;
         }
 
-        // ジャンプの速度をアニメーションカーブから取得
+        // アニメーションカーブに基づくジャンプ力
         float time = jumpTime / jumpTimeMaxSaving;
         float power = jumpPower * jumpCurve.Evaluate(time);
 
@@ -196,13 +198,28 @@ public class PlayerJump : MonoBehaviour
             jumping = false;
         }
 
-        RigidBody.AddForce(power * Vector3.up, ForceMode.Impulse);
+        // PlayerMove2（反転付き）の参照を探す
+        PlayerMove2 move2 = GetComponent<PlayerMove2>();
 
-        // 最大ジャンプ速度を制限
+        // 反転状態ならジャンプ方向を反転
+        Vector3 jumpDirection = Vector3.up;
+        if (move2 != null && move2.IsUpsideDown)
+        {
+            jumpDirection = Vector3.down;
+        }
+
+        // 実際のジャンプ
+        RigidBody.AddForce(power * jumpDirection, ForceMode.Impulse);
+
+        // 最大ジャンプ速度の制限
         Vector3 horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
         if (horizontalVelocity.magnitude > maxJumpSpeed)
         {
-            RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * maxJumpSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
+            RigidBody.linearVelocity = new Vector3(
+                Mathf.Sign(RigidBody.linearVelocity.x) * maxJumpSpeed,
+                RigidBody.linearVelocity.y,
+                RigidBody.linearVelocity.z
+            );
         }
     }
 }

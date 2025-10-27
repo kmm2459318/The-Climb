@@ -10,7 +10,8 @@ namespace TheClimb.Logging
         public static readonly LogPrefix uiManager = new("[UIManager]");
         public static readonly LogPrefix uiFactory = new("[UIFacotry]");
         public static readonly LogPrefix titleButtonmanager = new("[TitleButtonManager]");
-        public static readonly LogPrefix SceneUtility = new("[SceneUtility]");
+        public static readonly LogPrefix sceneUtility = new("[SceneUtility]");
+        public static readonly LogPrefix toPlanetVectleCalculater = new("[ToPlanetVectleCalculater]");
 
         public string Value { get; }
 
