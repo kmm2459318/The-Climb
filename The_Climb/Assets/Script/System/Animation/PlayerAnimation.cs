@@ -37,7 +37,7 @@ public class PlayerAnimation : MonoBehaviour
         wasGrounded = isGrounded;
 
         // ランアニメ
-        bool isRunning = PlayerMove.State.isGrounded && Mathf.Abs(PlayerMove.MoveInput) > 0f;
+        bool isRunning = PlayerState.isGrounded && Mathf.Abs(PlayerMove.MoveInput) > 0f;
         animator.SetBool("IsRunning", isRunning);
 
         // 向き

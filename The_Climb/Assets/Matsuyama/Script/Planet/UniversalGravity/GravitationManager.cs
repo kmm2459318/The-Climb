@@ -1,33 +1,34 @@
-//    ※※※※　　後々使用する　　※※※※
+using TheClimb.Astral;
+using UnityEngine;
 
-//using System.Collections.Generic;
-//using UnityEngine;
+namespace TheClimb.UniversalGravity
+{
+    public class PlanetManager : MonoBehaviour    //  
+    {
+        public static PlanetManager Instance { get; private set; }    //  シングルトンインスタンス提供
+        [SerializeField] PlanetTransformProvider planetTransformProvider;
 
-//namespace TheClimb.UniversalGravity
-//{
-//    public class GravitationManager : MonoBehaviour    //  
-//    {
-//        public static GravitationManager Instance { get; private set; }    //  シングルトンインスタンス提供
+        private void Awake()
+        {
+            if (Instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        void Start()
+        {
 
-//        public List<GravitationEffecter> gravityEffecters = new List<GravitationEffecter>();
+        }
+        void Update()
+        {
 
-//        private void Awake()
-//        {
-//            if (Instance != null)
-//            {
-//                Destroy(gameObject);
-//                return;
-//            }
-//            Instance = this;
-//            DontDestroyOnLoad(gameObject);
-//        }
-//        void Start()
-//        {
-
-//        }
-//        void Update()
-//        {
-
-//        }
-//    }
-//}
+        }
+        void InitializePlanet()
+        {
+            
+        }
+    }
+}
