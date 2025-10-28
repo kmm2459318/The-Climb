@@ -1,5 +1,7 @@
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.InputSystem;
+using TheClimb.Player;
+using TheClimb.Astral;
 
 public class PlayerMove : MonoBehaviour, IConveyorReceiver
 {
@@ -7,16 +9,22 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     PlayerState state;
     PlayerJump jump;
     PlayerSpecialAction special;
+    PlayerKnockBack knock;
+    VectorToPlanetCalculator vectorToPlanetCaluculator;    //  天体までのベクトルを計算するクラス
+
+    [SerializeField] private InputActionReference leftMoveAction;
+    [SerializeField] private InputActionReference rightMoveAction;
+
+    IPlayerDataProvider PlayerDataProvider;    //  プレイヤーのデータプロバイダ
+    IPlanetDataProvider PlanetDataProvider;    //  天体のデータプロバイダ
 
     private float groundMoveForce = 0.7f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
-    private float moveInput = 0f;        //プレイヤーの移動方向
+    public float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 50f;    //空中での移動速度
     public float airMaxSpeed = 10f;     //空中での速度制限
 
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
-    private float slippingTime = 0.05f;     //スリップ方向切り替え用
-    private float slippingCounter = 0f;  //スリップ方向切り替えようタイム
     public Vector3 slipVelocity;                //滑り時のVelocity
 
     public float MoveInput => moveInput; // ←読み取り専用プロパティ
@@ -26,6 +34,15 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private bool OnBelt = false;                 //ベルトコンベアに乗っているか
     private Vector3 BeltVelocity = Vector3.zero; //ベルトコンベアの速度(未接触時はゼロ)
 
+    //void Awake()
+    //{
+    //    PlayerContext.Instance.RegistPlayerMove(this);
+
+    //    //PlayerDataProvider = PlayerContext.Instance._PlayerDataProvider;
+    //    //PlanetDataProvider = PlanetContext.Instance._PlanetDataProvider;
+
+    //    vectorToPlanetCaluculator = new VectorToPlanetCalculator(PlanetDataProvider, PlayerDataProvider);
+    //}
 
     void Start()
     {
@@ -33,6 +50,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         state = GetComponent<PlayerState>();
         jump = gameObject.GetComponent<PlayerJump>();
         special = gameObject.GetComponent<PlayerSpecialAction>();
+        knock = gameObject.GetComponent<PlayerKnockBack>();
 
         PlayerAnimation = GameObject.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
     }
@@ -40,7 +58,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private void Update()
     {
         //移動キー操作
-        if (!special.meteorDrop)
+        if (!special.meteorDrop && !knock.knockBacking)　//ノックバック、メテオドロップ中は不可
         {
             MoveOperation();
         }
@@ -51,7 +69,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         //移動
         if (special.highJumpChargeCounter == 0f)
         {
-            if (state.isGrounded || (!state.isGrounded && state.isJumpMoveOK && !state.isLeftWall && !state.isRightWall))
+            if ((state.isGrounded || (!state.isGrounded && state.isJumpMoveOK && !state.isLeftWall && !state.isRightWall)) && !knock.knockBacking)
             {
                 jump.coyoteCounter = 0f;
 
@@ -70,17 +88,17 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     private void MoveOperation()
     {
-        if (Input.GetKey(state.keyBind.playerLMove) && Input.GetKey(state.keyBind.playerRMove) ||
-            !Input.GetKey(state.keyBind.playerLMove) && !Input.GetKey(state.keyBind.playerRMove))  //止まる
+        if (state.inputManager.leftHeld && state.inputManager.rightHeld ||
+            !state.inputManager.leftHeld && !state.inputManager.rightHeld)  //止まる
         {
             moveInput = 0f;
         }
-        else if (Input.GetKey(state.keyBind.playerLMove) && !state.isLeftWall)  //左移動
+        else if (state.inputManager.leftHeld && !state.isLeftWall)  //左移動
         {
             moveInput = -1f;
             state.playerDirectionRight = false;
         }
-        else if (Input.GetKey(state.keyBind.playerRMove) && !state.isRightWall)  //右移動
+        else if (state.inputManager.rightHeld && !state.isRightWall)  //右移動
         {
             moveInput = 1f;
             state.playerDirectionRight = true;
@@ -98,47 +116,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         {
             RigidBody.AddForce(BeltVelocity, ForceMode.Acceleration);
         }
-        //スリップ
-        //if (slipping)
-        //{
-        //    //減少時間
-        //    float slipFrictionX = 20f;
-
-        //    if (moveInput == 1f)
-        //    {
-        //        //横速度だけ徐々に減衰させRU
-        //        slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x), 0f, slipFrictionX * Time.fixedDeltaTime);
-        //        slippingCounter = 0;
-        //    }
-        //    else if (moveInput == -1f)
-        //    {
-        //        //横速度だけ徐々に減衰させRU
-        //        slipVelocity.x = Mathf.MoveTowards(Mathf.Abs(slipVelocity.x) * -1.0f, 0f, slipFrictionX * Time.fixedDeltaTime);
-        //        slippingCounter = 0;
-        //    }
-        //    else if (slippingCounter > slippingTime)
-        //    {
-        //        slipping = false;
-        //    }
-        //    else if (moveInput == 0f)
-        //    {
-        //        slipVelocity.x = Mathf.MoveTowards(slipVelocity.x, 0f, slipFrictionX * Time.fixedDeltaTime);
-        //        slippingCounter += Time.fixedDeltaTime;
-        //    }
-
-        //    if (slipVelocity.y < 0)
-        //    {
-        //        //Debug.Log("w");
-        //        RigidBody.linearVelocity = new Vector3(slipVelocity.x, 0, 0);
-        //    }
-
-        //    //一定以下になったらスリップ終了（普通の地上移動に戻す）
-        //    if (Mathf.Abs(slipVelocity.x) <= groundMaxSpeed)
-        //    {
-        //        slipping = false;
-        //    }
-        //    return; //通常の地上移動処理はスキップ
-        //}
 
         if (moveInput != 0f)
         {
@@ -147,7 +124,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             RigidBody.AddForce(force);
             RigidBody.linearVelocity = new Vector3(force.x * Time.deltaTime * 1000.0f, RigidBody.linearVelocity.y, 0f);
         }
-        else
+        else if(!special.meteorHighJump && !jump.jumpCoolActive && RigidBody.linearVelocity.x != 0f)
         {
             RigidBody.linearVelocity = new Vector3(0f, RigidBody.linearVelocity.y, 0f);
         }

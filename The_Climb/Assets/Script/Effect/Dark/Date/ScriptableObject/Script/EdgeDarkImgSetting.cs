@@ -1,14 +1,14 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 [CreateAssetMenu(fileName = "EdgeDarkImgSetting", menuName = "GameData/Dark/EdgeDarkImgSetting")]
 public class EdgeDarkImgSetting : ScriptableObject
 {
     [Header("Image RectTransform Settings")]
-    public Vector2 AnchorMin = Vector2.zero;    //  Image‚ÌÅ¬ƒAƒ“ƒJ[’l
-    public Vector2 AnchorMax = Vector2.one;    //  Image‚ÌÅ‘åƒAƒ“ƒJ[’l
-    public Vector2 AnchoredPosition = Vector2.zero;    //  Image‚ÌÅ¬ƒAƒ“ƒJ[’l
-    public Vector2 SizeDelta = Vector2.zero;    //  Image‚ÌƒTƒCƒY’l
-    public Vector2 Pivot = new Vector2(0.5f, 0.5f);    //  Image‚Ìƒsƒ{ƒbƒg’l
+    public Vector2 AnchorMin = Vector2.zero;    //  Imageã®æœ€å°ã‚¢ãƒ³ã‚«ãƒ¼å€¤
+    public Vector2 AnchorMax = Vector2.one;    //  Imageã®æœ€å¤§ã‚¢ãƒ³ã‚«ãƒ¼å€¤
+    public Vector2 AnchoredPosition = Vector2.zero;    //  Imageã®æœ€å°ã‚¢ãƒ³ã‚«ãƒ¼å€¤
+    public Vector2 SizeDelta = Vector2.zero;    //  Imageã®ã‚µã‚¤ã‚ºå€¤
+    public Vector2 Pivot = new Vector2(0.5f, 0.5f);    //  Imageã®ãƒ”ãƒœãƒƒãƒˆå€¤
 
     [Header("Image Settings")]
-    public bool RaycastTarget = false;    //  Image‚ÌRaycastTarget‚É‚·‚é‚©‚Ç‚¤‚©
+    public bool RaycastTarget = false;    //  Imageã®RaycastTargetã«ã™ã‚‹ã‹ã©ã†ã‹
 }

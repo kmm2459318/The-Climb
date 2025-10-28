@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
+//    ã‚³ãƒãƒ³ãƒ‰å‹è¾æ›¸æä¾›ãƒ—ãƒ­ãƒã‚¤ãƒ€ãƒ¼
 
-//    ƒRƒ}ƒ“ƒhŒ^«‘’ñ‹ŸƒvƒƒoƒCƒ_[
 public interface ICommandProvider
 {
-    Dictionary<KickerMoveCommander.KickerCommanderMethod, ICommand> GetCommandMap();
+    Dictionary<KickerMoveCommander.KickerCommanderMethod, ICommand_Enemy> GetCommandMap();
 }

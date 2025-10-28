@@ -1,17 +1,14 @@
-using System;
-using UnityEngine;
-
-//    “GƒLƒƒƒ‰•àsó‘Ô
+ï»¿//    æ•µã‚­ãƒ£ãƒ©æ­©è¡ŒçŠ¶æ…‹
 public class WalkState : IEnemyState
 {
-    KickerMoveCommander _kickerMoveCommander;    //  KickerMoveCommander‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
-    EnemyStateMachine _enemyStateMachine;    //  EnemyStateMachine‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
-    System.Action JumpTimeListener;    //  ƒWƒƒƒ“ƒvŽžŠÔ‚Ì”­‰Î‚ð‘Ò‚Â•Ï”
+    KickerMoveCommander _kickerMoveCommander;    //  KickerMoveCommanderã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+    EnemyStateMachine _enemyStateMachine;    //  EnemyStateMachineã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+    System.Action JumpTimeListener;    //  ã‚¸ãƒ£ãƒ³ãƒ—æ™‚é–“ã®ç™ºç«ã‚’å¾…ã¤å¤‰æ•°
 
-    //  Œ»Ý‚ÌˆÚ“®ó‘Ô‚ð•Ô‚·
+    //  ç¾åœ¨ã®ç§»å‹•çŠ¶æ…‹ã‚’è¿”ã™
 
 
-    //  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    //  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     public WalkState(KickerMoveCommander kickerMoveCommander, EnemyStateMachine enemyStateMachine, IEnemyStateFactory enemyStateFactory)
     {
         _kickerMoveCommander = kickerMoveCommander;
@@ -27,12 +24,12 @@ public class WalkState : IEnemyState
     }
     public void FixedUpdate()
     {
-        //  ˆÚ“®
+        //  ç§»å‹•
         _kickerMoveCommander.CommanderMethodMap[KickerMoveCommander.KickerCommanderMethod.MOVE].Execute();
-        //  ’[‚©”»’è
+        //  ç«¯ã‹åˆ¤å®š
         if ((bool)_kickerMoveCommander.CommanderMethodMap[KickerMoveCommander.KickerCommanderMethod.IS_EDGE_POS].Execute())
         {
-            //  ˆÚ“®•ûŒü•Ï‰»
+            //  ç§»å‹•æ–¹å‘å¤‰åŒ–
             _kickerMoveCommander.CommanderMethodMap[KickerMoveCommander.KickerCommanderMethod.FLIP_MOVE_DIR].Execute();
         }
     }
@@ -41,5 +38,5 @@ public class WalkState : IEnemyState
         _kickerMoveCommander.OnJumpTime -= JumpTimeListener;
     }
 }
-//  ˆÈ‰ºƒR[ƒh•Û‘¶Š  //
+//  ä»¥ä¸‹ã‚³ãƒ¼ãƒ‰ä¿å­˜æ‰€  //
 //public EnemyMovingState EnemyMovingStateProperty => EnemyMovingState.WALK_STATE;

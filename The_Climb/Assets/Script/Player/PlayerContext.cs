@@ -1,0 +1,32 @@
+﻿using UnityEngine;
+
+namespace TheClimb.Player
+{
+    [DefaultExecutionOrder(-100)]
+    public class PlayerContext : MonoBehaviour    //  プレイヤーコンテキスト
+    {
+        public Transform playerTransform;    //  プレイヤートランスフォーム
+        public static PlayerContext Instance { get; private set; }              //  プロパティ
+        public PlayerMove _PlayerMove{ get; private set; }          //  プロパティ
+        
+        public IPlayerDataProvider _PlayerDataProvider { get; private set; }    //  プロパティ
+
+        void Awake()
+        {
+            if (Instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            _PlayerDataProvider = new PlayerDataProvider(playerTransform);
+        }
+
+        public void RegistPlayerMove(PlayerMove playerMove)    //  コントローラー登録メソッド
+        {
+            _PlayerMove = playerMove;
+        }
+    }
+}

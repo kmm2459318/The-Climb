@@ -1,23 +1,23 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
 public class FloorSystemManager : MonoBehaviour
 {
-    [Header("ƒtƒF[ƒhƒCƒ[ƒWiUIj")]
+    [Header("ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ¡ãƒ¼ã‚¸ï¼ˆUIï¼‰")]
     public Image fadeImage;
 
-    [Header("ŠK‘wPrefabƒŠƒXƒg")]
+    [Header("éšå±¤Prefabãƒªã‚¹ãƒˆ")]
     public List<GameObject> floorPrefabs;
 
-    [Header("ŠK‘we")]
+    [Header("éšå±¤è¦ª")]
     public Transform floorsRoot;
 
-    [Header("ƒtƒF[ƒhŠÔ")]
+    [Header("ãƒ•ã‚§ãƒ¼ãƒ‰æ™‚é–“")]
     public float fadeDuration = 1f;
 
-    [Header("ƒgƒŠƒK[‹——£")]
+    [Header("ãƒˆãƒªã‚¬ãƒ¼è·é›¢")]
     public float triggerDistance = 1.5f;
 
     private GameObject player;
@@ -36,12 +36,12 @@ public class FloorSystemManager : MonoBehaviour
 
     private void Start()
     {
-        // ƒ^ƒO "Player" ‚ÅƒvƒŒƒCƒ„[‚ğ©“®æ“¾
+        // ã‚¿ã‚° "Player" ã§ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è‡ªå‹•å–å¾—
         player = GameObject.FindWithTag("Player");
 
         if (player == null)
         {
-            Debug.LogError("[FloorSystemManager] ƒV[ƒ“‚Éƒ^ƒO 'Player' ‚ª•t‚¢‚½ƒIƒuƒWƒFƒNƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB");
+            Debug.LogError("[FloorSystemManager] ã‚·ãƒ¼ãƒ³ã«ã‚¿ã‚° 'Player' ãŒä»˜ã„ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚");
             return;
         }
 
@@ -55,26 +55,26 @@ public class FloorSystemManager : MonoBehaviour
 
         Vector3 playerPos = player.transform.position;
 
-        // StartPoint ‚É“’B‚µ‚½‚©”»’è
+        // StartPoint ã«åˆ°é”ã—ãŸã‹åˆ¤å®š
         if (currentFloorData.startPoint != null)
         {
             float distStart = Vector3.Distance(playerPos, currentFloorData.startPoint.position);
             if (distStart <= triggerDistance)
             {
-                Debug.Log("[FloorSystemManager] StartPoint‚É“’B");
+                Debug.Log("[FloorSystemManager] StartPointã«åˆ°é”");
                 if (currentFloorIndex > 0)
                     StartCoroutine(SwitchFloorRoutine(currentFloorIndex - 1, false));
                 return;
             }
         }
 
-        // GoalPoint ‚É“’B‚µ‚½‚©”»’è
+        // GoalPoint ã«åˆ°é”ã—ãŸã‹åˆ¤å®š
         if (currentFloorData.goalPoint != null)
         {
             float distGoal = Vector3.Distance(playerPos, currentFloorData.goalPoint.position);
             if (distGoal <= triggerDistance)
             {
-                Debug.Log("[FloorSystemManager] GoalPoint‚É“’B");
+                Debug.Log("[FloorSystemManager] GoalPointã«åˆ°é”");
                 if (currentFloorIndex + 1 < floorPrefabs.Count)
                     StartCoroutine(SwitchFloorRoutine(currentFloorIndex + 1, true));
                 return;
@@ -100,7 +100,7 @@ public class FloorSystemManager : MonoBehaviour
 
         if (currentFloorData == null)
         {
-            Debug.LogError($"[FloorSystemManager] FloorData ƒRƒ“ƒ|[ƒlƒ“ƒg‚ª‚ ‚è‚Ü‚¹‚ñ: {floorPrefabs[currentFloorIndex].name}");
+            Debug.LogError($"[FloorSystemManager] FloorData ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒã‚ã‚Šã¾ã›ã‚“: {floorPrefabs[currentFloorIndex].name}");
             isSwitching = false;
             yield break;
         }
@@ -128,7 +128,7 @@ public class FloorSystemManager : MonoBehaviour
 
         if (currentFloorData == null)
         {
-            Debug.LogError($"[FloorSystemManager] FloorData ƒRƒ“ƒ|[ƒlƒ“ƒg‚ª‚ ‚è‚Ü‚¹‚ñ: {floorPrefabs[index].name}");
+            Debug.LogError($"[FloorSystemManager] FloorData ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒã‚ã‚Šã¾ã›ã‚“: {floorPrefabs[index].name}");
             return;
         }
 

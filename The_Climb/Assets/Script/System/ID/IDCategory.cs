@@ -1,6 +1,6 @@
-public enum IDCategory    //  �I�u�W�F�N�g�̃J�e�S���[�ꗗ
+﻿public enum IDCategory    //  オブジェクトのカテゴリー一覧
 {
-    UNDEFINED,    //  ����`���
-    EFFECT,    //  �G�t�F�N�g
-    PLAYER    //  �v���C���[�̃X�L��
+    UNDEFINED,    //  未定義状態
+    EFFECT,    //  エフェクト
+    PLAYER    //  プレイヤーのスキン
 }

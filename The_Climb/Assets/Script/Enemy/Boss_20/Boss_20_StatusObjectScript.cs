@@ -1,35 +1,20 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "Boss_20_StatusObjectScript", menuName = "Scriptable Objects/Boss_20_StatusObjectScript")]
 public class Boss_20_StatusObjectScript : ScriptableObject
 {
-    [Header("Boss‚ÌƒXƒe[ƒ^ƒX")]
-    [Tooltip("ƒ{ƒX‚Ì–¼‘O")]
-    public string NAME;               //“G‚Ì–¼‘O
-    [Tooltip("‘Ì—Í")]
-    public int    HP;@@@           //“G‚ÌHP
-    [Tooltip("‰¡‚ÌƒXƒs[ƒh")]
-    public float  Speed;              //“G‚Ì‘¬‚³
-    [Tooltip("‚Á”ò‚Î‚µ—Í")]
-    public int    Blow_away;          //‚Á”ò‚Î‚µ—Í
-    [Tooltip("¶‚ÉˆÚ“®")]
-    public int    LEFT;               //¶‚ÌˆÚ“®
-    [Tooltip("¶‚ÉˆÚ“®‚Å‚«‚é”ÍˆÍ")]
-    public int    LEFT_Max;           //¶‚ÌˆÚ“®‚Ì“®‚¯‚é”ÍˆÍ
-    [Tooltip("‰E‚ÉˆÚ“®")]
-    public int    RIGHT;              //‰E‚ÌˆÚ“®
-    [Tooltip("‰E‚ÉˆÚ“®‚Å‚«‚é”ÍˆÍ")]
-    public int    RIGHT_Max;          //‰E‚ÌˆÚ“®‚Ì“®‚¯‚é”ÍˆÍ
-    [Tooltip("‹xŒe‚Ü‚Å‚Ìs“®ŠÔ")]
-    public int    Action_Time;        //s“®ŠÔ
-    [Tooltip("‹xŒeŠÔ")]
-    public int    Rest_Time;          //‹xŒeŠÔ
-    [Tooltip("c‚ÌˆÚ“®‹——£")]
-    public float  Vertical;           //cˆÚ“®
-    [Tooltip("UŒ‚‚ÌƒN[ƒ‹ƒ^ƒCƒ€")]
-    public int    Attack;             //‰“‹——£UŒ‚‚Ìƒ^ƒCƒ~ƒ“ƒO
-    [Tooltip("UŒ‚ƒXƒs[ƒh")]
-    public float  Attack_Speed;       //‰“‹——£UŒ‚‚Ì‘¬‚³
+    public string NAME;               //æ•µã®åå‰
+    public int    HP;ã€€ã€€ã€€           //æ•µã®HP
+    public float  Speed;              //æ•µã®é€Ÿã•
+    public int    Blow_away;          //å¹ã£é£›ã°ã—åŠ›
+    public int    LEFT;               //å·¦ã®ç§»å‹•
+    public int    LEFT_Max;           //å·¦ã®ç§»å‹•ã®å‹•ã‘ã‚‹ç¯„å›²
+    public int    RIGHT;ã€€ã€€ã€€ã€€ã€€ã€€  //å³ã®ç§»å‹•
+    public int    RIGHT_Max;          //å³ã®ç§»å‹•ã®å‹•ã‘ã‚‹ç¯„å›²
+    public int    Rest;               //ä¼‘æ†©ã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°
+    public float  Vertical;           //ç¸¦ç§»å‹•
+    public int    Attack;             //é è·é›¢æ”»æ’ƒã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°
+    public float  Attack_Speed;       //é è·é›¢æ”»æ’ƒã®é€Ÿã•
 }

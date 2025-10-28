@@ -1,19 +1,19 @@
-using UnityEditor;
+ï»¿using UnityEditor;
 
-//  ƒvƒƒOƒŒƒXƒo[•\¦
+//  ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹ãƒãƒ¼è¡¨ç¤º
 public static class ProgressBarUtility
 {
-    //  ƒvƒƒOƒŒƒXƒo[‚ğ•\¦
+    //  ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹ãƒãƒ¼ã‚’è¡¨ç¤º
     public static void Show(string title, string message, float progress)
     {
         EditorUtility.DisplayProgressBar(title, message, progress);
     }
-    //  ƒLƒƒƒ“ƒZƒ‹ƒ{ƒ^ƒ“•t‚«ƒvƒƒOƒŒƒXƒo[‚ğ•\¦
+    //  ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãƒœã‚¿ãƒ³ä»˜ããƒ—ãƒ­ã‚°ãƒ¬ã‚¹ãƒãƒ¼ã‚’è¡¨ç¤º
     public static bool ShowCancelable(string title, string message, float progress)
     {
         return EditorUtility.DisplayCancelableProgressBar(title, message, progress);
     }
-    //  ƒvƒƒOƒŒƒXƒo[‚ğÁ‹
+    //  ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹ãƒãƒ¼ã‚’æ¶ˆå»
     public static void Clear()
     {
         EditorUtility.ClearProgressBar();

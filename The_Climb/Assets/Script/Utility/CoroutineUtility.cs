@@ -1,18 +1,13 @@
-using System;
-using System.Collections;
+ï»¿using System.Collections;
+using System.Xml.Serialization;
 using UnityEngine;
 
-//  ƒRƒ‹[ƒ`ƒ“ƒ†[ƒeƒBƒŠƒeƒB
+//  ã‚³ãƒ«ãƒ¼ãƒãƒ³ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£
 public static class CoroutineUtility
 {
-    //  ƒRƒ‹[ƒ`ƒ“‚ğŠJn
+    //  ã‚³ãƒ«ãƒ¼ãƒãƒ³ã‚’é–‹å§‹
     public static void SafeStartCoroutine(MonoBehaviour mono, ref Coroutine coroutineRef, IEnumerator Routine)
     {
-        if(mono == null || Routine == null)
-        {
-            return;
-        }
-
         if(coroutineRef != null)
         {
             mono.StopCoroutine(coroutineRef);
@@ -21,42 +16,24 @@ public static class CoroutineUtility
         coroutineRef = mono.StartCoroutine(Routine);
     }
 
-    //  ƒRƒ‹[ƒ`ƒ“‚ğ’â~
+    //  ã‚³ãƒ«ãƒ¼ãƒãƒ³ã‚’åœæ­¢
     public static void SafeStopCoroutine(MonoBehaviour mono, ref Coroutine coroutineRef)
     {
-        if (mono == null)
-        {
-            return;
-        }
-
         if(coroutineRef != null)
         {
             mono.StopCoroutine(coroutineRef);
             coroutineRef = null;
         }
     }
-    //  ˆê’èŠÔ‘Ò‹@‚µ‚Ä‚©‚çw’è‚ÌƒAƒNƒVƒ‡ƒ“‚ğŠJn
-    public static Coroutine Delay(MonoBehaviour mono, float delaySeconds, System.Action action)
+    //  ä¸€å®šæ™‚é–“å¾…æ©Ÿã—ã¦ã‹ã‚‰æŒ‡å®šã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’é–‹å§‹
+    public static Coroutine Delay(MonoBehaviour mono, float delaySecongds, System.Action action)
     {
-        if(mono == null || delaySeconds < 0f)
-        {
-            return null;
-        }
-        return mono.StartCoroutine(DelayRoutine(delaySeconds, action));
+        return mono.StartCoroutine(DelayRoutine(delaySecongds, action));
     }
-    //  w’èŠÔ‘Ò‹@ŠÖ”
+    //  æŒ‡å®šæ™‚é–“å¾…æ©Ÿé–¢æ•°
     private static IEnumerator DelayRoutine(float delaySecondes, System.Action action)
     {
-
         yield return new WaitForSeconds(delaySecondes);
-        try
-        {
-            action?.Invoke();
-        }
-        catch(Exception ex)
-        {
-            Debug.LogError($"[CoroutineUtility] Exception in delayed action: {ex}");
-        }
-        
+        action.Invoke();
     }
 }

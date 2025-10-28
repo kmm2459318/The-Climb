@@ -1,46 +1,57 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class PlayerState : MonoBehaviour
 {
-    public bool highJumpOn = false;      //ƒnƒCƒWƒƒƒ“ƒv‰Â”\‚©
-    public bool quickJumpOn = false;     //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‰Â”\‚©
-    public bool meteorDropOn = false;    //ƒƒeƒIƒhƒƒbƒvŠ‚©
+    public bool highJumpOn = false;      //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—å¯èƒ½ã‹
+    public bool quickJumpOn = false;     //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—å¯èƒ½ã‹
+    public bool meteorDropOn = false;    //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—å¶ã‹
 
-    public Rigidbody RigidBody;
-    public KeyBind keyBind;
+    [HideInInspector] public Rigidbody RigidBody;
+    [HideInInspector] public InputManager inputManager;
     PlayerMove move;
     PlayerJump jump;
-    PlayerSpecialAction special; 
-    public PlayerAnimation PlayerAnimation;
+    PlayerSpecialAction special;
+    [HideInInspector] public PlayerAnimation PlayerAnimation;
 
-    public bool playerDirectionRight = true;  //ƒvƒŒƒCƒ„[‚ÌŒ©‚Ä‚¢‚é•ûŒü‚ª‰E‚È‚çtrueA¶‚È‚çfalse
-    private bool wasGrounded = false;    //‘OƒtƒŒ[ƒ€‚Ì’n–Êó‘Ô
-    public bool landing = false;         //’…’n”»’è
-    private float landingJumpTime = 0.1f;  //’…’nƒWƒƒƒ“ƒv‚Ì—P—\ƒ^ƒCƒ€
-    private float landingJumpCounter = 0f;  //’…’nƒWƒƒƒ“ƒv‚Ì—P—\ƒJƒEƒ“ƒ^[
-    public bool landingJumpOn = false;  //’…’nƒWƒƒƒ“ƒv‚ÌƒJƒEƒ“ƒg‚ğn‚ß‚é—p
+    public bool playerDirectionRight = true;  //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¦‹ã¦ã„ã‚‹æ–¹å‘ãŒå³ãªã‚‰trueã€å·¦ãªã‚‰false
+    private bool wasGrounded = false;    //å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®åœ°é¢çŠ¶æ…‹
+    public bool landing = false;         //ç€åœ°åˆ¤å®š
+    private float landingJumpTime = 0.1f;  //ç€åœ°ã‚¸ãƒ£ãƒ³ãƒ—ã®çŒ¶äºˆã‚¿ã‚¤ãƒ 
+    private float landingJumpCounter = 0f;  //ç€åœ°ã‚¸ãƒ£ãƒ³ãƒ—ã®çŒ¶äºˆã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
+    public bool landingJumpOn = false;   //ç€åœ°ã‚¸ãƒ£ãƒ³ãƒ—ã®ã‚«ã‚¦ãƒ³ãƒˆã‚’å§‹ã‚ã‚‹ç”¨
 
-    public Transform groundCheck;        //ƒvƒŒƒCƒ„[‘«Œ³‚Ì’n–Ê”»’è—pƒIƒuƒWƒFƒNƒg
-    public bool isGrounded;              //’n–Ê”»’è
-    public Transform jumpMoveOKCheck;    //ƒvƒŒƒCƒ„[‘«Œ³‚ÌƒWƒƒƒ“ƒv”»’è—pƒIƒuƒWƒFƒNƒg
-    public bool isJumpMoveOK;            //ƒWƒƒƒ“ƒvOK”»’è
-    public Transform leftWallCheck;      //ƒvƒŒƒCƒ„[‘«Œ³‚Ì¶•Ç”»’è—pƒIƒuƒWƒFƒNƒg
-    public bool isLeftWall;              //¶•Ç”»’è
-    public Transform rightWallCheck;     //ƒvƒŒƒCƒ„[‘«Œ³‚Ì‰E•Ç”»’è—pƒIƒuƒWƒFƒNƒg
-    public bool isRightWall;             //‰E•Ç”»’è
-    public LayerMask groundLayer;  //’n–ÊƒŒƒCƒ„[
-    private float groundCheckRadius = 0.1f;  //’n–Ê”»’è‚Ì”¼Œa
-    public bool isAir = false;          //‹ó’†”»’è
+    [HideInInspector] public Transform groundCheck;        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¶³å…ƒã®åœ°é¢åˆ¤å®šç”¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+    public bool isGrounded;              //åœ°é¢åˆ¤å®š
+    [HideInInspector] public Transform jumpMoveOKCheck;    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¶³å…ƒã®ã‚¸ãƒ£ãƒ³ãƒ—åˆ¤å®šç”¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+    public bool isJumpMoveOK;            //ã‚¸ãƒ£ãƒ³ãƒ—OKåˆ¤å®š
+    [HideInInspector] public Transform leftWallCheck;      //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¶³å…ƒã®å·¦å£åˆ¤å®šç”¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+    public bool isLeftWall;              //å·¦å£åˆ¤å®š
+    [HideInInspector] public Transform rightWallCheck;     //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¶³å…ƒã®å³å£åˆ¤å®šç”¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+    public bool isRightWall;             //å³å£åˆ¤å®š
+    [HideInInspector] public LayerMask groundLayer;        //åœ°é¢ãƒ¬ã‚¤ãƒ¤ãƒ¼
+    [HideInInspector] public int whiteGround;
+    [HideInInspector] public int blackGround;
+    public int groundLayerMask;
+    private float groundCheckRadius = 0.1f;  //åœ°é¢åˆ¤å®šã®åŠå¾„
+    public bool isAir = false;           //ç©ºä¸­åˆ¤å®š
 
-    private float playerFallSpeed = -19f;  //ƒvƒŒƒCƒ„[‚Ì—‰º‘¬“x
-    public bool justLanded = false; // ¡ƒtƒŒ[ƒ€’…’n‚µ‚½‚©
+    private float playerFallSpeed = -19f;  //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è½ä¸‹é€Ÿåº¦
 
+    public float erosionLevel = 0;       //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä¾µè•åº¦
+    public int sanityLevel = 100;        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ­£æ°—åº¦
+    public bool carryingBuddy = false;    //Buddyã‚’ãŠã‚“ã¶ã—ã¦ã‚‹çŠ¶æ…‹ã‹åˆ¤å®š
+    public bool nearBell = false;       //WhiteBellã®è¿‘ãã‹åˆ¤å®š
+
+    private void Awake()
+    {
+        //PlayerContext.Instance.RegistController(this);
+    }
 
     void Start()
     {
-        keyBind = GameObject.Find("KeyManager").GetComponent<KeyBind>();
+        inputManager = GameObject.Find("KeyManager").GetComponent<InputManager>();
         RigidBody = GetComponent<Rigidbody>();
         move = GetComponent<PlayerMove>();
         jump = GetComponent<PlayerJump>();
@@ -49,21 +60,23 @@ public class PlayerState : MonoBehaviour
         PlayerAnimation = transform.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
 
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
+        whiteGround = 1 << LayerMask.NameToLayer("WhiteGround");
+        blackGround = 1 << LayerMask.NameToLayer("BlackGround");
 
-        // ƒCƒ“ƒXƒyƒNƒ^[‚Ü‚½‚ÍƒXƒNƒŠƒvƒg‚Åİ’è
+        // ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã¾ãŸã¯ã‚¹ã‚¯ãƒªãƒ—ãƒˆã§è¨­å®š
         //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         RigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
-        Physics.gravity = new Vector3(0, -45F, 0); // G‚ğ”{‚É‚·‚é
+        Physics.gravity = new Vector3(0, -45F, 0); // Gã‚’å€ã«ã™ã‚‹
     }
 
     private void Update()
     {
-        // ¶•Ç”»’èiƒJƒvƒZƒ‹Œ`j
-        isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.60f, leftWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayer);
-        // ‰E•Ç”»’èiƒJƒvƒZƒ‹Œ`j
-        isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.60f, rightWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayer);
+        // å·¦å£åˆ¤å®šï¼ˆã‚«ãƒ—ã‚»ãƒ«å½¢ï¼‰
+        isLeftWall = Physics.CheckCapsule(leftWallCheck.position + Vector3.up * 0.60f, leftWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayerMask);
+        // å³å£åˆ¤å®šï¼ˆã‚«ãƒ—ã‚»ãƒ«å½¢ï¼‰
+        isRightWall = Physics.CheckCapsule(rightWallCheck.position + Vector3.up * 0.60f, rightWallCheck.position + Vector3.down * 0.60f, 0.001f, groundLayerMask);
 
         if (jump.jumpCoolActive || jump.jumping)
         {
@@ -71,70 +84,75 @@ public class PlayerState : MonoBehaviour
         }
         else
         {
-            // ’n–Ê”»’èiƒJƒvƒZƒ‹Œ`j
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
-        }
+            // åœ°é¢åˆ¤å®šï¼ˆã‚«ãƒ—ã‚»ãƒ«å½¢ï¼‰
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayerMask);
 
-        //‹ó’†AisJumpOK‚ğ”½‰‚³‚¹‚È‚¢
-        if (isAir)
-        {
-            isJumpMoveOK = false;
-        }
-        else
-        {
-            // ƒWƒƒƒ“ƒvOK”»’èiƒJƒvƒZƒ‹Œ`j
-            isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, 0.19f, groundLayer);
-        }
+            //ç©ºä¸­æ™‚ã€isJumpOKã‚’åå¿œã•ã›ãªã„
+            if (isAir)
+            {
+                isJumpMoveOK = false;
+            }
+            else
+            {
+                // ã‚¸ãƒ£ãƒ³ãƒ—OKåˆ¤å®šï¼ˆã‚«ãƒ—ã‚»ãƒ«å½¢ï¼‰
+                isJumpMoveOK = Physics.CheckSphere(jumpMoveOKCheck.position, 0.19f, groundLayerMask);
+            }
 
-        //’…’nƒ`ƒFƒbƒN
-        if (!jump.jumpCoolActive)
-        {
-            LandingCheck();
-        }
+            //ç€åœ°ãƒã‚§ãƒƒã‚¯
+            if (!jump.jumpCoolActive)
+            {
+                LandingCheck();
+            }
 
-        //‹ó’†”»’è
-        if (!isGrounded && !isJumpMoveOK)
-        {
-            isAir = true;
-        }
-        else
-        {
-            isAir = false;
-        }
-        
-        //—‰º‘¬“x’²®
-        if (RigidBody.linearVelocity.y < playerFallSpeed && !isGrounded && !jump.jumping && !landing)
-        {
-            RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerFallSpeed, 0);
-        }
+            //ç©ºä¸­åˆ¤å®š
+            if (!isGrounded && !isJumpMoveOK)
+            {
+                isAir = true;
+            }
+            else
+            {
+                isAir = false;
+            }
 
-        //•Ç‚É“–‚½‚é‚Ì‚È‚ç‚Î‹­§’â~
-    //    if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
-    //(isRightWall && RigidBody.linearVelocity.x > 0))
-    //    {
-    //        RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
-    //    }
+            //è½ä¸‹é€Ÿåº¦èª¿æ•´
+            if (RigidBody.linearVelocity.y < playerFallSpeed && !isGrounded && !jump.jumping && !landing)
+            {
+                RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerFallSpeed, 0);
+            }
 
-        //‘OƒtƒŒ[ƒ€‚ÌÚ’n”»’è
-        wasGrounded = isGrounded;
+            //æ­£æ°—åº¦ï¼ã‚‚ã—ãã¯ä¾µè•åº¦ï¼‘ï¼ï¼ã§æ­»
+            if (sanityLevel <= 0 || erosionLevel >= 100)
+            {
+                PlayerDead();
+            }
 
+            //å£ã«å½“ãŸã‚‹ã®ãªã‚‰ã°å¼·åˆ¶åœæ­¢
+            //    if ((isLeftWall && RigidBody.linearVelocity.x < 0) ||
+            //(isRightWall && RigidBody.linearVelocity.x > 0))
+            //    {
+            //        RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
+            //    }
+
+            //å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®æ¥åœ°åˆ¤å®š
+            wasGrounded = isGrounded;
+        }
     }
 
     private void LandingCheck()
     {
         landing = false;
+        //ç€åœ°åˆ¤å®š
         if (!wasGrounded && isGrounded)
         {
             landing = true;
-
-            //  ’…’nƒWƒƒƒ“ƒv‰ñ”‚ğ‘‚â‚·iÅ‘å2‚Ü‚Åj
-            jump.landingJumpNumber = Mathf.Min(jump.landingJumpNumber + 1, 2);
 
             landingJumpCounter = 0f;
             landingJumpOn = true;
             isLeftWall = false;
             isRightWall = false;
+            //RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
 
+            // æ¨ªæ–¹å‘ã®é€Ÿåº¦ãŒä¸€å®šä»¥ä¸Šãªã‚‰ã‚¹ãƒªãƒƒãƒ—é–‹å§‹
             if (Mathf.Abs(RigidBody.linearVelocity.x) > move.groundMaxSpeed && !special.meteorDrop)
             {
                 move.slipping = true;
@@ -142,7 +160,7 @@ public class PlayerState : MonoBehaviour
             }
         }
 
-        // —P—\ŠÔƒJƒEƒ“ƒgiƒI[ƒo[‚µ‚½‚çƒŠƒZƒbƒgj
+        //ç€åœ°ã‚¸ãƒ£ãƒ³ãƒ—çŒ¶äºˆã‚«ã‚¦ãƒ³ãƒˆ
         if (landingJumpOn)
         {
             landingJumpCounter += Time.deltaTime;
@@ -156,7 +174,6 @@ public class PlayerState : MonoBehaviour
         }
     }
 
-
     public void LandingJumpReset()
     {
         landingJumpOn = false;
@@ -165,11 +182,28 @@ public class PlayerState : MonoBehaviour
         special.meteorDropCounter = 0;
     }
 
+    private void PlayerDead()
+    {
+        Debug.Log("æ —æ¾ã€å¸°å›½ã®æº–å‚™ã‚’ã—ã‚ã€‚");
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("SearchItem"))
         {
             Destroy(other.gameObject);
+        }
+        else if (other.gameObject.CompareTag("WhiteBell"))
+        {
+            nearBell = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("WhiteBell"))
+        {
+            nearBell = false;
         }
     }
 }

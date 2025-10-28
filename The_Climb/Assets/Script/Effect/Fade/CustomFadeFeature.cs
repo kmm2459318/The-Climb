@@ -1,50 +1,50 @@
-//using UnityEngine;
+ï»¿//using UnityEngine;
 //using UnityEngine.Rendering;
 //using UnityEngine.Rendering.Universal;
 
-////  ‰æ–ÊƒtƒF[ƒhƒAƒEƒgˆ—
+////  ç”»é¢ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆå‡¦ç†
 //public class CustomFadeFeature : ScriptableRendererFeature
 //{
-//    //  ƒtƒF[ƒh‚Ì‚½‚ß‚Ìİ’èƒNƒ‰ƒX
+//    //  ãƒ•ã‚§ãƒ¼ãƒ‰ã®ãŸã‚ã®è¨­å®šã‚¯ãƒ©ã‚¹
 //    [System.Serializable]
 //    public class FadeSettings
 //    {
-//        public Material fadeMaterial;  // ƒtƒF[ƒhƒAƒEƒg‚·‚éƒ}ƒeƒŠƒAƒ‹
+//        public Material fadeMaterial;  // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã™ã‚‹ãƒãƒ†ãƒªã‚¢ãƒ«
 //    }
 
-//    public FadeSettings settings = new FadeSettings();    //  İ’èƒNƒ‰ƒX
+//    public FadeSettings settings = new FadeSettings();    //  è¨­å®šã‚¯ãƒ©ã‚¹
 
-//    //  ƒŒƒ“ƒ_[ƒpƒXƒNƒ‰ƒX
+//    //  ãƒ¬ãƒ³ãƒ€ãƒ¼ãƒ‘ã‚¹ã‚¯ãƒ©ã‚¹
 //    class CustomFadePass : ScriptableRenderPass
 //    {
-//        private Material fadeMaterial;    //  ƒtƒF[ƒh‚·‚éƒ}ƒeƒŠƒAƒ‹
-//        private RTHandle source;    //  •`‰æ‘ÎÛ‚ÌƒeƒNƒXƒ`ƒƒ
-//        private string ProfilerTag = "Custom Fade Pass";    //  •`‰æˆ—ƒpƒX
+//        private Material fadeMaterial;    //  ãƒ•ã‚§ãƒ¼ãƒ‰ã™ã‚‹ãƒãƒ†ãƒªã‚¢ãƒ«
+//        private RTHandle source;    //  æç”»å¯¾è±¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+//        private string ProfilerTag = "Custom Fade Pass";    //  æç”»å‡¦ç†ãƒ‘ã‚¹
 
-//        //  ƒpƒX‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//        //  ãƒ‘ã‚¹ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //        public CustomFadePass(Material material)
 //        {
 //            this.fadeMaterial =  new Material(material);
 //            renderPassEvent = RenderPassEvent.AfterRendering;
 //        }
-//        //  ƒ}ƒeƒŠƒAƒ‹‚ÉƒtƒF[ƒh‚¿‚ğ‘ã“ü
+//        //  ãƒãƒ†ãƒªã‚¢ãƒ«ã«ãƒ•ã‚§ãƒ¼ãƒ‰ã¡ã‚’ä»£å…¥
 //        public void SetFadeValue(float fadeValue)
 //        {
 //            fadeMaterial.SetFloat("_Fade", fadeValue);
 //        }
 
-//        //  •`‰æƒZƒbƒgƒAƒbƒvŠÖ”
+//        //  æç”»ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—é–¢æ•°
 //        //public void Setup(RTHandle cameraColorTarget)W
 //        //{
 //        //    this.source = cameraColorTarget;
 //        //}
 
-//        //  •`‰æÀsŠÖ”
+//        //  æç”»å®Ÿè¡Œé–¢æ•°
 //        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
 //        {
 //            if (fadeMaterial == null) return;
 
-//            CommandBuffer cmd = CommandBufferPool.Get(ProfilerTag);    //  ƒRƒ}ƒ“ƒhƒoƒbƒtƒ@‚Ìæ“¾
+//            CommandBuffer cmd = CommandBufferPool.Get(ProfilerTag);    //  ã‚³ãƒãƒ³ãƒ‰ãƒãƒƒãƒ•ã‚¡ã®å–å¾—
 
 //            RTHandle cameraTarget = renderingData.cameraData.renderer.cameraColorTargetHandle;
 
@@ -54,20 +54,20 @@
 //        }
 //    }
 
-//    CustomFadePass fadePass;    //  ƒtƒF[ƒhˆ—ƒpƒX
+//    CustomFadePass fadePass;    //  ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†ãƒ‘ã‚¹
 
-//    //  ‰Šú‰»ŠÖ”
+//    //  åˆæœŸåŒ–é–¢æ•°
 //    public override void Create()
 //    {
 //        fadePass = new CustomFadePass(settings.fadeMaterial);
 //    }
 
-//    //  ƒpƒX“o˜^ŠÖ”
+//    //  ãƒ‘ã‚¹ç™»éŒ²é–¢æ•°
 //    public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
 //    {
 //        if (settings.fadeMaterial == null) return;
 //    }
 //}
-////fadePass.Setup(renderer.cameraColorTargetHandle);  // RTHandle‚Åó‚¯“n‚µ
+////fadePass.Setup(renderer.cameraColorTargetHandle);  // RTHandleã§å—ã‘æ¸¡ã—
 ////renderer.EnqueuePass(fadePass);
 ////Debug.Log(21);

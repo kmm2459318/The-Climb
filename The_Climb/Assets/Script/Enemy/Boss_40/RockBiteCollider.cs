@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class RockBiteCollider : MonoBehaviour
 {
@@ -8,11 +8,11 @@ public class RockBiteCollider : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            rock.OnBiteSuccess(); // ƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½
+            rock.OnBiteSuccess(); // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å½“ãŸã£ãŸ
         }
         else
         {
-            rock.OnBiteFail(); // ¸”sˆµ‚¢i‚±‚±‚Í‰‰oŸ‘æ‚Å•Ï‚¦‚ÄOKj
+            rock.OnBiteFail(); // å¤±æ•—æ‰±ã„ï¼ˆã“ã“ã¯æ¼”å‡ºæ¬¡ç¬¬ã§å¤‰ãˆã¦OKï¼‰
         }
     }
 }

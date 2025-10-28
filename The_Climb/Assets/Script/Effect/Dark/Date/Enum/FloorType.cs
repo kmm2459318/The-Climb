@@ -1,4 +1,4 @@
-public enum FloorType
+﻿public enum FloorType
 {
     NOMAL_FLOOR,
     BOSS_FLORR,

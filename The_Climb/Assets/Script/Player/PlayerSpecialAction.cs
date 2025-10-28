@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,34 +8,34 @@ public class PlayerSpecialAction : MonoBehaviour
     PlayerState state;
     PlayerMove move;
     PlayerJump jump;
+    PlayerKnockBack knock;
 
     public GameObject headingAttack;
     public GameObject meteorDropAttack;
     public GameObject quickJumpAttack;
 
-    public float highJumpChargeTime = 0.8f;  //ƒnƒCƒWƒƒƒ“ƒv‚Ìƒ`ƒƒ[ƒWŠÔ
-    public float highJumpChargeCounter = 0f;  //ƒnƒCƒWƒƒƒ“ƒv‚Ìƒ`ƒƒ[ƒWƒJƒEƒ“ƒ^[
-    private bool highJump = false;       //ƒnƒCƒWƒƒƒ“ƒv‚·‚é”»’è
-    private float highJumpPower = 30f;   //ƒnƒCƒWƒƒƒ“ƒv‚Ìƒpƒ[
-    public bool highJumpUsed = false;   //ƒnƒCƒWƒƒƒ“ƒv‚ğg—p‚µ‚½‚©”»’è
+    public float highJumpChargeTime = 0.8f;  //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“
+    public float highJumpChargeCounter = 0f;  //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒãƒ£ãƒ¼ã‚¸ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
+    private bool highJump = false;       //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹åˆ¤å®š
+    private float highJumpPower = 30f;   //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒ‘ãƒ¯ãƒ¼
+    public bool highJumpUsed = false;   //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã‚’ä½¿ç”¨ã—ãŸã‹åˆ¤å®š
 
-    private bool quickJump = false;      //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‚·‚é”»’è
-    public bool isGroundNear = false;   //’n–Ê‚ª‹ß‚¢‚ÆƒNƒCƒbƒNƒWƒƒƒ“ƒv”­“®‚³‚¹‚È‚¢—p
-    private float quickJumpPowerX = 10f;  //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‚Ì‰¡‚Ìƒpƒ[
-    private float quickJumpPowerY = 10f;  //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‚Ìc‚Ìƒpƒ[
-    public bool quickJumpUsed = false;   //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‚ğg—p‚µ‚½‚©”»’è
+    private bool quickJump = false;      //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹åˆ¤å®š
+    public bool isGroundNear = false;   //åœ°é¢ãŒè¿‘ã„ã¨ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ç™ºå‹•ã•ã›ãªã„ç”¨
+    private float quickJumpPowerX = 10f;  //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã®æ¨ªã®ãƒ‘ãƒ¯ãƒ¼
+    private float quickJumpPowerY = 10f;  //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã®ç¸¦ã®ãƒ‘ãƒ¯ãƒ¼
+    public bool quickJumpUsed = false;   //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã‚’ä½¿ç”¨ã—ãŸã‹åˆ¤å®š
 
-    public bool meteorDrop = false;      //ƒƒeƒIƒhƒƒbƒv‚·‚é”»’è
-    public bool meteorDropUsed = false;   //ƒƒeƒIƒhƒƒbƒv‚ğg—p‚µ‚½‚©”»’è
-    public bool meteorHighJumpOK = false;  //ƒƒeƒIƒhƒƒbƒv‚©‚ç‚ÌƒnƒCƒWƒƒƒ“ƒv‚Ö‚ÌˆÚs‚ª‚Å‚«‚é‚©
-    private float meteorDropPower = 30f;  //ƒƒeƒIƒhƒƒbƒv‚Ìƒpƒ[
-    private float meteorDropAngle = 135f;  //ƒƒeƒIƒhƒƒbƒv‚ÌŠp“x
-    private float meteorDropXMove;        //ƒƒeƒIƒhƒƒbƒv‚ÌX²ˆÚ“®
-    private float meteorDropYMove;        //ƒƒeƒIƒhƒƒbƒv‚ÌY²ˆÚ“®
-    public bool meteorHighJump = false;  //ƒƒeƒIƒhƒƒbƒvŒã‚ÌƒnƒCƒWƒƒƒ“ƒv
-    public float meteorDropTime = 0.37f;  //ƒƒeƒIƒhƒƒbƒv‚©‚ç‚ÌƒnƒCƒWƒƒƒ“ƒv‚ÉˆÚs‚Å‚«‚é‚Ü‚Å‚ÌŠÔ
-    public float meteorDropCounter = 0f;  //ƒƒeƒIƒhƒƒbƒv‚ÌƒJƒEƒ“ƒ^[
-    internal bool playHighJumpAnim;
+    public bool meteorDrop = false;      //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã™ã‚‹åˆ¤å®š
+    public bool meteorDropUsed = false;   //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã‚’ä½¿ç”¨ã—ãŸã‹åˆ¤å®š
+    public bool meteorHighJumpOK = false;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã‹ã‚‰ã®ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã¸ã®ç§»è¡ŒãŒã§ãã‚‹ã‹
+    private float meteorDropPower = 30f;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®ãƒ‘ãƒ¯ãƒ¼
+    private float meteorDropAngle = 135f;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®è§’åº¦
+    private float meteorDropXMove;        //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®Xè»¸ç§»å‹•
+    private float meteorDropYMove;        //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®Yè»¸ç§»å‹•
+    public bool meteorHighJump = false;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—å¾Œã®ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—
+    public float meteorDropTime = 0.37f;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã‹ã‚‰ã®ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ã«ç§»è¡Œã§ãã‚‹ã¾ã§ã®æ™‚é–“
+    public float meteorDropCounter = 0f;  //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã®ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼
 
     void Start()
     {
@@ -43,6 +43,7 @@ public class PlayerSpecialAction : MonoBehaviour
         state = GetComponent<PlayerState>();
         move = gameObject.GetComponent<PlayerMove>();
         jump = gameObject.GetComponent<PlayerJump>();
+        knock = gameObject.GetComponent<PlayerKnockBack>();
 
         headingAttack = transform.Find("HeadingAttack").gameObject;
         meteorDropAttack = transform.Find("MeteorDropAttack").gameObject;
@@ -56,25 +57,28 @@ public class PlayerSpecialAction : MonoBehaviour
 
     void Update()
     {
-        if (state.highJumpOn)
+        if (!knock.knockBacking && !state.carryingBuddy)  //ãƒãƒƒã‚¯ãƒãƒƒã‚¯ä¸­ã¯ä¸å¯
         {
-            //ƒ`ƒƒ[ƒWƒWƒƒƒ“ƒv‚Ìƒ`ƒƒ[ƒWƒL[‘€ì
-            HighJumpChargeOperation();
+            if (state.highJumpOn)
+            {
+                //ãƒãƒ£ãƒ¼ã‚¸ã‚¸ãƒ£ãƒ³ãƒ—ã®ãƒãƒ£ãƒ¼ã‚¸ã‚­ãƒ¼æ“ä½œ
+                HighJumpChargeOperation();
+            }
+
+            if (state.meteorDropOn)
+            {
+                //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ã‚­ãƒ¼æ“ä½œ
+                MeteorDropOperation();
+            }
+
+            if (state.quickJumpOn)
+            {
+                //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã‚­ãƒ¼æ“ä½œ
+                QuickJumpOperation();
+            }
         }
 
-        if (state.meteorDropOn)
-        {
-            //ƒƒeƒIƒhƒƒbƒvƒL[‘€ì
-            MeteorDropOperation();
-        }
-
-        if (state.quickJumpOn)
-        {
-            //ƒNƒCƒbƒNƒWƒƒƒ“ƒvƒL[‘€ì
-            QuickJumpOperation();
-        }
-
-        //’n–Ê‚ª‹ß‚¢‚©iƒNƒCƒbƒNƒWƒƒƒ“ƒv—p”»’èj
+        //åœ°é¢ãŒè¿‘ã„ã‹ï¼ˆã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ç”¨åˆ¤å®šï¼‰
         if (!isGroundNear && RigidBody.linearVelocity.y < 0)
         {
             isGroundNear = Physics.CheckSphere(state.jumpMoveOKCheck.position + Vector3.down * 0.4f, 0.19f, state.groundLayer);
@@ -87,22 +91,25 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //ƒnƒCƒWƒƒƒ“ƒvÀs
+        //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—å®Ÿè¡Œ
         if (highJump)
         {
             HighJumpUse();
         }
 
+        //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—å®Ÿè¡Œ
         if (meteorDrop)
         {
             MeteorDropUse();
         }
 
+        //ãƒ¡ãƒ†ã‚ªãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—å®Ÿè¡Œ
         if (meteorHighJump)
         {
             MeteorHighJumpUse();
         }
 
+        //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—å®Ÿè¡Œ
         if (quickJump)
         {
             QuickJumpUse();
@@ -111,18 +118,17 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void HighJumpChargeOperation()
     {
-        if (jump.jumpCoolActive || state.isAir || (Input.GetKeyUp(state.keyBind.playerJump) && highJumpChargeCounter <= 0.2f)) //ƒnƒCƒWƒƒƒ“ƒv•s‰Â
+        if (jump.jumpCoolActive || state.isAir || (state.inputManager.jumpUp && highJumpChargeCounter <= 0.2f)) //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ä¸å¯
         {
             highJumpChargeCounter = 0f;
         }
-        else if (Input.GetKeyUp(state.keyBind.playerJump)) // ƒnƒCƒWƒƒƒ“ƒv•ú‚·
+        else if (state.inputManager.jumpUp)ã€€//ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—æ”¾ã™
         {
-            if (highJumpChargeCounter >= highJumpChargeTime)
+            if (highJumpChargeCounter >= highJumpChargeTime)  //ãƒãƒ£ãƒ¼ã‚¸ã§ãã¦ã‚Œã°OK
             {
                 highJump = true;
                 highJumpUsed = true;
                 headingAttack.SetActive(true);
-                playHighJumpAnim = true; // ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶ƒtƒ‰ƒO
             }
             //else
             //{
@@ -132,7 +138,7 @@ public class PlayerSpecialAction : MonoBehaviour
             jump.jumpCoolActive = true;
             highJumpChargeCounter = 0f;
         }
-        else if (state.isGrounded && Input.GetKey(state.keyBind.playerJump) && !state.landingJumpOn && !Input.GetKeyDown(state.keyBind.playerJump)) //ƒnƒCƒWƒƒƒ“ƒv‚¨‚µ‚Á‚Ï‚Ìó‘Ô
+        else if (state.isGrounded && state.inputManager.jumpHeld && !state.landingJumpOn && !state.inputManager.jumpDown) //ãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—ãŠã—ã£ã±ã®çŠ¶æ…‹
         {
             RigidBody.linearVelocity = new Vector3(0, RigidBody.linearVelocity.y, 0);
             highJumpChargeCounter += Time.deltaTime;
@@ -142,7 +148,7 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void MeteorDropOperation()
     {
-        if (state.isAir && Input.GetKey(state.keyBind.meteorDrop) && Input.GetKeyDown(state.keyBind.playerJump) && !meteorDropUsed)
+        if (state.isAir && state.inputManager.downHeld && state.inputManager.jumpDown && !meteorDropUsed)  //ç©ºä¸­ã§ã¾ã ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—ä½¿ã£ã¦ãªã„ã‹
         {
             meteorDrop = true;
             meteorDropUsed = true;
@@ -150,7 +156,7 @@ public class PlayerSpecialAction : MonoBehaviour
             jump.landingJumpNumber = 0;
             meteorDropAttack.SetActive(true);
 
-            if (state.playerDirectionRight)
+            if (state.playerDirectionRight)  //å‘ã„ã¦ã‚‹æ–¹å‘ã«ã‚ˆã£ã¦é€²ã‚€æ–¹å‘å¤‰åŒ–
             {
                 meteorDropXMove = Mathf.Abs(meteorDropXMove);
             }
@@ -164,14 +170,14 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void QuickJumpOperation()
     {
-        if (state.isAir && Input.GetKeyDown(state.keyBind.playerJump) && !quickJumpUsed && !meteorDropUsed && !isGroundNear)
+        if (state.isAir && state.inputManager.jumpDown && !quickJumpUsed && !meteorDropUsed && !isGroundNear)  //ç©ºä¸­ã§åœ°é¢ã«è¿‘ããªãã€ãƒ¡ãƒ†ã‚ªã‚‚ã‚¯ã‚¤ãƒƒã‚¯ã‚‚ã¾ã ä½¿ã£ã¦ãªã„ã‹
         {
             quickJump = true;
             quickJumpUsed = true;
             quickJumpAttack.SetActive(true);
         }
         
-        //‰¡ˆÚ“®“ü—Í’†‚È‚çƒWƒƒƒ“ƒv—Í’á‰º
+        //æ¨ªç§»å‹•å…¥åŠ›ä¸­ãªã‚‰ã‚¸ãƒ£ãƒ³ãƒ—åŠ›ä½ä¸‹
         if (move.MoveInput == 1f || move.MoveInput == -1f)
         {
             quickJumpPowerY = 7f;
@@ -192,11 +198,11 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void MeteorDropUse()
     {
-        //RigidBody.useGravity = false;
+        RigidBody.useGravity = false;
         RigidBody.linearVelocity = new Vector3(0, 0, 0);
         meteorDropCounter += Time.fixedDeltaTime;
 
-        //•Ç‚É‚Ô‚Â‚©‚Á‚½‚çƒƒeƒIƒnƒCƒWƒƒƒ“ƒv•s‰Â
+        //å£ã«ã¶ã¤ã‹ã£ãŸã‚‰ãƒ¡ãƒ†ã‚ªãƒã‚¤ã‚¸ãƒ£ãƒ³ãƒ—çµ‚ã‚ã‚Š
         if (((state.isLeftWall && !state.playerDirectionRight) || (state.isRightWall && state.playerDirectionRight)) && !state.isGrounded)
         {
             meteorHighJumpOK = false;
@@ -204,11 +210,11 @@ public class PlayerSpecialAction : MonoBehaviour
         }
         else
         {
-            //Î‚ß‰º‚ÉˆÚ“®‚³‚¹‚é
+            //æ–œã‚ä¸‹ã«ç§»å‹•ã•ã›ã‚‹
             RigidBody.AddForce(meteorDropPower * new Vector3(meteorDropXMove, meteorDropYMove, 0), ForceMode.Impulse);
         }
 
-        //ƒƒeƒIƒhƒƒbƒvI‚í‚è
+        //ãƒ¡ãƒ†ã‚ªãƒ‰ãƒ­ãƒƒãƒ—çµ‚ã‚ã‚Š
         if ((state.isLeftWall && !state.playerDirectionRight) || (state.isRightWall && state.playerDirectionRight) || state.isGrounded)
         {
             RigidBody.useGravity = true;
@@ -219,10 +225,10 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void QuickJumpUse()
     {
-        RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);
+        RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0, 0);  //ã‚¸ãƒ£ãƒ³ãƒ—åŠ›é‡è¤‡ã•ã›ãªã„ã‚ˆã†ã«ãƒªã‚»ãƒƒãƒˆ
         RigidBody.AddForce(new Vector3(quickJumpPowerX * move.MoveInput, quickJumpPowerY, 0), ForceMode.Impulse);
         
-        //ƒNƒCƒbƒNƒWƒƒƒ“ƒv‚Ì‰¡ˆÚ“®‘¬“x§ŒÀ
+        //ã‚¯ã‚¤ãƒƒã‚¯ã‚¸ãƒ£ãƒ³ãƒ—ã®æ¨ªç§»å‹•é€Ÿåº¦åˆ¶é™
         if (move.MoveInput != 0f)
         {
             move.airMaxSpeed = 15f;
@@ -232,10 +238,12 @@ public class PlayerSpecialAction : MonoBehaviour
 
     private void MeteorHighJumpUse()
     {
-        RigidBody.linearVelocity = new Vector3(0, 0, 0);
+        headingAttack.SetActive(true);
 
-        RigidBody.AddForce(new Vector3(meteorDropPower * meteorDropXMove, highJumpPower, 0), ForceMode.Impulse);
+        RigidBody.linearVelocity = Vector3.zero;
+        RigidBody.AddForce(new Vector3(meteorDropPower * meteorDropXMove, highJumpPower, 0), ForceMode.VelocityChange);
 
         meteorHighJump = false;
+        jump.jumpCoolActive = true;
     }
 }
