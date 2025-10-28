@@ -4,19 +4,35 @@ using UnityEngine;
 public class PlayerKnockBack : MonoBehaviour
 {
     private Rigidbody rb;
-    private PlayerState state;
     private PlayerMove move;
     private PlayerJump jump;
 
     public bool knockBacking = false;  //ノックバック中フラグ
     public float knockBackPower = 7f;  //ノックバック中フラグ
+    public bool coolTime = false;  //ノックバックのクールタイムONOFF
+    private float coolDuration = 1.4f;  //ノックバックのクールタイム
+    private float coolTimer = 0f;  //ノックバックのクールタイム計測
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        state = GetComponent<PlayerState>();
         move = GetComponent<PlayerMove>();
         jump = GetComponent<PlayerJump>();
+    }
+
+    private void Update()
+    {
+        //ノックバックのクールタイム
+        if (coolTime)
+        {
+            coolTimer += Time.deltaTime;
+
+            if (coolTimer > coolDuration)
+            {
+                coolTime = false;
+                coolTimer = 0f;
+            }
+        }
     }
 
     public void DoKnockBack(int direction)
@@ -38,6 +54,7 @@ public class PlayerKnockBack : MonoBehaviour
     private void EndKnockBack()
     {
         knockBacking = false;
+        coolTime = true;
     }
 
     private void PlayerActionReset()
@@ -48,11 +65,27 @@ public class PlayerKnockBack : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Enemy" && !knockBacking)
+        if (coolTime)
         {
-            //敵とプレイヤーの位置でノックバックの方向を決める
-            int dir = transform.position.x - collision.gameObject.transform.position.x <= 0 ? -1 : 1;
-            DoKnockBack(dir);　//ノックバック
+            if (collision.gameObject.tag == "Enemy" && !knockBacking)
+            {
+                //敵とプレイヤーの位置でノックバックの方向を決める
+                int dir = transform.position.x - collision.gameObject.transform.position.x <= 0 ? -1 : 1;
+                DoKnockBack(dir); //ノックバック
+            }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!coolTime)
+        {
+            if (!knockBacking && other.gameObject.tag == "StalkerHand")
+            {
+                //敵とプレイヤーの位置でノックバックの方向を決める
+                int dir = transform.position.x - other.gameObject.transform.position.x <= 0 ? -1 : 1;
+                DoKnockBack(dir); //ノックバック
+            }
         }
     }
 }
