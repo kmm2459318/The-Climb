@@ -15,7 +15,10 @@ public class PlayerMind : MonoBehaviour
     void Start()
     {
         state = GetComponent<PlayerState>();
-        lightDarkWorld = GameObject.Find("LightDarkWorld").GetComponent<LightDarkWorld>();
+        if (GameObject.Find("LightDarkWorld") != null)
+        {
+            lightDarkWorld = GameObject.Find("LightDarkWorld").GetComponent<LightDarkWorld>();
+        }
     }
 
     void Update()
@@ -32,13 +35,16 @@ public class PlayerMind : MonoBehaviour
         }
 
         //暗い闇の中で侵蝕度増加
-        if (lightDarkWorld.brightnessState == LightDarkWorld.brightness.Dark)
+        if (lightDarkWorld != null)
         {
-            ErosionIncrease();
-        }
-        else if (!inFog)  //光かつNot霧の中で侵蝕度リセット
-        {
-            ErosionReset();
+            if (lightDarkWorld.brightnessState == LightDarkWorld.brightness.Dark)
+            {
+                ErosionIncrease();
+            }
+            else if (!inFog)  //光かつNot霧の中で侵蝕度リセット
+            {
+                ErosionReset();
+            }
         }
 
         //侵蝕があったら正気度減少
