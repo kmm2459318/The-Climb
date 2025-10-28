@@ -14,57 +14,59 @@ public class StageSwitcher : MonoBehaviour
 
     private GameObject currentStage;
     private bool isLightWorld = true;
+    private bool isSwitching = false; // ← 切り替え中フラグ
 
     void Start()
     {
         // 最初は光のステージをロード
         currentStage = Instantiate(lightStagePrefab);
-        fadeCanvas.alpha = 0;
+        if (fadeCanvas != null) fadeCanvas.alpha = 0;
     }
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             SwitchStage();
         }
     }
     public void SwitchStage()
     {
-        StartCoroutine(SwitchRoutine());
+        if (!isSwitching) // ← 切り替え中じゃなければ実行
+        {
+            StartCoroutine(SwitchRoutine());
+        }
     }
 
     IEnumerator SwitchRoutine()
     {
+        isSwitching = true; // ← 切り替え開始
+
         // フェードアウト
         yield return Fade(1f);
 
-        // 既存ステージ削除
+        // ステージ削除と生成
         if (currentStage != null) Destroy(currentStage);
-
-        // ステージ切り替え
-        if (isLightWorld)
-        {
-            currentStage = Instantiate(darkStagePrefab);
-        }
-        else
-        {
-            currentStage = Instantiate(lightStagePrefab);
-        }
+        currentStage = Instantiate(isLightWorld ? darkStagePrefab : lightStagePrefab);
         isLightWorld = !isLightWorld;
 
         // フェードイン
         yield return Fade(0f);
+
+        isSwitching = false; // ← 切り替え完了
     }
 
     IEnumerator Fade(float targetAlpha)
     {
-        float startAlpha = fadeCanvas.alpha;
+        if (fadeCanvas == null) yield break;
+
+        float start = fadeCanvas.alpha;
         float time = 0;
 
         while (time < fadeDuration)
         {
             time += Time.deltaTime;
-            fadeCanvas.alpha = Mathf.Lerp(startAlpha, targetAlpha, time / fadeDuration);
+            fadeCanvas.alpha = Mathf.Lerp(start, targetAlpha, time / fadeDuration);
             yield return null;
         }
         fadeCanvas.alpha = targetAlpha;
