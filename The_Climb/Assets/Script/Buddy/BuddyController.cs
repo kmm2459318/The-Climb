@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.UIElements;
 
 public class BuddyController : MonoBehaviour
 {
     private Rigidbody RigidBody;
     private PlayerState state;
+    private PositionConstraint positionConstraint;
+    private ConstraintSource currentSource;
 
     private bool buddyDirectionRight;  //バディが右向いてるか判定、falseなら左向き
     public bool moving = false;        //Buddyが動いてるか判定
     private float speed = 4f;          //Buddyの移動スピード
     public float buddyTargetX = 0f;    //Buddyが向かうX座標
+    public bool beingKidnapped = false;  //誘拐されてる
 
     [SerializeField] private bool isLeftWall;          //左壁判定
     [SerializeField] private bool isRightWall;         //右壁判定
@@ -37,6 +41,7 @@ public class BuddyController : MonoBehaviour
     void Start()
     {
         state = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
+        positionConstraint = GetComponent<PositionConstraint>();
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
         RigidBody = gameObject.GetComponent<Rigidbody>();
     }
@@ -82,6 +87,29 @@ public class BuddyController : MonoBehaviour
         if (Mathf.Abs(transform.position.x - buddyTargetX) < 0.05f || (isLeftWall && !buddyDirectionRight) || (isRightWall && buddyDirectionRight))
         {
             moving = false;
+        }
+    }
+
+    //Buddyの追従するオブジェクトを変える
+    public void SetConstraintTarget(Transform newTarget)
+    {
+        positionConstraint.constraintActive = false;  //1度無効にする
+        positionConstraint.SetSources(new System.Collections.Generic.List<ConstraintSource>());
+
+        if (newTarget != null)
+        {
+            var source = new ConstraintSource
+            {
+                sourceTransform = newTarget,
+                weight = 1f
+            };
+            positionConstraint.AddSource(source);
+            currentSource = source;
+            positionConstraint.constraintActive = true;
+        }
+        else
+        {
+            currentSource = default;
         }
     }
 }

@@ -4,8 +4,10 @@ using UnityEngine;
 public class PlayerKnockBack : MonoBehaviour
 {
     private Rigidbody rb;
+    private PlayerState state;
     private PlayerMove move;
     private PlayerJump jump;
+    private BuddyCarry buddyCarry;
 
     public bool knockBacking = false;  //ノックバック中フラグ
     public float knockBackPower = 7f;  //ノックバック中フラグ
@@ -16,8 +18,10 @@ public class PlayerKnockBack : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        state = GetComponent<PlayerState>();
         move = GetComponent<PlayerMove>();
         jump = GetComponent<PlayerJump>();
+        buddyCarry = GetComponent<BuddyCarry>();
     }
 
     private void Update()
@@ -78,9 +82,14 @@ public class PlayerKnockBack : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!coolTime)
+        if (!coolTime && !knockBacking && other.gameObject.tag == "StalkerHand")
         {
-            if (!knockBacking && other.gameObject.tag == "StalkerHand")
+            if (buddyCarry.buddyController.beingKidnapped && other.TryGetComponent(out StalkerHandController stalker) && stalker.isKidnapping)
+            {
+                //Buddy解放
+                stalker.ReleaseBuddy();
+            }
+            else
             {
                 //敵とプレイヤーの位置でノックバックの方向を決める
                 int dir = transform.position.x - other.gameObject.transform.position.x <= 0 ? -1 : 1;
