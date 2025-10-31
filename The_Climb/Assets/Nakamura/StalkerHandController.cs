@@ -1,19 +1,21 @@
 ﻿using UnityEngine;
 using UnityEngine.Animations;
 using static UnityEngine.GraphicsBuffer;
+using System.Collections;
 
 public class StalkerHandController : MonoBehaviour
 {
     private GameObject buddy;
-    private BuddyController buddyController;
+    [HideInInspector] public BuddyController buddyController;
     private GameObject player;
-    private PlayerState playerState;
-    private PlayerKnockBack playerKnock;
+    [HideInInspector] public PlayerState playerState;
+    [HideInInspector] public PlayerKnockBack playerKnock;
 
-    private GameObject mainStalker;
-    private GameObject childStalker1;
-    private GameObject childStalker2;
-    private GameObject childStalker3;
+    [HideInInspector] public Transform mainStalker;
+    private Transform childStalker1;
+    private Transform childStalker2;
+    private Transform childStalker3;
+    private Transform[] stalkers = new Transform[4];
 
     private enum stalkerHand {wait, stalk, stop};
     private stalkerHand stalkerState = stalkerHand.stalk;
@@ -22,7 +24,8 @@ public class StalkerHandController : MonoBehaviour
     private float stalkTime = 2.0f;      //行動：Stalkの時間
     private float stopTime = 0.5f;       //行動：Stopの時間
     private float stalkerTimer = 0f;     //行動ローテーション用タイマー
-    private float speed = 8.0f;          //移動速度
+    private float speed = 7.0f;          //移動速度
+    private float childRadius = 2f;           //追従の半径
     public bool isKidnapping = false;   //誘拐中用判定
     private Vector3 stalkTarget = Vector3.zero;
 
@@ -41,10 +44,14 @@ public class StalkerHandController : MonoBehaviour
             playerKnock = player.GetComponent<PlayerKnockBack>();
         }
 
-        mainStalker = transform.GetChild(0).gameObject;
-        childStalker1 = transform.GetChild(1).gameObject;
-        childStalker2 = transform.GetChild(2).gameObject;
-        childStalker3 = transform.GetChild(3).gameObject;
+        mainStalker = transform.GetChild(0).gameObject.transform;
+        childStalker1 = transform.GetChild(1).gameObject.transform;
+        childStalker2 = transform.GetChild(2).gameObject.transform;
+        childStalker3 = transform.GetChild(3).gameObject.transform;
+        stalkers[0] = mainStalker;
+        stalkers[1] = childStalker1;
+        stalkers[2] = childStalker2;
+        stalkers[3] = childStalker3;
     }
 
     void Update()
@@ -52,8 +59,8 @@ public class StalkerHandController : MonoBehaviour
         //誘拐中
         if (isKidnapping)
         {
-            transform.LookAt(Vector3.zero);
-            transform.Translate(transform.forward * (speed / 2) * Time.deltaTime, Space.World);
+            mainStalker.transform.LookAt(Vector3.zero);
+            transform.Translate(mainStalker.transform.forward * (speed / 2) * Time.deltaTime, Space.World);
         }
         else  //追跡行動ローテーション
         {
@@ -66,23 +73,44 @@ public class StalkerHandController : MonoBehaviour
                 stalkTarget = buddy.transform.position;
             }
 
-                //行動ローテーション用タイマー
-                stalkerTimer += Time.deltaTime;
+            //行動ローテーション用タイマー
+            stalkerTimer += Time.deltaTime;
 
             //行動：Wait
             if (stalkerTimer <= waitTime)
             {
                 stalkerState = stalkerHand.wait;
-                transform.LookAt(stalkTarget);
+
+                //LookAt時にZ前→X前の補正を入れて狙いを定める
+                mainStalker.transform.LookAt(stalkTarget);
+                mainStalker.transform.Rotate(0f, -90f, 0f);
             }
-            else if (stalkerTimer <= waitTime + stalkTime)  //行動：Stalk
+            else if (stalkerTimer <= waitTime + stalkTime) //行動：Stalk
             {
                 stalkerState = stalkerHand.stalk;
-                transform.Translate(mainStalker.transform.forward * speed * Time.deltaTime, Space.World);
+
+                //ターゲットまでの方向ベクトル
+                Vector3 targetDir = (stalkTarget - mainStalker.transform.position).normalized;
+
+                //今の方向ベクトル
+                Vector3 currentDir = mainStalker.transform.right;
+
+                //角度
+                float diffY = targetDir.y - currentDir.y;
+
+                //曲がる
+                float rotSpeed = 60f * Time.deltaTime; //角度調整速度
+                float rotZ = Mathf.Clamp(diffY * 20f, -rotSpeed, rotSpeed); //小さく安定させる
+
+                mainStalker.transform.localEulerAngles += new Vector3(0f, 0f, rotZ);
+
+                //進む
+                mainStalker.transform.position += mainStalker.transform.right * speed * Time.deltaTime;
             }
-            else  //行動：Stop
+            else //Stop
             {
                 stalkerState = stalkerHand.stop;
+                StartCoroutine(ChildPosReset());
 
                 if (stalkerTimer > waitTime + stalkTime + stopTime)
                 {
@@ -90,16 +118,37 @@ public class StalkerHandController : MonoBehaviour
                 }
             }
         }
+
+        //ChildStalkerの挙動
+        for (int i = 0; i < stalkers.Length - 1; i++)
+            if (Vector3.Distance(stalkers[i].position, stalkers[i + 1].position) > childRadius)
+            {
+                //方向ベクトルを求める
+                Vector3 direction = (stalkers[i + 1].position - stalkers[i].position).normalized;
+
+                //childRadius の位置に押し戻す
+                stalkers[i + 1].position = stalkers[i].position + direction * childRadius;
+            }
     }
 
-
+    //ChildStalkerをMainStalkerHandの位置に
+    private IEnumerator ChildPosReset()
+    {
+        for (float j = 0; j < 0.5f; j += Time.deltaTime)
+        {
+            for (int i = 0; i < stalkers.Length - 1; i++)
+                stalkers[i + 1].position = Vector3.Lerp(stalkers[i + 1].position, stalkers[i].position, 9f * Time.deltaTime);
+            yield return null;
+        }
+    }
 
     //Buddyを横取り！
-    private void BuddyGet()
+    public void BuddyGet()
     {
         isKidnapping = true;
         buddyController.beingKidnapped = true;
-        buddyController.SetConstraintTarget(this.transform);
+        buddyController.SetConstraintTarget(mainStalker.transform);
+        StartCoroutine(ChildPosReset());
     }
 
     //Buddy救出＆その敵消滅
@@ -108,23 +157,5 @@ public class StalkerHandController : MonoBehaviour
         buddyController.beingKidnapped = false;
         buddyController.SetConstraintTarget(player.transform);
         Destroy(gameObject);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!buddyController.beingKidnapped)
-        {
-            if (other.CompareTag("Buddy") && !playerState.carryingBuddy)  //Buddyが孤立してる場合
-            {
-                BuddyGet();
-            }
-            else if (other.CompareTag("Player") && playerState.carryingBuddy)  //Buddyをおんぶしてる場合
-            {
-                //敵とプレイヤーの位置でノックバックの方向を決める
-                int dir = mainStalker.transform.position.x - other.gameObject.transform.position.x <= 0 ? 1 : -1;
-                playerKnock.DoKnockBack(dir); //ノックバック
-                BuddyGet();
-            }
-        }
     }
 }

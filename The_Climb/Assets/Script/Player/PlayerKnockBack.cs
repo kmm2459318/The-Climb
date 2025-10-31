@@ -82,14 +82,14 @@ public class PlayerKnockBack : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!coolTime && !knockBacking && other.gameObject.tag == "StalkerHand")
+        if (!knockBacking && other.gameObject.tag == "StalkerHand")
         {
-            if (buddyCarry.buddyController.beingKidnapped && other.TryGetComponent(out StalkerHandController stalker) && stalker.isKidnapping)
+            if (buddyCarry.buddyController.beingKidnapped && other.TryGetComponent(out KidnapBuddy stalker) && stalker.handController.isKidnapping)
             {
                 //Buddy解放
-                stalker.ReleaseBuddy();
+                stalker.handController.ReleaseBuddy();
             }
-            else
+            else if (!coolTime)
             {
                 //敵とプレイヤーの位置でノックバックの方向を決める
                 int dir = transform.position.x - other.gameObject.transform.position.x <= 0 ? -1 : 1;
