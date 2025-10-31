@@ -1,8 +1,8 @@
-namespace TheClimb.Logging
+ï»¿namespace TheClimb.Logging
 {
-    public readonly struct LogPrefix    //  ƒƒOƒvƒŒƒtƒBƒNƒX’è‹`ƒNƒ‰ƒX
+    public readonly struct LogPrefix    //  ãƒ­ã‚°ãƒ—ãƒ¬ãƒ•ã‚£ã‚¯ã‚¹å®šç¾©ã‚¯ãƒ©ã‚¹
     {
-        // Ž–‘O’è‹`ƒ^ƒO
+        // äº‹å‰å®šç¾©ã‚¿ã‚°
         public static readonly LogPrefix screenFader = new("[ScreenFader]");
         public static readonly LogPrefix idleState = new("[IdleState]");
         public static readonly LogPrefix fadeImageSetter = new("[FadeImageSetter]");
@@ -12,6 +12,7 @@ namespace TheClimb.Logging
         public static readonly LogPrefix titleButtonmanager = new("[TitleButtonManager]");
         public static readonly LogPrefix sceneUtility = new("[SceneUtility]");
         public static readonly LogPrefix toPlanetVectleCalculater = new("[ToPlanetVectleCalculater]");
+        public static readonly LogPrefix orbitalFollower = new("[OrbitalFollower]");
 
         public string Value { get; }
 
@@ -22,19 +23,19 @@ namespace TheClimb.Logging
 
         public override string ToString() => Value;
 
-        // “™‰¿”äŠri==, !=j‚Å‚«‚é‚æ‚¤‚É
+        // ç­‰ä¾¡æ¯”è¼ƒï¼ˆ==, !=ï¼‰ã§ãã‚‹ã‚ˆã†ã«
         public override bool Equals(object obj)
         {
             return obj is LogPrefix other && Value == other.Value;
         }
 
-        //  ƒnƒbƒVƒ…ƒR[ƒhƒQƒbƒg
+        //  ãƒãƒƒã‚·ãƒ¥ã‚³ãƒ¼ãƒ‰ã‚²ãƒƒãƒˆ
         public override int GetHashCode() => Value.GetHashCode();
 
         public static bool operator ==(LogPrefix a, LogPrefix b) => a.Equals(b);
         public static bool operator !=(LogPrefix a, LogPrefix b) => !a.Equals(b);
 
-        // “®“I‚Éì¬‚à‰Â”\
+        // å‹•çš„ã«ä½œæˆã‚‚å¯èƒ½
         public static LogPrefix Custom(string value) => new(value);
     }
 }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TheClimb.Astral;
 
 namespace TheClimb.UniversalGravity
@@ -6,7 +6,7 @@ namespace TheClimb.UniversalGravity
     public class GravitationTargetAttracter : MonoBehaviour    //  万有引力影響対象のオブジェクトを引き寄せるするスクリプト
     {
         [SerializeField] PlanetStatus planetStatus;         //  天体のステータス群
-        PlanetStatusBlock planetStatusBlock;                //  天体のステータスクブロック
+        GravitationStatusBlock gravitationStatusBlock;                //  天体のステータスクブロック
 
         public GravitationLevel CurrentGravitationLevel;    //  重力レベル
 
@@ -15,12 +15,12 @@ namespace TheClimb.UniversalGravity
 
         void Awake()
         {
-            planetStatusBlock = planetStatus.GetStats(PlanetIDs.Earth);    //  地球のステータス取得
+            gravitationStatusBlock = planetStatus.GetGraviatationStatus(PlanetIDs.Earth);    //  地球のステータス取得
 
-            CurrentGravitationLevel = planetStatusBlock.gravitationLevel;
+            CurrentGravitationLevel = gravitationStatusBlock.gravitationLevel;
 
-            CurrentPlanetMass = planetStatusBlock.Mass;
-            CurrentAttractRange = planetStatusBlock.AttractRange;
+            CurrentPlanetMass = gravitationStatusBlock.Mass;
+            CurrentAttractRange = gravitationStatusBlock.AttractRange;
         }
 
         void FixedUpdate()
