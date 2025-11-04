@@ -14,45 +14,53 @@ public class BuddyCarry : MonoBehaviour
 
     void Start()
     {
-        buddy = GameObject.Find("Buddy");
-        buddyController = buddy.GetComponent<BuddyController>();
-        buddyPos = buddy.GetComponent<PositionConstraint>();
         state = GetComponent<PlayerState>();
+
+        if (GameObject.Find("Buddy") != null)
+        {
+            buddy = GameObject.Find("Buddy");
+            buddyController = buddy.GetComponent<BuddyController>();
+            buddyPos = buddy.GetComponent<PositionConstraint>();
+            state.carryingBuddy = true;
+        }
     }
 
     void Update()
     {
-        //向いてる方向によっておんぶしてるバディの場所を調整
-        if (buddyPos != null && state.playerDirectionRight)
+        if (buddy != null)
         {
-            buddyPos.translationOffset = new Vector3(-0.4f, 1f, 0f);
-        }
-        else
-        {
-            buddyPos.translationOffset = new Vector3(0.4f, 1f, 0f);
-        }
-
-        //Carryボタン（仮）
-        if (Input.GetKeyDown(KeyCode.U) && state.isGrounded)
-        {
-            if (state.carryingBuddy)  //おんぶしてる場合、バディを降ろす
+            //向いてる方向によっておんぶしてるバディの場所を調整
+            if (state.playerDirectionRight)
             {
-                state.carryingBuddy = false;
-                buddyPos.constraintActive = false;
-                buddy.transform.position = transform.position + Vector3.up * 0.5f;
+                buddyPos.translationOffset = new Vector3(-0.4f, 1f, 0f);
             }
-            else if (nearBuddy)  //おんぶしてない場合、バディをおんぶする
+            else
             {
-                state.carryingBuddy = true;
-                buddyPos.constraintActive = true;
-                buddyController.moving = false;
+                buddyPos.translationOffset = new Vector3(0.4f, 1f, 0f);
             }
-        }
 
-        //ベルを鳴らしてバディを誘導
-        if (!state.carryingBuddy && Input.GetKeyDown(KeyCode.I) && nearCallBell)
-        {
-            buddyController.GuideTo(callBellPosX);
+            //Carryボタン（仮）
+            if (Input.GetKeyDown(KeyCode.U) && state.isGrounded)
+            {
+                if (state.carryingBuddy)  //おんぶしてる場合、バディを降ろす
+                {
+                    state.carryingBuddy = false;
+                    buddyPos.constraintActive = false;
+                    buddy.transform.position = transform.position + Vector3.up * 0.5f;
+                }
+                else if (nearBuddy)  //おんぶしてない場合、バディをおんぶする
+                {
+                    state.carryingBuddy = true;
+                    buddyPos.constraintActive = true;
+                    buddyController.moving = false;
+                }
+            }
+
+            //ベルを鳴らしてバディを誘導
+            if (!state.carryingBuddy && Input.GetKeyDown(KeyCode.I) && nearCallBell)
+            {
+                buddyController.GuideTo(callBellPosX);
+            }
         }
     }
 
