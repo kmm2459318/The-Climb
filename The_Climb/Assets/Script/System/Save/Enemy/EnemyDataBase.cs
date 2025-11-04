@@ -51,7 +51,7 @@ public class EnemyDataBase : MonoBehaviour
         var existingDate = _connection.Table<EnemyKillData>()
         .FirstOrDefault(e => e.EnemyID == stats.ID && e.AreaName == areaName);
 
-        string now = DateTime.Now.ToString("yyy/MM/dd HH:mm:ss");
+        string now = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
 
         //1度倒したことがある敵
         if (existingDate != null)
