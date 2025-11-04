@@ -41,15 +41,17 @@ public class ItemDataBase : MonoBehaviour
             existing.Count += 1;
             existing.LastCollectTime = now;
             Connection.Update(existing);
+            Debug.Log($"アイテムデータ保存: {itemData.Name}");
         }
         else
         {
             // 保存したことがないアイテムの場合
             var newItem = new ItemCollectData(itemData, 1, now);
             Connection.Insert(newItem);
+            Debug.Log($"アイテムデータ保存: {itemData.Name}");
         }
 
-        Debug.Log($"アイテムデータ保存: {itemData.Name}");
+      
     }
 
     /// <summary>
@@ -67,6 +69,16 @@ public class ItemDataBase : MonoBehaviour
     {
         var data = Connection.Table<ItemCollectData>().FirstOrDefault(x => x.ItemName == itemName);
         return data != null ? data.Count : 0;
+    }
+
+    ///<summy>
+    ///ゲーム終了時に呼び出される
+    ///</summy>
+    public void OnApplicationQuit()
+    {
+        File.Delete(SaveDbPath);
+        Debug.LogWarning("データを破棄しました");
+        
     }
 
 }

@@ -1,7 +1,6 @@
 ﻿using SQLite4Unity3d;
-using TheClimb.Logging;
 
-LogUtility.Log(LogPrefix.uiFactory, "july", LogLevel.Error);
+
 
 public class ItemCollectData
 {
