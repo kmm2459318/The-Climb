@@ -25,9 +25,10 @@ public class StalkerHandController : MonoBehaviour
     private float stopTime = 0.5f;       //行動：Stopの時間
     private float stalkerTimer = 0f;     //行動ローテーション用タイマー
     private float speed = 7.0f;          //移動速度
-    private float childRadius = 2f;           //追従の半径
-    public bool isKidnapping = false;   //誘拐中用判定
-    private Vector3 stalkTarget = Vector3.zero;
+    private float childRadius = 2f;      //追従の半径
+    public bool isKidnapping = false;    //誘拐中用判定
+    private Vector3 home;                //誘拐して連れて帰る地点
+    private Vector3 stalkTarget = Vector3.zero;  //追跡ターゲット
 
     void Start()
     {
@@ -44,6 +45,8 @@ public class StalkerHandController : MonoBehaviour
             playerKnock = player.GetComponent<PlayerKnockBack>();
         }
 
+        home = transform.position;
+
         mainStalker = transform.GetChild(0).gameObject.transform;
         childStalker1 = transform.GetChild(1).gameObject.transform;
         childStalker2 = transform.GetChild(2).gameObject.transform;
@@ -59,7 +62,7 @@ public class StalkerHandController : MonoBehaviour
         //誘拐中
         if (isKidnapping)
         {
-            mainStalker.transform.LookAt(Vector3.zero);
+            mainStalker.transform.LookAt(home);
             transform.Translate(mainStalker.transform.forward * (speed / 2) * Time.deltaTime, Space.World);
         }
         else  //追跡行動ローテーション
@@ -117,6 +120,10 @@ public class StalkerHandController : MonoBehaviour
                     stalkerTimer = 0f;
                 }
             }
+
+            //他のストーカーハンドが捕まえたら消滅
+            if (buddyController.beingKidnapped)
+                Destroy(gameObject);
         }
 
         //ChildStalkerの挙動
@@ -142,7 +149,7 @@ public class StalkerHandController : MonoBehaviour
         }
     }
 
-    //Buddyを横取り！
+    //Buddyを取られる！
     public void BuddyGet()
     {
         isKidnapping = true;

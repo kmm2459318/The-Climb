@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UIElements;
+using System.Collections;
 
 public class BuddyController : MonoBehaviour
 {
@@ -93,23 +94,60 @@ public class BuddyController : MonoBehaviour
     //Buddyの追従するオブジェクトを変える
     public void SetConstraintTarget(Transform newTarget)
     {
-        positionConstraint.constraintActive = false;  //1度無効にする
-        positionConstraint.SetSources(new System.Collections.Generic.List<ConstraintSource>());
+        // Constraint無効化して評価停止
+        positionConstraint.constraintActive = false;
 
+        // 現在のSourcesを完全クリア
+        var emptyList = new System.Collections.Generic.List<ConstraintSource>();
+        positionConstraint.SetSources(emptyList);
+
+        // 新しいSourceリストを個別に生成
         if (newTarget != null)
         {
+            var newSources = new System.Collections.Generic.List<ConstraintSource>();
+
             var source = new ConstraintSource
             {
                 sourceTransform = newTarget,
                 weight = 1f
             };
-            positionConstraint.AddSource(source);
+
+            newSources.Add(source);
+
+            // AddSourcesではなくSetSourcesを直接使用（コピー動作）
+            positionConstraint.SetSources(newSources);
+
+            // 状態保持
             currentSource = source;
-            positionConstraint.constraintActive = true;
+
+            // Buddyを強制的に新しい位置へ同期（安全対策）
+            transform.position = newTarget.position;
+
+            // 1フレーム後に再有効化
+            StartCoroutine(EnableConstraintNextFrame());
         }
         else
         {
             currentSource = default;
+        }
+    }
+
+    private IEnumerator EnableConstraintNextFrame()
+    {
+        yield return null; // 1フレーム待って再評価させる
+        positionConstraint.constraintActive = true;
+    }
+
+    private void LateUpdate()
+    {
+        if (positionConstraint != null)
+        {
+            var srcs = new System.Collections.Generic.List<ConstraintSource>();
+            positionConstraint.GetSources(srcs);
+            if (srcs.Count == 0)
+            {
+                Debug.LogWarning($"[{Time.frameCount}] Sourceが消失しました: {gameObject.name}");
+            }
         }
     }
 }
