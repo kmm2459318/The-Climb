@@ -12,7 +12,8 @@ namespace TheClimb.Astral
 
         ICorutineRunner _CoroutineRunner;    //  コルーチンランナー
 
-        bool IsRunning;    //  Followコルーチンが走っているかどうか
+        float startAngle;    //  開始角度
+        bool IsRunning;      //  Followコルーチンが走っているかどうか
 
         public OrbitalFollower(OrbitalContext orbitalCtx)    //  コンストラクタ
         {
@@ -33,6 +34,10 @@ namespace TheClimb.Astral
         IEnumerator OrbitalFollowLoop()    //  マウス位置に応じて円軌道を追従させるコルーチンループ
         {
             LogUtility.Log(LogPrefix.orbitalFollower, "天体円軌道追従開始", LogLevel.Debug);
+//            float prevAngle = Mathf.Atan2(
+//    _context._planetTransform.position.y - _context._playerTransform.position.y,
+//    _context._planetTransform.position.x - _context._playerTransform.position.x
+//) * Mathf.Rad2Deg;
             while (true)
             {
                 yield return MoveAlongCircleByAngle(
@@ -47,7 +52,7 @@ namespace TheClimb.Astral
         IEnumerator MoveAlongCircleByAngle(Transform obj, Transform centerTF, float radius, float duration)    //  天体移動
         {
             Plane plane = new Plane(Vector3.forward, centerTF.position);    //  Ray検知用Plane
-            
+
             float elapsed = 0f;    //  経過時間
             float startAngle = Mathf.Atan2(obj.position.y - centerTF.position.y, obj.position.x - centerTF.position.x) * Mathf.Rad2Deg;    //  開始アングル
 
@@ -64,6 +69,9 @@ namespace TheClimb.Astral
                     float angle = Mathf.LerpAngle(startAngle, endAngle, t) * Mathf.Deg2Rad;
 
                     obj.position = centerTF.position + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * radius;
+
+                    if (elapsed + Time.deltaTime <= duration)
+                        startAngle = endAngle;
                 }
 
                 elapsed += Time.deltaTime;
