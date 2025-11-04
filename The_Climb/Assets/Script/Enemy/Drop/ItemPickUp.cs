@@ -8,7 +8,7 @@ public class ItemPickUp : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log($"{itemData.ItemName}を拾った");
+            Debug.Log($"{itemData.Name}を拾った");
             Destroy(gameObject);
         }
     }
