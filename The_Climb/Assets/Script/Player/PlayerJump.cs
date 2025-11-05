@@ -90,7 +90,7 @@ public class PlayerJump : MonoBehaviour
             }
             else  //バディおんぶでジャンプ力低下
             {
-                JumpPower = groundJumpPower * 4 / 5;
+                //JumpPower = groundJumpPower * 4 / 5;
             }
 
             //トランポリンに乗っていたらトランポリンの効果を反映
