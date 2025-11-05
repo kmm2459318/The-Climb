@@ -76,9 +76,29 @@ public class ItemDataBase : MonoBehaviour
     ///</summy>
     public void OnApplicationQuit()
     {
-        File.Delete(SaveDbPath);
-        Debug.LogWarning("データを破棄しました");
-        
+
+        // データベース接続を閉じる
+        if (Connection != null)
+        {
+            Connection.Close();
+            Connection.Dispose();
+            Connection = null;
+        }
+
+        // 少し待ってから削除（ロック解除の時間を与える）
+        try
+        {
+            if (File.Exists(SaveDbPath))
+            {
+                File.Delete(SaveDbPath);
+                Debug.LogWarning("データベースを破棄しました");
+            }
+        }
+        catch (IOException ex)
+        {
+            Debug.LogError($"データベース削除エラー: {ex.Message}");
+        }
+
     }
 
 }
