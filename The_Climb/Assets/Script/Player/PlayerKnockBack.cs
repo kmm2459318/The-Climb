@@ -4,23 +4,23 @@ using UnityEngine;
 public class PlayerKnockBack : MonoBehaviour
 {
     private Rigidbody rb;
-    private PlayerState state;
     private PlayerMove move;
     private PlayerJump jump;
+    private PlayerMind mind;
     private BuddyCarry buddyCarry;
 
     public bool knockBacking = false;  //ノックバック中フラグ
     public float knockBackPower = 7f;  //ノックバック中フラグ
     public bool coolTime = false;  //ノックバックのクールタイムONOFF
-    private float coolDuration = 1.4f;  //ノックバックのクールタイム
+    private float coolDuration = 1.0f;  //ノックバックのクールタイム
     private float coolTimer = 0f;  //ノックバックのクールタイム計測
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        state = GetComponent<PlayerState>();
         move = GetComponent<PlayerMove>();
         jump = GetComponent<PlayerJump>();
+        mind = GetComponent<PlayerMind>();
         buddyCarry = GetComponent<BuddyCarry>();
     }
 
@@ -75,7 +75,8 @@ public class PlayerKnockBack : MonoBehaviour
             {
                 //敵とプレイヤーの位置でノックバックの方向を決める
                 int dir = transform.position.x - collision.gameObject.transform.position.x <= 0 ? -1 : 1;
-                DoKnockBack(dir); //ノックバック
+                DoKnockBack(dir);  //ノックバック
+                mind.SanityDecreaseEvent(5);  //正気度減少
             }
         }
     }
@@ -84,16 +85,10 @@ public class PlayerKnockBack : MonoBehaviour
     {
         if (!knockBacking && other.gameObject.tag == "StalkerHand")
         {
-            if (buddyCarry.buddyController.beingKidnapped && other.TryGetComponent(out KidnapBuddy stalker) && stalker.handController.isKidnapping)
+            if (buddyCarry.buddyController.beingKidnapped && other.TryGetComponent(out KidnapBuddy stalker) && stalker.handController.isKidnapping && !coolTime)
             {
                 //Buddy解放
                 stalker.handController.ReleaseBuddy();
-            }
-            else if (!coolTime)
-            {
-                //敵とプレイヤーの位置でノックバックの方向を決める
-                int dir = transform.position.x - other.gameObject.transform.position.x <= 0 ? -1 : 1;
-                DoKnockBack(dir); //ノックバック
             }
         }
     }

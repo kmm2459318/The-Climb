@@ -154,6 +154,7 @@ public class StalkerHandController : MonoBehaviour
     {
         isKidnapping = true;
         buddyController.beingKidnapped = true;
+        playerState.carryingBuddy = false;
         buddyController.SetConstraintTarget(mainStalker.transform);
         StartCoroutine(ChildPosReset());
     }
@@ -162,6 +163,7 @@ public class StalkerHandController : MonoBehaviour
     public void ReleaseBuddy()
     {
         buddyController.beingKidnapped = false;
+        playerState.carryingBuddy = true;
         buddyController.SetConstraintTarget(player.transform);
         Destroy(gameObject);
     }
