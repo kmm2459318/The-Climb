@@ -111,6 +111,7 @@ public class LightDarkWorld : MonoBehaviour
             playerState.groundLayerMask =
                 (1 << ground) | (1 << whiteGround);
 
+            //白系黒系の透明度変化（黒を半透明に）
             ObjectTransparency(lightWhiteObj, 1f);
             ObjectTransparency(darkBlackObj, transparency);
         }
@@ -119,11 +120,13 @@ public class LightDarkWorld : MonoBehaviour
             playerState.groundLayerMask =
                 (1 << ground) | (1 << blackGround);
 
+            //白系黒系の透明度変化（白を半透明に）
             ObjectTransparency(lightWhiteObj, transparency);
             ObjectTransparency(darkBlackObj, 1f);
         }
     }
 
+    //白系黒系の透明度変化
     private void ObjectTransparency(GameObject[] @object, float tp)
     {
         foreach (GameObject obj in @object)

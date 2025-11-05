@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -62,6 +63,8 @@ public class PlayerState : MonoBehaviour
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
         whiteGround = 1 << LayerMask.NameToLayer("WhiteGround");
         blackGround = 1 << LayerMask.NameToLayer("BlackGround");
+
+        groundLayerMask = groundLayer;
 
         // インスペクターまたはスクリプトで設定
         //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
