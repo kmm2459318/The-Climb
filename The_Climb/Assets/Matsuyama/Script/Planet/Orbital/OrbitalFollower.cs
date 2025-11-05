@@ -34,10 +34,6 @@ namespace TheClimb.Astral
         IEnumerator OrbitalFollowLoop()    //  マウス位置に応じて円軌道を追従させるコルーチンループ
         {
             LogUtility.Log(LogPrefix.orbitalFollower, "天体円軌道追従開始", LogLevel.Debug);
-//            float prevAngle = Mathf.Atan2(
-//    _context._planetTransform.position.y - _context._playerTransform.position.y,
-//    _context._planetTransform.position.x - _context._playerTransform.position.x
-//) * Mathf.Rad2Deg;
             while (true)
             {
                 yield return MoveAlongCircleByAngle(
