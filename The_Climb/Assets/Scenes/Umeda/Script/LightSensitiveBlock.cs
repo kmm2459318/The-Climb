@@ -1,23 +1,29 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// Œõ‚É”½‰‚µ‚ÄoŒ»EÁ¸‚·‚é‘«êƒuƒƒbƒNB
-/// DetectionTrigger ‚Í“‡Ï‚İB
+/// å…‰ã«åå¿œã—ã¦å‡ºç¾ãƒ»æ¶ˆå¤±ã™ã‚‹è¶³å ´ãƒ–ãƒ­ãƒƒã‚¯ï¼ˆè»½é‡åŒ–ç‰ˆï¼‰
+/// DetectionTriggerçµ±åˆæ¸ˆã¿ã€‚
 /// </summary>
 [DisallowMultipleComponent]
 public class LightSensitiveBlock : MonoBehaviour
 {
-    [Header("Š´’m—pCollideriqƒIƒuƒWƒFƒNƒg‚È‚Ç‚É”z’uj")]
-    [Tooltip("Œõ‚ğŒŸ’m‚·‚é‚½‚ß‚ÌTrigger Collider‚ğİ’è‚µ‚Ü‚·B")]
+    [Header("æ„ŸçŸ¥ç”¨Colliderï¼ˆå­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãªã©ã«é…ç½®ï¼‰")]
+    [Tooltip("å…‰ã‚’æ¤œçŸ¥ã™ã‚‹ãŸã‚ã®Trigger Colliderã‚’è¨­å®šã—ã¾ã™ã€‚")]
     public Collider detectionCollider;
 
-    [Header("”½‰‚·‚éƒŒƒCƒ„[İ’è")]
-    [Tooltip("Œõ‚Æ‚µ‚Ä”½‰‚³‚¹‚½‚¢ƒŒƒCƒ„[‚ğw’è‚µ‚Ü‚·B")]
+    [Header("åå¿œã™ã‚‹ãƒ¬ã‚¤ãƒ¤ãƒ¼è¨­å®š")]
+    [Tooltip("å…‰ã¨ã—ã¦åå¿œã•ã›ãŸã„ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æŒ‡å®šã—ã¾ã™ã€‚")]
     public LayerMask detectableLayers;
+
+    [Header("æ›´æ–°é–“éš”ï¼ˆç§’ï¼‰")]
+    [Tooltip("SetActiveã‚„Rendereråˆ¶å¾¡ã‚’è¡Œã†é–“éš”ï¼ˆå°ã•ã„ã»ã©å³æ™‚åå¿œï¼‰")]
+    [Range(0f, 0.2f)] public float updateInterval = 0.05f;
 
     private Renderer blockRenderer;
     private Collider blockCollider;
-    private int lightCount = 0; // ‰½ŒÂ‚Ìƒ‰ƒCƒg‚ÉÆ‚ç‚³‚ê‚Ä‚¢‚é‚©
+    private int lightCount = 0;
+    private bool isActive = false;
+    private float timer = 0f;
 
     void Start()
     {
@@ -27,11 +33,11 @@ public class LightSensitiveBlock : MonoBehaviour
 
         if (detectionCollider == null)
         {
-            Debug.LogWarning($"[LuminaBlock] Š´’m—pCollider‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ: {name}");
+            Debug.LogWarning($"[LuminaBlock] æ„ŸçŸ¥ç”¨ColliderãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“: {name}");
             return;
         }
 
-        // •K—v‚È‚ç Rigidbody ‚ğ’Ç‰ÁiTrigger Collider ‚Ì OnTrigger ‚ª“®‚­‚½‚ßj
+        // Rigidbodyï¼ˆTriggerãŒå‹•ä½œã™ã‚‹ãŸã‚å¿…è¦ï¼‰
         Rigidbody rb = detectionCollider.GetComponent<Rigidbody>();
         if (rb == null)
         {
@@ -39,13 +45,28 @@ public class LightSensitiveBlock : MonoBehaviour
             rb.isKinematic = true;
         }
 
-        // ‚±‚ÌƒIƒuƒWƒFƒNƒg‚É OnTrigger ‚ğ’¼Ú’Ç‰Á
+        // ãƒˆãƒªã‚¬ãƒ¼è»¢é€ç”¨ã‚¯ãƒ©ã‚¹ã‚’ä»˜ä¸
         TriggerForwarder forwarder = detectionCollider.gameObject.AddComponent<TriggerForwarder>();
         forwarder.targetBlock = this;
         forwarder.detectableLayers = detectableLayers;
     }
 
-    public void ActivateBlock(bool active)
+    private void Update()
+    {
+        // ä¸€å®šé–“éš”ã”ã¨ã«å¯è¦–çŠ¶æ…‹ã‚’æ›´æ–°
+        timer += Time.deltaTime;
+        if (timer < updateInterval) return;
+        timer = 0f;
+
+        bool shouldBeActive = lightCount > 0;
+        if (shouldBeActive != isActive)
+        {
+            ActivateBlock(shouldBeActive);
+            isActive = shouldBeActive;
+        }
+    }
+
+    private void ActivateBlock(bool active)
     {
         if (blockRenderer != null)
             blockRenderer.enabled = active;
@@ -57,26 +78,22 @@ public class LightSensitiveBlock : MonoBehaviour
     public void AddLight()
     {
         lightCount++;
-        ActivateBlock(true);
     }
 
     public void RemoveLight()
     {
         lightCount = Mathf.Max(0, lightCount - 1);
-        if (lightCount == 0)
-        {
-            ActivateBlock(false);
-        }
     }
 
     public void ForceDeactivate()
     {
         lightCount = 0;
         ActivateBlock(false);
+        isActive = false;
     }
 
     // -----------------------------
-    // “à•”ƒNƒ‰ƒX: Trigger ‚ğ Forward ‚·‚é‚¾‚¯
+    // å†…éƒ¨ã‚¯ãƒ©ã‚¹: Triggerè»¢é€å°‚ç”¨
     // -----------------------------
     private class TriggerForwarder : MonoBehaviour
     {
@@ -86,17 +103,13 @@ public class LightSensitiveBlock : MonoBehaviour
         private void OnTriggerEnter(Collider other)
         {
             if (((1 << other.gameObject.layer) & detectableLayers) == 0) return;
-
-            if (other.GetComponent<LightRange>() != null)
-                targetBlock?.AddLight();
+            targetBlock?.AddLight();
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (((1 << other.gameObject.layer) & detectableLayers) == 0) return;
-
-            if (other.GetComponent<LightRange>() != null)
-                targetBlock?.RemoveLight();
+            targetBlock?.RemoveLight();
         }
     }
 }
