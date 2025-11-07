@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 namespace TheClimb.Astral
@@ -7,42 +7,56 @@ namespace TheClimb.Astral
 
     public class PlanetStatus : ScriptableObject
     {
-        //  “G‚Ìó‘Ô‚ÆƒXƒe[ƒ^ƒX‚ğ‚à‚ÂƒNƒ‰ƒX
+        //  æ•µã®çŠ¶æ…‹ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’ã‚‚ã¤ã‚¯ãƒ©ã‚¹
         [System.Serializable]
-        public class PlanetIDStatusPair
+        public class PlanetIDStatusPair    //  ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ–ãƒ­ãƒƒã‚¯ãŒå¢—ãˆã¦ããŸã‚‰ãƒ–ãƒ­ãƒƒã‚¯ã‚’ã¾ã¨ã‚ãŸã‚¯ãƒ©ã‚¹ä½œæˆ
         {
-            public PlanetIDs customerName;    //  “G‚Ìó‘Ô(’Êí‚Æ‹¶–\‰»)
-            public PlanetStatusBlock Stat;    //  ƒXƒe[ƒ^ƒX‚ğ‚ÂƒNƒ‰ƒX
+            public PlanetIDs CustomerName;                 //  æ•µã®çŠ¶æ…‹(é€šå¸¸æ™‚ã¨ç‹‚æš´åŒ–)
+            public GravitationStatusBlock gravitationStatus;    //  è³ªé‡ãªã©ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚¯ãƒ©ã‚¹
+            public OrbitalStatusBlock orbitalStatus;       //  è»Œé“ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚¯ãƒ©ã‚¹
         }
 
         [Header("PlanetStatus")]
-        public List<PlanetIDStatusPair> planetIDStatus = new();    //  ó‘Ô‚ÆƒXƒe[ƒ^ƒX‚ğ‚ÂƒNƒ‰ƒX‚ÌƒŠƒXƒg(ƒf[ƒ^“ü—Í—p)
+        public List<PlanetIDStatusPair> planetIDStatus = new();    //  çŠ¶æ…‹ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æŒã¤ã‚¯ãƒ©ã‚¹ã®ãƒªã‚¹ãƒˆ(ãƒ‡ãƒ¼ã‚¿å…¥åŠ›ç”¨)
 
-        Dictionary<PlanetIDs, PlanetStatusBlock> StatusMap;    //  ó‘Ô‚ÆƒXƒe[ƒ^ƒX‚Ì«‘(ˆ——p)
+        Dictionary<PlanetIDs, (GravitationStatusBlock gravitationStatus, OrbitalStatusBlock orbitalStatus) > StatusMap;    //  çŠ¶æ…‹ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®è¾æ›¸(å‡¦ç†ç”¨)
 
         void OnEnable()
         {
-            //  ƒX[ƒe[ƒ^ƒXƒ}ƒbƒv‚Ì‰Šú‰»
+            //  ã‚¹ãƒ¼ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒƒãƒ—ã®åˆæœŸåŒ–
             BuildStatMap();
         }
 
-        //  ƒXƒe[ƒ^ƒXƒ}ƒbƒv‰Šú‰»
+        //  ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒƒãƒ—åˆæœŸåŒ–
         void BuildStatMap()
         {
             StatusMap = new();
             foreach (var pair in planetIDStatus)
             {
-                if (!StatusMap.ContainsKey(pair.customerName))
+                if (!StatusMap.ContainsKey(pair.CustomerName))
                 {
-                    StatusMap.Add(pair.customerName, pair.Stat);
+                    StatusMap.Add(pair.CustomerName, (pair.gravitationStatus, pair.orbitalStatus));
                 }
             }
         }
 
-        //  ó‘Ô‚É‰‚¶‚½ƒXƒe[ƒ^ƒX‚Ìæ“¾
-        public PlanetStatusBlock GetStats(PlanetIDs PlanetID)
+        //  IDã«å¿œã˜ãŸä¸‡æœ‰å¼•åŠ›ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®å–å¾—
+        public GravitationStatusBlock GetGraviatationStatus(PlanetIDs PlanetID)
         {
-            return StatusMap.TryGetValue(PlanetID, out PlanetStatusBlock stats) ? stats : null;
+            return StatusMap.TryGetValue(PlanetID, out var data) ? data.gravitationStatus : null;
         }
+
+        //  IDã«å¿œã˜ãŸè»Œé“ã‚¹ã‚¿ãƒ¼ã‚¿ã‚¹ã®å–å¾—
+        public OrbitalStatusBlock GetOrbitalStatus(PlanetIDs PlanetID)
+        {
+            return StatusMap.TryGetValue(PlanetID, out var data) ? data.orbitalStatus : null;
+        }
+
+        //  IDã«å¿œã˜ãŸã™ã¹ã¦ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’ä¿æŒ
+        public (GravitationStatusBlock gravitationStatus, OrbitalStatusBlock orbitalStatus)? GetFullStatus(PlanetIDs id)
+        {
+            return StatusMap.TryGetValue(id, out var data) ? data : null;
+        }
+
     }
 }
