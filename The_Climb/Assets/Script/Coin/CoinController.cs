@@ -48,7 +48,7 @@ public class CoinController : MonoBehaviour
             float distance = Vector3.Distance(transform.position, player.position);
             if (distance <= pickupRadius)
             {
-                Debug.Log("半径0.5m以内にプレイヤーが入りました");
+                //Debug.Log("半径0.5m以内にプレイヤーが入りました");
                 CollectCoin();
             }
         }

@@ -82,7 +82,14 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 953170508432435363}
+  - {fileID: 4082534637619296585}
+  - {fileID: 7645077949996872472}
+  - {fileID: 8972194777842825879}
+  - {fileID: 779192171812988126}
+  - {fileID: 1362649266061863050}
+  - {fileID: 2591943404962341967}
+  - {fileID: 2267923222356534060}
+  - {fileID: 5382076385163591040}
   - {fileID: 3332222746742520573}
   m_Father: {fileID: 1579976642873756973}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -92,7 +99,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1579976642873756973}
+    m_TransformParent: {fileID: 3928086660635479983}
     m_Modifications:
     - target: {fileID: 1563966600259871896, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
@@ -162,6 +169,10 @@ PrefabInstance:
       propertyPath: detectableLayers.m_Bits
       value: 1024
       objectReference: {fileID: 0}
+    - target: {fileID: 3595051114394148865, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5035952610536422541, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: m_Name
       value: LightSensitiveBlock (5)
@@ -169,6 +180,14 @@ PrefabInstance:
     - target: {fileID: 5035952610536422541, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5891492612563937200, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6124637865491162442, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6348169447725348516, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
@@ -249,9 +268,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 53d7bb140bdaa9d4c9e6e423236bdc9f, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a210c96b60edb8f4fa6105245ebd72f5, type: 2}
     - target: {fileID: 919132149155446097, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
       propertyPath: m_Name
       value: Block(Lumina)
@@ -259,6 +290,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
       propertyPath: m_Layer
       value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
       propertyPath: m_TagString
@@ -272,28 +307,7 @@ PrefabInstance:
       addedObject: {fileID: 428010778608375973}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4082534637619296585}
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7645077949996872472}
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8972194777842825879}
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 779192171812988126}
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1362649266061863050}
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2591943404962341967}
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2267923222356534060}
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5382076385163591040}
+      addedObject: {fileID: 953170508432435363}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 71022a38cf998114e8947d7c1ce270ea, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3928086660635479983}
@@ -362,8 +376,12 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1579976642873756973}
+    m_TransformParent: {fileID: 3928086660635479983}
     m_Modifications:
+    - target: {fileID: 708311779991990660, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1563966600259871896, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
       value: 1024
@@ -440,6 +458,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6003062367358547250, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6348169447725348516, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
       value: 1024
@@ -455,6 +477,10 @@ PrefabInstance:
     - target: {fileID: 7772038651842867825, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
       value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675975125462810460, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8730195393579081301, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
@@ -476,8 +502,12 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1579976642873756973}
+    m_TransformParent: {fileID: 3928086660635479983}
     m_Modifications:
+    - target: {fileID: 627619455742973512, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1563966600259871896, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
       value: 1024
@@ -554,6 +584,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6003062367358547250, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6348169447725348516, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
       value: 1024
@@ -569,6 +603,10 @@ PrefabInstance:
     - target: {fileID: 7772038651842867825, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
       value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675975125462810460, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8730195393579081301, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
@@ -590,7 +628,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3928086660635479983}
+    m_TransformParent: {fileID: 1579976642873756973}
     m_Modifications:
     - target: {fileID: 1563966600259871896, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
@@ -704,7 +742,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1579976642873756973}
+    m_TransformParent: {fileID: 3928086660635479983}
     m_Modifications:
     - target: {fileID: 1563966600259871896, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
@@ -782,6 +820,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5891492612563937200, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6124637865491162442, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6197423386305041208, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6348169447725348516, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
       value: 1024
@@ -818,7 +868,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1579976642873756973}
+    m_TransformParent: {fileID: 3928086660635479983}
     m_Modifications:
     - target: {fileID: 1563966600259871896, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
@@ -888,6 +938,10 @@ PrefabInstance:
       propertyPath: detectableLayers.m_Bits
       value: 1024
       objectReference: {fileID: 0}
+    - target: {fileID: 3595051114394148865, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5035952610536422541, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: m_Name
       value: LightSensitiveBlock (4)
@@ -895,6 +949,14 @@ PrefabInstance:
     - target: {fileID: 5035952610536422541, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5891492612563937200, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6197423386305041208, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6348169447725348516, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
@@ -932,8 +994,16 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1579976642873756973}
+    m_TransformParent: {fileID: 3928086660635479983}
     m_Modifications:
+    - target: {fileID: 627619455742973512, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 708311779991990660, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1563966600259871896, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
       value: 1024
@@ -1026,6 +1096,10 @@ PrefabInstance:
       propertyPath: detectableLayers.m_Bits
       value: 1024
       objectReference: {fileID: 0}
+    - target: {fileID: 8675975125462810460, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8730195393579081301, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
       value: 1024
@@ -1046,8 +1120,16 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1579976642873756973}
+    m_TransformParent: {fileID: 3928086660635479983}
     m_Modifications:
+    - target: {fileID: 627619455742973512, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 708311779991990660, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1563966600259871896, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
       value: 1024
@@ -1123,6 +1205,10 @@ PrefabInstance:
     - target: {fileID: 5035952610536422541, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6003062367358547250, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6348169447725348516, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
@@ -1211,7 +1297,15 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8498939610693976560, guid: 19c7ce2078bfd864aa3f730e81c27f6e, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8498939610693976560, guid: 19c7ce2078bfd864aa3f730e81c27f6e, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a210c96b60edb8f4fa6105245ebd72f5, type: 2}
+    - target: {fileID: 8498939610693976560, guid: 19c7ce2078bfd864aa3f730e81c27f6e, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 4d4a62417b88c7949a890b77bfeb4ee4, type: 2}
     m_RemovedComponents:
@@ -1231,7 +1325,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1579976642873756973}
+    m_TransformParent: {fileID: 3928086660635479983}
     m_Modifications:
     - target: {fileID: 1563966600259871896, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits
@@ -1301,6 +1395,10 @@ PrefabInstance:
       propertyPath: detectableLayers.m_Bits
       value: 1024
       objectReference: {fileID: 0}
+    - target: {fileID: 3595051114394148865, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5035952610536422541, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: m_Name
       value: LightSensitiveBlock (7)
@@ -1308,6 +1406,14 @@ PrefabInstance:
     - target: {fileID: 5035952610536422541, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6124637865491162442, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6197423386305041208, guid: 8af905597210b3f4c827035950a53d62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6348169447725348516, guid: 8af905597210b3f4c827035950a53d62, type: 3}
       propertyPath: detectableLayers.m_Bits

@@ -1,15 +1,21 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.UIElements;
+using Zenject.SpaceFighter;
 
 public class BuddyController : MonoBehaviour
 {
     private Rigidbody RigidBody;
     private PlayerState state;
+    private PositionConstraint positionConstraint;
+    private ConstraintSource currentSource;
 
     private bool buddyDirectionRight;  //バディが右向いてるか判定、falseなら左向き
     public bool moving = false;        //Buddyが動いてるか判定
     private float speed = 4f;          //Buddyの移動スピード
     public float buddyTargetX = 0f;    //Buddyが向かうX座標
+    public bool beingKidnapped = false;  //誘拐されてる
 
     [SerializeField] private bool isLeftWall;          //左壁判定
     [SerializeField] private bool isRightWall;         //右壁判定
@@ -37,6 +43,7 @@ public class BuddyController : MonoBehaviour
     void Start()
     {
         state = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
+        positionConstraint = GetComponent<PositionConstraint>();
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
         RigidBody = gameObject.GetComponent<Rigidbody>();
     }
@@ -83,5 +90,40 @@ public class BuddyController : MonoBehaviour
         {
             moving = false;
         }
+    }
+
+    //Buddyの追従するオブジェクトを変える
+    public void SetConstraintTarget(Transform newTarget)
+    {
+        //Constraint 評価を一時停止
+        positionConstraint.constraintActive = false;
+
+        ConstraintSource playerSource = positionConstraint.GetSource(0);   //プレイヤーのソース
+        ConstraintSource stalkerSource = positionConstraint.GetSource(1);  //ストーカーハンドのソース
+
+        // 0番目：プレイヤー（固定）
+        if (newTarget.name == "PlayerModel")
+        {
+            playerSource.weight = 1f;
+            stalkerSource.weight = 0f;
+        }
+        else  // 1番目：誘拐対象（StalkerHand）
+        {
+            stalkerSource.sourceTransform = newTarget;
+            stalkerSource.weight = 1f;
+            playerSource.weight = 0f;
+        }
+        positionConstraint.SetSource(0, playerSource);
+        positionConstraint.SetSource(1, stalkerSource);
+
+        // 次フレームでConstraintを再評価
+        StartCoroutine(ReenableNextFrame());
+    }
+
+    private IEnumerator ReenableNextFrame()
+    {
+        yield return null;
+
+        positionConstraint.constraintActive = true;
     }
 }
