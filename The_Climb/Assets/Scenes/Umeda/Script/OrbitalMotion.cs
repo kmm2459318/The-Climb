@@ -1,48 +1,57 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class OrbitalMotion : MonoBehaviour
 {
-    [Header("ƒ‰ƒCƒg‚ÌˆÚ“®—pƒXƒNƒŠƒvƒg(‰~)")]
-    [Header("‰ñ“]‚Ì’†S")]
-    public Transform center; // ‰ñ“]‚Ì’†S‚É‚È‚éƒIƒuƒWƒFƒNƒg
+    [Header("ãƒ©ã‚¤ãƒˆã®ç§»å‹•ç”¨ã‚¹ã‚¯ãƒªãƒ—ãƒˆï¼ˆå††è»Œé“ï¼‰")]
+    public Transform center; // å›žè»¢ã®ä¸­å¿ƒ
 
-    [Header("‰ñ“]Ý’è")]
-    public float radius = 2f;       // ‰ñ“]”¼Œa
-    public float speed = 30f;       // ‰ñ“]ƒXƒs[ƒhi“x/•bj
-    public bool clockwise = true;   // ŽžŒv‰ñ‚è‚©”½ŽžŒv‰ñ‚è‚©
+    [Header("å›žè»¢è¨­å®š")]
+    public float radius = 2f;         // å›žè»¢åŠå¾„
+    public float speed = 30f;         // å›žè»¢ã‚¹ãƒ”ãƒ¼ãƒ‰ï¼ˆåº¦/ç§’ï¼‰
+    public bool clockwise = true;     // æ™‚è¨ˆå›žã‚Šã‹ã©ã†ã‹
+    public Axis rotationAxis = Axis.Y; // å›žè»¢è»¸ã®é¸æŠž
 
-    private float angle; // Œ»Ý‚ÌŠp“xi“xj
+    [Header("é…ç½®è¨­å®š")]
+    [Tooltip("é–‹å§‹è§’åº¦ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆï¼ˆåº¦ï¼‰")]
+    public float startAngleOffset = 0f; // è¤‡æ•°å€‹ã‚’ç­‰é–“éš”ã«ãšã‚‰ã™ã¨ãã«ä½¿ã†
+
+    private float angle; // ç¾åœ¨ã®è§’åº¦ï¼ˆåº¦ï¼‰
+
+    public enum Axis { X, Y, Z }
 
     void Start()
     {
         if (center == null)
-        {
-            // ’†S‚ªÝ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Íe‚ð’†S‚É‚·‚é
             center = transform.parent;
-        }
 
-        // ‰ŠúˆÊ’u‚ð”¼Œa‚É‰ž‚¶‚ÄƒZƒbƒg
         if (center != null)
-        {
-            Vector3 offset = new Vector3(radius, 0, 0);
-            transform.position = center.position + offset;
-        }
+            transform.position = center.position + GetOffset(startAngleOffset);
     }
 
     void Update()
     {
         if (center == null) return;
 
-        // ‰ñ“]•ûŒü
         float direction = clockwise ? -1f : 1f;
 
-        // Šp“xXV
         angle += speed * Time.deltaTime * direction;
-        if (angle >= 360f || angle <= -360f) angle = 0f;
+        if (angle > 360f || angle < -360f) angle = 0f;
 
-        // V‚µ‚¢ˆÊ’u‚ðŒvŽZ
-        float rad = angle * Mathf.Deg2Rad;
-        Vector3 offset = new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * radius;
-        transform.position = center.position + offset;
+        transform.position = center.position + GetOffset(angle + startAngleOffset);
+    }
+
+    private Vector3 GetOffset(float angleDeg)
+    {
+        float rad = angleDeg * Mathf.Deg2Rad;
+        float cos = Mathf.Cos(rad);
+        float sin = Mathf.Sin(rad);
+
+        switch (rotationAxis)
+        {
+            case Axis.X: return new Vector3(0f, cos, sin) * radius; // Xè»¸ä¸­å¿ƒ
+            case Axis.Y: return new Vector3(cos, 0f, sin) * radius; // Yè»¸ä¸­å¿ƒ
+            case Axis.Z: return new Vector3(cos, sin, 0f) * radius; // Zè»¸ä¸­å¿ƒ
+            default: return Vector3.zero;
+        }
     }
 }

@@ -1514,6 +1514,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1101909983882278886}
   - component: {fileID: 7021356497549807130}
+  - component: {fileID: 1461303060689396735}
   m_Layer: 3
   m_Name: Stage1
   m_TagString: Untagged
@@ -1554,6 +1555,27 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   startPoint: {fileID: 0}
   goalPoint: {fileID: 479373913284027087}
+--- !u!114 &1461303060689396735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3496014428140839313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf228f2e1dd883a4c8873a166db566a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FloorSystemManager
+  fadeImage: {fileID: 0}
+  floorPrefabs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  floorsRoot: {fileID: 0}
+  fadeDuration: 1
+  triggerDistance: 1.5
 --- !u!1 &3843465132222641385
 GameObject:
   m_ObjectHideFlags: 0

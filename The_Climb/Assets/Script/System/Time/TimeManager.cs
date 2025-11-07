@@ -43,8 +43,8 @@ public class TimeManager : MonoBehaviour, ITimeProvider
             if (IsNight != value)
             {
                 IsNight = value;
+                OnChangedNight?.Invoke(IsNight); // ← ✅ 安全に呼び出し
             }
-            OnChangedNight.Invoke(IsNight);
         }
     }
     void Awake()
