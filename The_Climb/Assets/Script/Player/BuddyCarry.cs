@@ -4,7 +4,7 @@ using UnityEngine.Animations;
 public class BuddyCarry : MonoBehaviour
 {
     private GameObject buddy;             //Buddyのゲームオブジェクト
-    private BuddyController buddyController;  //Buddyのスクリプト
+    public BuddyController buddyController;  //Buddyのスクリプト
     private PositionConstraint buddyPos;  //BuddyのPositionConstraint（おんぶに使ってる追従のコンポーネント）
     PlayerState state;
 
@@ -30,13 +30,20 @@ public class BuddyCarry : MonoBehaviour
         if (buddy != null)
         {
             //向いてる方向によっておんぶしてるバディの場所を調整
-            if (state.playerDirectionRight)
+            if (!buddyController.beingKidnapped)
             {
-                buddyPos.translationOffset = new Vector3(-0.4f, 1f, 0f);
+                if (state.playerDirectionRight)
+                {
+                    buddyPos.translationOffset = new Vector3(-0.4f, 1f, 0f);
+                }
+                else
+                {
+                    buddyPos.translationOffset = new Vector3(0.4f, 1f, 0f);
+                }
             }
             else
             {
-                buddyPos.translationOffset = new Vector3(0.4f, 1f, 0f);
+                buddyPos.translationOffset = new Vector3(0f, 1f, 0f);
             }
 
             //Carryボタン（仮）

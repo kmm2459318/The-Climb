@@ -84,11 +84,11 @@ public class LuminaGroundController : MonoBehaviour
         if (lightQueue.Count >= maxLights)
         {
             Collider old = lightQueue.Dequeue();
-            Debug.Log($"[LuminaGround] Light dequeued: {old?.name}");
+            //Debug.Log($"[LuminaGround] Light dequeued: {old?.name}");
         }
 
         lightQueue.Enqueue(other);
-        Debug.Log($"[LuminaGround] Light entered: {other.name}");
+        //Debug.Log($"[LuminaGround] Light entered: {other.name}");
     }
 
     private void OnTriggerExit(Collider other)
@@ -102,6 +102,6 @@ public class LuminaGroundController : MonoBehaviour
         }
         lightQueue = newQueue;
 
-        Debug.Log($"[LuminaGround] Light exited: {other.name}");
+        //Debug.Log($"[LuminaGround] Light exited: {other.name}");
     }
 }

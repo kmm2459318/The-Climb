@@ -32,7 +32,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1615644462879690033}
+  - {fileID: 8282403506197514776}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &432199234481116025
@@ -95,15 +95,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 192e044922a55864b8076b80e1971e43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightImpactCollider
-  floorVisual: {fileID: 1615644462879690033}
+  floorVisual: {fileID: 8282403506197514776}
   minScale: 0
   maxScale: 4
   expandTime: 0.3
-  shrinkSpeed: 0.2
+  stayTime: 0
+  shrinkTime: 4
   lightLayer:
     serializedVersion: 2
     m_Bits: 512
---- !u!1001 &4572335014302660981
+--- !u!1001 &6624474505794829916
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -160,8 +161,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8bffb9ed754096f4b9eb3d1adb30985b, type: 3}
---- !u!4 &1615644462879690033 stripped
+--- !u!4 &8282403506197514776 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2963331636693988420, guid: 8bffb9ed754096f4b9eb3d1adb30985b, type: 3}
-  m_PrefabInstance: {fileID: 4572335014302660981}
+  m_PrefabInstance: {fileID: 6624474505794829916}
   m_PrefabAsset: {fileID: 0}
