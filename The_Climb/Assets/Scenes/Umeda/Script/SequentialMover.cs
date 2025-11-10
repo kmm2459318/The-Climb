@@ -1,30 +1,47 @@
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SequentialMover : MonoBehaviour
 {
-    [Header("ƒ‰ƒCƒg‚ÌˆÚ“®—pƒXƒNƒŠƒvƒg(’¼ü)")]
-    [Header("ˆÚ“®ƒ|ƒCƒ“ƒg")]
-    public List<Transform> waypoints = new List<Transform>(); // ˆÚ“®æ‚ÌƒIƒuƒWƒFƒNƒg
-    public float speed = 3f; // ˆÚ“®‘¬“x
+    [Header("ãƒ©ã‚¤ãƒˆã®ç§»å‹•ç”¨ã‚¹ã‚¯ãƒªãƒ—ãƒˆ(ç›´ç·š)")]
+    [Header("ç§»å‹•ãƒã‚¤ãƒ³ãƒˆ")]
+    public List<Transform> waypoints = new List<Transform>(); // ç§»å‹•å…ˆã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+    public float speed = 3f; // ç§»å‹•é€Ÿåº¦
+    public float stopDuration = 0f; // å„åœ°ç‚¹ã§åœæ­¢ã™ã‚‹æ™‚é–“ï¼ˆç§’ï¼‰ã€‚0ãªã‚‰æ­¢ã¾ã‚‰ãªã„
 
-    private int currentIndex = 0; // Œ»İ‚Ìƒ^[ƒQƒbƒg
+    private int currentIndex = 0; // ç¾åœ¨ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
+    private bool isWaiting = false; // åœæ­¢ä¸­ãƒ•ãƒ©ã‚°
 
     void Update()
     {
-        if (waypoints.Count == 0) return;
+        if (waypoints.Count == 0 || isWaiting) return;
 
         Transform target = waypoints[currentIndex];
         if (target == null) return;
 
-        // Œ»İˆÊ’u‚©‚çƒ^[ƒQƒbƒg•ûŒü‚Ö‚ÌˆÚ“®
+        // ç¾åœ¨ä½ç½®ã‹ã‚‰ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæ–¹å‘ã¸ã®ç§»å‹•
         Vector3 direction = (target.position - transform.position).normalized;
         transform.position += direction * speed * Time.deltaTime;
 
-        // ƒ^[ƒQƒbƒg‚É“’B‚µ‚½‚©ƒ`ƒFƒbƒNiŒë·‚ğl—¶j
+        // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«åˆ°é”ã—ãŸã‹ãƒã‚§ãƒƒã‚¯ï¼ˆèª¤å·®ã‚’è€ƒæ…®ï¼‰
         if (Vector3.Distance(transform.position, target.position) < 0.1f)
         {
-            currentIndex = (currentIndex + 1) % waypoints.Count; // Ÿ‚Ìƒ^[ƒQƒbƒg‚ÉˆÚ“®Aƒ‹[ƒv
+            // æ¬¡ã®åœ°ç‚¹ã¸é€²ã‚€å‰ã«åœæ­¢å‡¦ç†ã‚’æŒŸã‚€
+            StartCoroutine(WaitAndMoveNext());
         }
+    }
+
+    private IEnumerator WaitAndMoveNext()
+    {
+        isWaiting = true;
+
+        // åœæ­¢æ™‚é–“ãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹å ´åˆã¯å¾…æ©Ÿ
+        if (stopDuration > 0f)
+            yield return new WaitForSeconds(stopDuration);
+
+        // æ¬¡ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«ç§»å‹•ï¼ˆãƒ«ãƒ¼ãƒ—ï¼‰
+        currentIndex = (currentIndex + 1) % waypoints.Count;
+        isWaiting = false;
     }
 }

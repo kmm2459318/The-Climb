@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [RequireComponent(typeof(SphereCollider))]
 public class LightRange : MonoBehaviour
@@ -21,9 +21,9 @@ public class LightRange : MonoBehaviour
         }
     }
 
-    // Light‘¤‚É•t‚¯‚éƒeƒXƒg—p
+    // Lightå´ã«ä»˜ã‘ã‚‹ãƒ†ã‚¹ãƒˆç”¨
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Light entered: " + other.name);
+        //Debug.Log("Light entered: " + other.name);
     }
 }
