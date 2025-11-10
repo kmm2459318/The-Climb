@@ -86,6 +86,11 @@ public class PlayerMind : MonoBehaviour
         sanityMax -= 5;
     }
 
+    public void SanityDecreaseEvent(int n)
+    {
+        state.sanityLevel -= n;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("SanityHealItem"))

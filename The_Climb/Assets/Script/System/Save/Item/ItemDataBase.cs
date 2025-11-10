@@ -55,6 +55,32 @@ public class ItemDataBase : MonoBehaviour
     }
 
     /// <summary>
+    /// 指定したアイテムを消費する
+    /// </summary>
+    public void ConsumeItem(string ItemName, int Amount)
+    {
+        var Data = Connection.Table<ItemCollectData>().FirstOrDefault(x => x.ItemName == ItemName);
+        if (Data != null)
+        {
+            Data.Count -= Amount;
+            if (Data.Count <= 0)
+            {
+                Connection.Delete(Data);
+                Debug.Log($"{ItemName}をすべて消費しました");
+            }
+            else
+            {
+                Connection.Update(Data);
+                Debug.Log($"{ItemName}を{Amount}個消費しました。残り{Data.Count}個");
+            }
+        }
+        else
+        {
+            Debug.Log($"{ItemName}は所持していません");
+        }
+    }
+
+    /// <summary>
     /// 全アイテムの記録を取得
     /// </summary>
     public List<ItemCollectData> GetAllItems()

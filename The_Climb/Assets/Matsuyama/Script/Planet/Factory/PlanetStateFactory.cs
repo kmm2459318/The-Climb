@@ -1,22 +1,22 @@
-namespace TheClimb.Astral
+ï»¿namespace TheClimb.Astral
 {
-    public class PlanetStateFactory    //  “V‘Ì‚ÌState‚ğ¶¬‚·‚éƒtƒ@ƒNƒgƒŠ[
+    public class PlanetStateFactory    //  å¤©ä½“ã®Stateã‚’ç”Ÿæˆã™ã‚‹ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼
     {
-        readonly PlanetController _planetStateController;    //  “V‘ÌƒRƒ“ƒgƒ[ƒ‰[ƒCƒ“ƒXƒ^ƒ“ƒX
-        readonly PlanetStateMachine _planetStateMachine;     //  “V‘ÌƒXƒe[ƒgƒ}ƒV[ƒ“ƒCƒ“ƒXƒ^ƒ“ƒX
-        readonly PlanetCommandProvider _commandProvider;
+        readonly PlanetController _planetStateController;    //  å¤©ä½“ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+        readonly PlanetStateMachine _planetStateMachine;     //  å¤©ä½“ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ¼ãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+        readonly PlanetCommandProvider _commandProvider;     // å¤©ä½“ã®ã‚³ãƒãƒ³ãƒ‰ãƒ—ãƒ­ãƒã‚¤ãƒ€
 
-        public PlanetStateFactory(PlanetController planetController, PlanetStateMachine planetStateMachine, PlanetCommandProvider commandProvider)    //  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        public PlanetStateFactory(PlanetController planetController, PlanetStateMachine planetStateMachine, PlanetCommandProvider commandProvider)    //  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
         {
             _planetStateController = planetController;
             _planetStateMachine = planetStateMachine;
             _commandProvider = commandProvider;
         }
-        public IPlanetState CreateIdleState()    //  IdleState¶¬
+        public IPlanetState CreateIdleState()    //  IdleStateç”Ÿæˆ
         {
             return new IdleState(_planetStateController, _planetStateMachine, _commandProvider);
         }
-        //  ƒWƒƒƒ“ƒvó‘Ô¶¬
+        //  ã‚¸ãƒ£ãƒ³ãƒ—çŠ¶æ…‹ç”Ÿæˆ
         //public IEnemyState CreateJumpState()
         //{
         //    return new JumpState(_kickerMoveCommander, _enemyStateMachine, this);
