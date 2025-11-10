@@ -21,7 +21,7 @@ public class BuddyCarry : MonoBehaviour
             buddy = GameObject.Find("Buddy");
             buddyController = buddy.GetComponent<BuddyController>();
             buddyPos = buddy.GetComponent<PositionConstraint>();
-            //state.carryingBuddy = true;
+            state.carryingBuddy = true;
         }
     }
 
