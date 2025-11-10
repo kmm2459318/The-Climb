@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MovingPlatform : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class MovingPlatform : MonoBehaviour
     public float MoveSpeed = 2f;
     public float MovementInfluence = 0.5f;
 
+    //[SerializeField] private TimeGimmickBridge Bridge; // スイッチと状態共有用ブリッジ
+
     private Vector3 StartPosition;
     private Rigidbody Rigidbody;
     private Rigidbody PlayerRigidbody; //プレイヤーのRigidbodyを保持
@@ -20,16 +23,32 @@ public class MovingPlatform : MonoBehaviour
 
     private Vector3 PreviousPosition;
     private bool IsPlayerOnTop = false;
+    //private bool IsActive = false;
 
-    private void Start()
+    private void Awake()
     {
         StartPosition = transform.position;
         Rigidbody = GetComponent<Rigidbody>();
         PreviousPosition = transform.position;
+        //Bridge = GetComponent<TimeGimmickBridge>();
+
+        //if (Bridge != null)
+        //{
+        //    Bridge.OnStateApplied.AddListener(ApplyState);
+        //}
+    }
+
+    private void Start()
+    {
+        //シーン開始時に保存された状態を反映
+        //Bridge?.ApplySavedState();
     }
 
     void FixedUpdate()
     {
+        // スイッチが押されていない間は停止
+        //if (!IsActive) return; 
+
         ElapsedTime += Time.fixedDeltaTime;
 
         Vector3 moveAxis = (Direction == MoveDirection.Horizontal) ? Vector3.right : Vector3.up;
@@ -81,4 +100,10 @@ public class MovingPlatform : MonoBehaviour
             }
         }
     }
+
+    //private void ApplyState(bool isActive)
+    //{
+    //    IsActive = isActive;
+    //    Debug.Log("動く足場が起動");
+    //}
 }
