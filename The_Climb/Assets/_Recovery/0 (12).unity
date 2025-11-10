@@ -277,7 +277,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   stagePrefabs:
   - {fileID: 3496014428140839313, guid: b89252ce028554f42ad5bb1687b1f76b, type: 3}
-  - {fileID: 3496014428140839313, guid: 57c818f61837e564784a36356c282a61, type: 3}
+  - {fileID: 3496014428140839313, guid: e8343d4a0c8b137429b267a2af7148bf, type: 3}
   player: {fileID: 1331318959}
   stageLength: 102
 --- !u!4 &421941884
@@ -342,7 +342,7 @@ Transform:
   m_GameObject: {fileID: 540497647}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 17.69037, y: 13.28188, z: -123.39486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1212,7 +1212,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7913675319463823891, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 7.5
       objectReference: {fileID: 0}
     - target: {fileID: 7913675319463823891, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1773,6 +1773,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a94a38397c477e43b1aa9456176b4fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FloorSystemManager2P
+  fadeImage: {fileID: 1114545331}
+  floorPrefabs: []
+  floorsRoot: {fileID: 1344696830}
+  fadeDuration: 1
+  triggerDistance: 1
 --- !u!1 &1019469448
 GameObject:
   m_ObjectHideFlags: 0
@@ -1886,7 +1891,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7913675319463823891, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7913675319463823891, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1925,6 +1930,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+--- !u!114 &1114545331 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7439252668432084731, guid: 3aa8a84ad7191c441952b2e187161862, type: 3}
+  m_PrefabInstance: {fileID: 859746517}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1321877229
 GameObject:
   m_ObjectHideFlags: 0
@@ -2065,6 +2081,11 @@ CanvasRenderer:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1494689640004218747, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
   m_PrefabInstance: {fileID: 1048148777}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1344696830 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7958704990807312231, guid: 3aa8a84ad7191c441952b2e187161862, type: 3}
+  m_PrefabInstance: {fileID: 859746517}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1365819146 stripped
 GameObject:
