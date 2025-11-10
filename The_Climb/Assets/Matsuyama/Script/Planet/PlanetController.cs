@@ -1,18 +1,26 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using TheClimb.Logging;
+using TheClimb.Player;
 
 namespace TheClimb.Astral
 {
-    public class PlanetController : MonoBehaviour    //  “V‘Ì‚ğ•ïŠ‡“I‚ÉƒRƒ“ƒgƒ[ƒ‹‚·‚é
+    public class PlanetController : MonoBehaviour    //  å¤©ä½“ã‚’åŒ…æ‹¬çš„ã«ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã™ã‚‹
     {
-        PlanetMover planetMover;                        //  “V‘Ì‚ÌˆÚ“®ˆ—‚¿
-        [SerializeField] PlanetStatus planetStatus;     //  “V‘Ì‚ÌƒXƒe[ƒ^ƒX
-        PlanetStateMachine planetStaeMachine;           //  “V‘Ì‚ÌƒXƒe[ƒgƒ}ƒV[ƒ“
-        PlanetStateFactory planetStateFactory;          //  “V‘ÌƒXƒe[ƒgƒtƒ@ƒNƒgƒŠ[
-        PlanetCommandProvider planetCommandProvider;    //  “V‘ÌŠÖ”’ñ‹ŸƒNƒ‰ƒX
+        PlanetMover planetMover;                              //  å¤©ä½“ã®ç§»å‹•å‡¦ç†æŒã¡
+        [SerializeField] PlanetStatus planetStatus;           //  å¤©ä½“ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+        PlanetStateMachine planetStaeMachine;                 //  å¤©ä½“ã®ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ¼ãƒ³
+        PlanetStateFactory planetStateFactory;                //  å¤©ä½“ã‚¹ãƒ†ãƒ¼ãƒˆãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼
+        PlanetCommandProvider planetCommandProvider;          //  å¤©ä½“é–¢æ•°æä¾›ã‚¯ãƒ©ã‚¹
+        VectorToPlanetCalculator planetToPlanetCalculator;    //  å¤©ä½“ã¸ã®ãƒ™ã‚¯ãƒˆãƒ«è¨ˆç®—ã‚¯ãƒ©ã‚¹
 
         void Awake()
         {
+            PlanetContext.Instance.RegistPlanetController(this);
+        }
+
+        public void Initialize(IPlanetDataProvider planetDataProvider, IPlayerDataProvider playerDataProvider)    //  åˆæœŸåŒ–
+        {
+            
             planetMover = new PlanetMover();
             planetStaeMachine = new PlanetStateMachine();
             planetCommandProvider = new PlanetCommandProvider(planetMover, this.transform, planetStatus.GetStats(PlanetIDs.Earth));

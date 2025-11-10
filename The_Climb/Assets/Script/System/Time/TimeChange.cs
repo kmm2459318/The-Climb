@@ -18,13 +18,13 @@ public class TimeChange : MonoBehaviour
     [SerializeField] private float switchCooldown = 2f;
 
     private int CurrentActiveIndex = 0;
-    private SafeSpawner spawner;
+    //private SafeSpawner spawner;
 
 
     void Start()
     {
         KeyBind = GameObject.Find("KeyManager").GetComponent<KeyBind>();
-        spawner = Player.GetComponent<SafeSpawner>();
+        //spawner = Player.GetComponent<SafeSpawner>();
 
         MapInstance = new GameObject[MapPrefabs.Length];
         for (int i = 0; i < MapPrefabs.Length; i++)
@@ -55,10 +55,10 @@ public class TimeChange : MonoBehaviour
 
         MapInstance[CurrentActiveIndex].SetActive(true);
 
-        // 安全な位置に修正
-        if (spawner != null)
-        {
-            Player.position = spawner.FindSafePosition(Player.position);
-        }
+        //// 安全な位置に修正
+        //if (spawner != null)
+        //{
+        //    Player.position = spawner.FindSafePosition(Player.position);
+        //}
     }
 }
