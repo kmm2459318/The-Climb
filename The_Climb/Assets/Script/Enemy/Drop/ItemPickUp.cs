@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class ItemPickUp : MonoBehaviour
 {
     [SerializeField] private ItemData itemData;  // ← Inspector で設定できるように
     private ItemDataBase itemDB;
+    public TextMeshProUGUI CountText;
 
     private void Start()
     {
@@ -25,6 +27,7 @@ public class ItemPickUp : MonoBehaviour
                 itemDB.AddOrUpdateItem(itemData);
                 Debug.Log($"{itemData.Name}を拾った");
                 Destroy(gameObject);
+                //CountText.text = itemDB.GetItemCount(itemData.Name).ToString();
             }
             else
             {
