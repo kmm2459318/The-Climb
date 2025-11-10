@@ -1,32 +1,30 @@
-using TheClimb.Logging;
-using UnityEngine;
+ï»¿using TheClimb.Logging;
 
 namespace TheClimb.Astral
 {
-    public class IdleState : IPlanetState    //  Idleó‘Ô
+    public class IdleState : IPlanetState    //  IdleçŠ¶æ…‹
     {
-        PlanetController _planetController;        //  ƒvƒ‰ƒlƒbƒgƒRƒ“ƒgƒ[ƒ‰[ƒCƒ“ƒXƒ^ƒ“ƒX
-        PlanetStateMachine _planetStateMachine;    //  ƒvƒ‰ƒlƒbƒgƒXƒe[ƒgƒ}ƒV[ƒ“ƒCƒ“ƒXƒ^ƒ“ƒX
-        PlanetCommandProvider _CommandProvider;    //  ƒRƒ}ƒ“ƒhƒvƒƒoƒCƒ_
-        IActionCommand _rotationCommand;
+        PlanetController _planetController;        //  ãƒ—ãƒ©ãƒãƒƒãƒˆã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+        PlanetStateMachine _planetStateMachine;    //  ãƒ—ãƒ©ãƒãƒƒãƒˆã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ¼ãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+        PlanetCommandProvider _CommandProvider;    //  ã‚³ãƒãƒ³ãƒ‰ãƒ—ãƒ­ãƒã‚¤ãƒ€
 
-        public IdleState(PlanetController planetController, PlanetStateMachine planetStateMachine, PlanetCommandProvider commandProvider)    //  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        public IdleState(PlanetController planetController, PlanetStateMachine planetStateMachine, PlanetCommandProvider commandProvider)    //  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
         {
             _planetController = planetController;
             _planetStateMachine = planetStateMachine;
             _CommandProvider = commandProvider;
         }
         
-        public void Enter()    //  Idleó‘Ô“Ë“ü‚ÌŠÖ”
+        public void Enter()    //  IdleçŠ¶æ…‹çªå…¥æ™‚ã®é–¢æ•°
         {
-            _rotationCommand = _CommandProvider.Get<IActionCommand>(PlanetCommandKey.RotationPlanet);
-            LogUtility.Log(LogPrefix.idleState, "IdleState“Ë“ü", LogLevel.VerBose);
+            LogUtility.Log(LogPrefix.idleState, "IdleStateçªå…¥", LogLevel.VerBose);
+            _CommandProvider.orbitalFollower.Execute();
         }
-        public void Update()    //  Idleó‘Ô’†‚ÌŠÖ”
+        public void Update()    //  IdleçŠ¶æ…‹ä¸­ã®é–¢æ•°
         {
-            _rotationCommand?.Execute();
+            _CommandProvider.rotationPlanet.Execute();
         }
-        public void Exit()    //  Idleó‘Ô‚ğ”²‚¯‚é‚ÌŠÖ”
+        public void Exit()    //  IdleçŠ¶æ…‹ã‚’æŠœã‘ã‚‹æ™‚ã®é–¢æ•°
         {
 
         }
