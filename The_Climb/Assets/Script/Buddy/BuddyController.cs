@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UIElements;
-using System.Collections;
+using Zenject.SpaceFighter;
 
 public class BuddyController : MonoBehaviour
 {
@@ -94,60 +95,35 @@ public class BuddyController : MonoBehaviour
     //Buddyの追従するオブジェクトを変える
     public void SetConstraintTarget(Transform newTarget)
     {
-        // Constraint無効化して評価停止
+        //Constraint 評価を一時停止
         positionConstraint.constraintActive = false;
 
-        // 現在のSourcesを完全クリア
-        var emptyList = new System.Collections.Generic.List<ConstraintSource>();
-        positionConstraint.SetSources(emptyList);
+        ConstraintSource playerSource = positionConstraint.GetSource(0);   //プレイヤーのソース
+        ConstraintSource stalkerSource = positionConstraint.GetSource(1);  //ストーカーハンドのソース
 
-        // 新しいSourceリストを個別に生成
-        if (newTarget != null)
+        // 0番目：プレイヤー（固定）
+        if (newTarget.name == "PlayerModel")
         {
-            var newSources = new System.Collections.Generic.List<ConstraintSource>();
-
-            var source = new ConstraintSource
-            {
-                sourceTransform = newTarget,
-                weight = 1f
-            };
-
-            newSources.Add(source);
-
-            // AddSourcesではなくSetSourcesを直接使用（コピー動作）
-            positionConstraint.SetSources(newSources);
-
-            // 状態保持
-            currentSource = source;
-
-            // Buddyを強制的に新しい位置へ同期（安全対策）
-            transform.position = newTarget.position;
-
-            // 1フレーム後に再有効化
-            StartCoroutine(EnableConstraintNextFrame());
+            playerSource.weight = 1f;
+            stalkerSource.weight = 0f;
         }
-        else
+        else  // 1番目：誘拐対象（StalkerHand）
         {
-            currentSource = default;
+            stalkerSource.sourceTransform = newTarget;
+            stalkerSource.weight = 1f;
+            playerSource.weight = 0f;
         }
+        positionConstraint.SetSource(0, playerSource);
+        positionConstraint.SetSource(1, stalkerSource);
+
+        // 次フレームでConstraintを再評価
+        StartCoroutine(ReenableNextFrame());
     }
 
-    private IEnumerator EnableConstraintNextFrame()
+    private IEnumerator ReenableNextFrame()
     {
-        yield return null; // 1フレーム待って再評価させる
+        yield return null;
+
         positionConstraint.constraintActive = true;
-    }
-
-    private void LateUpdate()
-    {
-        if (positionConstraint != null)
-        {
-            var srcs = new System.Collections.Generic.List<ConstraintSource>();
-            positionConstraint.GetSources(srcs);
-            if (srcs.Count == 0)
-            {
-                Debug.LogWarning($"[{Time.frameCount}] Sourceが消失しました: {gameObject.name}");
-            }
-        }
     }
 }

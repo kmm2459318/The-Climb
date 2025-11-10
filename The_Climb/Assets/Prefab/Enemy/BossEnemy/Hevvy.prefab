@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3611279266318985743}
   - component: {fileID: 7956460702986813588}
   - component: {fileID: 8221880893161098242}
-  m_Layer: 7
+  m_Layer: 10
   m_Name: Hevvy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65,6 +65,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -86,6 +88,7 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -150,8 +153,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 175927db918feeb4e9554ba8e467ec9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  animator: {fileID: 0}
   stats: {fileID: 11400000, guid: 9df0c3b066888314199223c7aaad5fb2, type: 2}
-  horizontalDirection: 1
+  activationDistance: 10
 --- !u!114 &8221880893161098242
 MonoBehaviour:
   m_ObjectHideFlags: 0

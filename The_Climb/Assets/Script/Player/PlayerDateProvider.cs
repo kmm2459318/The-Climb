@@ -4,13 +4,14 @@ namespace TheClimb.Player
 {
     public class PlayerDataProvider : IPlayerDataProvider    //  プレイヤーの情報を提供する
     {
-        private readonly Transform _planetTransform;
+        private readonly Transform _playerTransform;    //  プレイヤーのトランスフォーム
 
-        public PlayerDataProvider(Transform planetTransform)    //  コンストラクタ
+        public PlayerDataProvider(Transform PlayerTransform)    //  コンストラクタ
         {
-            _planetTransform = planetTransform;
+            _playerTransform = PlayerTransform;
         }
 
-        public Vector3 PositionProperty => _planetTransform.position;
+        public Transform TransformProperty => _playerTransform;
+        public Vector3 PositionProperty => _playerTransform.position;
     }
 }
