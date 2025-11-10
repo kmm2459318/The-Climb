@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TheClimb.Astral;
+using TheClimb.Item;
 
 namespace TheClimb.UniversalGravity
 {
@@ -36,10 +37,14 @@ namespace TheClimb.UniversalGravity
 
                 if (Distance < CurrentAttractRange && Distance > 0.01f)
                 {
-                    if (targetEntry.target.TryGetComponent<IGravitationStatus>(out var targetData))
+                    if (targetEntry.target.TryGetComponent<IAtractable>(out var targetData))
                     {
-                        GravitationTargetStatusBlock targetStatusBlock = targetData.statusBlockGetter;
+                        GravitationTargetStatusBlock targetStatusBlock = targetData.statProperty;
 
+                        if(targetStatusBlock.gravitationTargetTag == GravitationTargetTag.Item)
+                        {
+                            targetData.OnAttracting();
+                        }
                         Vector3 AttractForce = AttractVectleCaluculate.CalculateAttractVectle(this.transform.position, targetPosition, CurrentPlanetMass, targetStatusBlock.Mass, Distance);
                         targetEntry.rigidbody.AddForce(AttractForce * targetStatusBlock.Mass, ForceMode.Force);
                     }
@@ -48,12 +53,3 @@ namespace TheClimb.UniversalGravity
         }
     }
 }
-//    ※※※※※　　念のため関数保存　　※※※※
-//Vector3 GetBlowVectle(GravitationTargetStatusBlock targetStatusBlock, Vector3 targetPos, float Dist)    //  吹き飛ばしベクトル取得
-//{
-//    Vector3 dir = (this.transform.position - targetPos).normalized;
-//    float forceMag = (CurrentPlanetMass * planetStatusBlock.Mass) / (Dist * Dist);
-//    Vector3 acceleration = forceMag * dir / targetStatusBlock.Mass;
-
-//    return acceleration;
-//}
