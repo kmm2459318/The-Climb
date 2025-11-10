@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2911932045348189547}
   m_Layer: 0
   m_Name: SwitchMesh (1)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 3850565064752598011}
   m_Layer: 0
   m_Name: SwitchMesh
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -272,8 +272,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GimmickSwitch
   Bridge: {fileID: 0}
   ActivateKey: 101
-  InteractionRange: 2
-  PlayerTransform: {fileID: 0}
   SwitchOff: {fileID: 7094414962723734597}
   SwitchOn: {fileID: 1363357716716675727}
 --- !u!114 &3961750519951464376
@@ -312,5 +310,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}

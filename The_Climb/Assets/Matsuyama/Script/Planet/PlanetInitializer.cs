@@ -2,23 +2,25 @@
 using TheClimb.Player;
 using UnityEngine;
 
-public class PlanetInitializer : MonoBehaviour    //  天体の初期化実行係
+namespace TheClimb.Core
 {
-    PlanetController _planetController;         //  天体の包括的コントローラー
-
-    IPlanetDataProvider _PlanetDataProvider;      //  天体のデータプロバイダー
-    IPlayerDataProvider _PlayerDataProvider;      //  プレイヤーのデータプロバイダー
-    
-
-    private void Start()
+    public class PlanetInitializer : MonoBehaviour    //  天体の初期化実行係
     {
-        _planetController = PlanetContext.Instance._PlanetController;
-        _PlanetDataProvider = PlanetContext.Instance._PlanetDataProvider;
-        _PlayerDataProvider = PlayerContext.Instance._PlayerDataProvider; ;
+        PlanetController _planetController;         //  天体の包括的コントローラー
 
-        Debug.Log(_planetController);
-        Debug.Log(_PlanetDataProvider);
-        Debug.Log(_PlayerDataProvider);
-        _planetController.Initialize(_PlanetDataProvider, _PlayerDataProvider);
+        IPlanetDataProvider _PlanetDataProvider;      //  天体のデータプロバイダー
+        IPlayerDataProvider _PlayerDataProvider;      //  プレイヤーのデータプロバイダー
+        ICorutineRunner _runner;
+
+
+        private void Start()
+        {
+            _planetController = PlanetContext.Instance._PlanetController;
+            _PlanetDataProvider = PlanetContext.Instance._PlanetDataProvider;
+            _PlayerDataProvider = PlayerContext.Instance._PlayerDataProvider; ;
+
+            _runner = CoroutineRunnerContext.Instance._corutineRunner;
+            _planetController.Initialize(_PlanetDataProvider, _PlayerDataProvider, _runner);
+        }
     }
 }

@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using NUnit.Framework.Constraints;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class TimeChange : MonoBehaviour
 {
@@ -9,13 +12,13 @@ public class TimeChange : MonoBehaviour
     [Header("プレイヤーの参照")]
     [SerializeField] private Transform Player;
 
-    public KeyBind KeyBind;
-
     [Header("フェード制御")]
     [SerializeField] private ScreenFader fader;
 
     [Header("クールダウン時間(秒)")]
     [SerializeField] private float switchCooldown = 2f;
+
+    public KeyBind KeyBind;                   //プレイヤーのキーを取得
 
     private int CurrentActiveIndex = 0;
     //private SafeSpawner spawner;
@@ -47,18 +50,58 @@ public class TimeChange : MonoBehaviour
 
     private void SwitchToNextMap()
     {
-        MapInstance[CurrentActiveIndex].SetActive(false);
+        //シーン内にいるすべての敵を消す
+        EnemyGeneration[] EnemyDelete = Object.FindObjectsByType<EnemyGeneration>(FindObjectsSortMode.InstanceID);
+        foreach (EnemyGeneration Generator in EnemyDelete)
+        {
+            Generator.ClearAllEnemy();
+        }
 
+
+        //現代のマップを非表示
+        MapInstance[CurrentActiveIndex].SetActive(false);
+        
+        //次のマップへ切り替え
         CurrentActiveIndex++;
         if (CurrentActiveIndex >= MapInstance.Length)
             CurrentActiveIndex = 0;
 
+        //次のマップの生成
         MapInstance[CurrentActiveIndex].SetActive(true);
 
-        //// 安全な位置に修正
-        //if (spawner != null)
-        //{
-        //    Player.position = spawner.FindSafePosition(Player.position);
-        //}
+        //新しいマップの敵生成andマップが現代のマップの時だけ出撃調整する
+        if(CurrentActiveIndex == 0)
+        {
+            var Analyzer = FindFirstObjectByType<EnemyKillAnalyzer>();
+            if(Analyzer != null)
+            {
+                var KillRatios = Analyzer.GetKillRatio();
+                var Generator = FindFirstObjectByType<EnemyGeneration>();
+                if(Generator != null)
+                {
+                    Generator.AbjustSpawanByKillRatio(KillRatios);
+                    Debug.Log("現代のマップなので出撃調整を行いました");
+                }
+            }
+        }
+
+        //新しいマップの敵生成and通常生成を行う
+        else if(CurrentActiveIndex == 1)
+        {
+            var Generator = FindFirstObjectByType<EnemyGeneration>();
+            if(Generator != null)
+            {
+                Generator.AbjustSpawanByKillRatio(null);
+                Debug.Log("通常マップの生成を行いました");
+            }
+        }
+
+        else
+        {
+            Debug.LogError("EnemyGenerationがHierarchyに存在しません");
+        }
+       
+       
+
     }
 }
