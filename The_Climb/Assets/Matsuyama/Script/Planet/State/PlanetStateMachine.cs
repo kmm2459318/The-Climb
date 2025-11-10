@@ -1,18 +1,18 @@
-using System;
+ï»¿using System;
 
 namespace TheClimb.Astral
 {
-    //  “GƒLƒƒƒ‰‚ÌƒXƒe[ƒgŠÇ—
+    //  æ•µã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ãƒˆç®¡ç†
     public class PlanetStateMachine
     {
-        public event Action<IPlanetState> OnStateChanged;
+        public event Action<IPlanetState> OnStateChanged;    //  çŠ¶æ…‹ãŒå¤‰åŒ–ã—ãŸã¨ã
 
-        IPlanetState CurrentEnemyState;    //  “GƒLƒƒƒ‰‚ÌŒ»İ‚ÌƒXƒe[ƒg
+        IPlanetState CurrentEnemyState;    //  æ•µã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 
-        //  Œ»İ‚Ìó‘Ô‚ğ•Ô‚·ƒvƒƒpƒeƒB
+        //  ç¾åœ¨ã®çŠ¶æ…‹ã‚’è¿”ã™ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
         public IPlanetState CurrentStateProperty => CurrentEnemyState;
 
-        //  ó‘Ô•ÏXŠÖ”
+        //  çŠ¶æ…‹å¤‰æ›´é–¢æ•°
         public void ChangeState(IPlanetState newState)
         {
             CurrentEnemyState?.Exit();
@@ -22,7 +22,7 @@ namespace TheClimb.Astral
             OnStateChanged?.Invoke(CurrentEnemyState);
         }
 
-        //  ƒXƒe[ƒg‚²‚Æ‚Ìó‘ÔÀs
+        //  ã‚¹ãƒ†ãƒ¼ãƒˆã”ã¨ã®çŠ¶æ…‹å®Ÿè¡Œ
         public void Update()
         {
             CurrentEnemyState?.Update();
