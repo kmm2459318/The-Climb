@@ -33,14 +33,20 @@ public class Player_Bomb : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(b_pos, b_radius);
         for (int i = 0; i < hitColliders.Length; i++)
         {
+            var obj = hitColliders[i].gameObject;
             var rb = hitColliders[i].GetComponent<Rigidbody>();
             if (rb)
             {
                 rb.AddExplosionForce(b_force, b_pos, b_radius, b_upward, ForceMode.Impulse);
+                if (obj.CompareTag("BreakingWall"))
+                {
+                    Destroy(obj);
+                    Debug.Log($"{obj.name}を破棄しました");
+                }
             }
         }
 
         Debug.Log("爆発しました");
-        Destroy(gameObject, 1f); // 1秒後に削除
+        Destroy(gameObject); // 1秒後に削除
     }
 }
