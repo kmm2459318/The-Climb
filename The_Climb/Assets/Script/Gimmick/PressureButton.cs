@@ -2,19 +2,21 @@
 
 public class PressureButton : MonoBehaviour
 {
-    [SerializeField] private enum GimmickType  //ギミックの種類
+    private enum GimmickType  //ギミックの種類
     { 
         appear = 0,
-        move = 1,
-        moveLoop = 2,
+        destroy = 1,
+        move = 2,
+        moveLoop = 3,
 
     };
     /*
     appear：出現ギミック
+    destroy：消滅ギミック
     move：移動ギミック
     moveLoop：移動ギミック（ループ）
-    */ 
-    private GimmickType type;  //ボタンの種類
+    */
+    [SerializeField] private GimmickType type;  //ボタンの種類
 
     [Header("continuouslyがONなら\n一度押したら反応し続けるボタンに")]
     [SerializeField] private bool continuously = false;  //一度押したら継続的に押され続ける仕様か
@@ -39,7 +41,7 @@ public class PressureButton : MonoBehaviour
 
         if (target == null)
             Debug.LogError(gameObject.name + "のtargetがnullです。ばーか❤");
-        else
+        else if (type == GimmickType.appear)
         {
             target.SetActive(false);
         }
@@ -70,6 +72,9 @@ public class PressureButton : MonoBehaviour
             case GimmickType.appear:
                 AppearGimmick(true);
                 break;
+            case GimmickType.destroy:
+                AppearGimmick(false);
+                break;
             case GimmickType.move:
                 MoveGimmick(true);
                 break;
@@ -87,6 +92,9 @@ public class PressureButton : MonoBehaviour
         {
             case GimmickType.appear:
                 AppearGimmick(false);
+                break;
+            case GimmickType.destroy:
+                AppearGimmick(true);
                 break;
             case GimmickType.move:
                 MoveGimmick(false);
