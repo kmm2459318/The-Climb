@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using TheClimb.Logging;
 using TheClimb.Player;
 using TheClimb.Core;
 
@@ -7,7 +6,6 @@ namespace TheClimb.Astral
 {
     public class PlanetController : MonoBehaviour    //  天体を包括的にコントロールする
     {
-        PlanetMover planetMover;                              //  天体の移動処理持ち
         [SerializeField] PlanetStatus planetStatus;           //  天体のステータス
         GravitationStatusBlock currentGravitationStat;        //  天体の万有引力ステータスブロック
         OrbitalStatusBlock currentOrbitalStat;                //  天体の円軌道追従ステータスブロック
@@ -27,11 +25,9 @@ namespace TheClimb.Astral
         private void Start()
         {
             planetStateMachine.ChangeState(planetStateFactory.CreateIdleState());
-            LogUtility.Log(LogPrefix.uiFactory,"fuckyou", LogLevel.Warning);
         }
         public void Initialize(IPlanetDataProvider planetDataProvider, IPlayerDataProvider playerDataProvider, ICorutineRunner runner)    //  初期化
         {
-            planetMover = new PlanetMover();
             planetStateMachine = new PlanetStateMachine();
             orbitalContext = new OrbitalContext(this.transform, currentOrbitalStat, playerDataProvider.TransformProperty, runner);
             planetCommandProvider = new PlanetCommandProvider(this.transform, playerDataProvider.TransformProperty, currentGravitationStat, currentOrbitalStat, orbitalContext);
