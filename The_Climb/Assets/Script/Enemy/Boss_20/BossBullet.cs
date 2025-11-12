@@ -26,7 +26,6 @@ public class BossBullet : MonoBehaviour
         transform.position += moveDirection * speed * Time.deltaTime;
         if(playerTransform != null && Vector3.Distance(transform.position, playerTransform.position) < hitRadious)
         {
-            Debug.Log("ヒット！（自作物理）");
             Destroy(gameObject);
         }
     }
