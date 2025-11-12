@@ -2,7 +2,7 @@
 
 namespace TheClimb.Item
 {
-    public interface IItemStateFacroy    //  アイテムインターフェース
+    public interface IItemStateFactory    //  アイテムインターフェース
     {
         IState CreateState(ItemStateID stateID);    //  State生成
     }

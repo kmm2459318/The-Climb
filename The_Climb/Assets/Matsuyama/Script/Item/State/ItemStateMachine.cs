@@ -5,10 +5,12 @@ namespace TheClimb.Item
     public class ItemStateMachine : ItemSMBase    //  アイテムStateMachine
     {
         ItemStateFactory _itemStateFactory;
+        ItemCommandProvider _itemCommandProvider;
 
-        public ItemStateMachine(ItemStateFactory stateFactory)    //  コンストラクタ
+        public ItemStateMachine(ItemStateFactory stateFactory, ItemCommandProvider commadProvider)    //  コンストラクタ
         {
             _itemStateFactory = stateFactory;
+            _itemCommandProvider = commadProvider;
         }
         public override void Initialize()    //  初期化
         {
@@ -19,7 +21,7 @@ namespace TheClimb.Item
         {
             base.Update();
         }
-        public override void ChangeState(IState nextState)
+        public override void ChangeState(IState nextState)    //  State変更
         {
             base.ChangeState(nextState);
         }

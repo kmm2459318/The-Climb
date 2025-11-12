@@ -2,6 +2,7 @@
 {
     public interface IState    //  StatePatternのStateInterface
     {
+
         void OnEnter();     //  State突入時の処理
         void OnUpdate();    //  State中の処理(Update)
         void OnFixedUpdate();    //  State中の処理(FixedUpdate)

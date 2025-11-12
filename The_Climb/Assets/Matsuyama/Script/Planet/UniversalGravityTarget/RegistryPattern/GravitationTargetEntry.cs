@@ -1,12 +1,12 @@
-using TheClimb.UniversalGravity;
+ï»¿using TheClimb.UniversalGravity;
 using UnityEngine;
 
 public class GravitationTargetEntry
 {
-    public GravitationTargetRegister target;    //  ƒ^[ƒQƒbƒgƒRƒ“ƒ|[ƒlƒ“ƒg
-    public Rigidbody rigidbody;                 //  ƒŠƒWƒbƒhƒ{ƒfƒBƒRƒ“ƒ|[ƒlƒ“ƒg
+    public GravitationTargetMarker target;    //  ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
+    public Rigidbody rigidbody;                 //  ãƒªã‚¸ãƒƒãƒ‰ãƒœãƒ‡ã‚£ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 
-    public GravitationTargetEntry(GravitationTargetRegister target, Rigidbody rigidbody)    //  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    public GravitationTargetEntry(GravitationTargetMarker target, Rigidbody rigidbody)    //  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     {
         this.target = target;
         this.rigidbody = rigidbody;

@@ -188,6 +188,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78151935ea7686a41a220138d81f770d, type: 3}
+--- !u!114 &207847660 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7208387509262752483, guid: fb7ab558781f0234a988c231274cd20c, type: 3}
+  m_PrefabInstance: {fileID: 404149688020323747}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5def2b1a4d9953439cd3886043d4f60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheClimb.Core.CoroutineRunner
 --- !u!1 &827005836
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,6 +370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6724aa6f3a00cad4ea618628700d7589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheClimb.UniversalGravity.GravitationTargetRegister
+  gravitationTargetStatusBlock: {fileID: 0}
 --- !u!114 &880682936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -635,6 +647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6724aa6f3a00cad4ea618628700d7589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheClimb.UniversalGravity.GravitationTargetRegister
+  gravitationTargetStatusBlock: {fileID: 0}
 --- !u!114 &936700140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -744,6 +757,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheClimb.Core.GameInitializationContext
   inpactBallController: {fileID: 2046269408}
   _gravitationTargetStatusBlock: {fileID: 11400000, guid: 7bc3f1a990e20d241994d626fc00dc43, type: 2}
+  _imapctBallStatsus: {fileID: 11400000, guid: bee47852c26087645a0ba2c9856b6f57, type: 2}
+  coroutineRunner: {fileID: 207847660}
 --- !u!1 &1321035362
 GameObject:
   m_ObjectHideFlags: 0
@@ -995,6 +1010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6724aa6f3a00cad4ea618628700d7589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheClimb.UniversalGravity.GravitationTargetRegister
+  gravitationTargetStatusBlock: {fileID: 0}
 --- !u!114 &1483609627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1053,7 +1069,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!64 &1862814193
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1223,9 +1239,6 @@ PrefabInstance:
       addedObject: {fileID: 2046269406}
     - targetCorrespondingSourceObject: {fileID: 100002, guid: 5ae1b6d4c894f9c449d33837a633a8ec, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2046269405}
-    - targetCorrespondingSourceObject: {fileID: 100002, guid: 5ae1b6d4c894f9c449d33837a633a8ec, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2046269404}
     - targetCorrespondingSourceObject: {fileID: 100002, guid: 5ae1b6d4c894f9c449d33837a633a8ec, type: 3}
       insertIndex: -1
@@ -1329,18 +1342,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6724aa6f3a00cad4ea618628700d7589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheClimb.UniversalGravity.GravitationTargetRegister
---- !u!114 &2046269405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2046269403}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e0b6a1280f20fe4bb7dbcf3d7064256, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheClimb.UniversalGravity.GravitationTargetStatusHolder
   gravitationTargetStatusBlock: {fileID: 11400000, guid: 7bc3f1a990e20d241994d626fc00dc43, type: 2}
 --- !u!54 &2046269406
 Rigidbody:

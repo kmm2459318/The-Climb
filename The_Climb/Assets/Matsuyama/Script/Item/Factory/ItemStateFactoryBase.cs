@@ -4,7 +4,7 @@ using TheClimb.Core;
 
 namespace TheClimb.Item
 {
-    public class ItemStateFactoryBase : IItemStateFacroy    //  ItemState生成クラス
+    public class ItemStateFactoryBase : IItemStateFactory    //  ItemState生成クラス
     {
         protected readonly Dictionary<ItemStateID, Func<IState>> itemStateRegistry = new();    //  State登録用辞書
 

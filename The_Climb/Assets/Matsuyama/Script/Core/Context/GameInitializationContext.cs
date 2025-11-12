@@ -1,16 +1,19 @@
-﻿using TheClimb.Item;
+﻿using UnityEngine;
 using TheClimb.UniversalGravity;
-using UnityEngine;
+using TheClimb.Item;
+
 
 namespace TheClimb.Core
 {
-    public class GameInitializationContext : MonoBehaviour
+    public class GameInitializationContext : MonoBehaviour    //  全体的な初期化管理者
     {
-        [SerializeField] InpactBallController inpactBallController;
-        [SerializeField] GravitationTargetStatusBlock _gravitationTargetStatusBlock;
+        [SerializeField] InpactBallController inpactBallController;    //  インパクトボールコントローラー
+        [SerializeField] GravitationTargetStatusBlock _gravitationTargetStatusBlock;    //  万有引力操作ターゲットステータスブロック
+        [SerializeField] ImpactBallStatus _imapctBallStatsus;    //  衝撃球ステータスブロック
+        [SerializeField] CoroutineRunner coroutineRunner;    //  コルーチンランナー
         private void Awake()
         {
-            inpactBallController.Initialize(_gravitationTargetStatusBlock);
+            inpactBallController.Initialize(_gravitationTargetStatusBlock, _imapctBallStatsus, coroutineRunner);    //  衝撃球コントローラー初期化
         }
     }
 }

@@ -1,14 +1,14 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 namespace TheClimb.UniversalGravity
 {
-    public class GravitationObjectResistry    //  –œ—Lˆø—Í‚Ì‰e‹¿‚ğó‚¯‚éƒIƒuƒWƒFƒNƒg‚ÌƒŒƒWƒXƒgƒŠ[
+    public class GravitationObjectResistry    //  ä¸‡æœ‰å¼•åŠ›ã®å½±éŸ¿ã‚’å—ã‘ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ¬ã‚¸ã‚¹ãƒˆãƒªãƒ¼
     {
-        private static readonly List<GravitationTargetEntry> _entries = new();    //  this‚Æthis.GameObject.RB‚ÌƒNƒ‰ƒXƒŠƒXƒg
+        private static readonly List<GravitationTargetEntry> _entries = new();    //  thisã¨this.GameObject.RBã®ã‚¯ãƒ©ã‚¹ãƒªã‚¹ãƒˆ
         public static IReadOnlyList<GravitationTargetEntry> Entries => _entries;
 
-        public static void RegisterTarget(GravitationTargetRegister target, Rigidbody targetRB)    //  ƒŠƒXƒg‚É“n‚³‚ê‚½target‚Ìî•ñ‚ğ“o˜^
+        public static void RegisterTarget(GravitationTargetMarker target, Rigidbody targetRB)    //  ãƒªã‚¹ãƒˆã«æ¸¡ã•ã‚ŒãŸtargetã®æƒ…å ±ã‚’ç™»éŒ²
         {
             if (_entries.Exists(e => e.target == target))
             {
@@ -17,7 +17,7 @@ namespace TheClimb.UniversalGravity
             _entries.Add(new GravitationTargetEntry(target, targetRB));
         }
 
-        public static void UnregisterTarget(GravitationTargetRegister target, Rigidbody rigidbody)    //  “n‚³‚ê‚½target‚Ìî•ñ‚ğƒŠƒXƒg‚©‚ç“o˜^‰ğœ
+        public static void UnregisterTarget(GravitationTargetMarker target, Rigidbody rigidbody)    //  æ¸¡ã•ã‚ŒãŸtargetã®æƒ…å ±ã‚’ãƒªã‚¹ãƒˆã‹ã‚‰ç™»éŒ²è§£é™¤
         {
             _entries.RemoveAll(e => e.target == target && e.rigidbody == rigidbody);
         }

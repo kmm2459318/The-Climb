@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using TheClimb.Logging;
 using TheClimb.Player;
 using TheClimb.Core;
 
@@ -26,7 +25,6 @@ namespace TheClimb.Astral
         private void Start()
         {
             planetStateMachine.ChangeState(planetStateFactory.CreateIdleState());
-            LogUtility.Log(LogPrefix.uiFactory,"fuckyou", LogLevel.Warning);
         }
         public void Initialize(IPlanetDataProvider planetDataProvider, IPlayerDataProvider playerDataProvider, ICorutineRunner runner)    //  初期化
         {

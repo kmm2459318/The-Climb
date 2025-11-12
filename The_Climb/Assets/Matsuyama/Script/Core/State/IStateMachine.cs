@@ -1,6 +1,4 @@
-﻿using TheClimb.Item;
-
-namespace TheClimb.Core
+﻿namespace TheClimb.Core
 {
     public interface IStateMachine    //  インターフェース
     {
