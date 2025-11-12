@@ -4,8 +4,7 @@ using UnityEngine;
 namespace TheClimb.Astral
 {
     [CreateAssetMenu(fileName = "PlanetStatus", menuName = "Planet/Status")]
-
-    public class PlanetStatus : ScriptableObject
+    public class PlanetStatus : ScriptableObject    //  プラネットステータス
     {
         //  敵の状態とステータスをもつクラス
         [System.Serializable]
