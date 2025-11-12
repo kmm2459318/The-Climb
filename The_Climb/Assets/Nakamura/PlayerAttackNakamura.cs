@@ -100,14 +100,6 @@ public class PlayerAttackNakamura : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //ぶつかったときの突っかかりを消す(yの動きをリセット)　※謎のつっかかりが出た場合はここの条件をいじってください
-        if (gameObject.name == "HeadingAttack" && !other.gameObject.CompareTag("SearchItem") && !special.highJumpUsed && 
-            !other.CompareTag("RespawnArea") && !other.CompareTag("Buddy") && !other.gameObject.CompareTag("Fog") && 
-            !other.gameObject.CompareTag("SanityHealItem") && !other.gameObject.CompareTag("WhiteBell") && !other.gameObject.CompareTag("CallBell"))
-        {
-            PlayerYMoveReset();
-        }
-
         //敵への（朝全部、夜通常ジャンプ以外での）攻撃、破壊可能ブロックへのハイジャンプとメテオでの攻撃で消す
         if (other.gameObject.CompareTag("Enemy") &&
             (!sunMoveCommander.TimeProvider.IsNightProperty || (sunMoveCommander.TimeProvider.IsNightProperty && (special.highJumpUsed || special.meteorDrop || special.quickJumpUsed))) ||
@@ -117,6 +109,12 @@ public class PlayerAttackNakamura : MonoBehaviour
 
             //ヒットストップ
             StartCoroutine(HitStop());
+        }
+        //ぶつかったときの突っかかりを消す(yの動きをリセット)　※謎のつっかかりが出た場合はここの条件をいじってください
+        else if (gameObject.name == "HeadingAttack" && !special.highJumpUsed && other.gameObject.layer == 3
+            && other.gameObject.layer == 14 && other.gameObject.layer == 15)
+        {
+            PlayerYMoveReset();
         }
     }
 }
