@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using TheClimb.Player;
+using UnityEngine.Playables;
 
 [assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]
 [assembly: InternalsVisibleTo("Assembly-CSharp-Tests")]
@@ -30,7 +32,6 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     EnemyMover enemyMover;    //  エネミームーバー
     CharacterGroundChecker characterGroundChecker;    //  グラウンドチェッカー
     EnemyStateMachine enemyStateMachine;    //  エネミーステートマシーン
-    TimeManager timeManager;    //  タイムマネージャー
     PlayerState playerState;    //  プレイヤーステート
     CharacterStateVisualizer characterStateVisualizer;    //  キャラクターステートビジュアライザー
     public Dictionary<KickerCommanderMethod, ICommand_Enemy> CommanderMethodMap;    //  このスクリプトの関数の辞書
@@ -56,14 +57,10 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     //  インジェクトによる初期化
     [Inject]
     void Construct(
-        TimeManager timeManager,
-        PlayerState playerState,
         ITimeProvider TimeProvider,
         IDownFading DownFading
         )
     {
-        this.timeManager = timeManager;
-        this.playerState = playerState;
         this.TimeProvider = TimeProvider;
         this.DownFading = DownFading;
         TimeProvider.OnChangedNight += ChangeToNightMode;
@@ -119,6 +116,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
 
     void Start()
     {
+        playerState = PlayerContext.Instance._PlayerState;
         //  定期的なジャンプのループを開始
         JumpLoop = StartCoroutine(PeriodicallyJump());
     }
@@ -210,13 +208,6 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
     //  吹き飛ばし処理
     public void Blow(Rigidbody rigidbody, float Direction)
     {
-        if(timeManager.IsNightProperty　&& !timeManager.IsPlayerAttackedProperty)
-        {
-            timeManager.StartTimeAcceleration(0, 1);
-            DownFading.StartDownFading();
-            timeManager.IsPlayerAttackedProperty = true;
-            return;
-        }
         float CurrentBlowForceX = kickerStatBlock.BlowForceX;    //  X軸の吹き飛ばし力
         float CurrentBlowForceY = kickerStatBlock.BlowForceY;    //  Y軸の吹き飛ばし力
         float PlayerResistPowerX = 100f;    //  プレイヤーステータスに追加予定
@@ -228,6 +219,7 @@ public class KickerMoveCommander : MonoBehaviour, IWallHitTable, ILandingHandler
         Vector3 GroundTotalBlowForce = new Vector3(Direction * (EffectiveForceX), 0, 0);    //  地上時の吹き飛ばし力合計
         Vector3 AirTotalBlowForce = new Vector3(Direction * CurrentBlowForceX, Direction * CurrentBlowForceY, 0f);    //  空中時の吹き飛ばし力合計
 
+        Debug.Log(playerState);
         if (playerState.isGrounded)
         {
             Debug.DrawRay(ObjectRegistry.Get("Player_Spine_c0c99d2d").transform.position, GroundTotalBlowForce, Color.blue, 0.5f);

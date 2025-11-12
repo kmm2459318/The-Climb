@@ -13,6 +13,7 @@
         public static readonly LogPrefix sceneUtility = new("[SceneUtility]");
         public static readonly LogPrefix toPlanetVectleCalculater = new("[ToPlanetVectleCalculater]");
         public static readonly LogPrefix orbitalFollower = new("[OrbitalFollower]");
+        public static readonly LogPrefix countTillActivate = new("[CountTillActivate]");
 
         public string Value { get; }
 
@@ -39,3 +40,27 @@
         public static LogPrefix Custom(string value) => new(value);
     }
 }
+//namespace TheClimb.Logging
+//{
+//    public static class LogPrefixes
+//    {
+//        public static class Gameplay
+//        {
+//            public static readonly LogPrefix Explosion = new("[Gameplay.Explosion]");
+//            public static readonly LogPrefix Player = new("[Gameplay.Player]");
+//            public static readonly LogPrefix Orbital = new("[Gameplay.Orbital]");
+//        }
+
+//        public static class UI
+//        {
+//            public static readonly LogPrefix ScreenFader = new("[UI.ScreenFader]");
+//            public static readonly LogPrefix Menu = new("[UI.Menu]");
+//        }
+
+//        public static class System
+//        {
+//            public static readonly LogPrefix Scene = new("[System.Scene]");
+//            public static readonly LogPrefix Logging = new("[System.Logging]");
+//        }
+//    }
+//}
