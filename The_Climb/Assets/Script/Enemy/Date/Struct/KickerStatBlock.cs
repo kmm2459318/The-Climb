@@ -1,14 +1,10 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
 //  キッカーのステータスブロック
 [System.Serializable]
 public class KickerStatBlock
 {
-    [Header("ステータス")]
-    public int ID;
-    public string Name;
-    public string Period;
-    public int HP;
     [Header("端を判定する光線の位置")]
     public Vector3 EdgeRayOffset;    //  端判定のRayのオフセット
     [Header("移動値")]
