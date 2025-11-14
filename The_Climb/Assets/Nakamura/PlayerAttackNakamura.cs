@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TheClimb.Player;
 using UnityEngine;
 
 public class PlayerAttackNakamura : MonoBehaviour
