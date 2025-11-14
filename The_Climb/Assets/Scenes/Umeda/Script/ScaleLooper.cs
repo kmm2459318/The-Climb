@@ -4,21 +4,27 @@ using System.Collections;
 public class ScaleLooper : MonoBehaviour
 {
     [Header("スケール設定")]
-    public float shrinkTime = 1f;      // 0まで縮小する時間
-    public float waitTime = 4f;        // 縮小・拡大の待機時間
-    public float expandTime = 1f;      // 等倍まで拡大する時間
+    public float shrinkTime = 1f;
+    public float waitTime = 4f;
+    public float expandTime = 1f;
 
     [Header("初回のみ待機時間")]
-    public float initialWait = 0f;     // 初回だけ待つ時間
+    public float initialWait = 0f;
 
-    private Vector3 originalScale;     // 元のスケール
-    private Vector3 originalPosition;  // 元の位置
+    private Vector3 originalScale;
+    private Vector3 originalPosition;
     private bool isRunning = false;
 
-    void Start()
+    IEnumerator Start()
     {
         originalScale = transform.localScale;
         originalPosition = transform.position;
+
+        // 🔵 シーンが準備完了するまで待つ（ロード時間によるズレ防止）
+        while (!SceneReadyManager.SceneReady)
+            yield return null;
+
+        // ここで初めてギミック開始
         StartCoroutine(ScaleLoop());
     }
 
@@ -36,7 +42,6 @@ public class ScaleLooper : MonoBehaviour
             // === 縮小 ===
             yield return StartCoroutine(ScaleTo(0f, shrinkTime, beforeZeroAction: () =>
             {
-                // 0になる直前にZ座標を -2
                 Vector3 pos = transform.position;
                 pos.z -= 2f;
                 transform.position = pos;
@@ -47,22 +52,18 @@ public class ScaleLooper : MonoBehaviour
                 yield return new WaitForSeconds(waitTime);
 
             // === 拡大 ===
-            // 0から大きくなる直前にZ座標を +2（元に戻す）
             Vector3 restorePos = transform.position;
             restorePos.z = originalPosition.z;
             transform.position = restorePos;
 
             yield return StartCoroutine(ScaleTo(1f, expandTime));
 
-            // 待機②（①と同じ）
+            // 待機②
             if (waitTime > 0f)
                 yield return new WaitForSeconds(waitTime);
         }
     }
 
-    /// <summary>
-    /// 初期スケールを基準に、scaleRatio（0〜1）に応じて補間。
-    /// </summary>
     private IEnumerator ScaleTo(float scaleRatio, float duration, System.Action beforeZeroAction = null)
     {
         Vector3 startScale = transform.localScale;
@@ -76,7 +77,6 @@ public class ScaleLooper : MonoBehaviour
             transform.localScale = Vector3.Lerp(startScale, targetScale, t);
             elapsed += Time.deltaTime;
 
-            // 95% 進んだあたりで1回だけ実行
             if (!actionInvoked && t >= 0.95f && beforeZeroAction != null)
             {
                 beforeZeroAction.Invoke();

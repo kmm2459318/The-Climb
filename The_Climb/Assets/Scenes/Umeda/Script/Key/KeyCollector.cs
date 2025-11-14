@@ -50,10 +50,11 @@ public class KeyCollector : MonoBehaviour
         if (key.keyCreated) return;
 
         key.currentFragments++;
-        Debug.Log($"{key.keyID}: 鍵の欠片 {key.currentFragments}/{key.requiredFragments}");
+        Debug.Log($"[{name}] {key.keyID}: {key.currentFragments}/{key.requiredFragments} に増えた");
 
         if (key.currentFragments >= key.requiredFragments)
         {
+            Debug.Log($"[{name}] → 条件達成！ CreateKey を実行");
             CreateKey(key);
         }
     }
