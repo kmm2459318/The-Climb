@@ -64,7 +64,7 @@ public class Player_Bomb : MonoBehaviour
         switch (obj.tag)
         {
           case "BreakingWall":
-            Destroy(gameObject);
+            Destroy(obj);
             Debug.Log("壁を破壊しました");    
            break;
           
