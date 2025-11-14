@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TheClimb.UniversalGravity;
 using TheClimb.Item;
+using TheClimb.Player;
 
 
 namespace TheClimb.Core
@@ -13,7 +14,8 @@ namespace TheClimb.Core
         [SerializeField] CoroutineRunner coroutineRunner;    //  コルーチンランナー
         private void Awake()
         {
-            inpactBallController.Initialize(_gravitationTargetStatusBlock, _imapctBallStatsus, coroutineRunner);    //  衝撃球コントローラー初期化
+            Debug.Log(PlayerContext.Instance._PlayerDataProvider);
+            inpactBallController.Initialize(_gravitationTargetStatusBlock, _imapctBallStatsus, coroutineRunner, PlayerContext.Instance._PlayerDataProvider);    //  衝撃球コントローラー初期化
         }
     }
 }
