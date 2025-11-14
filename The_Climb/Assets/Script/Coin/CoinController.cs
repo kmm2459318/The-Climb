@@ -4,11 +4,16 @@ using TMPro;
 public class CoinController : MonoBehaviour
 {
     [Header("回転設定")]
-    public float rotationSpeed = 90f;
+    public float rotationSpeed = -180f;
 
     [Header("コイン取得設定")]
     public AudioClip pickupSound;
-    public float respawnTime = -1f;
+
+    [Tooltip("コインをリスポーンさせるかどうか（規定：オン）")]
+    public bool enableRespawn = true;   // ★ 追加：リスポーンのオン／オフ切り替え
+
+    [Tooltip("リスポーンまでの時間（秒）")]
+    public float respawnTime = 20f;      // ★ 規定値を適当な秒数に変更（任意）
 
     [Header("UI設定（任意）")]
     public TextMeshProUGUI coinText;
@@ -48,7 +53,6 @@ public class CoinController : MonoBehaviour
             float distance = Vector3.Distance(transform.position, player.position);
             if (distance <= pickupRadius)
             {
-                //Debug.Log("半径0.5m以内にプレイヤーが入りました");
                 CollectCoin();
             }
         }
@@ -68,7 +72,8 @@ public class CoinController : MonoBehaviour
         foreach (var r in myRenderers)
             r.enabled = false;
 
-        if (respawnTime > 0)
+        // ★ リスポーンオンなら再出現、オフなら削除
+        if (enableRespawn && respawnTime > 0)
         {
             Invoke(nameof(Respawn), respawnTime);
         }
@@ -97,5 +102,4 @@ public class CoinController : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, pickupRadius);
     }
-
 }

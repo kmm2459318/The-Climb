@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// 光や特定のトリガーに反応して、指定ブロック群の表示・当たり判定を切り替える。
-/// GameObject自体は無効化せず、RendererとColliderだけを切り替える軽量版。
+/// 複数のトリガーコライダーに対応。少なくとも1つが触れている間は有効化され続ける。
 /// </summary>
 [DisallowMultipleComponent]
 public class TriggerBlockActivator : MonoBehaviour
@@ -13,19 +14,23 @@ public class TriggerBlockActivator : MonoBehaviour
     [Header("反応させるレイヤー")]
     public LayerMask detectableLayers;
 
+    // 🔸 各ブロックごとに「何個のコライダーが触れているか」を記録
+    private Dictionary<GameObject, int> activeTriggerCounts = new Dictionary<GameObject, int>();
+
     private void Start()
     {
-        // ✅ 初期状態：すべて非表示・当たり判定オフ
+        // ✅ 初期状態：すべて非表示
         if (targetBlocks != null)
         {
             foreach (var block in targetBlocks)
             {
                 if (block == null) continue;
                 SetBlockVisible(block, false);
+                activeTriggerCounts[block] = 0;
             }
         }
 
-        // ✅ Triggerが機能するようにRigidbodyを確認
+        // ✅ Rigidbody確認（Trigger動作用）
         Collider col = GetComponent<Collider>();
         if (col != null && col.isTrigger && GetComponent<Rigidbody>() == null)
         {
@@ -37,23 +42,19 @@ public class TriggerBlockActivator : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & detectableLayers) == 0) return;
-
-        // ✅ 有効化
-        SetBlocksVisible(true);
+        UpdateBlockState(true);
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (((1 << other.gameObject.layer) & detectableLayers) == 0) return;
-
-        // ✅ 無効化
-        SetBlocksVisible(false);
+        UpdateBlockState(false);
     }
 
-    // -----------------------------------------
-    // 個々のブロックの表示・判定を切り替え
-    // -----------------------------------------
-    private void SetBlocksVisible(bool visible)
+    // ------------------------------------------------------
+    // トリガー接触カウントを更新
+    // ------------------------------------------------------
+    private void UpdateBlockState(bool isEntering)
     {
         if (targetBlocks == null) return;
 
@@ -61,35 +62,46 @@ public class TriggerBlockActivator : MonoBehaviour
         {
             if (block == null) continue;
 
-            // 🟡 無効化前に上のRigidbodyを起こす
-            if (!visible)
+            // カウント更新
+            if (!activeTriggerCounts.ContainsKey(block))
+                activeTriggerCounts[block] = 0;
+
+            if (isEntering)
             {
-                WakeUpObjectsAbove(block);
+                activeTriggerCounts[block]++;
+            }
+            else
+            {
+                activeTriggerCounts[block] = Mathf.Max(0, activeTriggerCounts[block] - 1);
             }
 
-            SetBlockVisible(block, visible);
+            // カウント結果に応じて切り替え
+            bool shouldBeVisible = activeTriggerCounts[block] > 0;
+            SetBlockVisible(block, shouldBeVisible);
+
+            // 無効化前に上のRigidbodyを起こす（消える直前のみ）
+            if (!shouldBeVisible)
+                WakeUpObjectsAbove(block);
         }
     }
 
-    // -----------------------------------------
-    // RendererとColliderを切り替える
-    // -----------------------------------------
+    // ------------------------------------------------------
+    // Renderer と Collider を切り替える
+    // ------------------------------------------------------
     private void SetBlockVisible(GameObject block, bool visible)
     {
-        // RendererをOFF/ON
         Renderer renderer = block.GetComponent<Renderer>();
         if (renderer != null)
             renderer.enabled = visible;
 
-        // ColliderをOFF/ON
         Collider collider = block.GetComponent<Collider>();
         if (collider != null)
             collider.enabled = visible;
     }
 
-    // -----------------------------------------
-    // ブロックが消えるとき、上のRigidbodyを起こす
-    // -----------------------------------------
+    // ------------------------------------------------------
+    // 上にある Rigidbody を起こす（ブロックが消える時）
+    // ------------------------------------------------------
     private void WakeUpObjectsAbove(GameObject block)
     {
         Collider[] hits = Physics.OverlapBox(
