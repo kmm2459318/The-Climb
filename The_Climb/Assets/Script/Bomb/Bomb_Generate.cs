@@ -9,7 +9,8 @@ public class Bomb_Generate : MonoBehaviour
     [SerializeField] private PlayerMove p_move;
     [SerializeField] private Transform left_pos;
     [SerializeField] private Transform right_pos;
-     public int shoot_power = 10000;
+    public int shoot_power = 10000;
+    
 
     //プレイヤーが最後に向いた方向
     private int last_Direction = 0;

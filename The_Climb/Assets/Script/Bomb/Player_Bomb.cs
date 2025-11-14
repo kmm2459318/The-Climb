@@ -8,6 +8,7 @@ public class Player_Bomb : MonoBehaviour
     [SerializeField] float b_radius = 5;
     [SerializeField] float b_upward = 0;
     [SerializeField] float b_time = 3;
+    public int b_damage = 5;
 
     private float b_explosion = 0;
     private bool exploded = false;
@@ -71,7 +72,7 @@ public class Player_Bomb : MonoBehaviour
             var enemy = obj.GetComponent<Enemy>();
             if (enemy != null)
             {
-                  enemy.Die();
+                    enemy.TakeDamage(b_damage);
                   Debug.Log("爆風ヒット");
             }
             break;

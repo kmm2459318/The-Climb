@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     private EnemyGeneration Generate;　　　//エネミー出現機能
     private EnemyDataBase dbManager;　　　 //エネミーのやっつけた数の判定
     public DropTable dropTable;            //ドロップアイテム
+    public int e_HP = 0;                   
 
     private bool e_isDead = false;                 //死んだときの2重処理防止 
 
@@ -28,9 +29,25 @@ public class Enemy : MonoBehaviour
     public void SetUp(EnemyStats data , EnemyGeneration Spawner)
     {
         stats = data;
+        e_HP = stats.HP;
         Generate = Spawner;
 
         Debug.Log($"{stats.EnemyName}（HP:{stats.HP} 攻撃:{stats.AttackPower}）生成");
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if(e_isDead) return;
+        if(e_HP > damage)
+        {
+            e_HP -= damage;
+            Debug.Log($"{stats.EnemyName}がダメージ{damage}を受けた残りHP{e_HP}");
+        }
+
+        else if(e_HP <= damage)
+        {
+            Die();
+        }
     }
 
     //死んだ際の処理
