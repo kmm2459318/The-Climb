@@ -25,7 +25,7 @@ public class WarpDoor : MonoBehaviour
         {
             if (canGoBack)
             {
-                player.GetComponent<Rigidbody>().MovePosition(goToDoor.transform.position + new Vector3(0f, -1f, 0f));
+                player.GetComponent<Rigidbody>().MovePosition(goToDoor.transform.position + new Vector3(0f, -1f, -0.5f));
             }
             else
             {
