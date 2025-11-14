@@ -1,14 +1,23 @@
 ﻿using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MovingPlatform : MonoBehaviour
 {
     public enum MoveDirection
     {
-        Horizontal,
-        Vertical,
+        Horizontal,  // 横方向
+        Vertical,    // 縦方向
     }
 
+    public enum StartDirection
+    {
+        Positive,  // 右or上から動く
+        Negative,  // 左or下から動く
+    }
+
+    [Header("移動設定")]
     public MoveDirection Direction = MoveDirection.Horizontal;
+    public StartDirection StartMoveDirection = StartDirection.Positive;
     public float MoveDistance = 3f;
     public float MoveSpeed = 2f;
     public float MovementInfluence = 0.5f;
@@ -21,7 +30,7 @@ public class MovingPlatform : MonoBehaviour
     private Vector3 PreviousPosition;
     private bool IsPlayerOnTop = false;
 
-    private void Start()
+    private void Awake()
     {
         StartPosition = transform.position;
         Rigidbody = GetComponent<Rigidbody>();
@@ -32,7 +41,15 @@ public class MovingPlatform : MonoBehaviour
     {
         ElapsedTime += Time.fixedDeltaTime;
 
+        // 横移動ならx軸、縦移動ならy軸
         Vector3 moveAxis = (Direction == MoveDirection.Horizontal) ? Vector3.right : Vector3.up;
+
+        // 方向がNegativeの場合、-1倍にして逆方向にする
+        if (StartMoveDirection == StartDirection.Negative)
+        {
+            moveAxis *= -1f;
+        }
+
         float offset = Mathf.PingPong(ElapsedTime * MoveSpeed, MoveDistance);
         Vector3 targetPos = StartPosition + moveAxis * offset;
 
