@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Player_Bomb : MonoBehaviour
 {
@@ -26,36 +27,60 @@ public class Player_Bomb : MonoBehaviour
     void Explosion()
     {
         b_pos = transform.position;
-
-        if (b_particle != null)
-            b_particle.Play();
-
-        Collider[] hitColliders = Physics.OverlapSphere(b_pos, b_radius);
-        for (int i = 0; i < hitColliders.Length; i++)
-        {
-            var obj = hitColliders[i].gameObject;
-            var rb = hitColliders[i].GetComponent<Rigidbody>();
-            if (rb)
-            {
-                //rigdbodyを持つobjectを吹き飛ばす
-                rb.AddExplosionForce(b_force, b_pos, b_radius, b_upward, ForceMode.Impulse);
-
-                //壁を壊す
-                if (obj.CompareTag("BreakingWall"))
-                {
-                    Destroy(obj);
-                    Debug.Log($"{obj.name}を破棄しました");
-                }
-
-                ////エネミーを消す
-                //else if ()
-                //{
-
-                //}
-            }
-        }
-
+        PlayParticle();
+        ApplyExplosionForce();
         Debug.Log("爆発しました");
-        Destroy(gameObject); // 1秒後に削除
+        Destroy(gameObject); //削除
+    }
+
+    //パーティクル
+    void PlayParticle()
+    {
+        if(b_particle != null)
+        b_particle.Play();
+    }
+
+    //爆風
+    void ApplyExplosionForce()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(b_pos, b_radius);
+        
+        foreach(var hit in hitColliders)
+        {
+            var obj = hit.gameObject;
+            var rb = obj.GetComponent<Rigidbody>();
+
+            if (rb == null) continue;
+            rb.AddExplosionForce(b_force, b_pos, b_radius, b_upward, ForceMode.Impulse);
+
+            ObjExplosionTarget(obj);
+        }
+    }
+
+    //破棄するobject
+    void ObjExplosionTarget(GameObject obj)
+    {
+        switch (obj.tag)
+        {
+          case "BreakingWall":
+            Destroy(gameObject);
+            Debug.Log("壁を破壊しました");    
+           break;
+          
+          case "Enemy":
+            var enemy = obj.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                  enemy.Die();
+                  Debug.Log("爆風ヒット");
+            }
+            break;
+
+            default: 
+            //何もしない
+            break;
+        }
+        
+
     }
 }

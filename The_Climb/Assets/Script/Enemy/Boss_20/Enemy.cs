@@ -11,6 +11,8 @@ public class Enemy : MonoBehaviour
     private EnemyDataBase dbManager;　　　 //エネミーのやっつけた数の判定
     public DropTable dropTable;            //ドロップアイテム
 
+    private bool e_isDead = false;                 //死んだときの2重処理防止 
+
     private void Start()
     {
         // 同じシーン内にある EnemyDataBase を探して取得
@@ -31,21 +33,33 @@ public class Enemy : MonoBehaviour
         Debug.Log($"{stats.EnemyName}（HP:{stats.HP} 攻撃:{stats.AttackPower}）生成");
     }
 
-    //プレイヤーと接触した際の処理
-    private void OnTriggerEnter(Collider other)
+    //死んだ際の処理
+    public void Die()
     {
-        if (other.CompareTag("Player"))
-        {
-      
-            dbManager.AddOrUpdateKillData(stats, areaName);
+        if (e_isDead) return; // 二重処理防止
+        e_isDead = true;
 
-            Generate.RemoveEnemy(gameObject);
-            Destroy(gameObject);
-            if (stats.Period == "過去")
-            {
-                DropItem();
-            }
+        // 撃破数を記録
+        if (dbManager != null)
+        {
+            dbManager.AddOrUpdateKillData(stats, areaName);
         }
+
+        // 生成元に削除を通知
+        if (Generate != null)
+        {
+            Generate.RemoveEnemy(gameObject);
+        }
+
+        // ドロップ判定
+        if (stats != null && stats.Period == "過去")
+        {
+            DropItem();
+        }
+
+        Debug.Log($"{stats?.EnemyName ?? "不明な敵"}が倒されました");
+        Destroy(gameObject);
+        e_isDead = false;
     }
 
     void DropItem()
