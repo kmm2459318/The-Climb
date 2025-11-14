@@ -5,16 +5,22 @@ public class MovingPlatform : MonoBehaviour
 {
     public enum MoveDirection
     {
-        Horizontal,
-        Vertical,
+        Horizontal,  // 横方向
+        Vertical,    // 縦方向
     }
 
+    public enum StartDirection
+    {
+        Positive,  // 右or上から動く
+        Negative,  // 左or下から動く
+    }
+
+    [Header("移動設定")]
     public MoveDirection Direction = MoveDirection.Horizontal;
+    public StartDirection StartMoveDirection = StartDirection.Positive;
     public float MoveDistance = 3f;
     public float MoveSpeed = 2f;
     public float MovementInfluence = 0.5f;
-
-    //[SerializeField] private TimeGimmickBridge Bridge; // スイッチと状態共有用ブリッジ
 
     private Vector3 StartPosition;
     private Rigidbody Rigidbody;
@@ -23,35 +29,27 @@ public class MovingPlatform : MonoBehaviour
 
     private Vector3 PreviousPosition;
     private bool IsPlayerOnTop = false;
-    //private bool IsActive = false;
 
     private void Awake()
     {
         StartPosition = transform.position;
         Rigidbody = GetComponent<Rigidbody>();
         PreviousPosition = transform.position;
-        //Bridge = GetComponent<TimeGimmickBridge>();
-
-        //if (Bridge != null)
-        //{
-        //    Bridge.OnStateApplied.AddListener(ApplyState);
-        //}
-    }
-
-    private void Start()
-    {
-        //シーン開始時に保存された状態を反映
-        //Bridge?.ApplySavedState();
     }
 
     void FixedUpdate()
     {
-        // スイッチが押されていない間は停止
-        //if (!IsActive) return; 
-
         ElapsedTime += Time.fixedDeltaTime;
 
+        // 横移動ならx軸、縦移動ならy軸
         Vector3 moveAxis = (Direction == MoveDirection.Horizontal) ? Vector3.right : Vector3.up;
+
+        // 方向がNegativeの場合、-1倍にして逆方向にする
+        if (StartMoveDirection == StartDirection.Negative)
+        {
+            moveAxis *= -1f;
+        }
+
         float offset = Mathf.PingPong(ElapsedTime * MoveSpeed, MoveDistance);
         Vector3 targetPos = StartPosition + moveAxis * offset;
 
@@ -100,10 +98,4 @@ public class MovingPlatform : MonoBehaviour
             }
         }
     }
-
-    //private void ApplyState(bool isActive)
-    //{
-    //    IsActive = isActive;
-    //    Debug.Log("動く足場が起動");
-    //}
 }
