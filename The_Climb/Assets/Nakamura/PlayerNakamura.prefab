@@ -189,8 +189,6 @@ GameObject:
   - component: {fileID: 7246862423334343013}
   - component: {fileID: 7755821025150218377}
   - component: {fileID: 6990288773779159728}
-  - component: {fileID: 3156544070578205680}
-  - component: {fileID: 6785163570187635550}
   m_Layer: 6
   m_Name: PlayerModel
   m_TagString: Player
@@ -441,6 +439,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   knockBacking: 0
   knockBackPower: 7
+  coolTime: 0
 --- !u!114 &2892514810113950073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -453,6 +452,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a657b268b60d034bb556ab9fd6a5245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buddyController: {fileID: 0}
   nearBuddy: 0
 --- !u!114 &9178113623799957216
 MonoBehaviour:
@@ -569,31 +569,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheClimb.Player.PlayerContext
   playerTransform: {fileID: 1494689640004218747}
---- !u!114 &3156544070578205680
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2205381300897396991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e0b6a1280f20fe4bb7dbcf3d7064256, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheClimb.UniversalGravity.GravitationTargetStatusHolder
-  gravitationTargetStatusBlock: {fileID: 11400000, guid: 7bc3f1a990e20d241994d626fc00dc43, type: 2}
---- !u!114 &6785163570187635550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2205381300897396991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6724aa6f3a00cad4ea618628700d7589, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheClimb.UniversalGravity.GravitationTargetRegister
+  playerRigidbody: {fileID: 0}
 --- !u!1 &2272384167279023827
 GameObject:
   m_ObjectHideFlags: 0
