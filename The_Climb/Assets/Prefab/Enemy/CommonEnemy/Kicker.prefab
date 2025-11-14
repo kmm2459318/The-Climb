@@ -18,6 +18,10 @@ GameObject:
   - component: {fileID: 5604092409485144573}
   - component: {fileID: 6644996670772435005}
   - component: {fileID: 1102272410696194599}
+  - component: {fileID: 8496664327484570840}
+  - component: {fileID: 3470806920329480214}
+  - component: {fileID: 5025126869169040196}
+  - component: {fileID: 3541443482733406164}
   m_Layer: 0
   m_Name: Kicker
   m_TagString: Untagged
@@ -68,6 +72,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -89,6 +95,7 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -204,3 +211,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77bac0960bde31e4c9bdbc9fd3286b01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8496664327484570840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351189025260157329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0605b0a1126ea24cb3e4592163bcd89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollideEnemyNotifier
+--- !u!114 &3470806920329480214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351189025260157329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03cc33dcc96afc24889db1d5e30e3f7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCollisionNotifier
+--- !u!114 &5025126869169040196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351189025260157329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2654b461fb92e4bb7af9f2f0ffe221, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterStateVisualizer
+  MoveDirColor: {r: 0, g: 1, b: 0, a: 1}
+  MoveDirection: {x: 1, y: 0, z: 0}
+  LineLength: 2
+--- !u!114 &3541443482733406164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351189025260157329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31fd8a2ae7060a44f907f83e92c81846, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  areaName: "\u8349\u539F"
+  dropTable: {fileID: 11400000, guid: 7c65fcef0369fc0448fe711871ba2447, type: 2}

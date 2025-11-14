@@ -17,8 +17,8 @@ public class StalkerHandController : MonoBehaviour
     private Transform childStalker3;
     private Transform[] stalkers = new Transform[4];
 
-    private enum stalkerHand {wait, stalk, stop};
-    private stalkerHand stalkerState = stalkerHand.stalk;
+    //private enum stalkerHand {wait, stalk, stop};
+    //private stalkerHand stalkerState = stalkerHand.stalk;
 
     private float waitTime = 1.0f;       //行動：Waitの時間
     private float stalkTime = 2.0f;      //行動：Stalkの時間
@@ -82,7 +82,7 @@ public class StalkerHandController : MonoBehaviour
             //行動：Wait
             if (stalkerTimer <= waitTime)
             {
-                stalkerState = stalkerHand.wait;
+                //stalkerState = stalkerHand.wait;
 
                 //LookAt時にZ前→X前の補正を入れて狙いを定める
                 mainStalker.transform.LookAt(stalkTarget);
@@ -90,7 +90,7 @@ public class StalkerHandController : MonoBehaviour
             }
             else if (stalkerTimer <= waitTime + stalkTime) //行動：Stalk
             {
-                stalkerState = stalkerHand.stalk;
+                //stalkerState = stalkerHand.stalk;
 
                 //ターゲットまでの方向ベクトル
                 Vector3 targetDir = (stalkTarget - mainStalker.transform.position).normalized;
@@ -112,7 +112,7 @@ public class StalkerHandController : MonoBehaviour
             }
             else //Stop
             {
-                stalkerState = stalkerHand.stop;
+                //stalkerState = stalkerHand.stop;
                 StartCoroutine(ChildPosReset());
 
                 if (stalkerTimer > waitTime + stalkTime + stopTime)
@@ -121,8 +121,8 @@ public class StalkerHandController : MonoBehaviour
                 }
             }
 
-            //他のストーカーハンドが捕まえたら消滅
-            if (buddyController.beingKidnapped)
+            //他のストーカーハンドが捕まえたら、もしくはプレイヤーと離れすぎたら消滅
+            if (buddyController.beingKidnapped || (Vector3.Distance(mainStalker.position, player.transform.position) > 35f))
                 Destroy(gameObject);
         }
 
