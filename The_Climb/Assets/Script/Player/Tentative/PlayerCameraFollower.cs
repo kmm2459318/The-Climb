@@ -2,15 +2,32 @@
 
 public class PlayerCameraFollower : MonoBehaviour
 {
-    [Header("追従させるカメラ")]
+    public enum FollowMode
+    {
+        Tight,   // カッチリ追従
+        Smooth   // ふわっと追従＋ズーム効果付き
+    }
+
+    [Header("追従設定")]
     public Camera targetCamera;
+    public FollowMode followMode = FollowMode.Tight;
 
-    [Header("各軸の追従を有効にするか")]
-    public bool followX = true;
-    public bool followY = true;
-    public bool followZ = true;
+    [Header("オフセット設定")]
+    public Vector3 offset = new Vector3(0, 3, -5);
 
-    private Vector3 initialOffset;
+    [Header("スムーズ設定")]
+    public float smoothSpeed = 2f;           // 追従スピード
+    public float zoomOutDistance = 0f;       // 動いたときのズームアウト距離
+    public float zoomSpeed = 2f;             // ズーム変化スピード
+    public float heightFollowSpeed = 10f;     // 高さ追従のスピード（ジャンプ対策）
+
+    [Header("移動判定")]
+    public float moveThreshold = 0.05f;      // 動いてるとみなす速度
+
+    private Vector3 velocity;                // 位置補間用
+    private Vector3 currentOffset;
+    private Vector3 lastPosition;
+    private float zoomT = 0f;                // ズーム補間用
 
     private void Start()
     {
@@ -20,28 +37,68 @@ public class PlayerCameraFollower : MonoBehaviour
             return;
         }
 
-        // 初期オフセット（カメラ - プレイヤーの差）を保存
-        initialOffset = targetCamera.transform.position - transform.position;
+        lastPosition = transform.position;
+        currentOffset = offset;
     }
 
     private void LateUpdate()
     {
         if (targetCamera == null) return;
 
-        Vector3 targetPosition = targetCamera.transform.position;
+        switch (followMode)
+        {
+            case FollowMode.Tight:
+                FollowTight();
+                break;
 
-        // プレイヤーの位置にオフセットを足す（各軸ごとに条件分岐）
-        Vector3 desiredPosition = targetPosition;
+            case FollowMode.Smooth:
+                FollowSmooth();
+                break;
+        }
 
-        if (followX)
-            desiredPosition.x = transform.position.x + initialOffset.x;
+        lastPosition = transform.position;
+    }
 
-        if (followY)
-            desiredPosition.y = transform.position.y + initialOffset.y;
+    // ======================
+    // カッチリ追従モード
+    // ======================
+    private void FollowTight()
+    {
+        targetCamera.transform.position = transform.position + offset;
+    }
 
-        if (followZ)
-            desiredPosition.z = transform.position.z + initialOffset.z;
+    // ======================
+    // ふわっと追従モード
+    // ======================
+    private void FollowSmooth()
+    {
+        // --- プレイヤー移動判定 ---
+        Vector3 moveDelta = transform.position - lastPosition;
+        bool isMoving = moveDelta.magnitude > moveThreshold;
 
-        targetCamera.transform.position = desiredPosition;
+        // --- ズーム補間 ---
+        float targetZoomT = isMoving ? 1f : 0f;
+        zoomT = Mathf.Lerp(zoomT, targetZoomT, Time.deltaTime * zoomSpeed);
+
+        // --- オフセット調整（ズームアウト）---
+        Vector3 zoomedOffset = offset + Vector3.back * zoomOutDistance * zoomT;
+
+        // --- 高さのふわっと追従 ---
+        float targetHeight = transform.position.y + zoomedOffset.y;
+        float newY = Mathf.Lerp(targetCamera.transform.position.y, targetHeight, Time.deltaTime * heightFollowSpeed);
+
+        // --- カメラの目標位置 ---
+        Vector3 targetPos = new Vector3(
+            transform.position.x + zoomedOffset.x,
+            newY,
+            transform.position.z + zoomedOffset.z
+        );
+
+        // --- スムーズに移動 ---
+        targetCamera.transform.position = Vector3.Lerp(
+            targetCamera.transform.position,
+            targetPos,
+            Time.deltaTime * smoothSpeed
+        );
     }
 }
