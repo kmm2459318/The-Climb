@@ -2,7 +2,7 @@
 
 public class SwitchReceiver : MonoBehaviour
 {
-    [SerializeField] private TimeGimmickBridge Bridge;  // 保存状態ブリッジ
+     private TimeGimmickBridge Bridge;  // 保存状態ブリッジ
 
     [SerializeField] private GameObject InactiveObject; //スイッチ未作動時に表示するオブジェクト
     [SerializeField] private GameObject ActiveObject;   //スイッチ作動後に表示するオブジェクト
@@ -21,6 +21,11 @@ public class SwitchReceiver : MonoBehaviour
 
     // 保存値を適用
     void OnEnable()
+    {
+        Bridge?.ApplySavedState();
+    }
+
+    public void ApplyCurrentState()
     {
         Bridge?.ApplySavedState();
     }
