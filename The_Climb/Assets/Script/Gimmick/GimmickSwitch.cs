@@ -2,7 +2,8 @@
 
 public class GimmickSwitch : MonoBehaviour
 {
-    [SerializeField] private TimeGimmickBridge Bridge;        // 状態保存ブリッジ
+    private TimeGimmickBridge Bridge;        // 状態保存ブリッジ
+    [SerializeField] private SwitchReceiver Receiver;
     [SerializeField] private KeyCode ActivateKey = KeyCode.E; // インタラクトキー
 
     [Header("必要なアイテム情報")]
@@ -20,7 +21,7 @@ public class GimmickSwitch : MonoBehaviour
     private void Awake()
     {
         // Bridge 自動取得
-        if (Bridge == null) Bridge = GetComponent<TimeGimmickBridge>();
+        if (Bridge   == null) Bridge = GetComponent<TimeGimmickBridge>();
 
         // データベース自動取得
         ItemDB = FindObjectOfType<ItemDataBase>();
@@ -88,6 +89,11 @@ public class GimmickSwitch : MonoBehaviour
     {
         IsOn = true;                    // 押された状態にする
         Bridge?.ReportState(true);      // 状態を保存
+
+        if (Receiver)
+        {
+            Receiver.ApplyCurrentState();
+        }
 
         // 見た目を切り替える
         if (SwitchOff != null && SwitchOn != null)

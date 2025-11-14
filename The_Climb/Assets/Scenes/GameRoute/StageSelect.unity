@@ -3770,6 +3770,76 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 901712297}
   m_CullTransparentMesh: 1
+--- !u!1 &943155714
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 943155717}
+  - component: {fileID: 943155716}
+  - component: {fileID: 943155715}
+  m_Layer: 0
+  m_Name: MimicSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &943155715
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943155714}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 10, z: 1}
+  m_Center: {x: 0, y: 4.5, z: 0}
+--- !u!114 &943155716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943155714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 624a36813bbecda419fbc193c937dab8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MimicSpawner
+  mimicPrefab: {fileID: 5002942218726689140, guid: a98bfaac2d6b89742a6c4deee81c138c, type: 3}
+  spawnCount: 10
+  spawnInterval: 2
+  baseDelay: 2
+--- !u!4 &943155717
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943155714}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &952210617
 GameObject:
   m_ObjectHideFlags: 0
@@ -4354,13 +4424,49 @@ PrefabInstance:
       value: PlayerUmeda
       objectReference: {fileID: 0}
     - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
       propertyPath: followZ
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: offset.y
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: offset.z
+      value: -8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: followMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: smoothSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: zoomRange.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: zoomRange.y
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 108918842}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: zoomOutDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: heightFollowSpeed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8595962391126085386, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
       propertyPath: m_Constraints
       value: 112
@@ -11017,3 +11123,4 @@ SceneRoots:
   - {fileID: 1922480263}
   - {fileID: 1306985822}
   - {fileID: 1728288522}
+  - {fileID: 943155717}
