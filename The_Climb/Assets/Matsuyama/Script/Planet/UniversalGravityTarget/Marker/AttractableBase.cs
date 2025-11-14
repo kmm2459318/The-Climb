@@ -12,7 +12,6 @@ namespace TheClimb.Astral
         public virtual void OnAttract()    //  引き寄せがスタートした瞬間の処理
         {
             curretStateID = GravitationTargetStateID.Attracting;
-            Debug.Log("ss");
         }
     }
 }
