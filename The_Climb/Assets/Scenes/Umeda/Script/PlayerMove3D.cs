@@ -80,7 +80,7 @@ public class PlayerMove3D : MonoBehaviour, IConveyorReceiver
         else if (backMoveAction.action.IsPressed()) moveInputZ = -1f;
         else moveInputZ = 0f;
 
-        // ★ 斜め入力時の速度を一定に保つ
+        // 斜め入力を正規化（一定速度）
         Vector3 currentInput = new Vector3(moveInput, 0f, moveInputZ);
         if (currentInput.sqrMagnitude > 1f)
             currentInput.Normalize();
@@ -88,7 +88,7 @@ public class PlayerMove3D : MonoBehaviour, IConveyorReceiver
         moveInput = currentInput.x;
         moveInputZ = currentInput.z;
 
-        // 入力があれば向きを更新
+        // 向きを記録
         if (currentInput.sqrMagnitude > 0f)
             lastFacingDirection = currentInput;
     }
@@ -101,22 +101,25 @@ public class PlayerMove3D : MonoBehaviour, IConveyorReceiver
 
     private void GroundPlayerMove()
     {
-        if (OnBelt) RigidBody.AddForce(BeltVelocity, ForceMode.Acceleration);
+        if (OnBelt)
+            RigidBody.AddForce(BeltVelocity, ForceMode.Acceleration);
 
-        Vector3 force = new Vector3(moveInput, 0f, moveInputZ) * groundMoveForce;
-        RigidBody.AddForce(force);
+        Vector3 inputDir = new Vector3(moveInput, 0f, moveInputZ);
+        if (inputDir.sqrMagnitude > 1f)
+            inputDir.Normalize();
 
-        Vector3 vel = RigidBody.linearVelocity;
-        vel.x = Mathf.Clamp(force.x * Time.deltaTime * 1000f, -groundMaxSpeed, groundMaxSpeed);
-        vel.z = Mathf.Clamp(force.z * Time.deltaTime * 1000f, -groundMaxSpeed, groundMaxSpeed);
-        RigidBody.linearVelocity = new Vector3(vel.x, RigidBody.linearVelocity.y, vel.z);
+        Vector3 targetVelocity = inputDir * groundMaxSpeed;
+        Vector3 currentVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, RigidBody.linearVelocity.z);
+        Vector3 velocityChange = targetVelocity - currentVelocity;
+
+        RigidBody.AddForce(velocityChange * groundMoveForce, ForceMode.VelocityChange);
     }
 
     private void AirPlayerMove()
     {
         Vector3 inputDir = new Vector3(moveInput, 0f, moveInputZ);
         if (inputDir.sqrMagnitude > 1f)
-            inputDir.Normalize(); // ★ こちらも安全のため正規化
+            inputDir.Normalize();
 
         Vector3 force = inputDir * airMoveForce;
 
@@ -142,9 +145,18 @@ public class PlayerMove3D : MonoBehaviour, IConveyorReceiver
         this.BeltVelocity = velocity;
     }
 
-    // ============================================================
-    // ✅ PlayerAnimationUmeda 用の入力取得関数を追加
-    // ============================================================
+    // ✅ Mimic等の外部から速度をリセットできるようにする
+    public void ResetHorizontalVelocity(float yKeepRatio = 0.5f)
+    {
+        if (RigidBody != null)
+        {
+            Vector3 v = RigidBody.linearVelocity;
+            RigidBody.linearVelocity = new Vector3(0f, v.y * yKeepRatio, 0f);
+            RigidBody.angularVelocity = Vector3.zero;
+        }
+    }
+
+    // ✅ PlayerAnimationUmeda 用の入力取得関数
     public Vector2 GetMoveInput()
     {
         float x = 0f;
@@ -155,7 +167,6 @@ public class PlayerMove3D : MonoBehaviour, IConveyorReceiver
         if (forwardMoveAction != null && forwardMoveAction.action.IsPressed()) z += 1f;
         if (backMoveAction != null && backMoveAction.action.IsPressed()) z -= 1f;
 
-        // ★ 正規化して常に等速
         Vector2 input = new Vector2(x, z);
         if (input.sqrMagnitude > 1f)
             input.Normalize();

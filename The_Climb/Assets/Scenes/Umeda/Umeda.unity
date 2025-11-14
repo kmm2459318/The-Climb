@@ -7680,9 +7680,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 1598194268}
-  followX: 1
-  followY: 1
-  followZ: 0
+  followMode: 0
+  offset: {x: 0, y: 3, z: -5}
+  smoothSpeed: 2
+  zoomOutDistance: 0
+  zoomSpeed: 2
+  heightFollowSpeed: 10
+  moveThreshold: 0.05
 --- !u!54 &246657525 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 2574114015764632309, guid: c2594c2c89c3c214b9508e3921196c18, type: 3}
@@ -20249,9 +20253,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 444365352}
-  followX: 1
-  followY: 1
-  followZ: 0
+  followMode: 0
+  offset: {x: 0, y: 3, z: -5}
+  smoothSpeed: 2
+  zoomOutDistance: 0
+  zoomSpeed: 2
+  heightFollowSpeed: 10
+  moveThreshold: 0.05
 --- !u!1 &714255975
 GameObject:
   m_ObjectHideFlags: 0
@@ -33885,9 +33893,29 @@ PrefabInstance:
       value: PlayerUmeda
       objectReference: {fileID: 0}
     - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: offset.z
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: followMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: smoothSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 1598194268}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: zoomOutDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6219830088225538872, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
+      propertyPath: heightFollowSpeed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 9030205953257870754, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -39786,9 +39814,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 456475467}
-  followX: 0
-  followY: 1
-  followZ: 0
+  followMode: 0
+  offset: {x: 0, y: 3, z: -5}
+  smoothSpeed: 2
+  zoomOutDistance: 0
+  zoomSpeed: 2
+  heightFollowSpeed: 10
+  moveThreshold: 0.05
 --- !u!1001 &1320014534
 PrefabInstance:
   m_ObjectHideFlags: 0
