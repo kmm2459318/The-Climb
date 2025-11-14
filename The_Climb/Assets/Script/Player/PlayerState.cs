@@ -188,7 +188,7 @@ public class PlayerState : MonoBehaviour
 
     private void PlayerDead()
     {
-        Debug.Log("栗松、帰国の準備をしろ。");
+        // Debug.Log("栗松、帰国の準備をしろ。");
     }
 
     private void OnTriggerEnter(Collider other)
