@@ -1,18 +1,16 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 
 [CreateAssetMenu(fileName = "EnemyStats", menuName = "Scriptable Objects/EnemyStats")]
 public class EnemyStats : ScriptableObject
 {
-    public int ID;                   //”Ô†
-    public string EnemyName;         //–¼‘O
-    public string Period;            //‘ã
-    public int HP;@@@@@@@     //‘Ì—Í
-    public int AttackPower;@@@@@//UŒ‚—Í
-    public float Speed;@@@@@@@//‘¬‚³
-    public GameObject EnemyPrefab;   //“G‚Ìƒ‚ƒfƒ‹
-    public AttackMethod[] Methods;   // UŒ‚‚Ì”z—ñ
-    public Defense[] Defenses;       // –hŒä‚Ì”z—ñ
+    public int ID;                   //ç•ªå·
+    public string EnemyName;         //åå‰
+    public string Period;            //æ™‚ä»£
+    public int HP;ã€€ã€€ã€€ã€€ã€€ã€€ã€€     //ä½“åŠ›
+    public int AttackPower;ã€€ã€€ã€€ã€€ã€€//æ”»æ’ƒåŠ›
+    public float Speed;ã€€ã€€ã€€ã€€ã€€ã€€ã€€//é€Ÿã•
+    public GameObject EnemyPrefab;   //æ•µã®ãƒ¢ãƒ‡ãƒ«
+    public AttackMethod[] Methods;   // æ”»æ’ƒã®é…åˆ—
+    public Defense[] Defenses;       // é˜²å¾¡ã®é…åˆ—
 }
-
-

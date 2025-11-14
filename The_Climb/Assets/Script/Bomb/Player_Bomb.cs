@@ -37,12 +37,21 @@ public class Player_Bomb : MonoBehaviour
             var rb = hitColliders[i].GetComponent<Rigidbody>();
             if (rb)
             {
+                //rigdbodyを持つobjectを吹き飛ばす
                 rb.AddExplosionForce(b_force, b_pos, b_radius, b_upward, ForceMode.Impulse);
+
+                //壁を壊す
                 if (obj.CompareTag("BreakingWall"))
                 {
                     Destroy(obj);
                     Debug.Log($"{obj.name}を破棄しました");
                 }
+
+                ////エネミーを消す
+                //else if ()
+                //{
+
+                //}
             }
         }
 

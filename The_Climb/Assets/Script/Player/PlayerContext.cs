@@ -8,6 +8,7 @@ namespace TheClimb.Player
         public Transform playerTransform;    //  プレイヤートランスフォーム
         public static PlayerContext Instance { get; private set; }              //  プロパティ
         public PlayerMove _PlayerMove{ get; private set; }          //  プロパティ
+        public PlayerState _PlayerState{ get; private set; }    //  プレイヤーStateインスタンス
         
         public IPlayerDataProvider _PlayerDataProvider { get; private set; }    //  プロパティ
 
@@ -27,6 +28,10 @@ namespace TheClimb.Player
         public void RegistPlayerMove(PlayerMove playerMove)    //  コントローラー登録メソッド
         {
             _PlayerMove = playerMove;
+        }
+        public void RegistPlayerState(PlayerState playerState)    //  コントローラー登録メソッド
+        {
+            _PlayerState = playerState;
         }
     }
 }
