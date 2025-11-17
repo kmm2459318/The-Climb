@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TheClimb.Player;
+using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -53,7 +54,7 @@ public class PlayerState : MonoBehaviour
 
     private void Awake()
     {
-        //PlayerContext.Instance.RegistController(this);
+        PlayerContext.Instance.RegistPlayerState(this);
     }
 
     void Start()
@@ -205,7 +206,7 @@ public class PlayerState : MonoBehaviour
 
     private void PlayerDead()
     {
-        Debug.Log("栗松、帰国の準備をしろ。");
+        // Debug.Log("栗松、帰国の準備をしろ。");
     }
 
     private void OnTriggerEnter(Collider other)

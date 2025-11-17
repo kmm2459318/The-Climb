@@ -1,17 +1,17 @@
-using SQLite4Unity3d;
+ï»¿using SQLite4Unity3d;
 
 public class EnemyKillData
 {
     [PrimaryKey, AutoIncrement]
-    public int ID { get; set; }               //© DB—p‚ÌˆêˆÓIDi©“®Ì”Ôj
+    public int ID { get; set; }               //â† DBç”¨ã®ä¸€æ„IDï¼ˆè‡ªå‹•æ¡ç•ªï¼‰
 
 
-    public int EnemyID         { get; set; }  //ƒGƒlƒ~[‚ÌID
-    public string EnemyName@  { get; set; }  //ƒGƒlƒ~[‚Ì–¼‘O
-    public string EnemyPeriod  { get; set; }  //ƒGƒlƒ~[‚Ì‘ã
-    public string AreaName     { get; set; }@//ƒGƒŠƒA‚Ì–¼‘O
-    public int KillCount       { get; set; }@//‚â‚ç‚ê‚½‰ñ”
-    public string LastKillTime { get; set; }  //ŠÔ
+    public int EnemyID         { get; set; }  //ã‚¨ãƒãƒŸãƒ¼ã®ID
+    public string EnemyNameã€€  { get; set; }  //ã‚¨ãƒãƒŸãƒ¼ã®åå‰
+    public string EnemyPeriod  { get; set; }  //ã‚¨ãƒãƒŸãƒ¼ã®æ™‚ä»£
+    public string AreaName     { get; set; }ã€€//ã‚¨ãƒªã‚¢ã®åå‰
+    public int KillCount       { get; set; }ã€€//ã‚„ã‚‰ã‚ŒãŸå›æ•°
+    public string LastKillTime { get; set; }  //æ™‚é–“
 
     public EnemyKillData() { }
     public EnemyKillData(EnemyStats stats, string areaName, int killCount, string lastKillTime)
