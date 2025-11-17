@@ -8,6 +8,7 @@ namespace TheClimb.Item
         {
             Register(ItemStateID.Idle,       () => new InpactBallIdleState());
             Register(ItemStateID.Attracting, () => new InpactBallAttractingState());
+            Register(ItemStateID.Expolosing, () => new InpactBallExplosionState());
         }
 
         public override IState CreateState(ItemStateID stateID)    //  state生成

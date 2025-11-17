@@ -5,7 +5,7 @@ namespace TheClimb.Item
     public class ItemEventBus   //  アイテムのイベントバス
     {
         public static event Action onAttractiong;      //  引き寄せられた時
-        public static event Action onOverExplosionTime;    //  爆発タイマーを超えた時
+        public static event Action onExplosion;    //  爆発タイマーを超えた時
 
         //public static event Action OnCatchSuccess;
 
@@ -16,7 +16,7 @@ namespace TheClimb.Item
 
         public static void OnOverExplosionTimer()    //  爆発タイマーをオーバーしたとき
         {
-            onOverExplosionTime?.Invoke();
+            onExplosion?.Invoke();
         }
         //public static void CatchSuccess()    //  キャッチ成功時の処理
         //{

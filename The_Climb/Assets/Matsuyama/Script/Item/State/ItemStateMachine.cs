@@ -2,7 +2,7 @@
 
 namespace TheClimb.Item
 {
-    public class ItemStateMachine : ItemSMBase    //  アイテムStateMachine
+    public class ItemStateMachine : ItemSMBase , ICommandContext    //  アイテムStateMachine
     {
         ItemStateFactory _itemStateFactory;
         ItemCommandProvider _itemCommandProvider;

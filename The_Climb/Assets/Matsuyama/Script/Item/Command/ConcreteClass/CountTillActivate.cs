@@ -8,12 +8,22 @@ namespace TheClimb.Item
     public class CountTillActivate : ItemCommandBase   //  爆発するまでカウントする
     {
         ImpactBallStatusBlock _impactBallStat;    //  衝撃球のステータス
+
+        IItemStateFactory _itemStateFactory;    //  ItemのStateFacotry
+        ICommandContext _commandContext;    //  コマンドコンテキスト
         ICorutineRunner _coroutineRunner;    //  コルーチンランナー
 
-        public CountTillActivate(ImpactBallStatusBlock stat, ICorutineRunner runner)    //  コンストラクタ
+        public CountTillActivate(ImpactBallStatusBlock stat, IItemStateFactory stateFactory, ICorutineRunner runner)    //  コンストラクタ
         {
             _impactBallStat = stat;
+
+            _itemStateFactory = stateFactory;
             _coroutineRunner = runner;
+        }
+
+        public void InjectContext(ICommandContext commandContext)    //  コンテキスト注入
+        {
+            _commandContext = commandContext;
         }
 
         public override void Execute()    //  カウント開始
@@ -31,7 +41,8 @@ namespace TheClimb.Item
                 ElapsedTime += Time.deltaTime;
                 yield return null;
             }
-            Debug.Log(123123123);
+
+            _commandContext.ChangeState(_itemStateFactory.CreateState(ItemStateID.Expolosing));    //  爆発stateに変更
         }
     }
 }
