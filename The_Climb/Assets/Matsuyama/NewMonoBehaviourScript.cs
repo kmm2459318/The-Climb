@@ -2,8 +2,7 @@
 
 public class NewMonoBehaviourScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
         PlayerPrefs.SetInt("Matsuyama", 1);
     }
