@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using TheClimb.Item;
 using TheClimb.Player;
 using TheClimb.Astral;
 
@@ -14,6 +15,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     [SerializeField] private InputActionReference leftMoveAction;
     [SerializeField] private InputActionReference rightMoveAction;
+    [SerializeField] private InpactBallController inpactBallController;
 
     IPlayerDataProvider PlayerDataProvider;    //  プレイヤーのデータプロバイダ
     IPlanetDataProvider PlanetDataProvider;    //  天体のデータプロバイダ
@@ -67,7 +69,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     void FixedUpdate()
     {
         //移動
-        if (special.highJumpChargeCounter == 0f)
+        if (special.highJumpChargeCounter == 0f && inpactBallController.currentState is not InpactBallExplosionState)
         {
             if ((state.isGrounded || (!state.isGrounded && state.isJumpMoveOK && !state.isLeftWall && !state.isRightWall)) && !knock.knockBacking)
             {
