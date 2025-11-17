@@ -9,6 +9,9 @@ public class PlayerState : MonoBehaviour
     public bool quickJumpOn = false;     //クイックジャンプ可能か
     public bool meteorDropOn = false;    //メテオドロップ叶か
 
+    public bool isFlipped = false;  // ← 反転中なら true
+    public bool canFlip => isGrounded && !flipCooldownActive;  // ← 条件付きプロパティ
+
     [HideInInspector] public Rigidbody RigidBody;
     [HideInInspector] public InputManager inputManager;
     PlayerMove move;
@@ -45,6 +48,9 @@ public class PlayerState : MonoBehaviour
     public bool carryingBuddy = false;    //Buddyをおんぶしてる状態か判定
     public bool nearBell = false;       //WhiteBellの近くか判定
 
+    private bool flipCooldownActive = false;  // クールタイム中かどうか
+    private float flipCooldownTime = 10f;     // クールタイム（秒）
+
     private void Awake()
     {
         //PlayerContext.Instance.RegistController(this);
@@ -72,6 +78,18 @@ public class PlayerState : MonoBehaviour
         RigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
         Physics.gravity = new Vector3(0, -45F, 0); // Gを倍にする
+    }
+
+
+    public void StartFlipCooldown()
+    {
+        flipCooldownActive = true;
+        Invoke(nameof(ResetFlipCooldown), flipCooldownTime);
+    }
+
+    private void ResetFlipCooldown()
+    {
+        flipCooldownActive = false;
     }
 
     private void Update()
