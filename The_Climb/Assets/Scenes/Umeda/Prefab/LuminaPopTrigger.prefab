@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 432199234481116025}
   - component: {fileID: 3314983615812532789}
   - component: {fileID: 461900408864607958}
-  m_Layer: 13
-  m_Name: LightTriggerCollider
+  m_Layer: 25
+  m_Name: LuminaPopTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8282403506197514776}
+  - {fileID: 8474051649767930800}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &432199234481116025
@@ -95,16 +95,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 192e044922a55864b8076b80e1971e43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightImpactCollider
-  floorVisual: {fileID: 8282403506197514776}
+  floorVisual: {fileID: 8474051649767930800}
   minScale: 0
-  maxScale: 4
-  expandTime: 0.3
+  maxScale: 1.5
+  expandTime: 0.2
   stayTime: 0
   shrinkTime: 4
   lightLayer:
     serializedVersion: 2
-    m_Bits: 512
---- !u!1001 &6624474505794829916
+    m_Bits: 16777216
+--- !u!1001 &6667086115954528244
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -161,8 +161,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8bffb9ed754096f4b9eb3d1adb30985b, type: 3}
---- !u!4 &8282403506197514776 stripped
+--- !u!4 &8474051649767930800 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2963331636693988420, guid: 8bffb9ed754096f4b9eb3d1adb30985b, type: 3}
-  m_PrefabInstance: {fileID: 6624474505794829916}
+  m_PrefabInstance: {fileID: 6667086115954528244}
   m_PrefabAsset: {fileID: 0}
