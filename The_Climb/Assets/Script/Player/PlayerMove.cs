@@ -141,7 +141,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     void FixedUpdate()
     {
-        if (PlayerPrefs.GetInt("Matsuyama") == 1)
+        if (inpactBallController != null)
         {
             //移動
             if (special.highJumpChargeCounter == 0f && inpactBallController.currentState is not InpactBallExplosionState)
