@@ -100,8 +100,5 @@ public class TimeChange : MonoBehaviour
         {
             Debug.LogError("EnemyGenerationがHierarchyに存在しません");
         }
-       
-       
-
     }
 }
