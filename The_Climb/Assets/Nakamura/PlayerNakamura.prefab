@@ -81,7 +81,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7051969432426644713
 Transform:
   m_ObjectHideFlags: 0
@@ -209,7 +209,6 @@ GameObject:
   - component: {fileID: 2417190863473653429}
   - component: {fileID: 2886998521448647203}
   - component: {fileID: 523186103618612158}
-  - component: {fileID: 7802671223314821339}
   - component: {fileID: 3949784339957086417}
   - component: {fileID: 228069579981745605}
   - component: {fileID: 3429528999240997670}
@@ -322,6 +321,7 @@ MonoBehaviour:
   highJumpOn: 0
   quickJumpOn: 0
   meteorDropOn: 0
+  isFlipped: 0
   RigidBody: {fileID: 0}
   inputManager: {fileID: 0}
   PlayerAnimation: {fileID: 0}
@@ -361,63 +361,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftMoveAction: {fileID: 563813258539055939, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   rightMoveAction: {fileID: 5456014942005721184, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  reverseHorizontal: 0
+  upsideDown: 0
+  customGravity: 9.81
   groundMaxSpeed: 6.459797
   moveInput: 0
   airMaxSpeed: 10
   slipping: 0
   slipVelocity: {x: 0, y: 0, z: 0}
   PlayerAnimation: {fileID: 0}
---- !u!114 &7802671223314821339
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2205381300897396991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30d2c75b02903e641970c45ed2dbcc8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumping: 0
-  coyoteCounter: 0
-  jumpCoolActive: 0
-  jumpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0.0041656494
-      value: 0.49728394
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.24403055
-      value: 0.86708266
-      inSlope: 0.62524956
-      outSlope: 0.62524956
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.38987097
-      outWeight: 0.17844518
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  landingJumpNumber: 0
-  isOnTrampoline: 0
-  TrampolinePower: 1.5
 --- !u!114 &3949784339957086417
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -650,7 +602,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7900053413377813681
 Transform:
   m_ObjectHideFlags: 0
@@ -728,6 +680,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1494689640004218747}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3769898370742657313
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1991007431881687728}
+  - component: {fileID: 6657347167121080061}
+  m_Layer: 0
+  m_Name: GravityFlipManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1991007431881687728
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3769898370742657313}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -14.375401, y: 5.3343396, z: -3.5392299}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8154169629791860124}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6657347167121080061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3769898370742657313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce94e63f477a244c93874395dd38ee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GravityFlipManager
+  flipAction: {fileID: 8441154922959196844, guid: 35adf56ac4ce3854d89d288086da4466, type: 3}
+  player: {fileID: 0}
+  flipCooldown: 10
+  cooldownFillImage: {fileID: 0}
 --- !u!1 &4107124902982099011
 GameObject:
   m_ObjectHideFlags: 0
@@ -743,7 +743,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3634611243817073926
 Transform:
   m_ObjectHideFlags: 0
@@ -774,7 +774,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8154169629791860124
 Transform:
   m_ObjectHideFlags: 0
@@ -787,7 +787,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1991007431881687728}
   m_Father: {fileID: 2842087964171949232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6205965155460954005
@@ -906,13 +907,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65569092c6c60314296e2f11c3d17608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAbilityManager
-  nakaAbi: 0
-  matsuAbi: 0
-  miyaAbi: 0
-  umeAbi: 0
-  kitaAbi: 0
-  nishiAbi: 0
-  yuoAbi: 0
+  umeAbi: {fileID: 7679265359365824581}
+  kitaAbi: {fileID: 7958715393837437209}
+  nakaAbi: {fileID: 4107124902982099011}
+  nishiAbi: {fileID: 6044685086728361911}
+  matsuAbi: {fileID: 1175180237484769826}
+  miyamotoyuoAbi: {fileID: 2823422040379671111}
 --- !u!1 &7679265359365824581
 GameObject:
   m_ObjectHideFlags: 0
@@ -929,7 +929,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5760031401828852661
 Transform:
   m_ObjectHideFlags: 0
@@ -980,7 +980,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6361202956881065495
 Transform:
   m_ObjectHideFlags: 0
