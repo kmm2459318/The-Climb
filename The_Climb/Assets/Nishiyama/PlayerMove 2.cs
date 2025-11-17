@@ -60,6 +60,33 @@ public class PlayerMove2 : MonoBehaviour, IConveyorReceiver
 
     }
 
+    public void ToggleUpsideDown()
+    {
+        upsideDown = !upsideDown; // 状態を反転
+
+        // 見た目の上下反転
+        Vector3 scale = transform.localScale;
+        scale.y = Mathf.Abs(scale.y) * (upsideDown ? -1 : 1);
+        transform.localScale = scale;
+
+        // ← ここで慣性をリセット！（グワン防止）
+        RigidBody.linearVelocity = Vector3.zero;
+
+        // 反転直後に少しだけ真上へ押し上げる
+        RigidBody.AddForce(Vector3.up * 5f, ForceMode.VelocityChange);
+
+        // プレイヤー位置の微調整（めり込み防止）
+        Vector3 pos = transform.position;
+        pos.y += upsideDown ? 0.5f : -0.5f;
+        transform.position = pos;
+
+        // 地面の判定をリセット
+        state.isGrounded = false;
+
+        Debug.Log($"{name} が上下反転！（現在: {(upsideDown ? "天井" : "地面")}）");
+    }
+
+
     private void Update()
     {
         //移動キー操作
