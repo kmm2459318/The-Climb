@@ -11,7 +11,7 @@ public class PlayerAbilityManager : MonoBehaviour
     public GameObject matsuAbi;
     public GameObject miyamotoyuoAbi;
 
-    void Start()
+    void Awake()
     {
         GameObject[] abilityBools = {nakaAbi, matsuAbi, umeAbi, miyamotoyuoAbi, kitaAbi, nishiAbi};
         string[] abilityNames = { "Nakamura", "Matsuyama", "Umeda", "Miyamoto", "Kitano", "Nishiyama", "Yuoka"};
