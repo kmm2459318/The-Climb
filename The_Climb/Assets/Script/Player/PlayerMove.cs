@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using TheClimb.Item;
 using TheClimb.Player;
 using TheClimb.Astral;
 using System.Collections;
@@ -15,6 +16,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     [SerializeField] private InputActionReference leftMoveAction;
     [SerializeField] private InputActionReference rightMoveAction;
+    [SerializeField] private InpactBallController inpactBallController;
 
     [SerializeField] private bool reverseHorizontal = false;
 
@@ -139,6 +141,27 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     void FixedUpdate()
     {
+        if (PlayerPrefs.GetInt("Matsuyama") == 1)
+        {
+            //移動
+            if (special.highJumpChargeCounter == 0f && inpactBallController.currentState is not InpactBallExplosionState)
+            {
+                if ((state.isGrounded || (!state.isGrounded && state.isJumpMoveOK && !state.isLeftWall && !state.isRightWall)) && !knock.knockBacking)
+                {
+                    jump.coyoteCounter = 0f;
+
+                    //プレイヤー地上の移動
+                    GroundPlayerMove();
+                }
+                else
+                {
+                    jump.coyoteCounter += Time.fixedDeltaTime;
+
+                    //プレイヤー空中の移動
+                    AirPlayerMove();
+                }
+            }
+        }
         //移動
         if (special.highJumpChargeCounter == 0f)
         {
