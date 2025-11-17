@@ -8,6 +8,7 @@ public class PlayerKnockBack : MonoBehaviour
     private PlayerJump jump;
     private PlayerMind mind;
     private BuddyCarry buddyCarry;
+    private PlayerBarrier barrier;
 
     public bool knockBacking = false;  //ノックバック中フラグ
     public float knockBackPower = 7f;  //ノックバック中フラグ
@@ -22,6 +23,7 @@ public class PlayerKnockBack : MonoBehaviour
         jump = GetComponent<PlayerJump>();
         mind = GetComponent<PlayerMind>();
         buddyCarry = GetComponent<BuddyCarry>();
+        barrier = this.transform.parent.Find("PlayerAbility").Find("Nakamura").GetComponent<PlayerBarrier>();
     }
 
     private void Update()
@@ -69,26 +71,39 @@ public class PlayerKnockBack : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (coolTime)
+        if (!coolTime)
         {
             if (collision.gameObject.tag == "Enemy" && !knockBacking)
             {
-                //敵とプレイヤーの位置でノックバックの方向を決める
-                int dir = transform.position.x - collision.gameObject.transform.position.x <= 0 ? -1 : 1;
-                DoKnockBack(dir);  //ノックバック
-                mind.SanityDecreaseEvent(5);  //正気度減少
+                if (!barrier.unlocking)
+                {
+                    if (barrier.barrierActive)
+                    {
+                        StartCoroutine(barrier.BarrierFinish());
+                    }
+                    else
+                    {
+                        //敵とプレイヤーの位置でノックバックの方向を決める
+                        int dir = transform.position.x - collision.gameObject.transform.position.x <= 0 ? -1 : 1;
+                        DoKnockBack(dir);  //ノックバック
+                        mind.SanityDecreaseEvent(5);  //正気度減少
+                    }
+                }
             }
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (!knockBacking && other.gameObject.tag == "StalkerHand")
+        if (!coolTime)
         {
-            if (buddyCarry.buddyController.beingKidnapped && other.TryGetComponent(out KidnapBuddy stalker) && stalker.handController.isKidnapping && !coolTime)
+            if (!knockBacking && other.gameObject.tag == "StalkerHand")
             {
-                //Buddy解放
-                stalker.handController.ReleaseBuddy();
+                if (buddyCarry.buddyController.beingKidnapped && other.TryGetComponent(out KidnapBuddy stalker) && stalker.handController.isKidnapping)
+                {
+                    //Buddy解放
+                    stalker.handController.ReleaseBuddy();
+                }
             }
         }
     }
