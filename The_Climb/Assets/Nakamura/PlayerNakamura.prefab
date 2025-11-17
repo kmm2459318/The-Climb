@@ -208,6 +208,7 @@ GameObject:
   - component: {fileID: 3999636356517250780}
   - component: {fileID: 2417190863473653429}
   - component: {fileID: 2886998521448647203}
+  - component: {fileID: 1985639540828716179}
   - component: {fileID: 523186103618612158}
   - component: {fileID: 3949784339957086417}
   - component: {fileID: 228069579981745605}
@@ -347,6 +348,58 @@ MonoBehaviour:
   sanityLevel: 100
   carryingBuddy: 0
   nearBell: 0
+--- !u!114 &1985639540828716179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2205381300897396991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 885dddd0c0c8aed45b92d4c5c6c80ad2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumping: 0
+  coyoteCounter: 0
+  jumpCoolActive: 0
+  jumpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.0041656494
+      value: 0.49728394
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.24403055
+      value: 0.86708266
+      inSlope: 0.62524956
+      outSlope: 0.62524956
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.38987097
+      outWeight: 0.17844518
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  landingJumpNumber: 0
+  isOnTrampoline: 0
+  TrampolinePower: 1.5
+  gravityPower: 20
 --- !u!114 &523186103618612158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -725,7 +778,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GravityFlipManager
   flipAction: {fileID: 8441154922959196844, guid: 35adf56ac4ce3854d89d288086da4466, type: 3}
-  player: {fileID: 0}
+  player: {fileID: 523186103618612158}
   flipCooldown: 10
   cooldownFillImage: {fileID: 0}
 --- !u!1 &4107124902982099011
