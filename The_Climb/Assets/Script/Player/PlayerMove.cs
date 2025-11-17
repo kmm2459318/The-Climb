@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using TheClimb.Item;
 using TheClimb.Player;
 using TheClimb.Astral;
+using System.Collections;
 
 public class PlayerMove : MonoBehaviour, IConveyorReceiver
 {
@@ -16,6 +17,11 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     [SerializeField] private InputActionReference leftMoveAction;
     [SerializeField] private InputActionReference rightMoveAction;
     [SerializeField] private InpactBallController inpactBallController;
+
+    [SerializeField] private bool reverseHorizontal = false;
+
+    [SerializeField] private bool upsideDown = false; // 天井歩行モード
+    [SerializeField] private float customGravity = 9.81f; // 通常重力に近い値
 
     IPlayerDataProvider PlayerDataProvider;    //  プレイヤーのデータプロバイダ
     IPlanetDataProvider PlanetDataProvider;    //  天体のデータプロバイダ
@@ -36,6 +42,8 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private bool OnBelt = false;                 //ベルトコンベアに乗っているか
     private Vector3 BeltVelocity = Vector3.zero; //ベルトコンベアの速度(未接触時はゼロ)
 
+    public bool IsUpsideDown => upsideDown;
+
     //void Awake()
     //{
     //    PlayerContext.Instance.RegistPlayerMove(this);
@@ -55,6 +63,71 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         knock = gameObject.GetComponent<PlayerKnockBack>();
 
         PlayerAnimation = GameObject.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
+
+        if (upsideDown)
+        {
+            // プレイヤーを上下反転表示（天井に張り付くように）
+            Vector3 scale = transform.localScale;
+            scale.y *= -1;
+            transform.localScale = scale;
+        }
+
+        RigidBody.useGravity = false;
+
+    }
+
+    private void ApplyCustomGravity()
+    {
+        if (upsideDown)
+        {
+            RigidBody.useGravity = false;
+
+            // 天井歩行モードでも、ジャンプ中は重力を加えない
+            if (!state.isGrounded && !jump.jumping)
+            {
+                float gravityScale = 0.8f;
+                RigidBody.AddForce(Vector3.up * customGravity * gravityScale, ForceMode.Acceleration);
+            }
+        }
+        else
+        {
+            // 通常時はUnityの重力を使用
+            RigidBody.useGravity = true;
+        }
+    }
+
+    public void ToggleUpsideDown()
+    {
+        upsideDown = !upsideDown; // 状態を反転
+
+        // 見た目の上下反転
+        Vector3 scale = transform.localScale;
+        scale.y = Mathf.Abs(scale.y) * (upsideDown ? -1 : 1);
+        transform.localScale = scale;
+
+        //// 慣性は横方向だけ維持（縦をリセット）
+        RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
+
+        RigidBody.AddForce(Vector3.up * 5f, ForceMode.VelocityChange);
+
+        // プレイヤー位置の微調整（めり込み防止）
+        Vector3 pos = transform.position;
+        pos.y += upsideDown ? 0.5f : 0.5f;
+        transform.position = pos;
+
+        //// 地面の判定をリセット
+        state.isGrounded = false;
+
+       Debug.Log($"{name} が上下反転！（現在: {(upsideDown ? "天井" : "地面")}）");
+    }
+
+    private IEnumerator DelayedVisualFlip(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        Vector3 scale = transform.localScale;
+        scale.y = Mathf.Abs(scale.y) * (upsideDown ? -1 : 1);
+        transform.localScale = scale;
     }
 
     private void Update()
@@ -107,6 +180,8 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
                 AirPlayerMove();
             }
         }
+
+        ApplyCustomGravity();
     }
 
     private void MoveOperation()
@@ -130,7 +205,14 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         {
             moveInput = 0f;
         }
+
+        if (reverseHorizontal)
+        {
+            moveInput *= -1f;
+        }
+
     }
+
 
     private void GroundPlayerMove()
     {
@@ -220,4 +302,5 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         this.OnBelt = OnBelt;
         this.BeltVelocity = velocity;
     }
+
 }
