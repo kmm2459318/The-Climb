@@ -68,8 +68,29 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     void FixedUpdate()
     {
+        if (PlayerPrefs.GetInt("Matsuyama") == 1)
+        {
+            //移動
+            if (special.highJumpChargeCounter == 0f && inpactBallController.currentState is not InpactBallExplosionState)
+            {
+                if ((state.isGrounded || (!state.isGrounded && state.isJumpMoveOK && !state.isLeftWall && !state.isRightWall)) && !knock.knockBacking)
+                {
+                    jump.coyoteCounter = 0f;
+
+                    //プレイヤー地上の移動
+                    GroundPlayerMove();
+                }
+                else
+                {
+                    jump.coyoteCounter += Time.fixedDeltaTime;
+
+                    //プレイヤー空中の移動
+                    AirPlayerMove();
+                }
+            }
+        }
         //移動
-        if (special.highJumpChargeCounter == 0f && inpactBallController.currentState is not InpactBallExplosionState)
+        if (special.highJumpChargeCounter == 0f)
         {
             if ((state.isGrounded || (!state.isGrounded && state.isJumpMoveOK && !state.isLeftWall && !state.isRightWall)) && !knock.knockBacking)
             {
