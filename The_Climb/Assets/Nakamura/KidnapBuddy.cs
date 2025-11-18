@@ -10,13 +10,14 @@ public class KidnapBuddy : MonoBehaviour
     {
         handController = transform.parent.gameObject.GetComponent<StalkerHandController>();
         lightDark = handController.lightDarkWorld;
+        Debug.Log(handController);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!handController.buddyController.beingKidnapped && !handController.isKidnapping 
-            && ((gameObject.layer == 16 && lightDark.brightnessState == LightDarkWorld.brightness.Light) 
-            || (gameObject.layer == 17 && lightDark.brightnessState == LightDarkWorld.brightness.Dark) 
+            && ((gameObject.layer == 18 && lightDark.brightnessState == LightDarkWorld.brightness.Light) 
+            || (gameObject.layer == 19 && lightDark.brightnessState == LightDarkWorld.brightness.Dark) 
             || gameObject.layer == 0))
         {
             if (other.CompareTag("Buddy") && !handController.playerState.carryingBuddy)  //Buddyが孤立してる場合

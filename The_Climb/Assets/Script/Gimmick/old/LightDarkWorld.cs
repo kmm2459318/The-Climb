@@ -33,23 +33,23 @@ public class LightDarkWorld : MonoBehaviour
         //黒い床
         AddRange(blackGroup, GameObject.FindGameObjectsWithTag("DarkBlack"));
 
-        //StalkerHand
-        var stalkers = GameObject.FindGameObjectsWithTag("StalkerHand");
+        ////StalkerHand
+        //var stalkers = GameObject.FindGameObjectsWithTag("StalkerHand");
 
-        int whiteLayer = LayerMask.NameToLayer("WhiteOther");
-        int blackLayer = LayerMask.NameToLayer("BlackOther");
+        //int whiteLayer = LayerMask.NameToLayer("WhiteOther");
+        //int blackLayer = LayerMask.NameToLayer("BlackOther");
 
-        foreach (var s in stalkers)
-        {
-            if (s.layer == whiteLayer)
-            {
-                whiteGroup.Add(s);
-            }
-            else if (s.layer == blackLayer)
-            {
-                blackGroup.Add(s);
-            }
-        }
+        //foreach (var s in stalkers)
+        //{
+        //    if (s.layer == whiteLayer)
+        //    {
+        //        whiteGroup.Add(s);
+        //    }
+        //    else if (s.layer == blackLayer)
+        //    {
+        //        blackGroup.Add(s);
+        //    }
+        //}
         LayerChange(false);
     }
 
@@ -64,7 +64,7 @@ public class LightDarkWorld : MonoBehaviour
     void Update()
     {
         //光と闇切り替え
-        if (Input.GetKeyDown(KeyCode.J))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             if (brightnessState == brightness.Dark)  //闇→光
             {
@@ -172,5 +172,45 @@ public class LightDarkWorld : MonoBehaviour
             Color c = mr.material.color;
             mr.material.color = new Color(c.r, c.g, c.b, tp);
         }
+    }
+
+    //途中で追加された白黒オブジェクトの仕分け
+    public void RegisterObject(GameObject obj)
+    {
+        int whiteLayer = LayerMask.NameToLayer("WhiteOther");
+        int blackLayer = LayerMask.NameToLayer("BlackOther");
+        
+        //リストに追加
+        if (obj.layer == whiteLayer)
+        {
+            whiteGroup.Add(obj);
+        }
+        else if (obj.layer == blackLayer)
+        {
+            blackGroup.Add(obj);
+        }
+
+        //今の光闇状態に合わせて透明度反映
+        if (brightnessState == brightness.Light)
+        {
+            if (obj.layer == whiteLayer)
+                ObjectTransparency(new List<GameObject>() { obj }, transparency);
+            else if (obj.layer == blackLayer)
+                ObjectTransparency(new List<GameObject>() { obj }, 1f);
+        }
+        else
+        {
+            if (obj.layer == whiteLayer)
+                ObjectTransparency(new List<GameObject>() { obj }, 1f);
+            else if (obj.layer == blackLayer)
+                ObjectTransparency(new List<GameObject>() { obj }, transparency);
+        }
+    }
+
+    //途中で削除された白黒オブジェクトのリストからの除外
+    public void UnregisterObject(GameObject obj)
+    {
+        whiteGroup.Remove(obj);
+        blackGroup.Remove(obj);
     }
 }
