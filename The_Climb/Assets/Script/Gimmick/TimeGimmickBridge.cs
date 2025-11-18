@@ -6,7 +6,7 @@ public class TimeGimmickBridge : MonoBehaviour
     [Header("ギミック識別子")]
     [SerializeField] private string GimmickId;  //ギミックのID
     [Header("復元時のデフォルト状態")]
-    [SerializeField] private bool DefaultState = false;  //保存がなかった場合に使うデフォルトの状態
+    [SerializeField] private bool DefaultState = true;  //保存がなかった場合に使うデフォルトの状態
 
     //ギミック本体へ状態を通知するためのUnityEvent(インスペクターで受け取り側の関数をアサインできる)
     public UnityEventBool OnStateApplied = new UnityEventBool();  //状態が適用されたときに呼ばれる
@@ -47,4 +47,6 @@ public class TimeGimmickBridge : MonoBehaviour
         //UnityEventに通知
         OnStateApplied.Invoke(IsActive);
     }
+
+    public bool HasSavedState => TimeGimmickStateManager.HasState(GimmickId);
 }

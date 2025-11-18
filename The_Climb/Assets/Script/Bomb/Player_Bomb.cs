@@ -3,6 +3,7 @@ using UnityEngine.Rendering;
 
 public class Player_Bomb : MonoBehaviour
 {
+    //private Block Block;
     [SerializeField] ParticleSystem b_particle;
     [SerializeField] float b_force = 10;
     [SerializeField] float b_radius = 5;
@@ -13,6 +14,11 @@ public class Player_Bomb : MonoBehaviour
     private float b_explosion = 0;
     private bool exploded = false;
     private Vector3 b_pos;
+
+    private void Awake()
+    {
+        //Block = GetComponent<Block>();
+    }
 
     void Update()
     {
@@ -63,19 +69,20 @@ public class Player_Bomb : MonoBehaviour
     {
         switch (obj.tag)
         {
-          case "BreakingWall":
-            Destroy(gameObject);
-            Debug.Log("壁を破壊しました");    
-           break;
-          
-          case "Enemy":
-            var enemy = obj.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                    enemy.TakeDamage(b_damage);
-                  Debug.Log("爆風ヒット");
-            }
-            break;
+            case "BreakingWall":
+                DestructibleBlock Block = obj.GetComponent<DestructibleBlock>();
+                Block.BreakBlock();
+                Debug.Log("壁を破壊しました");    
+                break;
+        
+            case "Enemy":
+                var enemy = obj.GetComponent<Enemy>();
+                if (enemy != null)
+                {
+                        enemy.TakeDamage(b_damage);
+                      Debug.Log("爆風ヒット");
+                }
+                break;
 
             default: 
             //何もしない
