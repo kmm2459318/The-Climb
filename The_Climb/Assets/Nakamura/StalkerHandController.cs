@@ -10,6 +10,7 @@ public class StalkerHandController : MonoBehaviour
     private GameObject player;
     [HideInInspector] public PlayerState playerState;
     [HideInInspector] public PlayerKnockBack playerKnock;
+    [HideInInspector] public LightDarkWorld lightDarkWorld;
 
     [HideInInspector] public Transform mainStalker;
     private Transform childStalker1;
@@ -45,12 +46,17 @@ public class StalkerHandController : MonoBehaviour
             playerKnock = player.GetComponent<PlayerKnockBack>();
         }
 
+        if (GameObject.Find("LightDarkWorld") != null)
+        {
+            lightDarkWorld = GameObject.Find("LightDarkWorld").GetComponent<LightDarkWorld>();
+        }
+
         home = transform.position;
 
-        mainStalker = transform.GetChild(0).gameObject.transform;
-        childStalker1 = transform.GetChild(1).gameObject.transform;
-        childStalker2 = transform.GetChild(2).gameObject.transform;
-        childStalker3 = transform.GetChild(3).gameObject.transform;
+        mainStalker = transform.GetChild(3).gameObject.transform;
+        childStalker1 = transform.GetChild(2).gameObject.transform;
+        childStalker2 = transform.GetChild(1).gameObject.transform;
+        childStalker3 = transform.GetChild(0).gameObject.transform;
         stalkers[0] = mainStalker;
         stalkers[1] = childStalker1;
         stalkers[2] = childStalker2;
@@ -156,6 +162,14 @@ public class StalkerHandController : MonoBehaviour
         buddyController.beingKidnapped = true;
         playerState.carryingBuddy = false;
         buddyController.SetConstraintTarget(mainStalker.transform);
+
+        if (gameObject.layer != 1)
+        {
+            gameObject.layer = 1;
+            for (int i = 0; i < stalkers.Length; i++)
+                stalkers[i].gameObject.layer = 1;
+        }
+
         StartCoroutine(ChildPosReset());
     }
 
