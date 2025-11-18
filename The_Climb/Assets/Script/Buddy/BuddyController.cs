@@ -7,7 +7,9 @@ using Zenject.SpaceFighter;
 public class BuddyController : MonoBehaviour
 {
     private Rigidbody RigidBody;
+    private GameObject player;
     private PlayerState state;
+    private BuddyCarry buddyCarry;
     private PositionConstraint positionConstraint;
     private ConstraintSource currentSource;
 
@@ -42,7 +44,9 @@ public class BuddyController : MonoBehaviour
 
     void Start()
     {
-        state = GameObject.Find("PlayerModel").GetComponent<PlayerState>();
+        player = GameObject.Find("PlayerModel");
+        state = player.GetComponent<PlayerState>();
+        buddyCarry = player.GetComponent<BuddyCarry>();
         positionConstraint = GetComponent<PositionConstraint>();
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
         RigidBody = gameObject.GetComponent<Rigidbody>();
@@ -125,5 +129,21 @@ public class BuddyController : MonoBehaviour
         yield return null;
 
         positionConstraint.constraintActive = true;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            buddyCarry.nearBuddy = true;  //Buddyが近くにいる
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            buddyCarry.nearBuddy = false;  //Buddyが近くにいる
+        }
     }
 }
