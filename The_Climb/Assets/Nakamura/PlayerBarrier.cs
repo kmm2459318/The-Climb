@@ -8,21 +8,23 @@ public class PlayerBarrier : MonoBehaviour
     private Transform barrier;
 
     public bool barrierActive = false;    //バリア中判定
-    private bool barrierChargeOK = true;  //バリア発動可能か
+    private bool barrierChargeOK = false;  //バリア発動可能か
     public bool unlocking = false;        //バリア解除中
-    private float barrierDuration = 10f;  //バリアの効果時間
-    private float barrierCoolTime = 5f;   //クールタイム
+    //private float barrierDuration = 10f;  //バリアの効果時間
+    private float barrierCoolTime = 10f;   //クールタイム
     private float barrierTimer = 0f;      //バリアの時間関係
 
     void Start()
     {
         barrier = transform.GetChild(0);
+
+        barrierTimer = barrierCoolTime;
     }
 
     void Update()
     {
         //押してバリア発動
-        if (Input.GetKeyDown(KeyCode.X) && barrierChargeOK)
+        if (barrierChargeOK)
         {
             BarrierStart();
         }
@@ -35,11 +37,11 @@ public class PlayerBarrier : MonoBehaviour
 
         if (barrierTimer < 0) {
             //バリア効果時間終了
-            if (barrierActive && !unlocking)
-            {
-                StartCoroutine(BarrierFinish());
-            }
-            else if (!barrierChargeOK) 　//バリアクールダウン終了
+            //if (barrierActive && !unlocking)
+            //{
+            //    StartCoroutine(BarrierFinish());
+            //}
+            if (!barrierChargeOK && !barrierActive) 　//バリアクールダウン終了
             {
                 barrierChargeOK = true;
                 Debug.Log("可能");
@@ -52,7 +54,7 @@ public class PlayerBarrier : MonoBehaviour
     {
         barrierChargeOK = false;
         barrierActive = true;
-        barrierTimer = barrierDuration;
+        //barrierTimer = barrierDuration;
         StartCoroutine(BarrierScaleChange(1.6f, 0.07f, true));
         Debug.Log("発動");
     }
