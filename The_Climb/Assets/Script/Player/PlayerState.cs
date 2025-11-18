@@ -54,7 +54,7 @@ public class PlayerState : MonoBehaviour
 
     private void Awake()
     {
-        PlayerContext.Instance.RegistPlayerState(this);
+        // PlayerContext.Instance.RegistPlayerState(this);
     }
 
     void Start()
