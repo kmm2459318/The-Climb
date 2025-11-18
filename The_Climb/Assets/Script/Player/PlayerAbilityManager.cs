@@ -2,23 +2,24 @@
 
 public class PlayerAbilityManager : MonoBehaviour
 {
-    public bool nakaAbi = false;
-    public bool matsuAbi = false;
-    public bool miyaAbi = false;
-    public bool umeAbi = false;
-    public bool kitaAbi = false;
-    public bool nishiAbi = false;
-    public bool yuoAbi = false;
+    
+   
+    public GameObject umeAbi;
+    public GameObject kitaAbi;
+    public GameObject nakaAbi;
+    public GameObject nishiAbi;
+    public GameObject matsuAbi;
+    public GameObject miyamotoyuoAbi;
 
-    void Start()
+    void Awake()
     {
-        bool[] abilityBools = {nakaAbi, matsuAbi, umeAbi, miyaAbi, kitaAbi, nishiAbi, yuoAbi};
+        GameObject[] abilityBools = {nakaAbi, matsuAbi, umeAbi, miyamotoyuoAbi, kitaAbi, nishiAbi};
         string[] abilityNames = { "Nakamura", "Matsuyama", "Umeda", "Miyamoto", "Kitano", "Nishiyama", "Yuoka"};
 
         for (int i = 0; i < abilityBools.Length; i++)
             if (PlayerPrefs.GetInt($"{abilityNames[i]}") == 1)
             {
-                abilityBools[i] = true;
+                abilityBools[i].active = true;
             }
     }
 

@@ -21,7 +21,7 @@ public class WarpDoor : MonoBehaviour
 
     void Update()
     {
-        if (nearPlayer && Input.GetKeyDown(KeyCode.W) && playerState.carryingBuddy)
+        if (nearPlayer && Input.GetKeyDown(KeyCode.W))
         {
             if (canGoBack)
             {

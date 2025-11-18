@@ -2,6 +2,7 @@
 using TheClimb.Astral;
 using TheClimb.UniversalGravity;
 using TheClimb.Player;
+using TheClimb.Logging;
 
 namespace TheClimb.Item
 {
@@ -21,6 +22,8 @@ namespace TheClimb.Item
 
         private void OnEnable()
         {
+            if(itemCommandProvider == null)
+            LogUtility.Log(LogPrefix.uiManager, $"{itemCommandProvider}", LogLevel.Info);
             ItemEventBus.onAttractiong += itemCommandProvider.countTillActivate.Execute;
             ItemEventBus.onExplosion += itemCommandProvider.explosionInpact.Execute;
         }
