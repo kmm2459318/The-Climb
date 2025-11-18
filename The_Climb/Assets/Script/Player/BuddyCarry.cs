@@ -71,28 +71,28 @@ public class BuddyCarry : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.CompareTag("Buddy"))
-        {
-            nearBuddy = true;  //Buddyが近くにいる
-        }
-        else if (other.CompareTag("CallBell"))
-        {
-            nearCallBell = true;  //CallBellが近くにある
-            callBellPosX = other.transform.position.x;
-        }
-    }
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if (other.CompareTag("Buddy"))
+    //    {
+    //        nearBuddy = true;  //Buddyが近くにいる
+    //    }
+    //    else if (other.CompareTag("CallBell"))
+    //    {
+    //        nearCallBell = true;  //CallBellが近くにある
+    //        callBellPosX = other.transform.position.x;
+    //    }
+    //}
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Buddy"))
-        {
-            nearBuddy = false;  //Buddyが近くにいない
-        }
-        else if (other.CompareTag("CallBell"))
-        {
-            nearCallBell = false;  //CallBellが近くにない
-        }
-    }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.CompareTag("Buddy"))
+    //    {
+    //        nearBuddy = false;  //Buddyが近くにいない
+    //    }
+    //    else if (other.CompareTag("CallBell"))
+    //    {
+    //        nearCallBell = false;  //CallBellが近くにない
+    //    }
+    //}
 }

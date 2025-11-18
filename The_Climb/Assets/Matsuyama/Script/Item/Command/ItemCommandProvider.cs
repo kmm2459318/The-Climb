@@ -27,7 +27,8 @@ namespace TheClimb.Item
         public void InjectContext(ICommandContext context)    //  コンテキスト依存注入
         {
             _commandContext = context;
-            countTillActivate.InjectContext(context);    //  コンテキスト後注入
+            countTillActivate.InjectContext(context);
+            explosionInpact.InjectContext(context);    
         }
     }
 }
