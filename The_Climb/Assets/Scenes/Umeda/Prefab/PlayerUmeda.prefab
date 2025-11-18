@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 2873930293877280570}
   - component: {fileID: 8232008218881411529}
   - component: {fileID: 2894656773606257463}
+  - component: {fileID: 2438796213624888788}
   - component: {fileID: 8182930502869634966}
   - component: {fileID: 7054968129382281755}
-  - component: {fileID: 600616640439817029}
   - component: {fileID: 6345709640852886783}
   - component: {fileID: 2256705531447149238}
   - component: {fileID: 4085026964948075145}
@@ -137,6 +137,49 @@ MonoBehaviour:
   airMoveForce: 50
   airMaxSpeed: 10
   PlayerAnimation: {fileID: 4255588864629252212}
+--- !u!114 &2438796213624888788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042559377613942721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 885dddd0c0c8aed45b92d4c5c6c80ad2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerJump
+  jumping: 0
+  coyoteCounter: 0
+  jumpCoolActive: 0
+  jumpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  landingJumpNumber: 0
+  isOnTrampoline: 0
+  TrampolinePower: 1.5
+  gravityPower: 20
 --- !u!114 &8182930502869634966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,6 +195,7 @@ MonoBehaviour:
   highJumpOn: 0
   quickJumpOn: 0
   meteorDropOn: 0
+  isFlipped: 0
   RigidBody: {fileID: 0}
   inputManager: {fileID: 0}
   PlayerAnimation: {fileID: 0}
@@ -191,63 +235,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftMoveAction: {fileID: 563813258539055939, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   rightMoveAction: {fileID: 5456014942005721184, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  reverseHorizontal: 0
+  upsideDown: 0
+  customGravity: 9.81
   groundMaxSpeed: 6.459797
   moveInput: 0
   airMaxSpeed: 10
   slipping: 0
   slipVelocity: {x: 0, y: 0, z: 0}
   PlayerAnimation: {fileID: 0}
---- !u!114 &600616640439817029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2042559377613942721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30d2c75b02903e641970c45ed2dbcc8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumping: 0
-  coyoteCounter: 0
-  jumpCoolActive: 1
-  jumpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0.0041656494
-      value: 0.49728394
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.24403055
-      value: 0.86708266
-      inSlope: 0.62524956
-      outSlope: 0.62524956
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.38987097
-      outWeight: 0.17844518
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  landingJumpNumber: 0
-  isOnTrampoline: 0
-  TrampolinePower: 1.5
 --- !u!114 &6345709640852886783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,9 +469,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCameraFollower
   targetCamera: {fileID: 0}
-  followX: 1
-  followY: 1
-  followZ: 0
+  followMode: 0
+  offset: {x: 0, y: 3, z: -5}
+  smoothSpeed: 2
+  zoomOutDistance: 0
+  zoomSpeed: 2
+  heightFollowSpeed: 10
+  moveThreshold: 0.05
 --- !u!114 &3775144447329479502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1014,7 +1014,7 @@ MonoBehaviour:
   rightMoveAction: {fileID: 1536685683640141945, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   forwardMoveAction: {fileID: 1702019963216196248, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   backMoveAction: {fileID: 3846812985801954860, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  jumpAction: {fileID: 0}
+  jumpAction: {fileID: -489186185903887750, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1001 &4017177534420638746
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1829,6 +1829,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRecorder
   maxHistoryFrames: 6000
+  recordThreshold: 0.0001
 --- !u!1 &6874756318954177946 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1668605799436347008, guid: 10038fdbf93c4dd43af9ce774d03a956, type: 3}
