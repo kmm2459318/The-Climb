@@ -4,16 +4,17 @@ using UnityEngine.UIElements;
 
 public class Bomb_Generate : MonoBehaviour
 {
-    
     [SerializeField] GameObject bombPrefab;
     [SerializeField] private PlayerMove p_move;
     [SerializeField] private Transform left_pos;
     [SerializeField] private Transform right_pos;
     public int shoot_power = 10000;
     
-
     //プレイヤーが最後に向いた方向
     private int last_Direction = 0;
+
+    // 投げた爆弾を保持
+    private Player_Bomb currentBomb;
 
     void Update()
     {
@@ -28,9 +29,17 @@ public class Bomb_Generate : MonoBehaviour
         }
 
         //爆弾発射
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetMouseButtonDown(0))
         {
-            ShootBomb();
+            if (currentBomb == null)
+            {
+                ShootBomb();
+            }
+            else
+            {
+                // 爆弾が存在しているなら強制爆発
+                currentBomb.ForceExplosion();
+            }
         }
     }
 
@@ -54,9 +63,16 @@ public class Bomb_Generate : MonoBehaviour
             direction = right_pos.right;
         }
 
-        GameObject bomb = Instantiate(bombPrefab, spawn_pos.position, Quaternion.identity);
-        Rigidbody rb = bomb.GetComponent<Rigidbody>();
-        rb.AddForce(direction * shoot_power);
+        GameObject bombObj = Instantiate(bombPrefab, spawn_pos.position, Quaternion.identity);
 
+        // 生成した爆弾のPlayer_Bombを保持
+        currentBomb = bombObj.GetComponent<Player_Bomb>();
+        currentBomb.SetOnExplodedCallback(() =>
+        {
+            currentBomb = null;
+        });
+
+        Rigidbody rb = bombObj.GetComponent<Rigidbody>();
+        rb.AddForce(direction * shoot_power);
     }
 }
