@@ -41,7 +41,6 @@ namespace TheClimb.Item
                 ElapsedTime += Time.deltaTime;
                 yield return null;
             }
-
             _commandContext.ChangeState(_itemStateFactory.CreateState(ItemStateID.Expolosing));    //  爆発stateに変更
         }
     }

@@ -1,21 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
-using UnityEditor; // SceneAssetを使うため
+using UnityEditor; // SceneAsset
 #endif
-using TMPro;
 using System.Collections.Generic;
 
 public class StageNode : MonoBehaviour
 {
     [Header("ステージ設定")]
     public int stageId;
+
 #if UNITY_EDITOR
-    public SceneAsset sceneAsset; // インスペクターでシーンを参照
+    public SceneAsset sceneAsset; // ここにシーンをD&D
 #endif
-    private string sceneName;      // 実行時にSceneManager.LoadScene用に変換
-    public List<int> nextStageIds;
-    public List<GameObject> connectedPaths;
+
+    private string sceneName; // 実行用のシーン名
+
+    public List<int> nextStageIds = new List<int>();
+    public List<GameObject> connectedPaths = new List<GameObject>();
 
     [Header("UI設定")]
     public GameObject promptUI;
@@ -31,10 +33,18 @@ public class StageNode : MonoBehaviour
 
         if (promptUI != null)
             promptUI.SetActive(false);
+    }
 
+    private void Start()
+    {
+        RefreshSceneName();
+    }
+
+    public void RefreshSceneName()
+    {
 #if UNITY_EDITOR
         if (sceneAsset != null)
-            sceneName = sceneAsset.name; // SceneManager用に変換
+            sceneName = sceneAsset.name;
 #endif
     }
 
@@ -47,6 +57,12 @@ public class StageNode : MonoBehaviour
 
         if (promptUI != null)
             promptUI.transform.position = transform.position + uiOffset;
+
+#if UNITY_EDITOR
+        // 編集中にアセットが変更されたら名前も更新しておく
+        if (sceneAsset != null && sceneName != sceneAsset.name)
+            sceneName = sceneAsset.name;
+#endif
     }
 
     public void Unlock()
