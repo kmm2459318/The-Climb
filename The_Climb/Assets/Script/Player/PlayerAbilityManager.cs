@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 
 public class PlayerAbilityManager : MonoBehaviour
 {
@@ -39,25 +40,41 @@ public class PlayerAbilityManager : MonoBehaviour
             {
                 abilityBools[i].active = false;
             }
+
+        AbilityChange(0); // スタート時のアビリティを設定
     }
 
     void Update()
     {
+        // アビリティ変更ボタンを押したときにアビリティの装備状況を変える
         if(Input.GetKeyDown(KeyCode.LeftShift))
         {
+            AbilityChange(0);
+        }
+    }
+
+    // アビリティ変更の関数
+    void AbilityChange(int count)
+    {
+        if (count != 3)
+        { 
             switch (NowAbilityNo)
             {
-                case 0:
+                case 0: // 梅田君のアビリティ
                     NowAbilityNo++;
-                    if (PlayerPrefs.GetInt("Umeda") == 1)
+                    if (PlayerPrefs.GetInt("Umeda") == 1) //実行可能状態なら切り替える
                     {
                         PlayerPrefs.SetInt("UmedaAbi", 1);
                         PlayerPrefs.SetInt("KitanoAbi", 0);
                         PlayerPrefs.SetInt("NisiyamaAbi", 0);
                         Debug.Log("梅田君起動");
                     }
+                    else
+                    {
+                        AbilityChange(count++); // 不可能状態なら次のアビリティへ移動
+                    }
                     break;
-                case 1:
+                case 1: // 北野君のアビリティ
                     NowAbilityNo++;
                     if (PlayerPrefs.GetInt("Kitano") == 1)
                     {
@@ -66,8 +83,12 @@ public class PlayerAbilityManager : MonoBehaviour
                         PlayerPrefs.SetInt("NisiyamaAbi", 0);
                         Debug.Log("北野君起動");
                     }
+                    else
+                    {
+                        AbilityChange(count++);
+                    }
                     break;
-                case 2:
+                case 2: // 西山君のアビリティ
                     NowAbilityNo = 0;
                     if (PlayerPrefs.GetInt("Nisiyama") == 1)
                     {
@@ -76,9 +97,18 @@ public class PlayerAbilityManager : MonoBehaviour
                         PlayerPrefs.SetInt("NisiyamaAbi", 1);
                         Debug.Log("西山君起動");
                     }
+                    else
+                    {
+                        AbilityChange(count++);
+                    }
                     break;
 
             }
         }
+        else
+        {
+            Debug.Log("発動できるスキルがありません");
+        }
+       
     }
 }
