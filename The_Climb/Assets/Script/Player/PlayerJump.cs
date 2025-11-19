@@ -21,14 +21,14 @@ public class PlayerJump : MonoBehaviour
     private float jumpTime;　　　　　　　//ジャンプ入力時間　
     private float jumpTimeMax = 0.2f;　//最大ジャンプ入力時間
     private float jumpTimeMaxSaving = 0.2f;　//最大図アンプ入力時間を保持
-    private float groundJumpPower = 11f;　//ジャンプでプレイヤーにかかる上方向の力
+    private float groundJumpPower = 13f;　//ジャンプでプレイヤーにかかる上方向の力
     private float maxJumpSpeed = 12f;　//空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();　//ジャンプの速度カーブ
 
     [Header("着地ジャンプ")]
     public int landingJumpNumber = 0;　//着地ジャンプの連続回数
-    private float landingLowJumpPower = 13f;　//一回目着地ジャンプのパワー
-    private float landingHighJumpPower = 15f;　//二回目の着地ジャンプパワー
+    private float landingLowJumpPower = 15f;　//一回目着地ジャンプのパワー
+    private float landingHighJumpPower = 17f;　//二回目の着地ジャンプパワー
 
     [Header("トランポリン")]
     public bool isOnTrampoline = false;　//トランポリンに乗ってるかの判定
