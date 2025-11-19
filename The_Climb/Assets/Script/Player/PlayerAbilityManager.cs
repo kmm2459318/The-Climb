@@ -35,9 +35,9 @@ public class PlayerAbilityManager : MonoBehaviour
         }
 
         for (int i = 0; i < abilityBools.Length; i++)
-            if (PlayerPrefs.GetInt($"{abilityNames[i]}") == 1)
+            if (PlayerPrefs.GetInt($"{abilityNames[i]}") == 0)
             {
-                abilityBools[i].active = true;
+                abilityBools[i].active = false;
             }
     }
 

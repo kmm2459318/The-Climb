@@ -81,7 +81,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7051969432426644713
 Transform:
   m_ObjectHideFlags: 0
@@ -861,7 +861,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2402f4a256f17e4c81609d3c0a216eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkilTransparent
-  triggerColliders: []
+  triggerColliders:
+  - {fileID: 248480542058028626}
+  - {fileID: 682831879393390009}
   transparentDuration: 0.5
 --- !u!114 &8326955060575073608
 MonoBehaviour:
@@ -951,7 +953,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7900053413377813681
 Transform:
   m_ObjectHideFlags: 0
@@ -1140,7 +1142,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3634611243817073926
 Transform:
   m_ObjectHideFlags: 0
@@ -1308,7 +1310,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8154169629791860124
 Transform:
   m_ObjectHideFlags: 0
@@ -1464,7 +1466,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5760031401828852661
 Transform:
   m_ObjectHideFlags: 0
@@ -1509,13 +1511,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6361202956881065495}
+  - component: {fileID: 2542129794408813168}
   m_Layer: 0
   m_Name: Kitano
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6361202956881065495
 Transform:
   m_ObjectHideFlags: 0
@@ -1531,6 +1534,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2842087964171949232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2542129794408813168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7958715393837437209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bdd38d509d830840abdda23b8e108a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KitanoAbility
+  skilTransparent: {fileID: 7424387911693393458}
+  tempDisableColliders: {fileID: 8326955060575073608}
 --- !u!1 &8135964961070704614
 GameObject:
   m_ObjectHideFlags: 0
