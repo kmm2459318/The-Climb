@@ -41,7 +41,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
         }
     }
 
-    void Respawn()
+    public void Respawn()
     {
         if (rb != null)
         {
