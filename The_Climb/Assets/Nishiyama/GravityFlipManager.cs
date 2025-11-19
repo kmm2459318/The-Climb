@@ -37,22 +37,25 @@ public class GravityFlipManager : MonoBehaviour
 
     private void OnFlipPressed(InputAction.CallbackContext context)
     {
-        // プレイヤー未指定・クールタイム中は無視
-        if (player == null || !canFlip)
-            return;
-
-        // 空中では反転不可
-        if (!player.State.isGrounded)
+        if (PlayerPrefs.GetInt("NisiyamaAbi") == 1)
         {
-            Debug.Log("反転できません（空中）");
-            return;
+            // プレイヤー未指定・クールタイム中は無視
+            if (player == null || !canFlip)
+                return;
+
+            // 空中では反転不可
+            if (!player.State.isGrounded)
+            {
+                Debug.Log("反転できません（空中）");
+                return;
+            }
+
+            // 反転実行
+            player.ToggleUpsideDown();
+
+            // クールタイム開始
+            StartCoroutine(FlipCooldownCoroutine());
         }
-
-        // 反転実行
-        player.ToggleUpsideDown();
-
-        // クールタイム開始
-        StartCoroutine(FlipCooldownCoroutine());
     }
 
     private IEnumerator FlipCooldownCoroutine()
