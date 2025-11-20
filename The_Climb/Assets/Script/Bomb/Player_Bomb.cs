@@ -3,7 +3,7 @@ using UnityEngine.Rendering;
 
 public class Player_Bomb : MonoBehaviour
 {
-    [SerializeField] ParticleSystem b_particle;
+    [SerializeField] GameObject b_explosionEffect;
     [SerializeField] float b_force = 10;
     [SerializeField] float b_radius = 5;
     [SerializeField] float b_upward = 0;
@@ -28,17 +28,20 @@ public class Player_Bomb : MonoBehaviour
     void Explosion()
     {
         b_pos = transform.position;
-        PlayParticle();
         ApplyExplosionForce();
         Debug.Log("爆発しました");
         Destroy(gameObject); //削除
+        PlayParticle();
     }
 
-    //パーティクル
+    //エフェクト
     void PlayParticle()
     {
-        if(b_particle != null)
-        b_particle.Play();
+        if (b_explosionEffect != null)
+        {
+           GameObject effect = Instantiate(b_explosionEffect, b_pos, Quaternion.identity);
+        }
+        
     }
 
     //爆風
@@ -72,7 +75,7 @@ public class Player_Bomb : MonoBehaviour
             var enemy = obj.GetComponent<Enemy>();
             if (enemy != null)
             {
-                    enemy.TakeDamage(b_damage);
+                  enemy.TakeDamage(b_damage);
                   Debug.Log("爆風ヒット");
             }
             break;
