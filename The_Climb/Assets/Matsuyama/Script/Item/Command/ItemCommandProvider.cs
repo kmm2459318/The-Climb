@@ -1,11 +1,11 @@
 ﻿using TheClimb.Core;
 using TheClimb.Player;
-using UnityEngine;
 
 namespace TheClimb.Item
 {
     public class ItemCommandProvider    //  コマンドプロバイダー
     {
+        ImpactBallContext _ctx;    //  衝撃球コンテキスト
         ItemStateFactory _stateFactory;    //  ItemのStateFacotry
 
         ICommandContext _commandContext;    //  コマンドコンテキスト
@@ -15,20 +15,19 @@ namespace TheClimb.Item
         public CountTillActivate countTillActivate {get ;}    //  アクティブになるまでカウントする
         public ExplosionInpact explosionInpact{get ;}    //  アクティブになるまでカウントする
 
-        public ItemCommandProvider(ImpactBallStatusBlock impactBallStat,Transform ImpactBallTF, IItemStateFactory stateFactory, ICorutineRunner coroutineRunner, IPlayerDataProvider playerDataProvider)    //  コンストラクタ
+        public ItemCommandProvider(ImpactBallContext ctx, IItemStateFactory stateFactory, ICorutineRunner coroutineRunner, IImpactable targetPlayer)    //  コンストラクタ
         {
-            _playerDataProvider = playerDataProvider;
+            _ctx = ctx;
 
-            Debug.Log(impactBallStat);
-            countTillActivate = new CountTillActivate(impactBallStat, stateFactory, coroutineRunner);
-            explosionInpact = new ExplosionInpact(impactBallStat, ImpactBallTF, stateFactory, coroutineRunner, playerDataProvider);
+            countTillActivate = new CountTillActivate(_ctx, stateFactory, coroutineRunner);
+            explosionInpact = new ExplosionInpact(_ctx, stateFactory, coroutineRunner, targetPlayer);
         }
 
-        public void InjectContext(ICommandContext context)    //  コンテキスト依存注入
+        public void InjectContext(ICommandContext context, IItemStateContext itemStateContext)    //  コンテキスト依存注入
         {
             _commandContext = context;
-            countTillActivate.InjectContext(context);
-            explosionInpact.InjectContext(context);    
+            countTillActivate.InjectContext(context, itemStateContext);
+            explosionInpact.InjectContext(context, itemStateContext);    
         }
     }
 }
