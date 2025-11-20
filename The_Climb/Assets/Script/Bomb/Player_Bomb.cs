@@ -14,24 +14,46 @@ public class Player_Bomb : MonoBehaviour
     private bool exploded = false;
     private Vector3 b_pos;
 
+    // 爆発後に呼ばれるコールバック(Bomb_Generate側から登録)
+    private System.Action onExploded;
+
+    public void SetOnExplodedCallback(System.Action callback)
+    {
+        onExploded = callback;
+    }
+
     void Update()
     {
         b_explosion += Time.deltaTime; 
 
         if (b_explosion >= b_time && !exploded)
         {
-            exploded = true;
+            Explosion();
+        }
+    }
+
+    // Bomb_Generateから呼ばれる強制爆発
+    public void ForceExplosion()
+    {
+        if (!exploded)
+        {
             Explosion();
         }
     }
 
     void Explosion()
     {
+        exploded = true;
         b_pos = transform.position;
+
         PlayParticle();
         ApplyExplosionForce();
         Debug.Log("爆発しました");
-        Destroy(gameObject); //削除
+
+        // コールバック(プレイヤー側に爆発したことを知らせる)
+        onExploded.Invoke();
+
+        Destroy(gameObject); //爆弾を削除
     }
 
     //パーティクル
@@ -63,25 +85,24 @@ public class Player_Bomb : MonoBehaviour
     {
         switch (obj.tag)
         {
-          case "BreakingWall":
-            Destroy(gameObject);
-            Debug.Log("壁を破壊しました");    
-           break;
-          
-          case "Enemy":
-            var enemy = obj.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                    enemy.TakeDamage(b_damage);
-                  Debug.Log("爆風ヒット");
-            }
-            break;
+            case "BreakingWall":
+                DestructibleBlock Block = obj.GetComponent<DestructibleBlock>();
+                Block.BreakBlock();
+                Debug.Log("壁を破壊しました");    
+                break;
+        
+            case "Enemy":
+                var enemy = obj.GetComponent<Enemy>();
+                if (enemy != null)
+                {
+                        enemy.TakeDamage(b_damage);
+                      Debug.Log("爆風ヒット");
+                }
+                break;
 
             default: 
             //何もしない
             break;
         }
-        
-
     }
 }

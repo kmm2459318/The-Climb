@@ -7,23 +7,29 @@ namespace TheClimb.Item
 {
     public class CountTillActivate : ItemCommandBase   //  爆発するまでカウントする
     {
-        ImpactBallStatusBlock _impactBallStat;    //  衝撃球のステータス
+        ImpactBallContext _ctx;                //  設定データ
+        ImpactBallRuntimeData _runtimeData;    //  実行データ(キャッシュ用)
 
         IItemStateFactory _itemStateFactory;    //  ItemのStateFacotry
         ICommandContext _commandContext;    //  コマンドコンテキスト
         ICorutineRunner _coroutineRunner;    //  コルーチンランナー
+        IItemStateContext _ItemStateContext;
 
-        public CountTillActivate(ImpactBallStatusBlock stat, IItemStateFactory stateFactory, ICorutineRunner runner)    //  コンストラクタ
+        public CountTillActivate(ImpactBallContext ctx, IItemStateFactory stateFactory, ICorutineRunner runner)    //  コンストラクタ
         {
-            _impactBallStat = stat;
+            _ctx = ctx;
+            _runtimeData = ctx.RuntimeData;
 
             _itemStateFactory = stateFactory;
             _coroutineRunner = runner;
+            
+            
         }
 
-        public void InjectContext(ICommandContext commandContext)    //  コンテキスト注入
+        public void InjectContext(ICommandContext commandContext, IItemStateContext itemStateContext)    //  コンテキスト注入
         {
             _commandContext = commandContext;
+            _ItemStateContext = itemStateContext;
         }
 
         public override void Execute()    //  カウント開始
@@ -34,15 +40,12 @@ namespace TheClimb.Item
 
         IEnumerator CountTillExplosion()    //  爆発するまでカウントするコルーチン
         {
-            float ElapsedTime = 0;    //  経過時間
-
-            while (ElapsedTime < _impactBallStat.ExplosionCount)
+            Debug.Log(_runtimeData._RemainingExplosionTime);
+            while ((_runtimeData._RemainingFuseTime -= Time.deltaTime) > 0)
             {
-                ElapsedTime += Time.deltaTime;
                 yield return null;
             }
-
-            _commandContext.ChangeState(_itemStateFactory.CreateState(ItemStateID.Expolosing));    //  爆発stateに変更
+            _commandContext.ChangeState(_itemStateFactory.CreateState(ItemStateID.Expolosing), _ItemStateContext);    //  爆発stateに変更
         }
     }
 }

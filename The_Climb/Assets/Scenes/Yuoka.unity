@@ -1282,9 +1282,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCameraFollower
   targetCamera: {fileID: 750564758}
-  followX: 1
-  followY: 1
-  followZ: 0
+  followMode: 0
+  offset: {x: 0, y: 3, z: -28.65}
+  smoothSpeed: 2
+  zoomOutDistance: 0
+  zoomSpeed: 2
+  heightFollowSpeed: 10
+  moveThreshold: 0.05
+--- !u!4 &682688690 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1494689640004218747, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+  m_PrefabInstance: {fileID: 1785987223}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &682688704 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 523186103618612158, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+  m_PrefabInstance: {fileID: 1785987223}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682688670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af19e1eedc2393f48a66ba2b34202b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &750564755
 GameObject:
   m_ObjectHideFlags: 0
@@ -1701,6 +1721,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1247663957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1247663958}
+  m_Layer: 0
+  m_Name: Left
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1247663958
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1247663957}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0.13052596, w: 0.99144495}
+  m_LocalPosition: {x: 7, y: -4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1765154785}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -15}
 --- !u!1 &1301740400
 GameObject:
   m_ObjectHideFlags: 0
@@ -1734,7 +1785,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MapPrefabs:
   - {fileID: 6503850315144897215, guid: 0b35e0edbf66edc4daa9eaca81aba812, type: 3}
-  - {fileID: 6503850315144897215, guid: baa58f6cc0ce2b548b07d8e7e5d66433, type: 3}
+  - {fileID: 6503850315144897215, guid: 89faac84db2593f49b1cda3fbe390c3f, type: 3}
   Player: {fileID: 419211455}
   fader: {fileID: 1416391022}
   switchCooldown: 2
@@ -1943,6 +1994,88 @@ Transform:
   - {fileID: 303707872}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1653478483
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1653478484}
+  m_Layer: 0
+  m_Name: Right
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1653478484
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653478483}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.13052596, w: 0.99144495}
+  m_LocalPosition: {x: 9, y: -4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1765154785}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 15}
+--- !u!1 &1765154784
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1765154785}
+  - component: {fileID: 1765154786}
+  m_Layer: 0
+  m_Name: miyamoto
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1765154785
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765154784}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -8.08472, y: 4.34157, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1247663958}
+  - {fileID: 1653478484}
+  m_Father: {fileID: 682688690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1765154786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765154784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec6bf92dd90265843a728551d3a409e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bomb_Generate
+  bombPrefab: {fileID: 5538171996706550729, guid: 4141135c405070149a20c521a59fb2a5, type: 3}
+  p_move: {fileID: 682688704}
+  left_pos: {fileID: 1247663958}
+  right_pos: {fileID: 1653478484}
+  shoot_power: 1000
 --- !u!1001 &1785987223
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1954,6 +2087,10 @@ PrefabInstance:
     - target: {fileID: 2272384167279023827, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_Name
       value: PlayerNakamura
+      objectReference: {fileID: 0}
+    - target: {fileID: 3935254520221966741, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7802671223314821339, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: TrampolinePower
@@ -2001,7 +2138,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1494689640004218747, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1765154785}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2205381300897396991, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       insertIndex: -1
