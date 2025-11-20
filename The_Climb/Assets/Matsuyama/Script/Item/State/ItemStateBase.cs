@@ -2,10 +2,13 @@
 
 namespace TheClimb.Item
 {
-    public abstract class ItemStateBase : IState    //  アイテムStatePatternのBaseClass
+    public abstract class ItemStateBase : IItemState    //  アイテムStatePatternのBaseClass
     {
-        public ItemStateBase()    //  コンストラクタ
-        { }
+        protected IItemStateContext _context { get; private set; }    //  コンテキスト
+        public virtual void SetContext(IItemStateContext context)    //  コンテキスト代入
+        {
+            _context = context;
+        }
 
         public virtual void OnEnter() { }          //  State突入時の処理
         public virtual void OnUpdate() { }         //  State中の処理(Update)
