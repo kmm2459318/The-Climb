@@ -8,6 +8,8 @@ public class LightDarkWorld : MonoBehaviour
     private GameObject player;
     private PlayerState playerState;
     private BuddyCarry buddyCarry;
+    //private Light worldLight;
+    //private MeshRenderer backGround;
 
     public enum brightness {Dark, Light};  //光と闇
     public brightness brightnessState = brightness.Dark;  //現在の世界の輝度
@@ -15,17 +17,16 @@ public class LightDarkWorld : MonoBehaviour
     private float lightDuration = 15f;     //光の継続時間
     private float lightTimer = 0f;         //光の世界の時間private
     private float transparency = 0.3f;     //白と黒の床壁の透明度
-    //private GameObject[] lightWhiteObj;    //白系のオブジェクト
-    //private GameObject[] darkBlackObj;     //黒系のオブジェクト
     private List<GameObject> whiteGroup = new List<GameObject>();
     private List<GameObject> blackGroup = new List<GameObject>();
-    List<GameObject> result = new List<GameObject>();
 
     void Start()
     {
         player = GameObject.Find("PlayerModel");
         playerState = player.GetComponent<PlayerState>();
         buddyCarry = player.GetComponent<BuddyCarry>();
+        //worldLight = GameObject.Find("Directional Light").GetComponent<Light>();
+        //backGround = GameObject.Find("StageBackGround").GetComponent<MeshRenderer>();
 
         //白い床
         AddRange(whiteGroup, GameObject.FindGameObjectsWithTag("LightWhite"));
@@ -147,6 +148,8 @@ public class LightDarkWorld : MonoBehaviour
             //白系黒系の透明度変化（黒を半透明に）
             ObjectTransparency(whiteGroup, 1f);
             ObjectTransparency(blackGroup, transparency);
+            //worldLight.color = Color.black;
+            //backGround.material.color = Color.black;
         }
         else
         {
@@ -156,6 +159,8 @@ public class LightDarkWorld : MonoBehaviour
             //白系黒系の透明度変化（白を半透明に）
             ObjectTransparency(whiteGroup, transparency);
             ObjectTransparency(blackGroup, 1f);
+            //worldLight.color = Color.white;
+            //backGround.material.color = new Color(180, 180, 180, 255);
         }
     }
 

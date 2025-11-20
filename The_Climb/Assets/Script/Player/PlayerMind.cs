@@ -8,9 +8,8 @@ public class PlayerMind : MonoBehaviour
     private LightDarkWorld lightDarkWorld;
 
     private int sanityMax = 100;             //正気度の最大値
-    private float SANDecreaseCoolTime = 0f;  //正気度減少のクールタイム
-    private float SANDecreaseDuration = 5f;  //正気度減少の間隔
     private bool inFog = false;              //霧の中
+    private float erosionIncreaseCounter = 0f; //侵蝕増加分の追跡
 
     void Start()
     {
@@ -46,38 +45,30 @@ public class PlayerMind : MonoBehaviour
                 ErosionReset();
             }
         }
-
-        //侵蝕があったら正気度減少
-        if (state.erosionLevel > 0)
-        {
-            SanityDecrease();
-        }
     }
 
     //侵蝕度増加
     private void ErosionIncrease()
     {
+        float before = state.erosionLevel;
         state.erosionLevel += Time.deltaTime;
+
+        float delta = state.erosionLevel - before;
+        erosionIncreaseCounter += delta;
+
+        //侵蝕度増加分が 5 を超えたら正気度 -1
+        while (erosionIncreaseCounter >= 5f)
+        {
+            state.sanityLevel--;
+            erosionIncreaseCounter -= 5f;
+        }
     }
 
     //侵蝕度リセット
     private void ErosionReset()
     {
         state.erosionLevel = 0;
-        SANDecreaseCoolTime = 0f;
-    }
-
-    //正気度減少
-    private void SanityDecrease()
-    {
-        //クールタイム
-        SANDecreaseCoolTime += Time.deltaTime;
-        if (SANDecreaseCoolTime >= SANDecreaseDuration)
-        {
-            //減少
-            state.sanityLevel--;
-            SANDecreaseCoolTime = 0f;
-        }
+        erosionIncreaseCounter = 0f;
     }
 
     //エリア切り替え時の正気度最大値減少
