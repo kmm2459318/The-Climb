@@ -55,7 +55,13 @@ public class Player_Bomb : MonoBehaviour
             var rb = obj.GetComponent<Rigidbody>();
 
             if (rb == null) continue;
-            rb.AddExplosionForce(b_force, b_pos, b_radius, b_upward, ForceMode.Impulse);
+                Vector3 dir = (rb.position - b_pos).normalized;
+                dir.y *= 0.5f; // ← 上方向を弱める（0.0〜1.0）
+
+                float dist = Vector3.Distance(rb.position, b_pos);
+                float atten = 1f - Mathf.Clamp01(dist / b_radius);
+
+                rb.AddForce(dir * b_force * atten, ForceMode.Impulse);                  
 
             ObjExplosionTarget(obj);
         }
