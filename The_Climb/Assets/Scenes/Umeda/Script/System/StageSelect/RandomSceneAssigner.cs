@@ -6,6 +6,8 @@ using UnityEditor;
 
 public class RandomSceneAssigner : MonoBehaviour
 {
+    private const string PlayerPrefsKey = "RandomSceneAssigned"; // 一度だけ実行用
+
     [Header("シーンリスト（ScriptableObject）")]
     public SceneLibrary sceneLibrary;
 
@@ -16,21 +18,48 @@ public class RandomSceneAssigner : MonoBehaviour
     public int randomSeed = 0;
     public bool useFixedSeed = false;
 
+    private void Start()
+    {
+        // SceneReadyManager が true になるまで待つ
+        StartCoroutine(WaitAndAssign());
+    }
+
+    private System.Collections.IEnumerator WaitAndAssign()
+    {
+        // SceneReadyManager の準備待ち
+        while (!SceneReadyManager.SceneReady)
+            yield return null;
+
+        // 一度だけ実行
+        if (PlayerPrefs.GetInt(PlayerPrefsKey, 0) == 1)
+            yield break;
+
+#if UNITY_EDITOR
+        AssignRandomScenes();
+#endif
+
+        PlayerPrefs.SetInt(PlayerPrefsKey, 1);
+        PlayerPrefs.Save();
+    }
+
 #if UNITY_EDITOR
     [ContextMenu("Assign Random Scenes")]
     public void AssignRandomScenes()
     {
-        if (sceneLibrary == null || sceneLibrary.sceneAssets.Count == 0)
+        // ScriptableObject にシーンが存在するかチェック
+        if (sceneLibrary == null || sceneLibrary.sceneAssets == null || sceneLibrary.sceneAssets.Count == 0)
         {
             Debug.LogError("SceneLibrary が空です！");
             return;
         }
 
+        // StageNode が空なら自動取得
         if (stageNodes.Count == 0)
             stageNodes.AddRange(FindObjectsOfType<StageNode>(true));
 
         List<SceneAsset> pool = new List<SceneAsset>(sceneLibrary.sceneAssets);
 
+        // ランダム初期化
         if (useFixedSeed)
             Random.InitState(randomSeed);
 
