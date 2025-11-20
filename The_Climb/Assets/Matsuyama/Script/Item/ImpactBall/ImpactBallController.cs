@@ -1,22 +1,18 @@
 ﻿using TheClimb.Core;
 using TheClimb.Astral;
-using TheClimb.UniversalGravity;
-using TheClimb.Player;
-using TheClimb.Logging;
+using UnityEngine;
 
 namespace TheClimb.Item
 {
-    public class InpactBallController : AttractableListenerBase    //  インパクトボールコントロールクラス
+    public class ImpactBallController : AttractableListenerBase    //  インパクトボールコントロールクラス
     {
         ItemStateFactory itemStateFactory;                             //  ItemのStateを生成する
         ItemStateMachine itemStateMachine;                             //  ItemのStateMachine
-        GravitationTargetStatusBlock _gravitationTargetStatusBlock;    //  ターゲットのステータスブロック
-        ImpactBallStatus _impactBallStatus;                            //  インパクトボールのステータスブロック
+        ImpactBallContext _ctx;
         ItemCommandProvider itemCommandProvider;                       //  アイテムコマンドプロバイダープロバイダー
 
         IItemStateContext itemStateContext;    //  Stateコンテキスト
 
-        public GravitationTargetStatusBlock statProperty => _gravitationTargetStatusBlock;    //  ステータスプロパティ
         public IItemState currentState => itemStateMachine.CurrentState;    //  現在のステートを返す
 
         private void OnEnable()
@@ -31,12 +27,14 @@ namespace TheClimb.Item
             ItemEventBus.onExplosion -= HandleExplosionInpact;
         }
 
-        public void Initialize(GravitationTargetStatusBlock gravitationStat, ImpactBallStatus ballStatus, ICorutineRunner corutineRunner, IPlayerDataProvider playerDataProvider)    //  初期化
+        //public void Initialize(ImpactBallConfigSO configSO, ImpactBallRuntimeData runtimeData, ICorutineRunner corutineRunner, IPlayerDataProvider playerDataProvider)    //  初期化
+        public void Initialize(ImpactBallContext ctx, ICorutineRunner coroutineRunner)    //  初期化
         {
-            _gravitationTargetStatusBlock = gravitationStat;
-            _impactBallStatus = ballStatus;
+            IImpactable targetPlayer = ImpactableRegistry.GetPlayer();
+            Debug.Log(targetPlayer);
+
             itemStateFactory = new ItemStateFactory();
-            itemCommandProvider = new ItemCommandProvider(_impactBallStatus.GetStatus(ItemMode.Normal),this.transform, itemStateFactory, corutineRunner, playerDataProvider);
+            itemCommandProvider = new ItemCommandProvider(ctx, itemStateFactory, coroutineRunner, targetPlayer);
             itemStateMachine = new ItemStateMachine(itemStateFactory, itemCommandProvider, this.transform);
 
             itemStateContext = new ItemStateContext(itemStateMachine, this.transform, itemStateFactory);

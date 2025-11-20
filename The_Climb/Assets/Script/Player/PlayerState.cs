@@ -1,10 +1,7 @@
-﻿using TheClimb.Player;
-using UnityEngine;
-using UnityEngine.Playables;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
+﻿using UnityEngine;
+using TheClimb.Item;
 
-public class PlayerState : MonoBehaviour
+public class PlayerState : MonoBehaviour, IImpactable
 {
     public bool highJumpOn = false;      //ハイジャンプ可能か
     public bool quickJumpOn = false;     //クイックジャンプ可能か
@@ -54,11 +51,25 @@ public class PlayerState : MonoBehaviour
     private bool flipCooldownActive = false;  // クールタイム中かどうか
     private float flipCooldownTime = 10f;     // クールタイム（秒）
 
+    public Rigidbody RigidbodyGetter => this.RigidBody ;
+    public Transform TransformGetter => this.transform;
+
     private void Awake()
     {
         // PlayerContext.Instance.RegistPlayerState(this);
+        RigidBody = GetComponent<Rigidbody>();
+        ImpactableRegistry.Register(this);
     }
 
+    void OnEnable()
+    {
+        ImpactableRegistry.Register(this);
+    }
+
+    void OnDisable()
+    {
+        ImpactableRegistry.Unregister(this);
+    }
     void Start()
     {
         inputManager = GameObject.Find("KeyManager").GetComponent<InputManager>();
@@ -211,6 +222,7 @@ public class PlayerState : MonoBehaviour
     private void PlayerDead()
     {
         // Debug.Log("栗松、帰国の準備をしろ。");
+        // Debug.Log("ウソップ、お前船降りろ。");
     }
 
     private void OnTriggerEnter(Collider other)
