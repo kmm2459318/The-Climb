@@ -19,16 +19,15 @@ namespace TheClimb.Item
         {
             _playerDataProvider = playerDataProvider;
 
-            Debug.Log(impactBallStat);
             countTillActivate = new CountTillActivate(impactBallStat, stateFactory, coroutineRunner);
             explosionInpact = new ExplosionInpact(impactBallStat, ImpactBallTF, stateFactory, coroutineRunner, playerDataProvider);
         }
 
-        public void InjectContext(ICommandContext context)    //  コンテキスト依存注入
+        public void InjectContext(ICommandContext context, IItemStateContext itemStateContext)    //  コンテキスト依存注入
         {
             _commandContext = context;
-            countTillActivate.InjectContext(context);
-            explosionInpact.InjectContext(context);    
+            countTillActivate.InjectContext(context, itemStateContext);
+            explosionInpact.InjectContext(context, itemStateContext);    
         }
     }
 }

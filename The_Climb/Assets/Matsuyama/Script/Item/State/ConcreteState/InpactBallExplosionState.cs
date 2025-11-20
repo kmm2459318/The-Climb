@@ -4,7 +4,7 @@
     {
         public override void OnEnter()    //  爆発開始時の処理
         {
-            ItemEventBus.OnOverExplosionTimer();
+            _context.NotityExplosionStart();
         }
     }
 }

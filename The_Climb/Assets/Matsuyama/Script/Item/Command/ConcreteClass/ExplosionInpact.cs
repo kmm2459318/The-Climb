@@ -15,6 +15,8 @@ namespace TheClimb.Item
         ICommandContext _commandContext;
         IItemStateFactory _itemStateFactory;
         ICorutineRunner _corutineRunner;   //  コルーチンランナー
+        IItemStateContext _ItemStateContext;
+
         public ExplosionInpact(ImpactBallStatusBlock stat, Transform impactBallTF, IItemStateFactory stateFactory, ICorutineRunner corutineRunner, IPlayerDataProvider playerDataProvider)    //  コンストラクタ
         {
             _imapctBallStatusBlock = stat;
@@ -25,9 +27,10 @@ namespace TheClimb.Item
             _itemStateFactory = stateFactory;
             _corutineRunner = corutineRunner;
         }
-        public void InjectContext(ICommandContext commandContext)    //  コンテキスト注入
+        public void InjectContext(ICommandContext commandContext, IItemStateContext itemStateContext)    //  コンテキスト注入
         {
             _commandContext = commandContext;
+            _ItemStateContext = itemStateContext;
         }
         
         public override void Execute()    //  衝撃波炸裂実行
@@ -35,23 +38,33 @@ namespace TheClimb.Item
             _corutineRunner.StartCoroutine(ExplosionImapct());
         }
 
-        IEnumerator ExplosionImapct()    //  衝撃を炸裂させる
+        IEnumerator ExplosionImapct()    //  衝撃を炸裂させる    //  距離で制限・当たり判定無効化時間調整・エフェクト調整
         {
+            
+
             float Duration = _imapctBallStatusBlock.ExplosionDuration;
             float Elapsed = 0f;
+
+            PlayerTransform.gameObject.layer = LayerMask.NameToLayer("BlowingPlayer");
 
             Debug.Log("kaboom");
             while (Elapsed < Duration)
             {
                 Vector3 BlowForce = (PlayerTransform.position - _impactBallTF.position) * _imapctBallStatusBlock.InpactForce;
-                
-                playerRigidBody.AddForce(BlowForce, ForceMode.Acceleration);
+
+                if(playerRigidBody.linearVelocity.y < 70f)
+                playerRigidBody.AddForce(BlowForce, ForceMode.Force);
 
                 Elapsed += Time.deltaTime;
                 yield return null;
             }
+            while(playerRigidBody.linearVelocity.y > 0)
+            {
+                yield return null;
+            }
 
-            _commandContext.ChangeState(_itemStateFactory.CreateState(ItemStateID.Idle));
+            PlayerTransform.gameObject.layer = LayerMask.NameToLayer("Player1");
+            //_commandContext.ChangeState(_itemStateFactory.CreateState(ItemStateID.Idle), _ItemStateContext);
         }
     }
 }

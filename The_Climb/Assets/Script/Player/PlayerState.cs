@@ -20,6 +20,8 @@ public class PlayerState : MonoBehaviour
     PlayerSpecialAction special;
     [HideInInspector] public PlayerAnimation PlayerAnimation;
 
+    int lowGroundLayer;
+
     public bool playerDirectionRight = true;  //プレイヤーの見ている方向が右ならtrue、左ならfalse
     private bool wasGrounded = false;    //前フレームの地面状態
     public bool landing = false;         //着地判定
@@ -68,6 +70,8 @@ public class PlayerState : MonoBehaviour
         PlayerAnimation = transform.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
 
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
+        lowGroundLayer = LayerMask.GetMask("Ground", "LowGround");
+        groundLayer = LayerMask.GetMask("Ground", "LowGround");
         whiteGround = 1 << LayerMask.NameToLayer("WhiteGround");
         blackGround = 1 << LayerMask.NameToLayer("BlackGround");
 
@@ -107,7 +111,7 @@ public class PlayerState : MonoBehaviour
         else
         {
             // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayerMask);
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
 
             //空中時、isJumpOKを反応させない
             if (isAir)
