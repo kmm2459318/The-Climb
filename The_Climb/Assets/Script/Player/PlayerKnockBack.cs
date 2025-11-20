@@ -105,6 +105,26 @@ public class PlayerKnockBack : MonoBehaviour
                     stalker.handController.ReleaseBuddy();
                 }
             }
+            else if (!coolTime)
+            {
+                if (other.gameObject.tag == "Boss" && !knockBacking)
+                {
+                    if (!barrier.unlocking)
+                    {
+                        if (barrier.barrierActive)
+                        {
+                            StartCoroutine(barrier.BarrierFinish());
+                        }
+                        else
+                        {
+                            //敵とプレイヤーの位置でノックバックの方向を決める
+                            int dir = transform.position.x - other.gameObject.transform.position.x <= 0 ? -1 : 1;
+                            DoKnockBack(dir);  //ノックバック
+                            mind.SanityDecreaseEvent(10);  //正気度減少
+                        }
+                    }
+                }
+            }
         }
     }
 }
