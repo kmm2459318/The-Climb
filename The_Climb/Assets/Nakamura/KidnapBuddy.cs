@@ -4,15 +4,21 @@ using UnityEngine.Playables;
 public class KidnapBuddy : MonoBehaviour
 {
     [HideInInspector] public StalkerHandController handController;
+    private LightDarkWorld lightDark;
 
     private void Start()
     {
         handController = transform.parent.gameObject.GetComponent<StalkerHandController>();
+        lightDark = handController.lightDarkWorld;
+        Debug.Log(handController);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!handController.buddyController.beingKidnapped && !handController.isKidnapping)
+        if (!handController.buddyController.beingKidnapped && !handController.isKidnapping 
+            && ((gameObject.layer == 18 && lightDark.brightnessState == LightDarkWorld.brightness.Light) 
+            || (gameObject.layer == 19 && lightDark.brightnessState == LightDarkWorld.brightness.Dark) 
+            || gameObject.layer == 0))
         {
             if (other.CompareTag("Buddy") && !handController.playerState.carryingBuddy)  //Buddyが孤立してる場合
             {
