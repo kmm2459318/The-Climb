@@ -1,55 +1,65 @@
 ﻿using TheClimb.Core;
 using TheClimb.Astral;
-using TheClimb.UniversalGravity;
-using TheClimb.Player;
-using TheClimb.Logging;
+using UnityEngine;
 
 namespace TheClimb.Item
 {
-    public class InpactBallController : AttractableListenerBase    //  インパクトボールコントロールクラス
+    public class ImpactBallController : AttractableListenerBase    //  インパクトボールコントロールクラス
     {
         ItemStateFactory itemStateFactory;                             //  ItemのStateを生成する
         ItemStateMachine itemStateMachine;                             //  ItemのStateMachine
-        GravitationTargetStatusBlock _gravitationTargetStatusBlock;    //  ターゲットのステータスブロック
-        ImpactBallStatus _impactBallStatus;                  //  インパクトボールのステータスブロック
-        ItemCommandProvider itemCommandProvider;    //  アイテムコマンドプロバイダープロバイダー
+        ImpactBallContext _ctx;
+        ItemCommandProvider itemCommandProvider;                       //  アイテムコマンドプロバイダープロバイダー
 
-        ICorutineRunner _corutineRunner;    //  コルーチンランナー
-        IPlayerDataProvider playerDataProvider;    //  プレイヤー情報提供者
-        public IState currentState => itemStateMachine.CurrentState;    //  現在のステートを返す
+        IItemStateContext itemStateContext;    //  Stateコンテキスト
 
-        public GravitationTargetStatusBlock statProperty => _gravitationTargetStatusBlock;    //  ステータスプロパティ
+        public IItemState currentState => itemStateMachine.CurrentState;    //  現在のステートを返す
 
         private void OnEnable()
         {
-            if(itemCommandProvider == null)
-            LogUtility.Log(LogPrefix.uiManager, $"{itemCommandProvider}", LogLevel.Info);
-            ItemEventBus.onAttractiong += itemCommandProvider.countTillActivate.Execute;
-            ItemEventBus.onExplosion += itemCommandProvider.explosionInpact.Execute;
+            ItemEventBus.onAttractiong += HandleCountTillActivate;
+            ItemEventBus.onExplosion += HandleExplosionInpact;
         }
 
         private void OnDisable()
         {
-            ItemEventBus.onAttractiong -= itemCommandProvider.countTillActivate.Execute;
-            ItemEventBus.onExplosion += itemCommandProvider.explosionInpact.Execute;
+            ItemEventBus.onAttractiong -= HandleCountTillActivate;
+            ItemEventBus.onExplosion -= HandleExplosionInpact;
         }
 
-        public void Initialize(GravitationTargetStatusBlock gravitationStat, ImpactBallStatus ballStatus, ICorutineRunner corutineRunner, IPlayerDataProvider playerDataProvider)    //  初期化
+        //public void Initialize(ImpactBallConfigSO configSO, ImpactBallRuntimeData runtimeData, ICorutineRunner corutineRunner, IPlayerDataProvider playerDataProvider)    //  初期化
+        public void Initialize(ImpactBallContext ctx, ICorutineRunner coroutineRunner)    //  初期化
         {
-            _gravitationTargetStatusBlock = gravitationStat;
-            _impactBallStatus = ballStatus;
-            _corutineRunner = corutineRunner;
-            itemStateFactory = new ItemStateFactory();
-            itemCommandProvider = new ItemCommandProvider(_impactBallStatus.GetStatus(ItemMode.Normal),this.transform, itemStateFactory, corutineRunner, playerDataProvider);
-            itemStateMachine = new ItemStateMachine(itemStateFactory, itemCommandProvider);
+            IImpactable targetPlayer = ImpactableRegistry.GetPlayer();
+            Debug.Log(targetPlayer);
 
-            itemCommandProvider.InjectContext(itemStateMachine);
+            itemStateFactory = new ItemStateFactory();
+            itemCommandProvider = new ItemCommandProvider(ctx, itemStateFactory, coroutineRunner, targetPlayer);
+            itemStateMachine = new ItemStateMachine(itemStateFactory, itemCommandProvider, this.transform);
+
+            itemStateContext = new ItemStateContext(itemStateMachine, this.transform, itemStateFactory);
+
+            itemCommandProvider.InjectContext(itemStateMachine, itemStateContext);
             itemStateMachine.Initialize();    //  ステートマシーン初期化
         }
 
         public override void OnAttract()    //  引き寄せられた時の処理
         {
-            itemStateMachine.ChangeState(itemStateFactory.CreateState(ItemStateID.Attracting));    //  状態変更
+            itemStateMachine.ChangeState(itemStateFactory.CreateState(ItemStateID.Attracting), itemStateContext);    //  状態変更
+        }
+
+        void HandleCountTillActivate(AttractEventArg attractEventArg)    //  CountTillActivateの関数をHandleする
+        {
+            if (attractEventArg.targeTransform != this.transform) return;
+
+            itemCommandProvider.countTillActivate.Execute();
+        }
+
+        void HandleExplosionInpact(AttractEventArg attractEventArg)    //  爆発制御メソッド
+        {
+            if (attractEventArg.targeTransform != this.transform) return;
+
+            itemCommandProvider.explosionInpact.Execute();
         }
     }
 }
