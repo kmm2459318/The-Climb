@@ -1,6 +1,4 @@
-﻿using TheClimb.Core;
-
-namespace TheClimb.Item
+﻿namespace TheClimb.Item
 {
     public class ItemStateFactory : ItemStateFactoryBase    //  アイテムstate
     {
@@ -11,7 +9,7 @@ namespace TheClimb.Item
             Register(ItemStateID.Expolosing, () => new InpactBallExplosionState());
         }
 
-        public override IState CreateState(ItemStateID stateID)    //  state生成
+        public override IItemState CreateState(ItemStateID stateID)    //  state生成
         {
             return base.CreateState(stateID);
         }

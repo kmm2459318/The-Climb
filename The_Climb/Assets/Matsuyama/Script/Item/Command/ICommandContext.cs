@@ -1,9 +1,7 @@
-﻿using TheClimb.Core;
-
-namespace TheClimb.Item
+﻿namespace TheClimb.Item
 {
     public interface ICommandContext    //  コマンドコンテキスト
     {
-        void ChangeState(IState stateID);    //  状態変更
+        void ChangeState(IItemState stateID, IItemStateContext stateContext);    //  状態変更
     }
 }
