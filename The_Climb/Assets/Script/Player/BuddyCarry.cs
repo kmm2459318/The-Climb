@@ -49,25 +49,21 @@ public class BuddyCarry : MonoBehaviour
             //Carryボタン（仮）
             if (Input.GetKeyDown(KeyCode.E))
             {
-                //ベルを鳴らしてバディを誘導
-                if (!state.carryingBuddy && nearCallBell)
+                if (state.isGrounded && state.carryingBuddy)  //おんぶしてる場合、バディを降ろす
+                {
+                    state.carryingBuddy = false;
+                    buddyPos.constraintActive = false;
+                    buddy.transform.position = transform.position + Vector3.up * 0.5f;
+                }
+                else if (nearBuddy)  //おんぶしてない場合、バディをおんぶする
+                {
+                    state.carryingBuddy = true;
+                    buddyPos.constraintActive = true;
+                    buddyController.moving = false;
+                }
+                else if (!state.carryingBuddy && nearCallBell)  //ベルを鳴らしてバディを誘導
                 {
                     buddyController.GuideTo(callBellPosX);
-                }
-                else if (state.isGrounded)
-                {
-                    if (state.carryingBuddy)  //おんぶしてる場合、バディを降ろす
-                    {
-                        state.carryingBuddy = false;
-                        buddyPos.constraintActive = false;
-                        buddy.transform.position = transform.position + Vector3.up * 0.5f;
-                    }
-                    else if (nearBuddy)  //おんぶしてない場合、バディをおんぶする
-                    {
-                        state.carryingBuddy = true;
-                        buddyPos.constraintActive = true;
-                        buddyController.moving = false;
-                    }
                 }
             }
 
