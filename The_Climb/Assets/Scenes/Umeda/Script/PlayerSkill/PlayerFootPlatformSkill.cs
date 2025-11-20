@@ -23,7 +23,7 @@ public class SkillPlatformSpawner : MonoBehaviour
     {
         if (player == null) return;
 
-        if (Input.GetKeyDown(activateKey) && canUseSkill)
+        if (Input.GetKeyDown(activateKey) && canUseSkill && PlayerPrefs.GetInt("UmedaAbi") == 1)
         {
             StartCoroutine(SpawnPlatform());
         }

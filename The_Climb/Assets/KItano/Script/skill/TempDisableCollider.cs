@@ -11,7 +11,7 @@ public class TempDisableColliders : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && !isRunning)
+        if (Input.GetKeyDown(KeyCode.Q) && !isRunning && PlayerPrefs.GetInt("KitanoAbi") == 1)
         {
             StartCoroutine(DisableRoutine());
         }

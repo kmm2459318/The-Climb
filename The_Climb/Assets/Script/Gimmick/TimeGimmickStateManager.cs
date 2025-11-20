@@ -25,8 +25,9 @@ public static class TimeGimmickStateManager
         return GimmickStates.TryGetValue(GimmickId, out IsActive);
     }
 
-    //public static void ClearAll()
-    //{
-    //    GimmickStates.Clear();
-    //}
+    public static bool HasState(string GimmickId)
+    {
+        if (GimmickId == null) return false;
+        return GimmickStates.ContainsKey(GimmickId);
+    }
 }
