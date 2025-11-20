@@ -45,11 +45,11 @@ public class StalkerHandController : MonoBehaviour
             playerState = player.GetComponent<PlayerState>();
             playerKnock = player.GetComponent<PlayerKnockBack>();
         }
+    }
 
-        if (GameObject.Find("LightDarkWorld") != null)
-        {
-            lightDarkWorld = GameObject.Find("LightDarkWorld").GetComponent<LightDarkWorld>();
-        }
+    void Awake()
+    {
+        lightDarkWorld = FindAnyObjectByType<LightDarkWorld>();
 
         home = transform.position;
 
@@ -61,6 +61,23 @@ public class StalkerHandController : MonoBehaviour
         stalkers[1] = childStalker1;
         stalkers[2] = childStalker2;
         stalkers[3] = childStalker3;
+
+        if (lightDarkWorld != null)
+        {
+            //白黒リストに追加
+            for (int i = 0; i < stalkers.Length; i++)
+                lightDarkWorld.RegisterObject(stalkers[i].gameObject);
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (lightDarkWorld != null)
+        {
+            //消える際白黒リストから削除
+            for (int i = 0; i < stalkers.Length; i++)
+                lightDarkWorld.UnregisterObject(stalkers[i].gameObject);
+        }
     }
 
     void Update()
