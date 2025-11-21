@@ -47,9 +47,9 @@ public class BuddyCarry : MonoBehaviour
             }
 
             //Carryボタン（仮）
-            if (Input.GetKeyDown(KeyCode.U) && state.isGrounded)
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                if (state.carryingBuddy)  //おんぶしてる場合、バディを降ろす
+                if (state.isGrounded && state.carryingBuddy)  //おんぶしてる場合、バディを降ろす
                 {
                     state.carryingBuddy = false;
                     buddyPos.constraintActive = false;
@@ -61,23 +61,18 @@ public class BuddyCarry : MonoBehaviour
                     buddyPos.constraintActive = true;
                     buddyController.moving = false;
                 }
+                else if (!state.carryingBuddy && nearCallBell)  //ベルを鳴らしてバディを誘導
+                {
+                    buddyController.GuideTo(callBellPosX);
+                }
             }
 
-            //ベルを鳴らしてバディを誘導
-            if (!state.carryingBuddy && Input.GetKeyDown(KeyCode.I) && nearCallBell)
-            {
-                buddyController.GuideTo(callBellPosX);
-            }
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Buddy"))
-        {
-            nearBuddy = true;  //Buddyが近くにいる
-        }
-        else if (other.CompareTag("CallBell"))
+        if (other.CompareTag("CallBell"))
         {
             nearCallBell = true;  //CallBellが近くにある
             callBellPosX = other.transform.position.x;
@@ -86,11 +81,7 @@ public class BuddyCarry : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Buddy"))
-        {
-            nearBuddy = false;  //Buddyが近くにいない
-        }
-        else if (other.CompareTag("CallBell"))
+        if (other.CompareTag("CallBell"))
         {
             nearCallBell = false;  //CallBellが近くにない
         }

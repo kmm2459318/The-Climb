@@ -16,13 +16,12 @@ public class KidnapBuddy : MonoBehaviour
         {
             if (other.CompareTag("Buddy") && !handController.playerState.carryingBuddy)  //Buddyが孤立してる場合
             {
-                Debug.Log("テスト2");
                 handController.BuddyGet();
             }
             else if (other.CompareTag("Player") && handController.playerState.carryingBuddy)  //Buddyをおんぶしてる場合
             {
                 PlayerMind playerMind = other.GetComponent<PlayerMind>();
-                Debug.Log("テスト");
+
                 //敵とプレイヤーの位置でノックバックの方向を決める
                 int dir = handController.mainStalker.transform.position.x - other.gameObject.transform.position.x <= 0 ? 1 : -1;
                 handController.playerKnock.DoKnockBack(dir); //ノックバック

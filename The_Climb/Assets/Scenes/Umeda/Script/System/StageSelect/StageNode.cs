@@ -77,4 +77,17 @@ public class StageNode : MonoBehaviour
                 promptUI.SetActive(false);
         }
     }
+
+    // Runtime用（SceneName を直接セット）
+    public void SetSceneName_Runtime(string name)
+    {
+        this.GetType(); // 空の安全策（消してもOK）
+        typeof(StageNode).ToString(); // これも消してOK
+                                      // 実行時に sceneName をセット
+        var sceneNameField = typeof(StageNode).GetField("sceneName",
+            System.Reflection.BindingFlags.NonPublic |
+            System.Reflection.BindingFlags.Instance);
+        if (sceneNameField != null)
+            sceneNameField.SetValue(this, name);
+    }
 }

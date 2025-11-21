@@ -1,9 +1,7 @@
-﻿using TheClimb.Core;
-
-namespace TheClimb.Item
+﻿namespace TheClimb.Item
 {
     public interface IItemStateFactory    //  アイテムインターフェース
     {
-        IState CreateState(ItemStateID stateID);    //  State生成
+        IItemState CreateState(ItemStateID stateID);    //  State生成
     }
 }
