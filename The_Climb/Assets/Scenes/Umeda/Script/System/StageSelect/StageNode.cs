@@ -26,6 +26,9 @@ public class StageNode : MonoBehaviour
     [HideInInspector] public bool isUnlocked = false;
     private bool playerNearby = false;
 
+    public StageRandomizer stageRandomizer;
+    public StageRoute stageRoute;
+    
     private void Awake()
     {
         foreach (var path in connectedPaths)
@@ -50,9 +53,10 @@ public class StageNode : MonoBehaviour
 
     private void Update()
     {
-        if (playerNearby && Input.GetKeyDown(KeyCode.Space) && !string.IsNullOrEmpty(sceneName))
+        if (playerNearby && Input.GetKeyDown(KeyCode.Space))
         {
-            SceneManager.LoadScene(sceneName);
+            stageRandomizer.StartStage(stageId);
+            stageRoute.OnStageButtonPressed(stageId);
         }
 
         if (promptUI != null)
@@ -92,5 +96,18 @@ public class StageNode : MonoBehaviour
             if (promptUI != null)
                 promptUI.SetActive(false);
         }
+    }
+
+    // Runtime用（SceneName を直接セット）
+    public void SetSceneName_Runtime(string name)
+    {
+        this.GetType(); // 空の安全策（消してもOK）
+        typeof(StageNode).ToString(); // これも消してOK
+                                      // 実行時に sceneName をセット
+        var sceneNameField = typeof(StageNode).GetField("sceneName",
+            System.Reflection.BindingFlags.NonPublic |
+            System.Reflection.BindingFlags.Instance);
+        if (sceneNameField != null)
+            sceneNameField.SetValue(this, name);
     }
 }

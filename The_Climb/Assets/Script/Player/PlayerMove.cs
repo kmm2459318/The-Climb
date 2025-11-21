@@ -16,7 +16,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     [SerializeField] private InputActionReference leftMoveAction;
     [SerializeField] private InputActionReference rightMoveAction;
-    [SerializeField] private InpactBallController inpactBallController;
+    [SerializeField] private ImpactBallController inpactBallController;
 
     [SerializeField] private bool reverseHorizontal = false;
 
