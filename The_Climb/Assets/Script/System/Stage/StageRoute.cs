@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class StageRoute : MonoBehaviour
 {
     // 各ボタンをインスペクターで登録（1〜8の順）
-    public List<Button> stageButtons;
+    public List<StageNode> stageButtons;
 
     // 通過済みステージを保存
     private HashSet<int> visitedStages = new HashSet<int>();
@@ -66,25 +66,25 @@ public class StageRoute : MonoBehaviour
         for (int i = 0; i < stageButtons.Count; i++)
         {
             int buttonIndex = i + 1;
-            Button btn = stageButtons[i];
+            StageNode btn = stageButtons[i];
             Image btnImage = btn.GetComponent<Image>();
 
             if (visitedStages.Contains(buttonIndex))
             {
                 // 通過済み → 無効化＋黄色
-                btn.interactable = false;
-                btnImage.color = Color.yellow;
+                btn.enabled = false;
+                //btnImage.color = Color.yellow;
             }
             else if (activeNumbers.Contains(buttonIndex))
             {
                 // 現在選択可能 → 有効化＋白
-                btn.interactable = true;
-                btnImage.color = Color.white;
+                btn.enabled = true;
+                //btnImage.color = Color.white;
             }
             else
             {
                 // それ以外 → 無効化＋灰色
-                btn.interactable = false;
+                btn.enabled = false;
                 //btnImage.color = Color.gray;
             }
         }
