@@ -97,4 +97,28 @@ public class PlayerBarrier : MonoBehaviour
 
         barrier.gameObject.SetActive(active);
     }
+
+    private float lastBlockTime = -10f; // 最後に防御した時間
+
+    // 攻撃を防げるか判定するメソッド
+    public bool TryBlockAttack()
+    {
+        // 1. 無敵時間チェック (バリア解除後1秒間は無敵)
+        if (Time.time < lastBlockTime + 1.0f)
+        {
+            return true; // 無敵なので防いだことにする
+        }
+
+        // 2. バリア有効チェック
+        if (barrierActive && !unlocking)
+        {
+            Debug.Log("バリアで攻撃を無効化しました");
+            StartCoroutine(BarrierFinish()); // バリア解除
+
+            lastBlockTime = Time.time; // 無敵時間開始
+            return true; // 防いだ
+        }
+
+        return false; // 防げなかった
+    }
 }

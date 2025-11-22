@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class PlayerRespawnUmeda : MonoBehaviour
 {
     private Rigidbody rb;
+    private PlayerMove playerMove;
 
     [Header("リスポーンポイントリスト")]
     public List<Transform> respawnPoints = new List<Transform>(); // 手動設定用リスト
@@ -17,9 +18,14 @@ public class PlayerRespawnUmeda : MonoBehaviour
     [Header("対応するチェックポイント見た目リスト")]
     public List<CheckpointVisual> checkpointVisuals = new List<CheckpointVisual>();
 
+    [Header("リスポーン判定設定（チェックポイントからの相対距離）")]
+    public float maxHeightFromCheckpoint = 30f; // 上方向の制限（これ以上離れるとリスポーン）
+    public float fallDistanceFromCheckpoint = 20f; // 下方向の制限（これ以上落ちるとリスポーン）
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        playerMove = GetComponent<PlayerMove>();
 
         if (respawnPoints.Count > 0)
         {
@@ -35,14 +41,25 @@ public class PlayerRespawnUmeda : MonoBehaviour
 
     void Update()
     {
-        if (transform.position.y < -4.3f)
+        // 現在のチェックポイント（lastSavePos）とのY座標差分を計算
+        float diffY = transform.position.y - lastSavePos.y;
+
+        // 上に行き過ぎた場合 OR 下に落ちすぎた場合
+        if (diffY > maxHeightFromCheckpoint || diffY < -fallDistanceFromCheckpoint)
         {
+            Debug.Log($"制限エリア外に出ました (DiffY: {diffY:F2}) -> Respawn");
             Respawn();
         }
     }
 
     public void Respawn()
     {
+        // 重力リセット
+        if (playerMove != null)
+        {
+            playerMove.ResetGravity();
+        }
+
         if (rb != null)
         {
             rb.linearVelocity = Vector3.zero;
