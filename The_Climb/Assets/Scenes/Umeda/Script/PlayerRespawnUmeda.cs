@@ -12,7 +12,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
     [Header("現在のリスポーンインデックス")]
     [SerializeField] private int currentIndex = 0;
 
-    private Vector3 lastSavePos;
+    private Transform currentRespawnPoint;
 
     // チェックポイントの見た目制御用（同じ順番で登録）
     [Header("対応するチェックポイント見た目リスト")]
@@ -29,20 +29,20 @@ public class PlayerRespawnUmeda : MonoBehaviour
 
         if (respawnPoints.Count > 0)
         {
-            lastSavePos = respawnPoints[0].position;
-            UpdateCheckpointVisual(0);
+            SetRespawnPoint(0);
         }
         else
         {
-            lastSavePos = transform.position;
-            Debug.LogWarning("⚠️ リスポーンポイントが未設定です。現在位置を初期値にします。");
+            Debug.LogWarning("⚠️ リスポーンポイントが未設定です。");
         }
     }
 
     void Update()
     {
-        // 現在のチェックポイント（lastSavePos）とのY座標差分を計算
-        float diffY = transform.position.y - lastSavePos.y;
+        if (currentRespawnPoint == null) return;
+
+        // 現在のチェックポイント（currentRespawnPoint）とのY座標差分を計算
+        float diffY = transform.position.y - currentRespawnPoint.position.y;
 
         // 上に行き過ぎた場合 OR 下に落ちすぎた場合
         if (diffY > maxHeightFromCheckpoint || diffY < -fallDistanceFromCheckpoint)
@@ -54,6 +54,8 @@ public class PlayerRespawnUmeda : MonoBehaviour
 
     public void Respawn()
     {
+        if (currentRespawnPoint == null) return;
+
         // 重力リセット
         if (playerMove != null)
         {
@@ -63,11 +65,11 @@ public class PlayerRespawnUmeda : MonoBehaviour
         if (rb != null)
         {
             rb.linearVelocity = Vector3.zero;
-            rb.MovePosition(lastSavePos);
+            rb.MovePosition(currentRespawnPoint.position);
         }
         else
         {
-            transform.position = lastSavePos;
+            transform.position = currentRespawnPoint.position;
         }
     }
 
@@ -89,7 +91,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
         if (index >= 0 && index < respawnPoints.Count)
         {
             currentIndex = index;
-            lastSavePos = respawnPoints[index].position;
+            currentRespawnPoint = respawnPoints[index];
             UpdateCheckpointVisual(index);
             Debug.Log($"✅ リスポーン地点を更新しました → {respawnPoints[index].name}");
         }
@@ -106,7 +108,6 @@ public class PlayerRespawnUmeda : MonoBehaviour
 
     public Transform GetCurrentRespawnPoint()
     {
-        if (respawnPoints.Count == 0) return null;
-        return respawnPoints[currentIndex];
+        return currentRespawnPoint;
     }
 }
