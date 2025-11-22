@@ -4,7 +4,7 @@ using System.Collections;
 public class BgmYSwitchFade : MonoBehaviour
 {
     [SerializeField] Transform target;
-    [SerializeField] float thresholdY = 172f;
+    [SerializeField] float thresholdX = 450f;
     [SerializeField] AudioClip StageClip;
     [SerializeField] AudioClip BossClip;
     [SerializeField] float fadeDuration = 1.5f;
@@ -28,8 +28,8 @@ public class BgmYSwitchFade : MonoBehaviour
     void Start()
     {
         if (target == null) Debug.LogWarning("BgmYSwitchFade: target が設定されていません。");
-        // 初期クリップをセット（y によって決定）
-        isHigh = (target != null && target.position.y >= thresholdY);
+        // 初期クリップをセット（x によって決定）
+        isHigh = (target != null && target.position.x >= thresholdX);
         AudioSource inactive = (active == srcA) ? srcB : srcA;
         active.clip = isHigh ? BossClip : StageClip;
         inactive.clip = isHigh ? StageClip : BossClip;
@@ -41,7 +41,7 @@ public class BgmYSwitchFade : MonoBehaviour
     void Update()
     {
         if (target == null) return;
-        bool nowHigh = target.position.y >= thresholdY;
+        bool nowHigh = target.position.x >= thresholdX;
         if (nowHigh != isHigh)
         {
             isHigh = nowHigh;

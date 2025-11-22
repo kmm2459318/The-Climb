@@ -67,7 +67,7 @@ public class LightDarkWorld : MonoBehaviour
     void Update()
     {
         //光と闇切り替え
-        if (Input.GetKeyDown(KeyCode.J))
+        if (Input.GetMouseButtonDown(1))
         {
             if (brightnessState == brightness.Dark)  //闇→光
             {

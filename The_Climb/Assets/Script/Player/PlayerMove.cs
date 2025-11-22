@@ -4,6 +4,7 @@ using TheClimb.Item;
 using TheClimb.Player;
 using TheClimb.Astral;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerMove : MonoBehaviour, IConveyorReceiver
 {
@@ -250,6 +251,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         {
             MoveOperation();
         }
+        CheckStuck();
     }
 
     void FixedUpdate()
@@ -414,6 +416,99 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     {
         this.OnBelt = OnBelt;
         this.BeltVelocity = velocity;
+    }
+
+    [Header("埋まり判定設定")]
+    public float stuckCheckDelay = 0.5f; // 埋まり判定が確定するまでの時間
+    public CapsuleCollider stuckDetectionCollider; // 埋まり判定専用のコライダー（未設定なら自動検出）
+    public Collider[] collidersToDisableOnUnstuck; // 脱出時に一時的に無効化するコライダー（足元のSphereColliderなど）
+    private float stuckTimer = 0f;
+
+    private void CheckStuck()
+    {
+        // カプセルコライダーを取得（専用コライダーが設定されていればそれを使用、なければ自動検出）
+        Vector3 point1, point2;
+        float radius;
+
+        CapsuleCollider capsule = stuckDetectionCollider != null ? stuckDetectionCollider : GetComponent<CapsuleCollider>();
+        if (capsule != null)
+        {
+            // 少し小さくして判定（壁に触れているだけなら反応しないように）
+            float shrink = 0.1f;
+            float maxScale = Mathf.Max(Mathf.Abs(transform.localScale.x), Mathf.Abs(transform.localScale.y), Mathf.Abs(transform.localScale.z));
+            radius = capsule.radius * maxScale - shrink;
+            float height = capsule.height * maxScale - (shrink * 2);
+
+            Vector3 center = capsule.transform.TransformPoint(capsule.center);
+            point1 = center + Vector3.up * (height / 2f - radius);
+            point2 = center - Vector3.up * (height / 2f - radius);
+        }
+        else
+        {
+            return; // コライダーが取れなければスキップ
+        }
+
+        // 自分以外のコライダーと重なっているかチェック
+        Collider[] hitColliders = Physics.OverlapCapsule(point1, point2, radius);
+
+        bool isStuck = false;
+        foreach (var col in hitColliders)
+        {
+            if (col.gameObject != gameObject && !col.isTrigger)
+            {
+                isStuck = true;
+                break;
+            }
+        }
+
+        if (isStuck)
+        {
+            stuckTimer += Time.deltaTime;
+            if (stuckTimer > stuckCheckDelay)
+            {
+                Debug.LogWarning("プレイヤーの埋まりを検知しました。位置を修正します。");
+
+                // 重力反転中（天井）なら上へ、通常（床）なら下へ
+                float direction = upsideDown ? 1f : -1f;
+                transform.position += Vector3.up * direction * 3.0f; // 3mずらす
+
+                // 指定されたコライダーを一時的に無効化
+                if (collidersToDisableOnUnstuck != null && collidersToDisableOnUnstuck.Length > 0)
+                {
+                    StartCoroutine(TemporarilyDisableColliders());
+                }
+
+                stuckTimer = 0f; // タイマーリセット
+            }
+        }
+        else
+        {
+            stuckTimer = 0f;
+        }
+    }
+
+    private IEnumerator TemporarilyDisableColliders()
+    {
+        // 指定されたコライダーを無効化
+        foreach (var col in collidersToDisableOnUnstuck)
+        {
+            if (col != null)
+            {
+                col.enabled = false;
+            }
+        }
+
+        // 0.1秒待機
+        yield return new WaitForSeconds(0.1f);
+
+        // 再有効化
+        foreach (var col in collidersToDisableOnUnstuck)
+        {
+            if (col != null)
+            {
+                col.enabled = true;
+            }
+        }
     }
 
 }

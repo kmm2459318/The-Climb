@@ -456,6 +456,7 @@ GameObject:
   - component: {fileID: 3429528999240997670}
   - component: {fileID: 2892514810113950073}
   - component: {fileID: 9178113623799957216}
+  - component: {fileID: 2793059512546646977}
   - component: {fileID: 248480542058028626}
   - component: {fileID: 682831879393390009}
   - component: {fileID: 7246862423334343013}
@@ -674,6 +675,11 @@ MonoBehaviour:
   slipping: 0
   slipVelocity: {x: 0, y: 0, z: 0}
   PlayerAnimation: {fileID: 0}
+  stuckCheckDelay: 0.5
+  stuckDetectionCollider: {fileID: 2793059512546646977}
+  collidersToDisableOnUnstuck:
+  - {fileID: 682831879393390009}
+  - {fileID: 248480542058028626}
 --- !u!114 &3949784339957086417
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -753,6 +759,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d87cb947af36f2940be4c604592df76b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMind
+--- !u!136 &2793059512546646977
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2205381300897396991}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.13
+  m_Height: 0.89
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.62, z: 0}
 --- !u!65 &248480542058028626
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -896,6 +925,8 @@ MonoBehaviour:
   checkpointVisuals:
   - {fileID: 0}
   - {fileID: 0}
+  maxHeightFromCheckpoint: 30
+  fallDistanceFromCheckpoint: 20
 --- !u!114 &7424387911693393458
 MonoBehaviour:
   m_ObjectHideFlags: 0
