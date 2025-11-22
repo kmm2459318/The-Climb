@@ -26,6 +26,22 @@ public class GravityFlipManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Keyboard.current == null)
+        {
+            Debug.Log("Keyboard.current が NULL！ → Input System が動いていません");
+            return;
+        }
+
+        if (Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            Debug.Log("Eキー押された！");
+        }
+    }
+
+
+
     private void OnDisable()
     {
         if (flipAction != null)

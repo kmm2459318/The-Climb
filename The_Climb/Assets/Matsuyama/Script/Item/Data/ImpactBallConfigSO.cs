@@ -5,7 +5,15 @@ namespace TheClimb.Item
     [CreateAssetMenu(fileName = "ImpactBallConfigSO", menuName = "Config/Item/ImpactBall")]
     public class ImpactBallConfigSO : ScriptableObject    //  衝撃球の設定
     {
-        [Header("衝撃球設定")]
+        [Header("衝撃球エフェクト")]
+
+        [Tooltip("爆発カウント中のエフェクト")]
+        GameObject FusingEffect;
+
+        [Tooltip("爆発エフェクト")]
+        GameObject ExplosionEffect;
+
+        [Header("衝撃球挙動設定")]
         [Tooltip("爆発までの時間")]
         public float FuseTime;           //  爆発時間(初期値コピー用)
 
