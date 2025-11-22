@@ -26,6 +26,9 @@ public class StageNode : MonoBehaviour
     [HideInInspector] public bool isUnlocked = false;
     private bool playerNearby = false;
 
+    public StageRandomizer stageRandomizer;
+    public StageRoute stageRoute;
+    
     private void Awake()
     {
         foreach (var path in connectedPaths)
@@ -50,9 +53,10 @@ public class StageNode : MonoBehaviour
 
     private void Update()
     {
-        if (playerNearby && Input.GetKeyDown(KeyCode.Space) && !string.IsNullOrEmpty(sceneName))
+        if (playerNearby && Input.GetKeyDown(KeyCode.Space))
         {
-            SceneManager.LoadScene(sceneName);
+            stageRandomizer.StartStage(stageId - 1);
+            stageRoute.OnStageButtonPressed(stageId);
         }
 
         if (promptUI != null)

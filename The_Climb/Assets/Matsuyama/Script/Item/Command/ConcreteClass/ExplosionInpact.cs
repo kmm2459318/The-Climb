@@ -8,7 +8,7 @@ namespace TheClimb.Item
     {
         ImpactBallContext _ctx;                //  衝撃球コンテキスト
         ImpactBallRuntimeData _runtimeData;    //  衝撃球コンテキスト
-        Transform PlayerTransform;    //  プレイヤーのトランスフォーム
+        Transform _playerTransform;    //  プレイヤーのトランスフォーム
         Transform _planetTransform;    //  プレイヤーのトランスフォーム
         Rigidbody playerRigidBody;    //  プレイヤーのリジッドボディ
 
@@ -25,8 +25,7 @@ namespace TheClimb.Item
             _itemStateFactory = stateFactory;
             _corutineRunner = corutineRunner;
             _planetTransform = ctx.Transform;
-            Debug.Log(targetPlayer.TransformGetter == null);
-            PlayerTransform = targetPlayer.TransformGetter;
+            _playerTransform = targetPlayer.TransformGetter;
             playerRigidBody = targetPlayer.RigidbodyGetter;
         }
         public void InjectContext(ICommandContext commandContext, IItemStateContext itemStateContext)    //  コンテキスト注入
@@ -42,18 +41,21 @@ namespace TheClimb.Item
 
         IEnumerator ExplosionImapct()    //  衝撃を炸裂させる    //  距離で制限・当たり判定無効化時間調整・エフェクト調整
         {
-            float ExplosionForce = _ctx.ConfigSO.ExplosionForce;    //  爆発の衝撃力
+            float ExplosionForce = _ctx.ConfigSO.ExplosionForce;     //  爆発の衝撃力
+            float ExplosionRange = _ctx.ConfigSO.ExplosionRadius;    //  爆発の半径
             
-            PlayerTransform.gameObject.layer = LayerMask.NameToLayer("BlowingPlayer");
+            _playerTransform.gameObject.layer = LayerMask.NameToLayer("BlowingPlayer");
 
             Debug.Log("kaboom");
             while ((_runtimeData._RemainingExplosionTime -= Time.deltaTime) > 0)
             {
-                Vector3 BlowForce = (PlayerTransform.position - _planetTransform.position) * ExplosionForce;
+                Vector3 BlowForce = (_playerTransform.position - _planetTransform.position) * ExplosionForce;
 
-                if(playerRigidBody.linearVelocity.y < 70f)
-                playerRigidBody.AddForce(BlowForce, ForceMode.Force);
-
+                if (playerRigidBody.linearVelocity.y < 40f && Vector3.Distance(_ctx.Transform.position, _playerTransform.position) < _ctx.ConfigSO.ExplosionRadius)
+                {
+                    Debug.Log("in");
+                    playerRigidBody.AddForce(BlowForce, ForceMode.Force);
+                }
                 yield return null;
             }
 
@@ -62,7 +64,7 @@ namespace TheClimb.Item
                 yield return null;
             }
 
-            PlayerTransform.gameObject.layer = LayerMask.NameToLayer("Player");
+            _playerTransform.gameObject.layer = LayerMask.NameToLayer("Player");
             
             //_commandContext.ChangeState(_itemStateFactory.CreateState(ItemStateID.Idle), _ItemStateContext);
         }
