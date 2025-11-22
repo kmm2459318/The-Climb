@@ -55,7 +55,7 @@ public class StageNode : MonoBehaviour
     {
         if (playerNearby && Input.GetKeyDown(KeyCode.Space))
         {
-            stageRandomizer.StartStage(stageId);
+            stageRandomizer.StartStage(stageId - 1);
             stageRoute.OnStageButtonPressed(stageId);
         }
 
