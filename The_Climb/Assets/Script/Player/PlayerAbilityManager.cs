@@ -71,7 +71,7 @@ public class PlayerAbilityManager : MonoBehaviour
                     }
                     else
                     {
-                        AbilityChange(count++); // 不可能状態なら次のアビリティへ移動
+                        AbilityChange(count + 1); // 不可能状態なら次のアビリティへ移動
                     }
                     break;
                 case 1: // 北野君のアビリティ
@@ -85,7 +85,7 @@ public class PlayerAbilityManager : MonoBehaviour
                     }
                     else
                     {
-                        AbilityChange(count++);
+                        AbilityChange(count + 1);
                     }
                     break;
                 case 2: // 西山君のアビリティ
@@ -99,7 +99,7 @@ public class PlayerAbilityManager : MonoBehaviour
                     }
                     else
                     {
-                        AbilityChange(count++);
+                        AbilityChange(count + 1);
                     }
                     break;
 
