@@ -69,30 +69,35 @@ public class GravityFlipManager : MonoBehaviour
             // 反転実行
             player.ToggleUpsideDown();
 
-            // クールタイム開始
+            // クールタイム開始(反転直後から開始)
             StartCoroutine(FlipCooldownCoroutine());
         }
     }
 
+    // メンバ変数としてタイマーを保持
+    private float currentCooldownTimer = 0f;
+
     private IEnumerator FlipCooldownCoroutine()
     {
         canFlip = false;
-        float timer = 0f;
+        currentCooldownTimer = 0f;
 
-        while (timer < flipCooldown)
+        // クールタイム中はゲージを更新
+        while (currentCooldownTimer < flipCooldown)
         {
-            timer += Time.deltaTime;
+            currentCooldownTimer += Time.deltaTime;
 
-            // UI表示がある場合
+            // UI表示がある場合(互換性のため残す)
             if (cooldownFillImage != null)
             {
-                cooldownFillImage.fillAmount = 1f - (timer / flipCooldown);
+                cooldownFillImage.fillAmount = 1f - (currentCooldownTimer / flipCooldown);
             }
 
             yield return null;
         }
 
         canFlip = true;
+        currentCooldownTimer = 0f;
 
         if (cooldownFillImage != null)
         {
@@ -101,4 +106,20 @@ public class GravityFlipManager : MonoBehaviour
 
         Debug.Log("反転クールタイム終了");
     }
+
+    /// <summary>
+    /// クールタイム進行状況を取得(0.0~1.0、1.0が満タン)
+    /// </summary>
+    public float GetCooldownProgress()
+    {
+        if (canFlip)
+        {
+            return 0f; // クールタイム終了、ゲージなし
+        }
+
+        // タイマーから計算
+        float progress = 1f - (currentCooldownTimer / flipCooldown);
+        return Mathf.Clamp01(progress);
+    }
+
 }
