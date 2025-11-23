@@ -40,13 +40,13 @@ public class TimeChange : MonoBehaviour
     }
 
 
-    void Update()
-    {
-        if (!fader.IsFading && Input.GetKeyDown(KeyBind.timeSwitch))
-        {
-            fader.FadeAndDo(SwitchToNextMap);
-        }
-    }
+    //void Update()
+    //{
+    //    if (!fader.IsFading && Input.GetKeyDown(KeyBind.timeSwitch))
+    //    {
+    //        fader.FadeAndDo(SwitchToNextMap);
+    //    }
+    //}
 
     private void SwitchToNextMap()
     {

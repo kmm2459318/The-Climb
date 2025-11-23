@@ -20,7 +20,7 @@ public class PlayerAbilityManager : MonoBehaviour
     void Awake()
     {
         GameObject[] abilityBools = {nakaAbi, matsuAbi, umeAbi, miyamotoyuoAbi, kitaAbi, nishiAbi};
-        string[] abilityNames = { "Nakamura", "Matsuyama", "Umeda", "Miyamoto", "Kitano", "Nisiyama", "Yuoka"};
+        string[] abilityNames = { "Nakamura", "Matsuyama", "Umeda", "Yuoka", "Kitano", "Nisiyama", };
 
         //// デバッグ用で全アビリティオンオフ切り替えれるようにしてる
         //for(int i = 0; i < abilityBools.Length; i++)

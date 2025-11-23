@@ -41,6 +41,9 @@ public class GimmickSwitch : MonoBehaviour
         if (CanInteract && Input.GetKeyDown(ActivateKey))
         {
             TryActivateSwitch();
+            // 見た目を切り替える
+            SwitchOff.SetActive(false);
+            SwitchOn.SetActive(true);
         }
     }
 
@@ -98,12 +101,7 @@ public class GimmickSwitch : MonoBehaviour
             }
         }
 
-        // 見た目を切り替える
-        if (SwitchOff != null && SwitchOn != null)
-        {
-            SwitchOff.SetActive(false);
-            SwitchOn.SetActive(true);
-        }
+     
 
         // 以後の入力処理を止める（スクリプトを無効化）
         this.enabled = false;
