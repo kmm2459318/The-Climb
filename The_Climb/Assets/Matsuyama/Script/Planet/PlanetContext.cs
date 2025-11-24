@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using TheClimb.Core;
 
 namespace TheClimb.Astral
 {
@@ -28,6 +29,15 @@ namespace TheClimb.Astral
         public void RegistPlanetController(PlanetController planetController)    //  登録メソッド
         {
             _PlanetController = planetController;
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+                PlanetEventBus.Clear();
+            }
         }
     }
 }

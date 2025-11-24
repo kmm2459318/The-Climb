@@ -12,5 +12,11 @@ namespace TheClimb.Core
         {
             OnActivatePlanet?.Invoke(target, Radius, Segments);
         }
+
+        public static void Clear()
+        {
+            OnActivatePlanet = null;
+            OnDeactivatePlanet = null;
+        }
     }
 }
