@@ -49,25 +49,25 @@ public class StageNode : MonoBehaviour
         if (sceneAsset != null)
             sceneName = sceneAsset.name;
 #endif
-    }
-
-    private void Update()
-    {
-        if (playerNearby && Input.GetKeyDown(KeyCode.Space))
-        {
-            stageRandomizer.StartStage(stageId - 1);
-            stageRoute.OnStageButtonPressed(stageId);
-        }
-
-        if (promptUI != null)
-            promptUI.transform.position = transform.position + uiOffset;
-
 #if UNITY_EDITOR
         // 編集中にアセットが変更されたら名前も更新しておく
         if (sceneAsset != null && sceneName != sceneAsset.name)
             sceneName = sceneAsset.name;
 #endif
     }
+
+    private void Update()
+    {
+        if (playerNearby && Input.GetKeyDown(KeyCode.Space))
+        {
+            stageRandomizer.StartStage(stageId);
+            stageRoute.OnStageButtonPressed(stageId);
+        }
+
+        if (promptUI != null)
+            promptUI.transform.position = transform.position + uiOffset;
+    }
+
 
     public void Unlock()
     {
