@@ -107,7 +107,13 @@ public class StageRandomizer : MonoBehaviour
     // 指定されたボタン番号のステージをロード
     public void StartStage(int ButtonNo)
     {
-        System.Loading.SceneLoader.Instance.LoadScene(StageName[ButtonNo]);
-
+        if (ButtonNo == 8)
+        {
+            System.Loading.SceneLoader.Instance.LoadScene("GameClear");
+        }
+        else
+        {
+            System.Loading.SceneLoader.Instance.LoadScene(StageName[ButtonNo - 1]);
+        }
     }
 }
