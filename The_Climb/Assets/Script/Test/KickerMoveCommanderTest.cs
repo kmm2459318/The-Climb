@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿#if UNITY_EDITOR
+using NUnit.Framework;
 using UnityEngine;
 
 //  キッカー移動テスト
@@ -80,6 +81,7 @@ public class KickerMoveCommanderTest
         Assert.AreEqual(MoveDir.LEFT, dir);
     }
 }
+#endif
 //  以下コード保存所  //
 //kickerMoveCommander.GetType().GetField("kickerStatus", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(kickerMoveCommander, kickerStatus);
 //kickerMoveCommander.GetType().GetMethod("InitializeForTest", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(kickerMoveCommander, new object[] { kickerStatus });

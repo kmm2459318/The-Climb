@@ -2,6 +2,7 @@
 
 namespace TheClimb.Astral
 {
+    [System.Serializable]
     public class PlanetDataProvider : IPlanetDataProvider    //  天体のデータを提供する
     {
         private readonly Transform _planetTransform;

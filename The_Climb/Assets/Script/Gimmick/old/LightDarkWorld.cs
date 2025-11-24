@@ -1,7 +1,11 @@
-﻿using NUnit.Framework;
+﻿#if UNITY_EDITOR
+using NUnit.Framework;
+#endif
 using System.Collections.Generic;
 using TMPro;
+#if UNITY_EDITOR
 using UnityEditor.Rendering.Universal;
+#endif
 using UnityEngine;
 
 public class LightDarkWorld : MonoBehaviour

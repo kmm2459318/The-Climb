@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 
 public class IDDatebaseEditWindow : EditorWindow
@@ -40,3 +41,4 @@ public class IDDatebaseEditWindow : EditorWindow
         }
     }
 }
+#endif

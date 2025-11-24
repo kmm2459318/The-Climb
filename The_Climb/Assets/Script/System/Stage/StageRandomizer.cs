@@ -108,6 +108,6 @@ public class StageRandomizer : MonoBehaviour
     public void StartStage(int ButtonNo)
     {
         System.Loading.SceneLoader.Instance.LoadScene(StageName[ButtonNo]);
-        PlayerPrefs.SetInt(StageName[ButtonNo], 1);
+
     }
 }
