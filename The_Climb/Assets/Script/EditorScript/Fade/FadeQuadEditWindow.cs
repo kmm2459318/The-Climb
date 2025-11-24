@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 
 public class FadeQuadEditWindow : EditorWindow
@@ -26,3 +27,4 @@ public class FadeQuadEditWindow : EditorWindow
         }
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 
 //  プログレスバー表示
 public static class ProgressBarUtility
@@ -19,3 +20,4 @@ public static class ProgressBarUtility
         EditorUtility.ClearProgressBar();
     }
 }
+#endif
