@@ -128,7 +128,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7051969432426644713
 Transform:
   m_ObjectHideFlags: 0
@@ -779,8 +779,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.13
-  m_Height: 0.89
+  m_Radius: 0.01
+  m_Height: 0.59
   m_Direction: 1
   m_Center: {x: 0, y: 0.62, z: 0}
 --- !u!65 &248480542058028626
@@ -962,6 +962,7 @@ MonoBehaviour:
   - {fileID: 682831879393390009}
   - {fileID: 5500657178859689209}
   duration: 0.5
+  cooldownTime: 3
 --- !u!135 &5500657178859689209
 SphereCollider:
   m_ObjectHideFlags: 0
