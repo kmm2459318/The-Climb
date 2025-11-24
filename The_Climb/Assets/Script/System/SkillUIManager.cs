@@ -83,6 +83,24 @@ public class SkillUIManager : MonoBehaviour
     {
         if (skillIconImage == null || abilityManager == null) return;
 
+        // 全てのアビリティがOFFかチェック
+        bool isUmedaActive = PlayerPrefs.GetInt("UmedaAbi") == 1;
+        bool isKitanoActive = PlayerPrefs.GetInt("KitanoAbi") == 1;
+        bool isNisiyamaActive = PlayerPrefs.GetInt("NisiyamaAbi") == 1;
+
+        if (!isUmedaActive && !isKitanoActive && !isNisiyamaActive)
+        {
+            // 全てOFFなら非表示
+            skillIconImage.gameObject.SetActive(false);
+            SetGaugeActive(umedaCooldownGauge, false);
+            SetGaugeActive(kitanoCooldownGauge, false);
+            SetGaugeActive(nisiyamaCooldownGauge, false);
+            return;
+        }
+
+        // いずれかがONなら表示
+        skillIconImage.gameObject.SetActive(true);
+
         int currentSkill = abilityManager.CurrentSkillNumber;
 
         switch (currentSkill)
@@ -97,7 +115,7 @@ public class SkillUIManager : MonoBehaviour
                 if (kitanoSkillSprite != null) skillIconImage.sprite = kitanoSkillSprite;
                 SetGaugeActive(umedaCooldownGauge, false);
                 SetGaugeActive(kitanoCooldownGauge, true);
-                SetGaugeActive(nisiyamaCooldownGauge, false); // This line was missing in the original case 2
+                SetGaugeActive(nisiyamaCooldownGauge, false);
                 break;
             case 0: // Nisiyamaスキル
                 if (nisiyamaSkillSprite != null) skillIconImage.sprite = nisiyamaSkillSprite;

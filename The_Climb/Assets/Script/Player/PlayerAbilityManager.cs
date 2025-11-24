@@ -13,7 +13,7 @@ public class PlayerAbilityManager : MonoBehaviour
     public GameObject miyamotoyuoAbi;
 
     //[Header("デバッグ用")]
-    public bool AbilityOn;
+    //public bool AbilityOn;
 
     int NowAbilityNo = 0;
 
@@ -25,18 +25,18 @@ public class PlayerAbilityManager : MonoBehaviour
         GameObject[] abilityBools = {nakaAbi, matsuAbi, umeAbi, miyamotoyuoAbi, kitaAbi, nishiAbi};
         string[] abilityNames = { "Nakamura", "Matsuyama", "Umeda", "Yuoka", "Kitano", "Nisiyama", };
 
-        // デバッグ用で全アビリティオンオフ切り替えれるようにしてる
-        for (int i = 0; i < abilityBools.Length; i++)
-        {
-            if (AbilityOn == true)
-            {
-                PlayerPrefs.SetInt($"{abilityNames[i]}", 1);
-            }
-            else
-            {
-                PlayerPrefs.SetInt($"{abilityNames[i]}", 0);
-            }
-        }
+        //// デバッグ用で全アビリティオンオフ切り替えれるようにしてる
+        //for (int i = 0; i < abilityBools.Length; i++)
+        //{
+        //    if (AbilityOn == true)
+        //    {
+        //        PlayerPrefs.SetInt($"{abilityNames[i]}", 1);
+        //    }
+        //    else
+        //    {
+        //        PlayerPrefs.SetInt($"{abilityNames[i]}", 0);
+        //    }
+        //}
 
         for (int i = 0; i < abilityBools.Length; i++)
             if (PlayerPrefs.GetInt($"{abilityNames[i]}") == 0)
@@ -111,6 +111,10 @@ public class PlayerAbilityManager : MonoBehaviour
         else
         {
             Debug.Log("発動できるスキルがありません");
+            // 全てのアビリティをOFFにする
+            PlayerPrefs.SetInt("UmedaAbi", 0);
+            PlayerPrefs.SetInt("KitanoAbi", 0);
+            PlayerPrefs.SetInt("NisiyamaAbi", 0);
         }
        
     }

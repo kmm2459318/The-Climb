@@ -64,6 +64,13 @@ public class SkillUIAutoSetup : EditorWindow
         }
 
         // ステップ2: パネルを作成
+        // 既存のパネルがあれば削除して作り直す
+        Transform existingPanel = canvas.transform.Find("SkillUIPanel");
+        if (existingPanel != null)
+        {
+            DestroyImmediate(existingPanel.gameObject);
+        }
+
         GameObject panel = CreateSkillUIPanel(canvas.transform);
         if (panel == null)
         {
@@ -383,11 +390,11 @@ public class SkillUIAutoSetup : EditorWindow
 
         RectTransform rectTransform = panel.AddComponent<RectTransform>();
         
-        // 画面右下に配置
+        // 画面右下に配置 (ユーザー指定: Posx90 PosY5)
         rectTransform.anchorMin = new Vector2(1, 0);
         rectTransform.anchorMax = new Vector2(1, 0);
         rectTransform.pivot = new Vector2(1, 0);
-        rectTransform.anchoredPosition = new Vector2(-40, 40); // 余白も2倍
+        rectTransform.anchoredPosition = new Vector2(90, 5);
         rectTransform.sizeDelta = new Vector2(500, 300); // サイズ2倍 (250x150 -> 500x300)
 
         // 背景画像は削除（透明なコンテナとして機能させる）

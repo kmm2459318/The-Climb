@@ -58,6 +58,13 @@ public class GravityFlipManager2 : MonoBehaviour
             if (player == null || !canFlip)
                 return;
 
+            // 空中では反転不可
+            if (!player.State.isGrounded)
+            {
+                Debug.Log("反転できません（空中）");
+                return;
+            }
+
             // 反転実行
             player.ToggleUpsideDown();
 
