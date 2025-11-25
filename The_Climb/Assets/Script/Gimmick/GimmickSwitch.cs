@@ -3,7 +3,7 @@
 public class GimmickSwitch : MonoBehaviour
 {
     private TimeGimmickBridge Bridge;        // 状態保存ブリッジ
-    [SerializeField] private SwitchReceiver Receiver;
+    [SerializeField] private SwitchReceiver[] Receivers;
     [SerializeField] private KeyCode ActivateKey = KeyCode.E; // インタラクトキー
 
     [Header("必要なアイテム情報")]
@@ -41,6 +41,9 @@ public class GimmickSwitch : MonoBehaviour
         if (CanInteract && Input.GetKeyDown(ActivateKey))
         {
             TryActivateSwitch();
+            // 見た目を切り替える
+            SwitchOff.SetActive(false);
+            SwitchOn.SetActive(true);
         }
     }
 
@@ -90,17 +93,15 @@ public class GimmickSwitch : MonoBehaviour
         IsOn = true;                    // 押された状態にする
         Bridge?.ReportState(true);      // 状態を保存
 
-        if (Receiver)
+        foreach (var r in Receivers)
         {
-            Receiver.ApplyCurrentState();
+            if (r != null)
+            {
+                r.ApplyCurrentState();
+            }
         }
 
-        // 見た目を切り替える
-        if (SwitchOff != null && SwitchOn != null)
-        {
-            SwitchOff.SetActive(false);
-            SwitchOn.SetActive(true);
-        }
+     
 
         // 以後の入力処理を止める（スクリプトを無効化）
         this.enabled = false;

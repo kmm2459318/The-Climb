@@ -5,16 +5,11 @@ public class PressureButton : MonoBehaviour
     private enum GimmickType  //ギミックの種類
     { 
         appear = 0,
-        destroy = 1,
-        move = 2,
-        moveLoop = 3,
-
+        destroy = 1
     };
     /*
     appear：出現ギミック
     destroy：消滅ギミック
-    move：移動ギミック
-    moveLoop：移動ギミック（ループ）
     */
     [SerializeField] private GimmickType type;  //ボタンの種類
 
@@ -22,6 +17,7 @@ public class PressureButton : MonoBehaviour
     [SerializeField] private bool continuously = false;  //一度押したら継続的に押され続ける仕様か
 
     [SerializeField] private GameObject target;  //ギミックの対象物
+    private PlayerState playerState;
     private GameObject buttonModel;  //ボタンのモデル
     [SerializeField] private Vector3 movePoint;  //ギミック：moveの向かう地点
 
@@ -32,6 +28,7 @@ public class PressureButton : MonoBehaviour
     void Start()
     {
         posY = transform.position.y;
+        playerState = FindAnyObjectByType<PlayerState>();
 
         //targetを子オブジェクトから取得
         if (transform.childCount > 0)
@@ -45,9 +42,6 @@ public class PressureButton : MonoBehaviour
         {
             target.SetActive(false);
         }
-        if (movePoint == Vector3.zero && (type == GimmickType.move || type == GimmickType.moveLoop))
-            Debug.LogError(gameObject.name + "のmovePointが初期値です。ばーか❤");
-
     }
 
     void Update()
@@ -75,12 +69,6 @@ public class PressureButton : MonoBehaviour
             case GimmickType.destroy:
                 AppearGimmick(false);
                 break;
-            case GimmickType.move:
-                MoveGimmick(true);
-                break;
-            case GimmickType.moveLoop:
-                MoveGimmick(true);
-                break;
         }
     }
 
@@ -96,23 +84,12 @@ public class PressureButton : MonoBehaviour
             case GimmickType.destroy:
                 AppearGimmick(true);
                 break;
-            case GimmickType.move:
-                MoveGimmick(false);
-                break;
-            case GimmickType.moveLoop:
-                MoveGimmick(false);
-                break;
         }
     }
 
     private void AppearGimmick(bool on)
     {
         target.SetActive(on);
-    }
-
-    private void MoveGimmick (bool on)
-    {
-
     }
 
     private void OnTriggerExit(Collider other)
@@ -130,7 +107,7 @@ public class PressureButton : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Buddy"))
+        if (other.gameObject.CompareTag("Player") || (other.gameObject.CompareTag("Buddy") && !playerState.carryingBuddy))
         {
             pressCount++;
             PressSwtich();

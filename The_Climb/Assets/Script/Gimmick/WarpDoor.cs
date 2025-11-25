@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WarpDoor : MonoBehaviour
 {
@@ -9,7 +11,8 @@ public class WarpDoor : MonoBehaviour
     private bool nearPlayer = false;  //近くにプレイヤーがいるか判定
     private bool savePlayer = false;  //プレイヤーのオブジェクトを取得できているか判定
     private Transform player;         //プレイヤーのtransform
-    private PlayerState playerState;
+    private PlayerState state;
+    [SerializeField] private bool buddyStage = false;  //ここはBuddyステージか？
 
     void Start()
     {
@@ -17,11 +20,16 @@ public class WarpDoor : MonoBehaviour
         {
             Debug.LogError(canGoBack ? "goToDoor" : "goToWhere" + "を指定してください。");
         }
+
+        if (SceneManager.GetActiveScene().name == "Nakamura")
+        {
+            buddyStage = true;
+        }
     }
 
     void Update()
     {
-        if (nearPlayer && Input.GetKeyDown(KeyCode.W))
+        if (nearPlayer && Input.GetKeyDown(KeyCode.W) && ((buddyStage && state.carryingBuddy) || !buddyStage))
         {
             if (canGoBack)
             {
@@ -43,7 +51,7 @@ public class WarpDoor : MonoBehaviour
             if (!savePlayer)
             {
                 player = other.transform;
-                playerState = player.GetComponent<PlayerState>();
+                state = player.GetComponent<PlayerState>();
             }
         }
     }

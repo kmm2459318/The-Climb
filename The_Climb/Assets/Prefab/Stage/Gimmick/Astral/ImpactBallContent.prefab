@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 189810373243294443}
   - component: {fileID: 4687494342931276397}
   - component: {fileID: 7862172413218510309}
+  - component: {fileID: 6448490988650228214}
   m_Layer: 0
   m_Name: ImpactBall
   m_TagString: Untagged
@@ -168,6 +169,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25172255f533a9f44bb1bbbb04a97591, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheClimb.Item.InpactBallController
+--- !u!114 &6448490988650228214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1709792350656930440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbe8ab44af306b643b0639d479acdd63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheClimb.Item.ImpactBallBootstrap
+  _configSO: {fileID: 11400000, guid: 3505e2157d0628447af07f5f6f7362e5, type: 2}
+  _coroutineRunner: {fileID: 0}
 --- !u!1 &8650649013814523906
 GameObject:
   m_ObjectHideFlags: 0

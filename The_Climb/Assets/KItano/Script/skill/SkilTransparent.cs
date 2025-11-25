@@ -28,6 +28,7 @@ public class SkilTransparent : MonoBehaviour
 
     void Update()
     {
+        // 透明化タイマーの更新
         if (isTransparent)
         {
             transparentTimer -= Time.deltaTime;
@@ -36,6 +37,7 @@ public class SkilTransparent : MonoBehaviour
                 EndTransparent();
             }
         }
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -69,7 +71,7 @@ public class SkilTransparent : MonoBehaviour
     void StartTransparent()
     {
         if (isTransparent) return;
-
+        
         isTransparent = true;
         transparentTimer = transparentDuration;
 
@@ -109,4 +111,5 @@ public class SkilTransparent : MonoBehaviour
         // ★リスポーンが1回行われたら、もう二度と連続で発動しない
         canRespawnAfterTransparent = false;
     }
+
 }

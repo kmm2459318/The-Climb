@@ -1,10 +1,7 @@
-﻿using TheClimb.Player;
-using UnityEngine;
-using UnityEngine.Playables;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
+﻿using UnityEngine;
+using TheClimb.Item;
 
-public class PlayerState : MonoBehaviour
+public class PlayerState : MonoBehaviour, IImpactable
 {
     public bool highJumpOn = false;      //ハイジャンプ可能か
     public bool quickJumpOn = false;     //クイックジャンプ可能か
@@ -19,6 +16,8 @@ public class PlayerState : MonoBehaviour
     PlayerJump jump;
     PlayerSpecialAction special;
     [HideInInspector] public PlayerAnimation PlayerAnimation;
+
+    int lowGroundLayer;
 
     public bool playerDirectionRight = true;  //プレイヤーの見ている方向が右ならtrue、左ならfalse
     private bool wasGrounded = false;    //前フレームの地面状態
@@ -52,11 +51,25 @@ public class PlayerState : MonoBehaviour
     private bool flipCooldownActive = false;  // クールタイム中かどうか
     private float flipCooldownTime = 10f;     // クールタイム（秒）
 
+    public Rigidbody RigidbodyGetter => this.RigidBody ;
+    public Transform TransformGetter => this.transform;
+
     private void Awake()
     {
         // PlayerContext.Instance.RegistPlayerState(this);
+        RigidBody = GetComponent<Rigidbody>();
+        ImpactableRegistry.Register(this);
     }
 
+    void OnEnable()
+    {
+        ImpactableRegistry.Register(this);
+    }
+
+    void OnDisable()
+    {
+        ImpactableRegistry.Unregister(this);
+    }
     void Start()
     {
         inputManager = GameObject.Find("KeyManager").GetComponent<InputManager>();
@@ -67,11 +80,29 @@ public class PlayerState : MonoBehaviour
 
         PlayerAnimation = transform.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
 
+        // Base ground layer
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
-        whiteGround = 1 << LayerMask.NameToLayer("WhiteGround");
-        blackGround = 1 << LayerMask.NameToLayer("BlackGround");
+        
+        // 追加レイヤーの取得と結合
+        int whiteIndex = LayerMask.NameToLayer("WhiteGround");
+        int blackIndex = LayerMask.NameToLayer("BlackGround");
+        int lowIndex = LayerMask.NameToLayer("LowGround");
+        
+        Debug.Log($"[PlayerState] GroundLayer Base: {groundLayer.value}");
+        Debug.Log($"[PlayerState] WhiteGround Index: {whiteIndex}");
+        Debug.Log($"[PlayerState] BlackGround Index: {blackIndex}");
 
+        if (whiteIndex != -1) groundLayer.value |= (1 << whiteIndex);
+        if (blackIndex != -1) groundLayer.value |= (1 << blackIndex);
+        if (lowIndex != -1) groundLayer.value |= (1 << lowIndex);
+
+        Debug.Log($"[PlayerState] Final GroundLayer Mask: {groundLayer.value}");
+
+        lowGroundLayer = groundLayer;
         groundLayerMask = groundLayer;
+        
+        whiteGround = (whiteIndex != -1) ? (1 << whiteIndex) : 0;
+        blackGround = (blackIndex != -1) ? (1 << blackIndex) : 0;
 
         // インスペクターまたはスクリプトで設定
         //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
@@ -107,7 +138,7 @@ public class PlayerState : MonoBehaviour
         else
         {
             // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayerMask);
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
 
             //空中時、isJumpOKを反応させない
             if (isAir)
@@ -206,7 +237,7 @@ public class PlayerState : MonoBehaviour
 
     private void PlayerDead()
     {
-        // Debug.Log("栗松、帰国の準備をしろ。");
+        Debug.Log("栗松、帰国の準備をしろ。～GameOver～");
     }
 
     private void OnTriggerEnter(Collider other)
