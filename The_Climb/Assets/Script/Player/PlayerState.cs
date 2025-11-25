@@ -138,7 +138,7 @@ public class PlayerState : MonoBehaviour, IImpactable
         else
         {
             // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayerMask);
 
             //空中時、isJumpOKを反応させない
             if (isAir)
