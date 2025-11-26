@@ -44,7 +44,7 @@ public class PlayerBarrier : MonoBehaviour
             if (!barrierChargeOK && !barrierActive) 　//バリアクールダウン終了
             {
                 barrierChargeOK = true;
-                Debug.Log("可能");
+                //Debug.Log("可能");
             }
         }
     }
@@ -56,7 +56,7 @@ public class PlayerBarrier : MonoBehaviour
         barrierActive = true;
         //barrierTimer = barrierDuration;
         StartCoroutine(BarrierScaleChange(1.6f, 0.07f, true));
-        Debug.Log("発動");
+        //Debug.Log("発動");
     }
 
     //バリア終わり
@@ -65,7 +65,7 @@ public class PlayerBarrier : MonoBehaviour
         barrierTimer = barrierCoolTime;
         unlocking = true;
         StartCoroutine(BarrierScaleChange(2.9f, 0.05f, false));
-        Debug.Log("解除");
+        //Debug.Log("解除");
 
         yield return new WaitForSeconds(0.4f);
         barrierActive = false;

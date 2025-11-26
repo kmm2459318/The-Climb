@@ -4,7 +4,7 @@ using System.Collections;
 public class BgmYSwitchFade : MonoBehaviour
 {
     [SerializeField] Transform target;
-    [SerializeField] float thresholdX = 450f;
+    [SerializeField] float thresholdX = 620f;
     [SerializeField] AudioClip StageClip;
     [SerializeField] AudioClip BossClip;
     [SerializeField] float fadeDuration = 1.5f;
