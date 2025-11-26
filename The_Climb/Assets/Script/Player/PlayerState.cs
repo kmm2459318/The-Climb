@@ -88,15 +88,9 @@ public class PlayerState : MonoBehaviour, IImpactable
         int blackIndex = LayerMask.NameToLayer("BlackGround");
         int lowIndex = LayerMask.NameToLayer("LowGround");
         
-        Debug.Log($"[PlayerState] GroundLayer Base: {groundLayer.value}");
-        Debug.Log($"[PlayerState] WhiteGround Index: {whiteIndex}");
-        Debug.Log($"[PlayerState] BlackGround Index: {blackIndex}");
-
         if (whiteIndex != -1) groundLayer.value |= (1 << whiteIndex);
         if (blackIndex != -1) groundLayer.value |= (1 << blackIndex);
         if (lowIndex != -1) groundLayer.value |= (1 << lowIndex);
-
-        Debug.Log($"[PlayerState] Final GroundLayer Mask: {groundLayer.value}");
 
         lowGroundLayer = groundLayer;
         groundLayerMask = groundLayer;
@@ -138,7 +132,7 @@ public class PlayerState : MonoBehaviour, IImpactable
         else
         {
             // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayerMask);
 
             //空中時、isJumpOKを反応させない
             if (isAir)

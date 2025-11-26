@@ -23,7 +23,6 @@ public class PressureButton : MonoBehaviour
 
     private int pressCount = 0;  //現在押してる数
     private float posY = 0;  //ボタンのＹ座標
-    private bool isPress = false;  //押してるか押してないか判定
 
     void Start()
     {
