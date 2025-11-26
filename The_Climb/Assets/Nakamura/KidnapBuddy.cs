@@ -10,7 +10,6 @@ public class KidnapBuddy : MonoBehaviour
     {
         handController = transform.parent.gameObject.GetComponent<StalkerHandController>();
         lightDark = handController.lightDarkWorld;
-        Debug.Log(handController);
     }
 
     private void OnTriggerEnter(Collider other)

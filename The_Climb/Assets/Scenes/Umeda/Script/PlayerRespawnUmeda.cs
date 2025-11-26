@@ -45,7 +45,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
         float diffY = transform.position.y - currentRespawnPoint.position.y;
 
         // 上に行き過ぎた場合 OR 下に落ちすぎた場合
-        if (diffY > maxHeightFromCheckpoint || diffY < -fallDistanceFromCheckpoint)
+        if (diffY > maxHeightFromCheckpoint || this.transform.position.y < -fallDistanceFromCheckpoint)
         {
             Debug.Log($"制限エリア外に出ました (DiffY: {diffY:F2}) -> Respawn");
             Respawn();
