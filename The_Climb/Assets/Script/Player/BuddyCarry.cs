@@ -7,6 +7,7 @@ public class BuddyCarry : MonoBehaviour
     public BuddyController buddyController;  //Buddyのスクリプト
     private PositionConstraint buddyPos;  //BuddyのPositionConstraint（おんぶに使ってる追従のコンポーネント）
     PlayerState state;
+    PlayerMove playerMove;
 
     public bool nearBuddy = false;       //Buddyが近くにいるか判定
     private bool nearCallBell = false;    //CallBellが近くにあるか判定
@@ -15,6 +16,7 @@ public class BuddyCarry : MonoBehaviour
     void Start()
     {
         state = GetComponent<PlayerState>();
+        playerMove = GetComponent<PlayerMove>();
 
         if (GameObject.Find("Buddy") != null)
         {
@@ -32,13 +34,16 @@ public class BuddyCarry : MonoBehaviour
             //向いてる方向によっておんぶしてるバディの場所を調整
             if (!buddyController.beingKidnapped)
             {
+                bool isUpsideDown = playerMove != null && playerMove.IsUpsideDown;
+                float offsetY = isUpsideDown ? -1f : 1f;
+
                 if (state.playerDirectionRight)
                 {
-                    buddyPos.translationOffset = new Vector3(-0.4f, 1f, 0f);
+                    buddyPos.translationOffset = new Vector3(-0.4f, offsetY, 0f);
                 }
                 else
                 {
-                    buddyPos.translationOffset = new Vector3(0.4f, 1f, 0f);
+                    buddyPos.translationOffset = new Vector3(0.4f, offsetY, 0f);
                 }
             }
             else
@@ -49,13 +54,14 @@ public class BuddyCarry : MonoBehaviour
             //Carryボタン（仮）
             if (Input.GetKeyDown(KeyCode.E))
             {
-                if (state.isGrounded && state.carryingBuddy)  //おんぶしてる場合、バディを降ろす
+                // おんぶ解除：接地中かつおんぶ中かつ反転していない場合のみ可能
+                if (state.isGrounded && state.carryingBuddy && (playerMove == null || !playerMove.IsUpsideDown))
                 {
                     state.carryingBuddy = false;
                     buddyPos.constraintActive = false;
                     buddy.transform.position = transform.position + Vector3.up * 0.5f;
                 }
-                else if (nearBuddy)  //おんぶしてない場合、バディをおんぶする
+                else if (nearBuddy && !state.carryingBuddy)  //おんぶしてない場合、バディをおんぶする
                 {
                     state.carryingBuddy = true;
                     buddyPos.constraintActive = true;

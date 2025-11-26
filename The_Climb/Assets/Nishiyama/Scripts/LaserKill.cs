@@ -115,16 +115,24 @@ public class LaserKill : MonoBehaviour
     {
         if (other.gameObject == player || other.transform.root.gameObject == player)
         {
+            // バリアコンポーネントの取得（子オブジェクトも検索）
+            var barrier = player.GetComponentInChildren<PlayerBarrier>();
+
+            // バリアで防げるか試行
+            if (barrier != null && barrier.TryBlockAttack())
+            {
+                return; // 防いだのでリスポーンしない
+            }
+
             Debug.Log("レーザーに触れた → Respawn() を実行");
 
             if (playerRespawn != null)
             {
-                playerRespawn.SetRespawnPoint(playerRespawn.GetCurrentRespawnPoint().GetSiblingIndex());
                 playerRespawn.SendMessage("Respawn", SendMessageOptions.DontRequireReceiver);
             }
             else
             {
-                Debug.LogWarning(" playerRespawn が見つからないため Respawn できません");
+                Debug.LogWarning(" PlayerRespawnUmeda がプレイヤーに付いていません！");
             }
 
             // ボタンを戻す処理

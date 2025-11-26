@@ -3,7 +3,9 @@ using SQLite4Unity3d;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor.Overlays;
+#endif
 
 public class EnemyKillAnalyzer : MonoBehaviour
 {

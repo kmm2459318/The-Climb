@@ -1,6 +1,11 @@
-﻿using NUnit.Framework;
+﻿#if UNITY_EDITOR
+using NUnit.Framework;
+#endif
 using System.Collections.Generic;
+using TMPro;
+#if UNITY_EDITOR
 using UnityEditor.Rendering.Universal;
+#endif
 using UnityEngine;
 
 public class LightDarkWorld : MonoBehaviour
@@ -8,8 +13,9 @@ public class LightDarkWorld : MonoBehaviour
     private GameObject player;
     private PlayerState playerState;
     private BuddyCarry buddyCarry;
-    //private Light worldLight;
-    //private MeshRenderer backGround;
+    private Light worldLight;
+    private MeshRenderer backGround;
+    [SerializeField] private TextMeshProUGUI text;
 
     public enum brightness {Dark, Light};  //光と闇
     public brightness brightnessState = brightness.Dark;  //現在の世界の輝度
@@ -25,8 +31,8 @@ public class LightDarkWorld : MonoBehaviour
         player = GameObject.Find("PlayerModel");
         playerState = player.GetComponent<PlayerState>();
         buddyCarry = player.GetComponent<BuddyCarry>();
-        //worldLight = GameObject.Find("Directional Light").GetComponent<Light>();
-        //backGround = GameObject.Find("StageBackGround").GetComponent<MeshRenderer>();
+        worldLight = GameObject.Find("Directional Light").GetComponent<Light>();
+        backGround = GameObject.Find("StageBackGround").GetComponent<MeshRenderer>();
 
         //白い床
         AddRange(whiteGroup, GameObject.FindGameObjectsWithTag("LightWhite"));
@@ -65,7 +71,7 @@ public class LightDarkWorld : MonoBehaviour
     void Update()
     {
         //光と闇切り替え
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetMouseButtonDown(1))
         {
             if (brightnessState == brightness.Dark)  //闇→光
             {
@@ -96,18 +102,20 @@ public class LightDarkWorld : MonoBehaviour
     {
         if (brightnessState == brightness.Dark && s == brightness.Light)  //闇→光
         {
-            if (playerState.carryingBuddy || playerState.nearBell || buddyCarry.nearBuddy)  //Buddyおんぶしてるとき
+            if ((playerState.carryingBuddy || playerState.nearBell || buddyCarry.nearBuddy) && !buddyCarry.buddyController.beingKidnapped)  //Buddyおんぶしてるとき
             {
                 brightnessState = brightness.Light;
-                Debug.Log("■■■魔法「破壊超陽光」■■■");
+                //Debug.Log("■■■魔法「破壊超陽光」■■■");
                 lightTimer = lightDuration;
+                text.color = Color.black;
                 LayerChange(true);
             }
         }
         else if (brightnessState == brightness.Light && s == brightness.Dark)  //光→闇
         {
             brightnessState = brightness.Dark;
-            Debug.Log("□□□鵺符「アンディファインドダークネス」□□□");
+            //Debug.Log("□□□鵺符「アンディファインドダークネス」□□□");
+            text.color = Color.white;
             LayerChange(false);
         }
     }
@@ -148,8 +156,8 @@ public class LightDarkWorld : MonoBehaviour
             //白系黒系の透明度変化（黒を半透明に）
             ObjectTransparency(whiteGroup, 1f);
             ObjectTransparency(blackGroup, transparency);
-            //worldLight.color = Color.black;
-            //backGround.material.color = Color.black;
+            worldLight.color = new Color(80f / 255f, 80f / 255f, 80f / 255f, 1f);
+            backGround.material.color = Color.black;
         }
         else
         {
@@ -157,10 +165,10 @@ public class LightDarkWorld : MonoBehaviour
                 (1 << ground) | (1 << blackGround);
 
             //白系黒系の透明度変化（白を半透明に）
-            ObjectTransparency(whiteGroup, transparency);
+            ObjectTransparency(whiteGroup, 0.1f);
             ObjectTransparency(blackGroup, 1f);
-            //worldLight.color = Color.white;
-            //backGround.material.color = new Color(180, 180, 180, 255);
+            worldLight.color = Color.white;
+            backGround.material.color = new Color(195f / 255f, 195f / 255f, 190f / 255f, 1f);
         }
     }
 

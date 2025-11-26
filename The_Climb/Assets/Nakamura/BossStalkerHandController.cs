@@ -37,7 +37,7 @@ public class BossStalkerHandController : MonoBehaviour
 
     void Update()
     {
-        if (player.transform.position.y > 172f)
+        if (player.transform.position.x > 600f)
         {
             //現在のプレイヤーの座標を覚える
             stalkTarget = player.transform.position;

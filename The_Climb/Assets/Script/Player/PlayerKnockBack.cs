@@ -8,7 +8,7 @@ public class PlayerKnockBack : MonoBehaviour
     private PlayerJump jump;
     private PlayerMind mind;
     private BuddyCarry buddyCarry;
-    private PlayerBarrier barrier;
+    [SerializeField] PlayerBarrier barrier;
 
     public bool knockBacking = false;  //ノックバック中フラグ
     public float knockBackPower = 7f;  //ノックバック中フラグ
@@ -23,7 +23,7 @@ public class PlayerKnockBack : MonoBehaviour
         jump = GetComponent<PlayerJump>();
         mind = GetComponent<PlayerMind>();
         buddyCarry = GetComponent<BuddyCarry>();
-        barrier = this.transform.parent.Find("PlayerAbility").Find("Nakamura").GetComponent<PlayerBarrier>();
+        //barrier = this.transform.parent.Find("PlayerAbility").Find("Nakamura").GetComponent<PlayerBarrier>();
     }
 
     private void Update()
@@ -109,19 +109,16 @@ public class PlayerKnockBack : MonoBehaviour
             {
                 if (other.gameObject.tag == "Boss" && !knockBacking)
                 {
-                    if (!barrier.unlocking)
+                    if (!barrier.unlocking && barrier.barrierActive)
                     {
-                        if (barrier.barrierActive)
-                        {
-                            StartCoroutine(barrier.BarrierFinish());
-                        }
-                        else
-                        {
-                            //敵とプレイヤーの位置でノックバックの方向を決める
-                            int dir = transform.position.x - other.gameObject.transform.position.x <= 0 ? -1 : 1;
-                            DoKnockBack(dir);  //ノックバック
-                            mind.SanityDecreaseEvent(10);  //正気度減少
-                        }
+                        StartCoroutine(barrier.BarrierFinish());
+                    }
+                    else
+                    {
+                        //敵とプレイヤーの位置でノックバックの方向を決める
+                        int dir = transform.position.x - other.gameObject.transform.position.x <= 0 ? -1 : 1;
+                        DoKnockBack(dir);  //ノックバック
+                        mind.SanityDecreaseEvent(10);  //正気度減少
                     }
                 }
             }

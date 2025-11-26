@@ -35,5 +35,13 @@ namespace TheClimb.Player
         {
             _PlayerState = playerState;
         }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+        }
     }
 }
