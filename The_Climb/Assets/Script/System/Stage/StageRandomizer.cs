@@ -69,7 +69,7 @@ public class StageRandomizer : MonoBehaviour
     // 指定されたボタン番号のステージをロード
     public void StartStage(int ButtonNo)
     {
-        SceneManager.LoadScene(StageName[ButtonNo]);
+        System.Loading.SceneLoader.Instance.LoadScene(StageName[ButtonNo]);
         PlayerPrefs.SetInt(StageName[ButtonNo], 1);
     }
 }
