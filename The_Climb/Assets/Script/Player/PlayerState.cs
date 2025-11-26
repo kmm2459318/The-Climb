@@ -88,15 +88,9 @@ public class PlayerState : MonoBehaviour, IImpactable
         int blackIndex = LayerMask.NameToLayer("BlackGround");
         int lowIndex = LayerMask.NameToLayer("LowGround");
         
-        Debug.Log($"[PlayerState] GroundLayer Base: {groundLayer.value}");
-        Debug.Log($"[PlayerState] WhiteGround Index: {whiteIndex}");
-        Debug.Log($"[PlayerState] BlackGround Index: {blackIndex}");
-
         if (whiteIndex != -1) groundLayer.value |= (1 << whiteIndex);
         if (blackIndex != -1) groundLayer.value |= (1 << blackIndex);
         if (lowIndex != -1) groundLayer.value |= (1 << lowIndex);
-
-        Debug.Log($"[PlayerState] Final GroundLayer Mask: {groundLayer.value}");
 
         lowGroundLayer = groundLayer;
         groundLayerMask = groundLayer;
