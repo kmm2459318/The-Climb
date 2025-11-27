@@ -455,11 +455,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     {
         if (col.gameObject != gameObject && !col.isTrigger)
         {
-            // ★ Buddy を除外する
-            if (col.GetComponent<BuddyController>() != null ||
-                col.GetComponentInParent<BuddyController>() != null ||
-                col.gameObject.layer == 16 || col.gameObject.layer == 17 ||
-                col.gameObject.layer == 18 || col.gameObject.layer == 19)
+            if (col.gameObject != gameObject && !col.isTrigger && col.gameObject.layer == LayerMask.NameToLayer("Ground") && !col.CompareTag("NoSink"))
             {
                 continue;
             }
