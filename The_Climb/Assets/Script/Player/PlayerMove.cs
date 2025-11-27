@@ -455,13 +455,11 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     {
         if (col.gameObject != gameObject && !col.isTrigger)
         {
-            if (col.gameObject != gameObject && !col.isTrigger && col.gameObject.layer == LayerMask.NameToLayer("Ground") && !col.CompareTag("NoSink"))
+            if (col.gameObject.layer == LayerMask.NameToLayer("Ground") && !col.CompareTag("Nosink"))
             {
-                continue;
+                isStuck = true;
+                break;
             }
-
-            isStuck = true;
-            break;
         }
     }
 
