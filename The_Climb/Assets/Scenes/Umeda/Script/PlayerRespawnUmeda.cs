@@ -90,6 +90,12 @@ public class PlayerRespawnUmeda : MonoBehaviour
     {
         if (index >= 0 && index < respawnPoints.Count)
         {
+            if (respawnPoints[index] == null)
+            {
+                Debug.LogWarning($"⚠️ Index {index} のリスポーンポイントが設定されていません（nullです）。Inspectorを確認してください。");
+                return;
+            }
+
             currentIndex = index;
             currentRespawnPoint = respawnPoints[index];
             UpdateCheckpointVisual(index);
