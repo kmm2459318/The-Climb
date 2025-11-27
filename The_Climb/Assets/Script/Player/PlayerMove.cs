@@ -454,7 +454,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         bool isStuck = false;
         foreach (var col in hitColliders)
         {
-            if (col.gameObject != gameObject && !col.isTrigger)
+            if (col.gameObject != gameObject && !col.isTrigger && col.gameObject.layer == LayerMask.NameToLayer("Ground") && !col.CompareTag("NoSink"))
             {
                 isStuck = true;
                 break;
