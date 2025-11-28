@@ -2,201 +2,200 @@
 
 public class RevealOnLightAndPlayer : MonoBehaviour
 {
-    [Header("対象設定")]
-    [SerializeField] private string targetTag = "Player";
-    [SerializeField] private Light referenceLight;
-
-    [Header("色設定")]
-    [SerializeField] private Color activeLightColor = new Color(0.5f, 0f, 1f); // 紫ライト
+    [Header("ライト色設定")]
+    [SerializeField] private Color purpleColor = new Color(0.5f, 0f, 1f);
     [SerializeField] private float colorThreshold = 0.2f;
-    [SerializeField] private Color activatedColor = Color.cyan; // 水色
-    [SerializeField] private Color originalColor = Color.white; // 元の色
 
     [Header("時間設定")]
-    [SerializeField] private float fadeDuration = 1f;          // フェード時間
-    [SerializeField] private float activationTime = 3f;        // 紫ライトを当て続ける時間
-    [SerializeField] private float activatedDuration = 2f;     // 水色で表示し続ける時間
+    [SerializeField] private float activationTime = 3f;
+    [SerializeField] private float stayVisibleTime = 2f;
+    [SerializeField] private float fadeDuration = 1f;
 
     [Header("コライダー設定")]
-    [SerializeField] private Collider physicsCollider; // 物理用コライダー（別オブジェクト）
+    [SerializeField] private Collider solidCollider;
 
-    private Collider triggerCollider;
-    private Renderer objRenderer;
+    private Renderer rend;
+    private bool isPlayerInside = false;
+    private bool isLitByPurple = false;
+    private float exposureTimer = 0f;
+
+    private bool isActivated = false;
     private Coroutine fadeRoutine;
 
-    private bool isPlayerInside = false;
-    private bool isRevealed = false;
-    private bool isActivated = false;
-    private float exposureTimer = 0f;
+
+    private void OnEnable()
+    {
+        LightController.OnLightEnter += HandleLightEnter;
+        LightController.OnLightExit += HandleLightExit;
+        LightController.OnLightColorChanged += HandleColorChange;
+    }
+
+    private void OnDisable()
+    {
+        LightController.OnLightEnter -= HandleLightEnter;
+        LightController.OnLightExit -= HandleLightExit;
+        LightController.OnLightColorChanged -= HandleColorChange;
+    }
 
     void Start()
     {
-        Debug.Log("[Start] スクリプト開始");
+        rend = GetComponent<Renderer>();
 
-        objRenderer = GetComponent<Renderer>();
-        triggerCollider = GetComponent<Collider>();
-        if (triggerCollider != null) triggerCollider.isTrigger = true;
+        // 最初は透明
+        Color c = rend.material.color;
+        c.a = 0f;
+        rend.material.color = c;
 
-        if (physicsCollider != null)
-        {
-            physicsCollider.enabled = false;
-            Debug.Log("[Start] 物理コライダーを無効化しました");
-        }
-
-        // 初期は透明
-        Color startColor = originalColor;
-        startColor.a = 0f;
-        objRenderer.material.color = startColor;
-        Debug.Log("[Start] オブジェクトを透明化しました");
+        if (solidCollider) solidCollider.enabled = false;
     }
 
-    void Update()
+    // ---------------------------------------------------------------
+    // LightController からイベントを受け取る
+    // ---------------------------------------------------------------
+    private void HandleLightEnter(GameObject hitObj, Color currentColor)
     {
-        if (referenceLight == null) return;
+        if (hitObj != this.gameObject) return;
 
-        // ✅ 出現中（isActivated）ならライトの影響を無視
-        if (isActivated) return;
+        isLitByPurple = IsPurple(currentColor);
+    }
 
-        bool isActiveLight = IsActiveLightColor();
+    private void HandleLightExit(GameObject hitObj, Color currentColor)
+    {
+        if (hitObj != this.gameObject) return;
 
-        if (isActiveLight && isPlayerInside)
+        isLitByPurple = false;
+        exposureTimer = 0f;
+
+        if (!isActivated)
         {
-            exposureTimer += Time.deltaTime;
-            Debug.Log($"[Update] 紫ライト中 + プレイヤー接触中, 経過時間 = {exposureTimer:F2}");
-
-            if (exposureTimer >= activationTime)
-            {
-                Debug.Log("[Update] activationTime に達しました → ActivateSequence 実行");
-                if (fadeRoutine != null) StopCoroutine(fadeRoutine);
-                fadeRoutine = StartCoroutine(ActivateSequence());
-            }
-        }
-        else
-        {
-            // 紫ライトが外れた・プレイヤーが離れたらカウントリセット
-            if (exposureTimer > 0)
-                Debug.Log("[Update] 照射条件が外れたので exposureTimer リセット");
-            exposureTimer = 0f;
+            // フェードアウト
+            if (fadeRoutine != null) StopCoroutine(fadeRoutine);
+            fadeRoutine = StartCoroutine(FadeAlpha(0f));
         }
     }
 
+    private void HandleColorChange(Color newColor)
+    {
+        // 色変更イベント時、もし照らされている状態なら即反応
+        if (LightIsPointingHere())
+        {
+            isLitByPurple = IsPurple(newColor);
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // プレイヤーの出入り
+    // ---------------------------------------------------------------
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(targetTag))
-        {
+        if (other.CompareTag("Player"))
             isPlayerInside = true;
-            Debug.Log("[OnTriggerEnter] プレイヤーがトリガーに入りました");
-
-            if (IsActiveLightColor() && !isRevealed && !isActivated)
-            {
-                Debug.Log("[OnTriggerEnter] 紫ライト下でプレイヤー検知 → フェードイン開始");
-                if (fadeRoutine != null) StopCoroutine(fadeRoutine);
-                fadeRoutine = StartCoroutine(FadeAlpha(1f)); // フェードイン
-                isRevealed = true;
-            }
-        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag(targetTag))
-        {
+        if (other.CompareTag("Player"))
             isPlayerInside = false;
+    }
+
+    // ---------------------------------------------------------------
+    // メインロジック
+    // ---------------------------------------------------------------
+    void Update()
+    {
+        if (isActivated) return;
+
+        if (isLitByPurple && isPlayerInside)
+        {
+            exposureTimer += Time.deltaTime;
+
+            if (exposureTimer >= activationTime)
+                StartActivation();
+        }
+        else
+        {
             exposureTimer = 0f;
-            Debug.Log("[OnTriggerExit] プレイヤーがトリガーから出ました → フェードアウト");
-            if (!isActivated) // ✅ 実体化中はフェードアウト禁止
-            {
-                if (fadeRoutine != null) StopCoroutine(fadeRoutine);
-                fadeRoutine = StartCoroutine(FadeAlpha(0f));
-                isRevealed = false;
-            }
         }
     }
 
-    private System.Collections.IEnumerator ActivateSequence()
+    // ---------------------------------------------------------------
+    // 実体化
+    // ---------------------------------------------------------------
+    private void StartActivation()
     {
         isActivated = true;
-        Debug.Log("[ActivateSequence] 開始");
 
-        if (physicsCollider != null)
-        {
-            physicsCollider.enabled = true;
-            Debug.Log("[ActivateSequence] 物理コライダー有効化");
-        }
+        if (fadeRoutine != null) StopCoroutine(fadeRoutine);
+        fadeRoutine = StartCoroutine(ActivationRoutine());
+    }
+
+    private System.Collections.IEnumerator ActivationRoutine()
+    {
+        // コライダーON
+        if (solidCollider) solidCollider.enabled = true;
 
         // 水色にフェード
-        Color start = objRenderer.material.color;
-        Color end = activatedColor;
-        float elapsed = 0f;
-        Debug.Log("[ActivateSequence] 水色にフェード中...");
-        while (elapsed < fadeDuration)
-        {
-            elapsed += Time.deltaTime;
-            objRenderer.material.color = Color.Lerp(start, end, elapsed / fadeDuration);
-            yield return null;
-        }
+        yield return FadeColorAlpha(Color.cyan, 1f);
 
-        Debug.Log("[ActivateSequence] 水色フェード完了 → 水色状態で待機");
-        yield return new WaitForSeconds(activatedDuration);
+        yield return new WaitForSeconds(stayVisibleTime);
 
-        // 元の色に戻す
-        Debug.Log("[ActivateSequence] 元の色に戻します");
-        elapsed = 0f;
-        while (elapsed < fadeDuration)
-        {
-            elapsed += Time.deltaTime;
-            objRenderer.material.color = Color.Lerp(activatedColor, originalColor, elapsed / fadeDuration);
-            yield return null;
-        }
+        // 元に戻すフェード
+        yield return FadeColorAlpha(Color.white, 0f);
 
-        // 透明に戻る
-        Debug.Log("[ActivateSequence] 透明化開始");
-        elapsed = 0f;
-        Color transparent = originalColor; transparent.a = 0f;
-        while (elapsed < fadeDuration)
-        {
-            elapsed += Time.deltaTime;
-            objRenderer.material.color = Color.Lerp(originalColor, transparent, elapsed / fadeDuration);
-            yield return null;
-        }
+        // コライダーOFF
+        if (solidCollider) solidCollider.enabled = false;
 
-        if (physicsCollider != null)
-        {
-            physicsCollider.enabled = false;
-            Debug.Log("[ActivateSequence] 物理コライダー無効化");
-        }
-
-        Debug.Log("[ActivateSequence] 完了：透明状態へ戻りました");
         isActivated = false;
-        isRevealed = false;
         exposureTimer = 0f;
     }
 
-    private System.Collections.IEnumerator FadeAlpha(float targetAlpha)
+    // ---------------------------------------------------------------
+    // フェード系
+    // ---------------------------------------------------------------
+    private IEnumerator FadeAlpha(float targetAlpha)
     {
-        Debug.Log($"[FadeAlpha] フェード開始 → targetAlpha = {targetAlpha}");
-        Color start = objRenderer.material.color;
-        float elapsed = 0f;
+        Color start = rend.material.color;
+        Color end = start;
+        end.a = targetAlpha;
 
-        while (elapsed < fadeDuration)
+        float t = 0;
+        while (t < fadeDuration)
         {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / fadeDuration);
-            Color c = start;
-            c.a = Mathf.Lerp(start.a, targetAlpha, t);
-            objRenderer.material.color = c;
+            t += Time.deltaTime;
+            rend.material.color = Color.Lerp(start, end, t / fadeDuration);
             yield return null;
         }
-
-        Debug.Log("[FadeAlpha] フェード完了");
     }
 
-    private bool IsActiveLightColor()
+    private IEnumerator FadeColorAlpha(Color targetColor, float targetAlpha)
     {
-        Vector3 lightVec = new Vector3(referenceLight.color.r, referenceLight.color.g, referenceLight.color.b);
-        Vector3 targetVec = new Vector3(activeLightColor.r, activeLightColor.g, activeLightColor.b);
-        bool result = Vector3.Distance(lightVec, targetVec) < colorThreshold;
+        Color start = rend.material.color;
+        Color end = targetColor;
+        end.a = targetAlpha;
 
-        return result;
+        float t = 0;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            rend.material.color = Color.Lerp(start, end, t / fadeDuration);
+            yield return null;
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // ユーティリティ
+    // ---------------------------------------------------------------
+    private bool IsPurple(Color c)
+    {
+        return Vector3.Distance(new Vector3(c.r, c.g, c.b),
+                                new Vector3(purpleColor.r, purpleColor.g, purpleColor.b))
+               < colorThreshold;
+    }
+
+    private bool LightIsPointingHere()
+    {
+        // LightControllerが照射中のオブジェクトを管理しているため
+        // OnLightEnter/Exitで状態更新されるのでこのままでOK
+        return isLitByPurple;
     }
 }
