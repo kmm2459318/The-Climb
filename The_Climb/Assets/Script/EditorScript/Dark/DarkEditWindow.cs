@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 
 public class DarkEditWindow : EditorWindow
@@ -53,3 +54,4 @@ public class DarkEditWindow : EditorWindow
         EditorGUILayout.LabelField("マッチ", $"{darkCanvasSetting.MatchWidthOrHeight}");
     }
 }
+#endif

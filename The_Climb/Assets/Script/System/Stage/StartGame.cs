@@ -1,4 +1,6 @@
-﻿using UnityEditor.Overlays;
+﻿#if UNITY_EDITOR
+using UnityEditor.Overlays;
+#endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,5 +21,10 @@ public class StartGame : MonoBehaviour
         }
         
         SceneManager.LoadScene("StageSelect");
+    }
+
+    public void EndGame()
+    {
+        SceneManager.LoadScene("Title");
     }
 }

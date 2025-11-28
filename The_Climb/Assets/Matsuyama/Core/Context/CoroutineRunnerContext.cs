@@ -23,5 +23,13 @@ namespace TheClimb.Core
         {
             _corutineRunner = corutineRunner;
         }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+        }
     }
 }

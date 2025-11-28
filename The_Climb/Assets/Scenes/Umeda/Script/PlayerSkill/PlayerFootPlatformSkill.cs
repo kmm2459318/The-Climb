@@ -18,6 +18,22 @@ public class SkillPlatformSpawner : MonoBehaviour
     public float zShiftOnEnd = -2f;        // 消滅時にずらす距離（Z軸方向）
 
     private bool canUseSkill = true;
+    private float cooldownTimer = 0f; // クールタイムの残り時間を追跡
+
+    /// <summary>
+    /// クールタイム進行状況を取得(0.0~1.0、1.0が満タン)
+    /// </summary>
+    public float GetCooldownProgress()
+    {
+        if (canUseSkill)
+        {
+            return 0f; // クールタイム終了、ゲージなし
+        }
+
+        // クールタイム中の進行状況を計算(残り時間割合)
+        float progress = cooldownTimer / skillCooldown;
+        return Mathf.Clamp01(progress);
+    }
 
     void Update()
     {
@@ -63,8 +79,14 @@ public class SkillPlatformSpawner : MonoBehaviour
         platform.SetActive(false);
         trigger.SetActive(false);
 
-        // クールタイム
-        yield return new WaitForSeconds(skillCooldown);
+        // クールタイム(タイマーを更新しながら待機)
+        cooldownTimer = skillCooldown;
+        while (cooldownTimer > 0f)
+        {
+            cooldownTimer -= Time.deltaTime;
+            yield return null;
+        }
+        cooldownTimer = 0f;
         canUseSkill = true;
     }
 }

@@ -80,13 +80,23 @@ public class PlayerState : MonoBehaviour, IImpactable
 
         PlayerAnimation = transform.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
 
+        // Base ground layer
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
-        lowGroundLayer = LayerMask.GetMask("Ground", "LowGround");
-        groundLayer = LayerMask.GetMask("Ground", "LowGround");
-        whiteGround = 1 << LayerMask.NameToLayer("WhiteGround");
-        blackGround = 1 << LayerMask.NameToLayer("BlackGround");
+        
+        // 追加レイヤーの取得と結合
+        int whiteIndex = LayerMask.NameToLayer("WhiteGround");
+        int blackIndex = LayerMask.NameToLayer("BlackGround");
+        int lowIndex = LayerMask.NameToLayer("LowGround");
+        
+        if (whiteIndex != -1) groundLayer.value |= (1 << whiteIndex);
+        if (blackIndex != -1) groundLayer.value |= (1 << blackIndex);
+        if (lowIndex != -1) groundLayer.value |= (1 << lowIndex);
 
+        lowGroundLayer = groundLayer;
         groundLayerMask = groundLayer;
+        
+        whiteGround = (whiteIndex != -1) ? (1 << whiteIndex) : 0;
+        blackGround = (blackIndex != -1) ? (1 << blackIndex) : 0;
 
         // インスペクターまたはスクリプトで設定
         //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
@@ -122,7 +132,7 @@ public class PlayerState : MonoBehaviour, IImpactable
         else
         {
             // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayer);
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.up * 0.0f, groundCheck.position + Vector3.down * 0.1f, groundCheckRadius, groundLayerMask);
 
             //空中時、isJumpOKを反応させない
             if (isAir)

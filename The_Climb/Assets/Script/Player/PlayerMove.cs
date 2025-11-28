@@ -4,6 +4,7 @@ using TheClimb.Item;
 using TheClimb.Player;
 using TheClimb.Astral;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerMove : MonoBehaviour, IConveyorReceiver
 {
@@ -29,8 +30,8 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private float groundMoveForce = 0.7f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
     public float moveInput = 0f;        //プレイヤーの移動方向
-    private float airMoveForce = 50f;    //空中での移動速度
-    public float airMaxSpeed = 10f;     //空中での速度制限
+    private float airMoveForce = 40f;    //空中での移動速度
+    public float airMaxSpeed = 9f;     //空中での速度制限
 
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
     public Vector3 slipVelocity;                //滑り時のVelocity
@@ -100,25 +101,138 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     {
         upsideDown = !upsideDown; // 状態を反転
 
-        // 見た目の上下反転
-        Vector3 scale = transform.localScale;
-        scale.y = Mathf.Abs(scale.y) * (upsideDown ? -1 : 1);
-        transform.localScale = scale;
+        // プレイヤーの「中心位置」と「高さ」を考慮して移動量を計算
+        // Pivotが足元にある場合：Center.yはHeight/2 -> 移動量はHeight
+        // Pivotが中心にある場合：Center.yは0 -> 移動量は0
+        // 公式：MoveAmount = 2 * Center.y * ScaleY
+
+        float moveAmountY = 0f;
+        float scaleY = Mathf.Abs(transform.localScale.y);
+        bool foundValidCollider = false;
+
+        // 1. CharacterController
+        var charController = GetComponent<CharacterController>();
+        if (charController != null)
+        {
+            moveAmountY = 2 * charController.center.y * scaleY;
+            foundValidCollider = true;
+        }
+        else
+        {
+            // 2. CapsuleCollider
+            var capsule = GetComponent<CapsuleCollider>();
+            if (capsule != null)
+            {
+                moveAmountY = 2 * capsule.center.y * scaleY;
+                foundValidCollider = true;
+            }
+            else
+            {
+                // 3. Collider (Boundsから中心オフセットを計算)
+                // 小さすぎるCollider（足元のトリガーなど）は無視する
+                var cols = GetComponents<Collider>();
+                foreach (var col in cols)
+                {
+                    if (!col.isTrigger && col.bounds.size.y > 0.5f)
+                    {
+                        float centerOffset = col.bounds.center.y - transform.position.y;
+                        moveAmountY = 2 * centerOffset;
+                        foundValidCollider = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 4. まだ有効なColliderが見つかっていない場合、子オブジェクトを探す
+        if (!foundValidCollider)
+        {
+            var childCols = GetComponentsInChildren<Collider>();
+            float maxBoundsY = -999f;
+            float minBoundsY = 999f;
+            bool foundChild = false;
+
+            foreach (var c in childCols)
+            {
+                if (c.gameObject != gameObject && !c.isTrigger && c.bounds.size.y > 0.1f)
+                {
+                    maxBoundsY = Mathf.Max(maxBoundsY, c.bounds.max.y);
+                    minBoundsY = Mathf.Min(minBoundsY, c.bounds.min.y);
+                    foundChild = true;
+                }
+            }
+
+            if (foundChild)
+            {
+                float boundsCenterY = (maxBoundsY + minBoundsY) / 2f;
+                float centerOffset = boundsCenterY - transform.position.y;
+                moveAmountY = 2 * centerOffset;
+                foundValidCollider = true;
+            }
+        }
+
+        // 5. Renderer (Boundsから) - Colliderがない場合の最終手段
+        if (!foundValidCollider)
+        {
+            var rend = GetComponentInChildren<Renderer>();
+            if (rend != null)
+            {
+                float centerOffset = rend.bounds.center.y - transform.position.y;
+                moveAmountY = 2 * centerOffset;
+                foundValidCollider = true;
+            }
+        }
+
+        // 6. デフォルト（足元ピボットと仮定して1.8m移動）
+        if (!foundValidCollider)
+        {
+            moveAmountY = 1.8f;
+            Debug.LogWarning("[GravityFlip] Center could not be detected. Using default 1.8f.");
+        }
+
+        // 見た目の上下反転（遅延させることで位置移動とのズレを目立たなくする）
+        StartCoroutine(DelayedVisualFlip(0.1f));
 
         //// 慣性は横方向だけ維持（縦をリセット）
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
 
         RigidBody.AddForce(Vector3.up * 5f, ForceMode.VelocityChange);
 
-        // プレイヤー位置の微調整（めり込み防止）
-        Vector3 pos = transform.position;
-        pos.y += upsideDown ? 0.5f : 0.5f;
-        transform.position = pos;
+        // プレイヤー位置の調整
+        // 重力が下の時に切り替えたら上にずらす（＝通常→天井で上にずらす）
+        if (upsideDown)
+        {
+            // 通常→天井：上に移動
+            transform.position += Vector3.up * moveAmountY;
+        }
+        else
+        {
+            // 天井→通常：下に移動
+            transform.position -= Vector3.up * moveAmountY;
+        }
 
         //// 地面の判定をリセット
         state.isGrounded = false;
 
        Debug.Log($"{name} が上下反転！（現在: {(upsideDown ? "天井" : "地面")}）");
+    }
+
+    public void ResetGravity()
+    {
+        if (upsideDown)
+        {
+            upsideDown = false;
+
+            // 見た目を元に戻す
+            Vector3 scale = transform.localScale;
+            scale.y = Mathf.Abs(scale.y); // 正の値にする
+            transform.localScale = scale;
+
+            // 重力設定を戻す（ApplyCustomGravityで処理されるが、念のため）
+            RigidBody.useGravity = true;
+
+            Debug.Log("リスポーンに伴い重力をリセットしました");
+        }
     }
 
     private IEnumerator DelayedVisualFlip(float delay)
@@ -137,6 +251,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         {
             MoveOperation();
         }
+        CheckStuck();
     }
 
     void FixedUpdate()
@@ -301,6 +416,105 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     {
         this.OnBelt = OnBelt;
         this.BeltVelocity = velocity;
+    }
+
+    [Header("埋まり判定設定")]
+    public float stuckCheckDelay = 0.5f; // 埋まり判定が確定するまでの時間
+    public CapsuleCollider stuckDetectionCollider; // 埋まり判定専用のコライダー（未設定なら自動検出）
+    public Collider[] collidersToDisableOnUnstuck; // 脱出時に一時的に無効化するコライダー（足元のSphereColliderなど）
+    private float stuckTimer = 0f;
+
+    private void CheckStuck()
+{
+    // カプセルコライダーを取得
+    Vector3 point1, point2;
+    float radius;
+
+    CapsuleCollider capsule = stuckDetectionCollider != null ? stuckDetectionCollider : GetComponent<CapsuleCollider>();
+    if (capsule != null)
+    {
+        float shrink = 0.1f;
+        float maxScale = Mathf.Max(Mathf.Abs(transform.localScale.x), Mathf.Abs(transform.localScale.y), Mathf.Abs(transform.localScale.z));
+        radius = capsule.radius * maxScale - shrink;
+        float height = capsule.height * maxScale - (shrink * 2);
+
+        Vector3 center = capsule.transform.TransformPoint(capsule.center);
+        point1 = center + Vector3.up * (height / 2f - radius);
+        point2 = center - Vector3.up * (height / 2f - radius);
+    }
+    else
+    {
+        return;
+    }
+
+    // コライダー取得
+    Collider[] hitColliders = Physics.OverlapCapsule(point1, point2, radius);
+
+    bool isStuck = false;
+    foreach (var col in hitColliders)
+    {
+        if (col.gameObject != gameObject && !col.isTrigger)
+        {
+            // ★ Buddy を除外する
+            if (col.GetComponent<BuddyController>() != null ||
+                col.GetComponentInParent<BuddyController>() != null ||
+                col.gameObject.layer == 16 || col.gameObject.layer == 17 ||
+                col.gameObject.layer == 18 || col.gameObject.layer == 19)
+            {
+                continue;
+            }
+
+            isStuck = true;
+            break;
+        }
+    }
+
+    if (isStuck)
+    {
+        stuckTimer += Time.deltaTime;
+        if (stuckTimer > stuckCheckDelay)
+        {
+            Debug.LogWarning("プレイヤーの埋まりを検知しました。位置を修正します。");
+
+            float direction = upsideDown ? 1f : -1f;
+            transform.position += Vector3.up * direction * 3.0f;
+
+            if (collidersToDisableOnUnstuck != null && collidersToDisableOnUnstuck.Length > 0)
+            {
+                StartCoroutine(TemporarilyDisableColliders());
+            }
+
+            stuckTimer = 0f;
+        }
+    }
+    else
+    {
+        stuckTimer = 0f;
+    }
+}
+
+    private IEnumerator TemporarilyDisableColliders()
+    {
+        // 指定されたコライダーを無効化
+        foreach (var col in collidersToDisableOnUnstuck)
+        {
+            if (col != null)
+            {
+                col.enabled = false;
+            }
+        }
+
+        // 0.1秒待機
+        yield return new WaitForSeconds(0.1f);
+
+        // 再有効化
+        foreach (var col in collidersToDisableOnUnstuck)
+        {
+            if (col != null)
+            {
+                col.enabled = true;
+            }
+        }
     }
 
 }
