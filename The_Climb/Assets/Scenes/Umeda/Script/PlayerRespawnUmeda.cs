@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class PlayerRespawnUmeda : MonoBehaviour
 {
@@ -22,6 +23,11 @@ public class PlayerRespawnUmeda : MonoBehaviour
     public float maxHeightFromCheckpoint = 30f; // 上方向の制限（これ以上離れるとリスポーン）
     public float fallDistanceFromCheckpoint = 20f; // 下方向の制限（これ以上落ちるとリスポーン）
 
+    private bool buddyStage = false;
+    private GameObject player;
+    private PlayerState playerState;
+    private BuddyCarry buddyCarry;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -34,6 +40,15 @@ public class PlayerRespawnUmeda : MonoBehaviour
         else
         {
             Debug.LogWarning("⚠️ リスポーンポイントが未設定です。");
+        }
+
+        //相棒ステージか判定
+        if (SceneManager.GetActiveScene().name == "Nakamura")
+        {
+            buddyStage = true;
+            player = GameObject.Find("PlayerModel");
+            playerState = player.GetComponent<PlayerState>();
+            buddyCarry = player.GetComponent<BuddyCarry>();
         }
     }
 
@@ -48,6 +63,12 @@ public class PlayerRespawnUmeda : MonoBehaviour
         if (diffY > maxHeightFromCheckpoint || this.transform.position.y < -fallDistanceFromCheckpoint)
         {
             Debug.Log($"制限エリア外に出ました (DiffY: {diffY:F2}) -> Respawn");
+            Respawn();
+        }
+
+        // デバッグ用：Rキーでリスポーン
+        if (Input.GetKeyDown(KeyCode.R) || playerState.erosionLevel >= 100 || playerState.sanityLevel <= 0)
+        {
             Respawn();
         }
     }
@@ -71,6 +92,18 @@ public class PlayerRespawnUmeda : MonoBehaviour
         {
             transform.position = currentRespawnPoint.position;
         }
+
+        if (buddyStage)
+        {
+            //相棒をおんぶ状態に戻す
+            buddyCarry.state.carryingBuddy = true;
+            buddyCarry.buddyPos.constraintActive = true;
+            buddyCarry.buddyController.moving = false;
+
+            //正気度と浸食度をリセット
+            playerState.sanityLevel = 100;
+            playerState.erosionLevel = 0;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -90,6 +123,12 @@ public class PlayerRespawnUmeda : MonoBehaviour
     {
         if (index >= 0 && index < respawnPoints.Count)
         {
+            if (respawnPoints[index] == null)
+            {
+                Debug.LogWarning($"⚠️ Index {index} のリスポーンポイントが設定されていません（nullです）。Inspectorを確認してください。");
+                return;
+            }
+
             currentIndex = index;
             currentRespawnPoint = respawnPoints[index];
             UpdateCheckpointVisual(index);

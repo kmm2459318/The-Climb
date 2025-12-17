@@ -7,7 +7,7 @@ public class RespawnOnTouch : MonoBehaviour
         if (collision.collider.CompareTag("Player"))
         {
             PlayerRespawnUmeda respawn = collision.collider.GetComponent<PlayerRespawnUmeda>();
-
+           
             if (respawn != null)
             {
                 respawn.Respawn();

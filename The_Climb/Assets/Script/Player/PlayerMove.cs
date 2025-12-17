@@ -191,7 +191,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         }
 
         // 見た目の上下反転（遅延させることで位置移動とのズレを目立たなくする）
-        StartCoroutine(DelayedVisualFlip(0.05f));
+        StartCoroutine(DelayedVisualFlip(0.1f));
 
         //// 慣性は横方向だけ維持（縦をリセット）
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
@@ -455,17 +455,11 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     {
         if (col.gameObject != gameObject && !col.isTrigger)
         {
-            // ★ Buddy を除外する
-            if (col.GetComponent<BuddyController>() != null ||
-                col.GetComponentInParent<BuddyController>() != null ||
-                col.gameObject.layer == 16 || col.gameObject.layer == 17 ||
-                col.gameObject.layer == 18 || col.gameObject.layer == 19)
+            if (col.gameObject.layer == LayerMask.NameToLayer("Ground") && !col.CompareTag("Nosink"))
             {
-                continue;
+                isStuck = true;
+                break;
             }
-
-            isStuck = true;
-            break;
         }
     }
 
