@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class StageRandomizer : MonoBehaviour
 {
     public string[] StageName;
+    public string[] BossStageName;
 
     void Start()
     {
@@ -35,19 +36,17 @@ public class StageRandomizer : MonoBehaviour
             (sourceList[i], sourceList[randomIndex]) = (sourceList[randomIndex], sourceList[i]);
         }
 
-        // 新しい配列（サイズ7）を作成
-        string[] newStages = new string[7];
+        // 新しい配列（サイズ8）を作成
+        string[] newStages = new string[8];
         
-        // 埋めるべきインデックス（4番目=インデックス3を除く）
+        // 埋めるべきインデックス（3番目と7番目を除く）
         int[] targetIndices = { 0, 1, 2, 4, 5, 6 };
         
-        // ソースから順に埋める（ソースが足りない場合はループ）
+        // ソースから順に埋める
         for (int i = 0; i < targetIndices.Length; i++)
         {
             if (sourceList.Count > 0)
             {
-                // ソースリストの要素数より多く要求された場合は剰余で対応（あるいはランダム）
-                // ここでは単純にシャッフルされたソースリストから順番に取る
                 int sourceIndex = i % sourceList.Count;
                 newStages[targetIndices[i]] = sourceList[sourceIndex];
             }
@@ -58,12 +57,25 @@ public class StageRandomizer : MonoBehaviour
             }
         }
 
-        // 4番目（インデックス3）に、選ばれた6つの中からランダムに1つ選んでコピー
-        int randomPickIndex = Random.Range(0, targetIndices.Length);
-        string duplicateStage = newStages[targetIndices[randomPickIndex]];
-        newStages[3] = duplicateStage;
-        
-        Debug.Log($"4番目（インデックス3）を {duplicateStage} (インデックス{targetIndices[randomPickIndex]}のコピー) に設定しました");
+        // 3番目（インデックス3）に、StageNameの中からランダムに1つ選んで設定（重複あり）
+        if (sourceList.Count > 0)
+        {
+            string randomStage = sourceList[Random.Range(0, sourceList.Count)];
+            newStages[3] = randomStage;
+            Debug.Log($"3番目（インデックス3）を {randomStage} に設定しました");
+        }
+
+        // 7番目（インデックス7）に、BossStageNameの中からランダムに1つ選んで設定
+        if (BossStageName != null && BossStageName.Length > 0)
+        {
+            string bossStage = BossStageName[Random.Range(0, BossStageName.Length)];
+            newStages[7] = bossStage;
+            Debug.Log($"7番目（インデックス7）をBossステージ {bossStage} に設定しました");
+        }
+        else
+        {
+            Debug.LogWarning("BossStageNameが設定されていません！");
+        }
 
         // 結果を反映
         StageName = newStages;
@@ -92,7 +104,7 @@ public class StageRandomizer : MonoBehaviour
             string[] loadedOrder = saved.Split(',');
 
             // 保存データと現在のStageNameの数が一致しているかチェック
-            if (loadedOrder.Length == StageName.Length)
+            if (loadedOrder.Length == 8)
             {
                 StageName = loadedOrder;
                 Debug.Log($"ステージ順を読み込みました: {saved}");
@@ -107,13 +119,16 @@ public class StageRandomizer : MonoBehaviour
     // 指定されたボタン番号のステージをロード
     public void StartStage(int ButtonNo)
     {
-        if (ButtonNo == 8)
+        // ButtonNoは1始まりなので、インデックスは-1する
+        int stageIndex = ButtonNo - 1;
+
+        if (stageIndex >= 0 && stageIndex < StageName.Length)
         {
-            System.Loading.SceneLoader.Instance.LoadScene("GameClear");
+            System.Loading.SceneLoader.Instance.LoadScene(StageName[stageIndex]);
         }
         else
         {
-            System.Loading.SceneLoader.Instance.LoadScene(StageName[ButtonNo - 1]);
+            Debug.LogError($"指定されたステージ番号 {ButtonNo} (Index: {stageIndex}) は範囲外です。");
         }
     }
 }

@@ -30,8 +30,8 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private float groundMoveForce = 0.7f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
     public float moveInput = 0f;        //プレイヤーの移動方向
-    private float airMoveForce = 50f;    //空中での移動速度
-    public float airMaxSpeed = 10f;     //空中での速度制限
+    private float airMoveForce = 40f;    //空中での移動速度
+    public float airMaxSpeed = 9f;     //空中での速度制限
 
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
     public Vector3 slipVelocity;                //滑り時のVelocity
@@ -191,7 +191,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         }
 
         // 見た目の上下反転（遅延させることで位置移動とのズレを目立たなくする）
-        StartCoroutine(DelayedVisualFlip(0.05f));
+        StartCoroutine(DelayedVisualFlip(0.1f));
 
         //// 慣性は横方向だけ維持（縦をリセット）
         RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
@@ -425,67 +425,67 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private float stuckTimer = 0f;
 
     private void CheckStuck()
+{
+    // カプセルコライダーを取得
+    Vector3 point1, point2;
+    float radius;
+
+    CapsuleCollider capsule = stuckDetectionCollider != null ? stuckDetectionCollider : GetComponent<CapsuleCollider>();
+    if (capsule != null)
     {
-        // カプセルコライダーを取得（専用コライダーが設定されていればそれを使用、なければ自動検出）
-        Vector3 point1, point2;
-        float radius;
+        float shrink = 0.1f;
+        float maxScale = Mathf.Max(Mathf.Abs(transform.localScale.x), Mathf.Abs(transform.localScale.y), Mathf.Abs(transform.localScale.z));
+        radius = capsule.radius * maxScale - shrink;
+        float height = capsule.height * maxScale - (shrink * 2);
 
-        CapsuleCollider capsule = stuckDetectionCollider != null ? stuckDetectionCollider : GetComponent<CapsuleCollider>();
-        if (capsule != null)
+        Vector3 center = capsule.transform.TransformPoint(capsule.center);
+        point1 = center + Vector3.up * (height / 2f - radius);
+        point2 = center - Vector3.up * (height / 2f - radius);
+    }
+    else
+    {
+        return;
+    }
+
+    // コライダー取得
+    Collider[] hitColliders = Physics.OverlapCapsule(point1, point2, radius);
+
+    bool isStuck = false;
+    foreach (var col in hitColliders)
+    {
+        if (col.gameObject != gameObject && !col.isTrigger)
         {
-            // 少し小さくして判定（壁に触れているだけなら反応しないように）
-            float shrink = 0.1f;
-            float maxScale = Mathf.Max(Mathf.Abs(transform.localScale.x), Mathf.Abs(transform.localScale.y), Mathf.Abs(transform.localScale.z));
-            radius = capsule.radius * maxScale - shrink;
-            float height = capsule.height * maxScale - (shrink * 2);
-
-            Vector3 center = capsule.transform.TransformPoint(capsule.center);
-            point1 = center + Vector3.up * (height / 2f - radius);
-            point2 = center - Vector3.up * (height / 2f - radius);
-        }
-        else
-        {
-            return; // コライダーが取れなければスキップ
-        }
-
-        // 自分以外のコライダーと重なっているかチェック
-        Collider[] hitColliders = Physics.OverlapCapsule(point1, point2, radius);
-
-        bool isStuck = false;
-        foreach (var col in hitColliders)
-        {
-            if (col.gameObject != gameObject && !col.isTrigger)
+            if (col.gameObject.layer == LayerMask.NameToLayer("Ground") && !col.CompareTag("Nosink"))
             {
                 isStuck = true;
                 break;
             }
         }
+    }
 
-        if (isStuck)
+    if (isStuck)
+    {
+        stuckTimer += Time.deltaTime;
+        if (stuckTimer > stuckCheckDelay)
         {
-            stuckTimer += Time.deltaTime;
-            if (stuckTimer > stuckCheckDelay)
+            Debug.LogWarning("プレイヤーの埋まりを検知しました。位置を修正します。");
+
+            float direction = upsideDown ? 1f : -1f;
+            transform.position += Vector3.up * direction * 3.0f;
+
+            if (collidersToDisableOnUnstuck != null && collidersToDisableOnUnstuck.Length > 0)
             {
-                Debug.LogWarning("プレイヤーの埋まりを検知しました。位置を修正します。");
-
-                // 重力反転中（天井）なら上へ、通常（床）なら下へ
-                float direction = upsideDown ? 1f : -1f;
-                transform.position += Vector3.up * direction * 3.0f; // 3mずらす
-
-                // 指定されたコライダーを一時的に無効化
-                if (collidersToDisableOnUnstuck != null && collidersToDisableOnUnstuck.Length > 0)
-                {
-                    StartCoroutine(TemporarilyDisableColliders());
-                }
-
-                stuckTimer = 0f; // タイマーリセット
+                StartCoroutine(TemporarilyDisableColliders());
             }
-        }
-        else
-        {
+
             stuckTimer = 0f;
         }
     }
+    else
+    {
+        stuckTimer = 0f;
+    }
+}
 
     private IEnumerator TemporarilyDisableColliders()
     {

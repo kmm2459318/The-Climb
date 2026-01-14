@@ -5,8 +5,8 @@ public class BuddyCarry : MonoBehaviour
 {
     private GameObject buddy;             //Buddyのゲームオブジェクト
     public BuddyController buddyController;  //Buddyのスクリプト
-    private PositionConstraint buddyPos;  //BuddyのPositionConstraint（おんぶに使ってる追従のコンポーネント）
-    PlayerState state;
+    public PositionConstraint buddyPos;  //BuddyのPositionConstraint（おんぶに使ってる追従のコンポーネント）
+    public PlayerState state;
     PlayerMove playerMove;
 
     public bool nearBuddy = false;       //Buddyが近くにいるか判定
