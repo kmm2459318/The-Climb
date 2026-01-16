@@ -126,16 +126,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ffe27d8f32be94469fb43e0f2033625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RevealOnCollision
-  targetTag: Light
-  referenceLight: {fileID: 0}
-  activeLightColor: {r: 0.5, g: 0, b: 1, a: 1}
+  playerLight: {fileID: 0}
+  targetColor: {r: 0.5, g: 0, b: 1, a: 1}
   colorThreshold: 0.2
-  activatedColor: {r: 0, g: 1, b: 1, a: 1}
-  originalColor: {r: 1, g: 1, b: 1, a: 1}
-  fadeDuration: 0.1
-  activationTime: 3
-  activatedDuration: 10
-  physicsCollider: {fileID: 1483370211089294334}
+  objRenderer: {fileID: 7079398663804992823}
+  col: {fileID: 4823383803689867745}
 --- !u!1 &1500295006265347249
 GameObject:
   m_ObjectHideFlags: 0

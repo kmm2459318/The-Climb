@@ -92,6 +92,13 @@ public class GimmickSwitch : MonoBehaviour
     {
         IsOn = true;                    // 押された状態にする
         Bridge?.ReportState(true);      // 状態を保存
+        
+        //スイッチの見た目を切り替える
+        if (SwitchOff != null && SwitchOn != null)
+        {
+            SwitchOff.SetActive(false);
+            SwitchOn.SetActive(true);
+        }
 
         foreach (var r in Receivers)
         {
@@ -100,8 +107,6 @@ public class GimmickSwitch : MonoBehaviour
                 r.ApplyCurrentState();
             }
         }
-
-     
 
         // 以後の入力処理を止める（スクリプトを無効化）
         this.enabled = false;
