@@ -75,8 +75,8 @@ public class MovingPlatform : MonoBehaviour
         {
             foreach(ContactPoint contact in collision.contacts)
             {
-                //足場の上方向に近い法線か(上にのっているか)
-                if(Vector3.Dot(-contact.normal, Vector3.up) > 0.5f)
+                //足場にのっているか
+                if(Vector3.Dot(contact.normal, Vector3.up) > 0.5f || Vector3.Dot(contact.normal, Vector3.down) > 0.5f)
                 {
                     Debug.Log("プレイヤーが動く足場の上に乗った");
                     PlayerRigidbody = collision.gameObject.GetComponent<Rigidbody>();
