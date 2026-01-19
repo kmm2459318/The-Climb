@@ -749,6 +749,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buddyController: {fileID: 0}
+  buddyPos: {fileID: 0}
+  state: {fileID: 0}
   nearBuddy: 0
 --- !u!114 &9178113623799957216
 MonoBehaviour:
@@ -1740,7 +1742,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6888408907588733425}
   - component: {fileID: 189307899195806445}
-  - component: {fileID: 1814741349696991447}
   m_Layer: 9
   m_Name: SpotlightwithBeam
   m_TagString: Light
@@ -1787,18 +1788,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 1355901306445252050, guid: bee9a180686c644dea20ac28a716f541, type: 3}
---- !u!114 &1814741349696991447
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8135964961070704614}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e55e17448521a2840b3ad38e7c44b482, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LightAimToMouse
 --- !u!1 &8173998676569225857
 GameObject:
   m_ObjectHideFlags: 0

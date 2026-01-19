@@ -6,22 +6,24 @@ public class LightController : MonoBehaviour
     [Header("ライト本体")]
     [SerializeField] private Light targetLight;
 
-    [Header("ライトの色設定")]
+    [Header("ライトの色")]
     [SerializeField] private Color whiteColor = Color.white;
     [SerializeField] private Color purpleColor = new Color(0.5f, 0f, 1f);
 
     [Header("照射設定")]
     [SerializeField] private float maxDistance = 20f;
+    [SerializeField] private int rayCount = 7;        // 円錐Ray本数
+    [SerializeField] private float coneAngle = 40f;   // 扇形角度（度）
 
-    // 現在照射している相手
-    private GameObject currentHitObject = null;
+    private bool isPurple = false;
 
-    // イベント（他のスクリプトが登録する）
+    // イベント
     public static event Action<GameObject, Color> OnLightEnter;
     public static event Action<GameObject, Color> OnLightExit;
     public static event Action<Color> OnLightColorChanged;
 
-    private bool isPurple = false;
+    // 前フレームで照らしていたオブジェクト
+    private GameObject currentHitObject = null;
 
     void Start()
     {
@@ -32,71 +34,110 @@ public class LightController : MonoBehaviour
     void Update()
     {
         HandleColorSwitch();
-        HandleDirection();
-        CheckRaycastHit();
+        HandleDirection2D();
+        CheckConeRaycast2D();
     }
 
-    // -------------------------
-    // ① Eキーで色を切り替え
-    // -------------------------
+    // -------------------------------------------------
+    // 色切り替え（Eキー）
+    // -------------------------------------------------
     private void HandleColorSwitch()
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
             isPurple = !isPurple;
             Color newColor = isPurple ? purpleColor : whiteColor;
-
             targetLight.color = newColor;
 
-            // 他スクリプトへ通知
             OnLightColorChanged?.Invoke(newColor);
+            Debug.Log($"LightController：Color switched to {(isPurple ? "Purple" : "White")}");
         }
     }
 
-    // -------------------------
-    // ② マウス方向にライトを向ける
-    // -------------------------
-    private void HandleDirection()
+    // -------------------------------------------------
+    // ライトの向き（X-Y平面固定）
+    // -------------------------------------------------
+    private void HandleDirection2D()
     {
         Vector3 mousePos = Input.mousePosition;
-        mousePos.z = 10f; // カメラ距離調整
+
+        // ライトと同じZ平面でワールド座標取得
+        mousePos.z = Mathf.Abs(
+            Camera.main.transform.position.z - targetLight.transform.position.z
+        );
 
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
-        Vector3 dir = (worldPos - targetLight.transform.position).normalized;
+
+        Vector3 dir = worldPos - targetLight.transform.position;
+        dir.z = 0f;            // ★ Z方向を完全に無視
+        dir.Normalize();
 
         targetLight.transform.forward = dir;
     }
 
-    // -------------------------
-    // ③ 何を照らしているか毎フレーム確認
-    // -------------------------
-    private void CheckRaycastHit()
+    // -------------------------------------------------
+    // 円錐Raycast（2D横スクロール用）
+    // -------------------------------------------------
+    private void CheckConeRaycast2D()
     {
-        Ray ray = new Ray(targetLight.transform.position, targetLight.transform.forward);
+        GameObject hitThisFrame = null;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance))
+        for (int i = 0; i < rayCount; i++)
         {
-            GameObject hitObj = hit.collider.gameObject;
+            float t = (float)i / (rayCount - 1) - 0.5f; // -0.5 ～ 0.5
+            float angle = t * coneAngle;
 
-            if (currentHitObject != hitObj)
+            // ★ Z軸回転で扇状にRayを広げる
+            Vector3 dir =
+                Quaternion.Euler(0f, 0f, angle) * targetLight.transform.forward;
+
+            if (Physics.Raycast(
+                targetLight.transform.position,
+                dir,
+                out RaycastHit hit,
+                maxDistance))
             {
-                // 前のオブジェクトへの照射終了を通知
-                if (currentHitObject != null)
-                    OnLightExit?.Invoke(currentHitObject, targetLight.color);
+                Debug.DrawRay(
+                    targetLight.transform.position,
+                    dir * hit.distance,
+                    Color.green
+                );
 
-                // 新しいオブジェクトへ照射開始を通知
-                OnLightEnter?.Invoke(hitObj, targetLight.color);
+                LightReveal reveal =
+                    hit.collider.GetComponentInParent<LightReveal>();
 
-                currentHitObject = hitObj;
+                if (reveal != null)
+                {
+                    hitThisFrame = reveal.gameObject;
+                    break; // 1つ見つかればOK
+                }
+            }
+            else
+            {
+                Debug.DrawRay(
+                    targetLight.transform.position,
+                    dir * maxDistance,
+                    Color.gray
+                );
             }
         }
-        else
-        {
-            // 今照らしてない → 前のオブジェクトにExitを通知
-            if (currentHitObject != null)
-                OnLightExit?.Invoke(currentHitObject, targetLight.color);
 
-            currentHitObject = null;
+        // 照射対象が変わったらイベント発火
+        if (hitThisFrame != currentHitObject)
+        {
+            if (currentHitObject != null)
+            {
+                OnLightExit?.Invoke(currentHitObject, targetLight.color);
+                Debug.Log($"LightController：Light Exit {currentHitObject.name}");
+            }
+
+            if (hitThisFrame != null)
+            {
+                OnLightEnter?.Invoke(hitThisFrame, targetLight.color);
+                Debug.Log($"LightController：Light Enter {hitThisFrame.name}");
+            }
+
+            currentHitObject = hitThisFrame;
         }
     }
 }
