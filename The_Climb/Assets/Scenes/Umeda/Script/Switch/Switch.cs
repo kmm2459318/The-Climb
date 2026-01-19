@@ -2,104 +2,75 @@
 
 public class Switch : MonoBehaviour
 {
-    [Header("押し込み対象（見た目：子オブジェクト）")]
-    [Tooltip("押されたときに下がる見た目用オブジェクト（未設定なら最初の子を使用）")]
-    public Transform pressVisualTarget;
+    [Header("下がる見た目（孫オブジェクト）")]
+    public Transform visualObject;
 
-    [Header("押し込み対象（コライダー）")]
-    [Tooltip("押されたときに下がるコライダー用オブジェクト")]
-    public Transform pressColliderTarget;
+    [Header("下がるコライダー（孫オブジェクト）")]
+    public Transform pressDownCollider;
 
-    [Header("スイッチ設定")]
-    public float pressDepth = 0.2f;
-    public float pressSpeed = 5f;
-
-    [Header("表示物（任意）")]
-    [Tooltip("スイッチを踏んだら消したいテキストやオブジェクト")]
+    [Header("スイッチテキスト")]
     public GameObject switchText;
 
-    public bool IsPressed { get; private set; } = false;
+    [Header("押下量")]
+    public float pressDownDistance = 2.0f;
 
-    private Vector3 visualInitialPos;
-    private Vector3 visualPressedPos;
+    private Vector3 visualInitialLocalPos;
+    private Vector3 colliderInitialLocalPos;
+    private bool isPressed = false;
 
-    private Vector3 colliderInitialPos;
-    private Vector3 colliderPressedPos;
+    public bool IsPressed => isPressed;
 
     void Start()
     {
-        // 見た目が未指定なら「最初の子オブジェクト」を使用
-        if (pressVisualTarget == null && transform.childCount > 0)
-            pressVisualTarget = transform.GetChild(0);
+        // ★ 必ず localPosition（親基準）
+        if (visualObject != null)
+            visualInitialLocalPos = visualObject.localPosition;
 
-        if (pressVisualTarget == null)
-        {
-            Debug.LogWarning("Switch: 見た目用の子オブジェクトが見つかりません");
-            pressVisualTarget = transform;
-        }
-
-        // コライダー未指定時は動かさない（＝このTransform）
-        if (pressColliderTarget == null)
-            pressColliderTarget = transform;
-
-        visualInitialPos = pressVisualTarget.position;
-        visualPressedPos = visualInitialPos + Vector3.down * pressDepth;
-
-        colliderInitialPos = pressColliderTarget.position;
-        colliderPressedPos = colliderInitialPos + Vector3.down * pressDepth;
+        if (pressDownCollider != null)
+            colliderInitialLocalPos = pressDownCollider.localPosition;
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (IsPressed) return;
-        if (!collision.gameObject.CompareTag("Player")) return;
+        if (isPressed) return;
+        if (!other.CompareTag("Player")) return;
 
-        foreach (ContactPoint contact in collision.contacts)
-        {
-            // 上から踏んだ判定
-            if (contact.normal.y < -0.5f)
-            {
-                Press();
-                break;
-            }
-        }
+        // 上から踏んだ判定
+        if (other.transform.position.y < transform.position.y) return;
+
+        Press();
     }
 
     void Press()
     {
-        IsPressed = true;
+        isPressed = true;
 
-        // テキスト削除
+        // ▼ 孫オブジェクトだけを下げる
+        if (visualObject != null)
+            visualObject.localPosition =
+                visualInitialLocalPos + Vector3.down * pressDownDistance;
+
+        if (pressDownCollider != null)
+            pressDownCollider.localPosition =
+                colliderInitialLocalPos + Vector3.down * pressDownDistance;
+
         if (switchText != null)
-            Destroy(switchText);
-
-        StopAllCoroutines();
-        StartCoroutine(MoveDown());
+            switchText.SetActive(false);
     }
 
-    System.Collections.IEnumerator MoveDown()
+    // PlayerRespawnUmeda から呼ばれる
+    public void ForceReset()
     {
-        while (
-            Vector3.Distance(pressVisualTarget.position, visualPressedPos) > 0.01f ||
-            Vector3.Distance(pressColliderTarget.position, colliderPressedPos) > 0.01f
-        )
-        {
-            pressVisualTarget.position = Vector3.Lerp(
-                pressVisualTarget.position,
-                visualPressedPos,
-                Time.deltaTime * pressSpeed
-            );
+        isPressed = false;
 
-            pressColliderTarget.position = Vector3.Lerp(
-                pressColliderTarget.position,
-                colliderPressedPos,
-                Time.deltaTime * pressSpeed
-            );
+        // ▲ 初期位置に完全復帰
+        if (visualObject != null)
+            visualObject.localPosition = visualInitialLocalPos;
 
-            yield return null;
-        }
+        if (pressDownCollider != null)
+            pressDownCollider.localPosition = colliderInitialLocalPos;
 
-        pressVisualTarget.position = visualPressedPos;
-        pressColliderTarget.position = colliderPressedPos;
+        if (switchText != null)
+            switchText.SetActive(true);
     }
 }

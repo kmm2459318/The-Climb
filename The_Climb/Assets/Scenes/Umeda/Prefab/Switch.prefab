@@ -147,9 +147,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8494067169369483992}
-  - component: {fileID: 8516246424447177922}
   - component: {fileID: 8762409495936351794}
   - component: {fileID: 1470879630200340609}
+  - component: {fileID: 7783720066033968438}
   m_Layer: 0
   m_Name: Switch
   m_TagString: Untagged
@@ -174,23 +174,6 @@ Transform:
   - {fileID: 4511844903010725311}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8516246424447177922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4959845856865280379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92f5d8439b03c6e47aa8d8d17125469e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Switch
-  pressVisualTarget: {fileID: 1927409838741592188}
-  pressColliderTarget: {fileID: 8494067169369483992}
-  pressDepth: 0.96
-  pressSpeed: 10
-  switchText: {fileID: 4178354917432475798}
 --- !u!65 &8762409495936351794
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -210,8 +193,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.9, y: 0.9, z: 0.9}
-  m_Center: {x: 0, y: 0.96, z: 0}
+  m_Size: {x: 0.7, y: 0.1, z: 0.7}
+  m_Center: {x: 0, y: 1.36, z: 0}
 --- !u!65 &1470879630200340609
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -229,10 +212,26 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.9, y: 0.9, z: 0.9}
   m_Center: {x: 0, y: 0.96, z: 0}
+--- !u!114 &7783720066033968438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4959845856865280379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92f5d8439b03c6e47aa8d8d17125469e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Switch
+  visualObject: {fileID: 1927409838741592188}
+  pressDownCollider: {fileID: 1927409838741592188}
+  switchText: {fileID: 4178354917432475798}
+  pressDownDistance: 2
 --- !u!1 &8682142824614045925
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,13 +413,66 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 990761963331379121, guid: 70499f11feef08342b5907ffc37a585e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5922429256520415116}
+    - targetCorrespondingSourceObject: {fileID: 990761963331379121, guid: 70499f11feef08342b5907ffc37a585e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 762062496026046066}
   m_SourcePrefab: {fileID: 100100000, guid: 70499f11feef08342b5907ffc37a585e, type: 3}
 --- !u!4 &1927409838741592188 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -2897790465270204807, guid: 70499f11feef08342b5907ffc37a585e, type: 3}
   m_PrefabInstance: {fileID: 5582057693130468869}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4668147195643621812 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 990761963331379121, guid: 70499f11feef08342b5907ffc37a585e, type: 3}
+  m_PrefabInstance: {fileID: 5582057693130468869}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &5922429256520415116
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4668147195643621812}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 1.5659959, y: 0.22371367, z: 1.5659959}
+  m_Center: {x: 0, y: 1.855, z: 0}
+--- !u!65 &762062496026046066
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4668147195643621812}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.0134227, y: 2.0134227, z: 2.0134227}
+  m_Center: {x: 0, y: 0.96, z: 0}
 --- !u!4 &5403697885931522542 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 70499f11feef08342b5907ffc37a585e, type: 3}
