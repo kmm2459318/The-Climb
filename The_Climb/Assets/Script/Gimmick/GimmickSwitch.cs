@@ -14,6 +14,7 @@ public class GimmickSwitch : MonoBehaviour
     [Header("表示用オブジェクト")]
     [SerializeField] private GameObject SwitchOff;  // スイッチ未作動時に表示するオブジェクト
     [SerializeField] private GameObject SwitchOn;   // スイッチ作動後に表示するオブジェクト
+    [SerializeField] private GameObject a;  
 
     private bool IsOn = false; // 押されたかどうか（内部状態）
     private bool CanInteract = false;
@@ -32,6 +33,7 @@ public class GimmickSwitch : MonoBehaviour
         }
 
         SwitchOn.SetActive(false);
+        a.SetActive(false);
     }
 
     private void Update()
@@ -40,6 +42,7 @@ public class GimmickSwitch : MonoBehaviour
 
         if (CanInteract && Input.GetKeyDown(ActivateKey))
         {
+            a.SetActive(false);
             TryActivateSwitch();
             // 見た目を切り替える
             SwitchOff.SetActive(false);
@@ -54,6 +57,7 @@ public class GimmickSwitch : MonoBehaviour
             Debug.Log("当たった");
             if (IsOn) return;   //既に押されていたら何もしない
             CanInteract = true;
+            a.SetActive(true);
         }
     }
 
@@ -63,6 +67,7 @@ public class GimmickSwitch : MonoBehaviour
         {
             Debug.Log("離れた");
             CanInteract = false;
+            a.SetActive(false);
         }
     }
 
