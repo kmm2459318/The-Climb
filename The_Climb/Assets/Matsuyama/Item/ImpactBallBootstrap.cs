@@ -7,7 +7,7 @@ namespace TheClimb.Item
     public class ImpactBallBootstrap : MonoBehaviour   //  衝撃球Bootstrap
     {
         [SerializeField] ImpactBallConfigSO _configSO;    //  衝撃球コンフィグ
-        [SerializeField] CoroutineRunner _coroutineRunner;    //  衝撃球コンフィグ
+        [SerializeField] CoroutineRunner _coroutineRunner;    //  コルーチンランナー
 
          ImpactBallRuntimeData _runtimeData;    //  実行中のデータ
 
