@@ -6,9 +6,12 @@ public class TutorialBoard : MonoBehaviour
     private GameObject visual;
     private GameObject tutorial1;
     private GameObject tutorial2;
+    [Header("常に表示させたい場合\nalwaysAppearedをtrueに")]
+    [SerializeField] private bool alwaysAppeared = false;  //常に出現しているか
     [Header("チュートリアル画像を二枚使うなら\nimageChangeをtrueに")]
     [SerializeField] private bool imageChange = false;  //チュートリアル用の画像を切り替えるか
-    private float changeCoolTime = 1f;  //チュートリアル画像の切り替え時間
+    [Header("画像の切り替わる間隔の時間")]
+    [SerializeField] private float changeCoolTime = 1f;  //チュートリアル画像の切り替え時間
     private float changeTimer = 0f;  //チュートリアル画像の切り替えタイマー
     private bool displayed = false;  //今表示されているか判定
     private float currentY = 0f;  //現在のYのScale
@@ -22,7 +25,15 @@ public class TutorialBoard : MonoBehaviour
         tutorial2 = visual.transform.Find("Tutorial2").gameObject;
 
         //初期セッティング
-        visual.transform.localScale = new Vector3(1, 0, 1);
+        if (alwaysAppeared)
+        {
+            displayed = true;
+            currentY = 1f;
+            visual.transform.localScale = Vector3.one;
+            GetComponent<Collider>().enabled = false;  //当たり判定無効
+        }
+        else
+            visual.transform.localScale = new Vector3(1, 0, 1);
         tutorial1.SetActive(true);
         tutorial2.SetActive(false);
     }
