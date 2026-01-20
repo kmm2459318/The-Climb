@@ -1,19 +1,32 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LuminaLightBall : MonoBehaviour
 {
     [Header("発射設定")]
-    public GameObject lightBallPrefab;   // 弾のPrefab（Rigidbody + 子にCollider + Light + LightRange付き）
+    public GameObject lightBallPrefab;   // 弾のPrefab
     public Transform shootPoint;         // 発射位置
-    public Vector3 shootDirection = new Vector3(1, 1, 0); // 発射角度
-    public float shootSpeed = 10f;       // 発射速度
+    public Vector3 shootDirection = new Vector3(1.015f, 1f, 0f);
+    public float shootSpeed = 9.9f;
 
     [Header("バウンド設定")]
-    public int maxBounces = 3;           // 最大バウンド回数
-    public float lifeTime = 5f;          // 弾の寿命（秒）
+    public int maxBounces = 100;
+    public float lifeTime = 5f;
 
     [Header("再生成設定")]
-    public float respawnTime = 2f;       // 再発射間隔
+    public float respawnTime = 3.25f;
+
+    [Header("サウンド設定")]
+    public AudioClip bounceSound;
+    [Range(0f, 1f)]
+    public float volume = 50f;
+
+    [Tooltip("音を鳴らす対象レイヤー（複数選択可）")]
+    public LayerMask soundLayers;
+
+    [Header("3Dサウンド距離設定")]
+    public float minDistance = 8f;
+    public float maxDistance = 30f;
+    public AudioRolloffMode rolloffMode = AudioRolloffMode.Linear;
 
     private float timer;
 
@@ -33,41 +46,60 @@ public class LuminaLightBall : MonoBehaviour
     {
         GameObject ball = Instantiate(lightBallPrefab, shootPoint.position, Quaternion.identity);
 
-        // Rigidbody に初速を与える
-        Rigidbody rb = ball.GetComponent<Rigidbody>();
-        if (rb != null)
+        if (ball.TryGetComponent<Rigidbody>(out var rb))
         {
+#if UNITY_6000_0_OR_NEWER
             rb.linearVelocity = shootDirection.normalized * shootSpeed;
+#else
+            rb.velocity = shootDirection.normalized * shootSpeed;
+#endif
         }
 
-        // 弾の挙動を管理するコンポーネントを追加
+        // 弾挙動管理
         BallBehaviour behaviour = ball.AddComponent<BallBehaviour>();
         behaviour.maxBounces = maxBounces;
         behaviour.lifeTime = lifeTime;
+        behaviour.bounceSound = bounceSound;
+        behaviour.volume = volume;
+        behaviour.soundLayers = soundLayers;
+        behaviour.minDistance = minDistance;
+        behaviour.maxDistance = maxDistance;
+        behaviour.rolloffMode = rolloffMode;
     }
 
     // ------------------------------
-    // 内部クラス: 弾の挙動
+    // 内部クラス: 弾の挙動管理
     // ------------------------------
     private class BallBehaviour : MonoBehaviour
     {
         public int maxBounces;
         public float lifeTime;
 
+        public AudioClip bounceSound;
+        public float volume;
+        public LayerMask soundLayers;
+
+        public float minDistance;
+        public float maxDistance;
+        public AudioRolloffMode rolloffMode;
+
         private int bounceCount = 0;
-        private SphereCollider ballCollider;
+        private Collider ballCollider;
 
         void Start()
         {
-            // 子の LuminaLight の Collider を取得
-            ballCollider = GetComponentInChildren<SphereCollider>();
-
-            // lifeTime 秒後に Collider を縮小して Destroy
+            ballCollider = GetComponentInChildren<Collider>();
             Invoke(nameof(DisableColliderAndDestroy), lifeTime);
         }
 
         void OnCollisionEnter(Collision collision)
         {
+            // LayerMask で判定
+            if (((1 << collision.gameObject.layer) & soundLayers) != 0)
+            {
+                PlayBounceSound();
+            }
+
             bounceCount++;
             if (bounceCount >= maxBounces)
             {
@@ -75,14 +107,32 @@ public class LuminaLightBall : MonoBehaviour
             }
         }
 
+        void PlayBounceSound()
+        {
+            if (bounceSound == null) return;
+
+            // AudioSource を生成して 3D設定 → 自動削除
+            GameObject audioObj = new GameObject("LightBallSound");
+            audioObj.transform.position = transform.position;
+
+            AudioSource source = audioObj.AddComponent<AudioSource>();
+            source.clip = bounceSound;
+            source.volume = volume;
+            source.spatialBlend = 1f; // 3D化
+            source.minDistance = minDistance;
+            source.maxDistance = maxDistance;
+            source.rolloffMode = rolloffMode;
+            source.Play();
+
+            Destroy(audioObj, bounceSound.length + 0.1f);
+        }
+
         private void DisableColliderAndDestroy()
         {
             if (ballCollider != null)
-            {
-                ballCollider.radius = 0f; // Collider を無効化して OnTriggerExit を発火
-            }
+                ballCollider.enabled = false;
 
-            Destroy(gameObject, 0.1f); // 少し遅延して Destroy
+            Destroy(gameObject, 0.1f);
         }
     }
 }
