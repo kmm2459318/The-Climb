@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class TutorialBoard : MonoBehaviour
 {
+    private GameObject visual;
     private GameObject tutorial1;
     private GameObject tutorial2;
     [Header("チュートリアル画像を二枚使うなら\nimageChangeをtrueに")]
@@ -15,11 +16,13 @@ public class TutorialBoard : MonoBehaviour
 
     void Start()
     {
-        tutorial1 = transform.Find("Tutorial1").gameObject;
-        tutorial2 = transform.Find("Tutorial2").gameObject;
+        Transform parent = transform.parent;
+        visual = parent.Find("Visual").gameObject;
+        tutorial1 = visual.transform.Find("Tutorial1").gameObject;
+        tutorial2 = visual.transform.Find("Tutorial2").gameObject;
 
         //初期セッティング
-        transform.localScale = new Vector3(1, 0, 1);
+        visual.transform.localScale = new Vector3(1, 0, 1);
         tutorial1.SetActive(true);
         tutorial2.SetActive(false);
     }
@@ -54,13 +57,13 @@ public class TutorialBoard : MonoBehaviour
             currentY += Mathf.Max(0.01f, currentY) * appearSpeed * Time.deltaTime;
             currentY = Mathf.Min(currentY, 1f);
 
-            transform.localScale = new Vector3(1f, currentY, 1f);
+            visual.transform.localScale = new Vector3(1f, currentY, 1f);
             yield return null;
         }
 
         //調整用
         currentY = 1f;
-        transform.localScale = Vector3.one;
+        visual.transform.localScale = Vector3.one;
     }
 
     //看板消えてなくなれ
@@ -76,13 +79,13 @@ public class TutorialBoard : MonoBehaviour
             currentY -= Mathf.Max(0.01f, currentY) * appearSpeed * Time.deltaTime;
             currentY = Mathf.Max(currentY, 0f);
 
-            transform.localScale = new Vector3(1f, currentY, 1f);
+            visual.transform.localScale = new Vector3(1f, currentY, 1f);
             yield return null;
         }
 
         //調整用
         currentY = 0f;
-        transform.localScale = new Vector3(1f, 0f, 1f);
+        visual.transform.localScale = new Vector3(1f, 0f, 1f);
 
         //完全消滅のためリセット
         changeTimer = 0f;
