@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
@@ -27,6 +28,11 @@ public class PlayerRespawnUmeda : MonoBehaviour
     private GameObject player;
     private PlayerState playerState;
     private BuddyCarry buddyCarry;
+
+    public static Action OnPlayerRespawn;
+
+    [Header("リスポーン時にリセットするスイッチ")]
+    public List<Switch> switchesToReset = new List<Switch>();
 
     void Start()
     {
@@ -95,14 +101,24 @@ public class PlayerRespawnUmeda : MonoBehaviour
 
         if (buddyStage)
         {
-            //相棒をおんぶ状態に戻す
+            // 相棒をおんぶ状態に戻す
             buddyCarry.state.carryingBuddy = true;
             buddyCarry.buddyPos.constraintActive = true;
             buddyCarry.buddyController.moving = false;
 
-            //正気度と浸食度をリセット
+            // 正気度と浸食度をリセット
             playerState.sanityLevel = 100;
             playerState.erosionLevel = 0;
+
+            // リスポーンを通知
+            OnPlayerRespawn?.Invoke();
+        }
+
+        // 全スイッチを強制リセット
+        foreach (var sw in switchesToReset)
+        {
+            if (sw != null)
+                sw.ForceReset();
         }
     }
 
