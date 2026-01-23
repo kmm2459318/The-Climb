@@ -1,161 +1,169 @@
-﻿using UnityEngine;
+﻿// ----------------------------
+// LightReveal.cs
+// ----------------------------
+using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Renderer))]
 public class LightReveal : MonoBehaviour
 {
     [Header("① 出現設定")]
-    [SerializeField] private float revealTime_Reveal = 2f;
+    [SerializeField] private float revealTime = 2f;
 
     [Header("② 消失設定")]
-    [SerializeField] private float stayTime_Reveal = 3f;
-    [SerializeField] private float blinkDuration_Reveal = 2f;
-    [SerializeField] private float blinkInterval_Reveal = 0.2f;
+    [SerializeField] private float stayTime = 3f;
+    [SerializeField] private float blinkDuration = 2f;
+    [SerializeField] private float blinkInterval = 0.2f;
 
     [Header("③ Collider設定")]
-    [SerializeField] private Collider lightHitCollider_Reveal; // 常にON
-    [SerializeField] private Collider solidCollider_Reveal;    // 出現時のみON
+    [SerializeField] private Collider lightHitCollider; // 常にON
+    [SerializeField] private Collider solidCollider;    // 出現時のみON
 
     [Header("④ Controller設定")]
-    [SerializeField] private LightRevealController controller_Reveal;
+    [SerializeField] private LightRevealController controller;
 
-    private Renderer rend_Reveal;
-    private Coroutine routine_Reveal;
-    private bool isRunning_Reveal = false;
+    private Renderer rend;
+    private Coroutine routine;
+    private bool isRunning = false;
 
-    // --------------------------------------------------
-    // ④ 初期化
-    // --------------------------------------------------
+    // ----------------------------
+    // 初期化
+    // ----------------------------
     private void Awake()
     {
-        Debug.Log($"LightReveal：④ 初期化 ({gameObject.name})");
+        rend = GetComponent<Renderer>();
+        SetAlpha(0f);
 
-        rend_Reveal = GetComponent<Renderer>();
-        SetAlpha_Reveal(0f);
+        if (solidCollider) solidCollider.enabled = false;
+        if (lightHitCollider) lightHitCollider.enabled = true;
 
-        if (solidCollider_Reveal) solidCollider_Reveal.enabled = false;
-        if (lightHitCollider_Reveal) lightHitCollider_Reveal.enabled = true;
+        Debug.Log($"[②] Awake ({gameObject.name}) 初期化完了");
     }
 
-    // --------------------------------------------------
-    // ⑤ イベント登録
-    // --------------------------------------------------
+    // ----------------------------
+    // イベント登録
+    // ----------------------------
     private void OnEnable()
     {
-        if (controller_Reveal == null)
+        if (controller != null)
         {
-            Debug.LogError("LightReveal：Controller未設定");
-            return;
+            controller.OnLightEnter += HandleLightEnter;
+            Debug.Log("[②] OnEnable → LightEnterイベント登録");
         }
-
-        controller_Reveal.OnLightEnter += HandleLightEnter_Reveal;
-        Debug.Log("LightReveal：⑤ Controller登録完了");
     }
 
     private void OnDisable()
     {
-        if (controller_Reveal != null)
-            controller_Reveal.OnLightEnter -= HandleLightEnter_Reveal;
-        Debug.Log("LightReveal：⑤ Controller登録解除");
+        if (controller != null)
+        {
+            controller.OnLightEnter -= HandleLightEnter;
+            Debug.Log("[②] OnDisable → LightEnterイベント解除");
+        }
     }
 
-    // --------------------------------------------------
-    // ⑥ 光検知
-    // --------------------------------------------------
-    private void HandleLightEnter_Reveal(GameObject hitObj, Color color)
+    // ----------------------------
+    // 光検知
+    // ----------------------------
+    private void HandleLightEnter(GameObject hitObj, Color color)
     {
-        if (isRunning_Reveal) return;
-        if (hitObj != lightHitCollider_Reveal.gameObject) return;
+        if (isRunning) return;
+        if (hitObj != lightHitCollider.gameObject) return;
 
-        Debug.Log("LightReveal：⑥ 光検知 → 出現開始");
-        routine_Reveal = StartCoroutine(MainRoutine_Reveal());
+        Debug.Log("[②] 光検知 → メインルーチン開始");
+        routine = StartCoroutine(MainRoutine());
     }
 
-    // --------------------------------------------------
-    // ⑦ メイン処理
-    // --------------------------------------------------
-    private IEnumerator MainRoutine_Reveal()
+    // ----------------------------
+    // メイン処理
+    // ----------------------------
+    private IEnumerator MainRoutine()
     {
-        isRunning_Reveal = true;
+        isRunning = true;
 
-        yield return Reveal_Reveal();
-        yield return new WaitForSeconds(stayTime_Reveal);
-        yield return Blink_Reveal();
-        Hide_Reveal();
+        yield return Reveal();
+        yield return new WaitForSeconds(stayTime);
+        yield return Blink();
+        Hide();
 
-        isRunning_Reveal = false;
-        routine_Reveal = null;
+        isRunning = false;
+        routine = null;
 
-        Debug.Log("LightReveal：⑦ 待機状態へ戻る（再照射可能）");
+        Debug.Log("[②] 待機状態に戻る（再照射可能）");
+
+        // 再照射可能にする
+        if (controller != null)
+            controller.ResetLastHit();
     }
 
-    // --------------------------------------------------
-    // ⑧ フェードイン
-    // --------------------------------------------------
-    private IEnumerator Reveal_Reveal()
+    // ----------------------------
+    // フェードイン
+    // ----------------------------
+    private IEnumerator Reveal()
     {
-        Debug.Log("LightReveal：⑧ フェードイン開始");
+        Debug.Log("[②] フェードイン開始");
 
         float t = 0f;
-        Color start = rend_Reveal.material.color;
+        Color start = rend.material.color;
         Color end = start;
         end.a = 1f;
 
-        while (t < revealTime_Reveal)
+        while (t < revealTime)
         {
             t += Time.deltaTime;
-            rend_Reveal.material.color = Color.Lerp(start, end, t / revealTime_Reveal);
+            rend.material.color = Color.Lerp(start, end, t / revealTime);
             yield return null;
         }
 
-        rend_Reveal.material.color = end;
+        rend.material.color = end;
 
-        if (solidCollider_Reveal)
+        if (solidCollider)
         {
-            solidCollider_Reveal.enabled = true;
-            Debug.Log("LightReveal：⑧ 当たり判定ON");
+            solidCollider.enabled = true;
+            Debug.Log("[②] フェードイン完了 → 当たり判定ON");
         }
     }
 
-    // --------------------------------------------------
-    // ⑨ 点滅
-    // --------------------------------------------------
-    private IEnumerator Blink_Reveal()
+    // ----------------------------
+    // 点滅
+    // ----------------------------
+    private IEnumerator Blink()
     {
-        Debug.Log("LightReveal：⑨ 点滅開始");
+        Debug.Log("[②] 点滅開始");
 
         float elapsed = 0f;
         bool visible = true;
 
-        while (elapsed < blinkDuration_Reveal)
+        while (elapsed < blinkDuration)
         {
-            elapsed += blinkInterval_Reveal;
+            elapsed += blinkInterval;
             visible = !visible;
-            SetAlpha_Reveal(visible ? 1f : 0f);
-            yield return new WaitForSeconds(blinkInterval_Reveal);
+            SetAlpha(visible ? 1f : 0f);
+            yield return new WaitForSeconds(blinkInterval);
         }
+
+        Debug.Log("[②] 点滅終了");
     }
 
-    // --------------------------------------------------
-    // ⑩ 消失
-    // --------------------------------------------------
-    private void Hide_Reveal()
+    // ----------------------------
+    // 消失
+    // ----------------------------
+    private void Hide()
     {
-        Debug.Log("LightReveal：⑩ 消失");
+        SetAlpha(0f);
 
-        SetAlpha_Reveal(0f);
+        if (solidCollider)
+            solidCollider.enabled = false;
 
-        if (solidCollider_Reveal)
-            solidCollider_Reveal.enabled = false;
+        Debug.Log("[②] 消失完了 → 当たり判定OFF");
     }
 
-    // --------------------------------------------------
-    // ⑪ 共通処理
-    // --------------------------------------------------
-    private void SetAlpha_Reveal(float a)
+    // ----------------------------
+    // 共通処理
+    // ----------------------------
+    private void SetAlpha(float a)
     {
-        Color c = rend_Reveal.material.color;
+        Color c = rend.material.color;
         c.a = a;
-        rend_Reveal.material.color = c;
+        rend.material.color = c;
     }
 }
