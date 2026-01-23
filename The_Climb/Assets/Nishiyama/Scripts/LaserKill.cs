@@ -19,6 +19,26 @@ public class LaserKill : MonoBehaviour
     public float randomMoveTime = 1.5f;
     public static System.Action OnPlayerDied;
 
+    [Header("追い詰めレーザー（出現型）")]
+    public bool pushLaser = false;
+    public Vector3 moveDirection = Vector3.left; // 右→左
+    public float pushSpeed = 3f;
+
+    [Header("出現設定")]
+    public bool hideOnStart = true;
+    [Header("出現型レーザー専用")]
+    public bool isSpawnPushLaser = false;
+    [Header("レーザー種別")]
+    public bool isPushLaser = false;
+    [Header("このレーザー専用のトリガー")]
+    public PushLaserTrigger myTrigger;
+    [Header("追い詰めレーザー加速設定")]
+    public bool enableAcceleration = true;
+    public float startSpeed = 2f;        // 出現直後の速度
+    public float maxSpeed = 6f;          // 最大速度
+    public float acceleration = 0.5f;    // 1秒あたりの加速量
+
+
     [Header("リセットしたいボタン")]
     public ButtonGimmick buttonGimmick;
 
@@ -37,6 +57,11 @@ public class LaserKill : MonoBehaviour
         startPos = transform.position;
         PickRandomTarget();
 
+        if (isSpawnPushLaser)
+        {
+            gameObject.SetActive(false);
+        }
+
         // プレイヤーから PlayerRespawnUmeda を取得
         if (player != null)
         {
@@ -50,11 +75,19 @@ public class LaserKill : MonoBehaviour
 
     private void Update()
     {
+        if (pushLaser)
+        {
+            PushMove();
+            return;
+        }
+
         if (moveRandom)
             RandomMoveWithReturn();
         else
             MoveLaser();
     }
+
+
 
     private void MoveLaser()
     {
@@ -68,6 +101,34 @@ public class LaserKill : MonoBehaviour
 
         transform.position = pos;
     }
+
+    private void PushMove()
+    {
+        // 加速処理（迫ってくるレーザーのみ）
+        if (enableAcceleration && isSpawnPushLaser)
+        {
+            pushSpeed += acceleration * Time.deltaTime;
+            pushSpeed = Mathf.Min(pushSpeed, maxSpeed);
+        }
+
+        transform.position += moveDirection.normalized * pushSpeed * Time.deltaTime;
+    }
+
+
+    public void AppearAndStartPush()
+    {
+        if (!isSpawnPushLaser) return;
+
+        Debug.Log("【PushLaser】出現＆加速開始");
+
+        transform.position = startPos;
+        gameObject.SetActive(true);
+
+        pushSpeed = startSpeed;
+        pushLaser = true;
+    }
+
+
 
     private void RandomMoveWithReturn()
     {
@@ -143,5 +204,27 @@ public class LaserKill : MonoBehaviour
 
 
         }
+
+        if (isPushLaser)
+        {
+            ResetPushLaser();
+
+            if (myTrigger != null)
+            {
+                myTrigger.ResetTrigger();
+            }
+        }
+
+
     }
+
+    public void ResetPushLaser()
+    {
+        pushLaser = false;
+        pushSpeed = startSpeed;   // 速度リセット
+        gameObject.SetActive(false);
+        transform.position = startPos;
+    }
+
+
 }
