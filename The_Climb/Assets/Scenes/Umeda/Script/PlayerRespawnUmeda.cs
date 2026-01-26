@@ -102,7 +102,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
         if (buddyStage)
         {
             // 相棒をおんぶ状態に戻す
-            buddyCarry.state.carryingBuddy = true;
+            playerState.carryingBuddy = true;
             buddyCarry.buddyPos.constraintActive = true;
             buddyCarry.buddyController.moving = false;
 
@@ -148,7 +148,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
             currentIndex = index;
             currentRespawnPoint = respawnPoints[index];
             UpdateCheckpointVisual(index);
-            Debug.Log($"✅ リスポーン地点を更新しました → {respawnPoints[index].name}");
+            //Debug.Log($"✅ リスポーン地点を更新しました → {respawnPoints[index].name}");
         }
     }
 
