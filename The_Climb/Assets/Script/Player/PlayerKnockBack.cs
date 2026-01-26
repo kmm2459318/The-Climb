@@ -86,7 +86,7 @@ public class PlayerKnockBack : MonoBehaviour
                         //敵とプレイヤーの位置でノックバックの方向を決める
                         int dir = transform.position.x - collision.gameObject.transform.position.x <= 0 ? -1 : 1;
                         DoKnockBack(dir);  //ノックバック
-                        mind.SanityDecreaseEvent(5);  //正気度減少
+                        mind.SanityDecreaseEvent(3);  //正気度減少
                     }
                 }
             }
@@ -118,7 +118,7 @@ public class PlayerKnockBack : MonoBehaviour
                         //敵とプレイヤーの位置でノックバックの方向を決める
                         int dir = transform.position.x - other.gameObject.transform.position.x <= 0 ? -1 : 1;
                         DoKnockBack(dir);  //ノックバック
-                        mind.SanityDecreaseEvent(10);  //正気度減少
+                        mind.SanityDecreaseEvent(5);  //正気度減少
                     }
                 }
             }

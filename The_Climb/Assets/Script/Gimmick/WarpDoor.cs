@@ -1,4 +1,5 @@
-﻿using Unity.VisualScripting;
+﻿using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,6 +13,8 @@ public class WarpDoor : MonoBehaviour
     private bool savePlayer = false;  //プレイヤーのオブジェクトを取得できているか判定
     private Transform player;         //プレイヤーのtransform
     private PlayerState state;
+    private GameObject hukidashi;     //吹き出しオブジェクト
+    private TextMeshPro hukidashiText;  //吹き出しテキスト
     [SerializeField] private bool buddyStage = false;  //ここはBuddyステージか？
 
     void Start()
@@ -48,11 +51,19 @@ public class WarpDoor : MonoBehaviour
         {
             nearPlayer = true;
 
+            //プレイヤーオブジェクトの取得
             if (!savePlayer)
             {
                 player = other.transform;
                 state = player.GetComponent<PlayerState>();
+                hukidashi = state.hukidashi;
+                hukidashiText = state.hukidashiText;
+                savePlayer = true;
             }
+
+            //吹き出し表示
+            hukidashi.SetActive(true);
+            hukidashiText.text = "W";
         }
     }
 
@@ -61,6 +72,8 @@ public class WarpDoor : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             nearPlayer = false;
+            //吹き出し非表示
+            hukidashi.SetActive(false);
         }
     }
 }
