@@ -31,7 +31,7 @@ public class PlayerAnimation : MonoBehaviour
         // 着地検出
         if (isGrounded && !wasGrounded)
         {
-            Debug.Log("着地しました。次のジャンプが可能になります。");
+            //Debug.Log("着地しました。次のジャンプが可能になります。");
             isJumping = false; // 再解禁
         }
         wasGrounded = isGrounded;
@@ -51,7 +51,7 @@ public class PlayerAnimation : MonoBehaviour
         {
             spacePressCount++;
             int animStep = (spacePressCount - 1) % 3 + 1;
-            Debug.Log("ジャンプ Step " + animStep);
+            //Debug.Log("ジャンプ Step " + animStep);
             isJumping = true; // ロックをかける
 
             switch (animStep)
