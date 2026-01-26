@@ -846,6 +846,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buddyController: {fileID: 0}
   buddyPos: {fileID: 0}
+  state: {fileID: 0}
   nearBuddy: 0
 --- !u!114 &9178113623799957216
 MonoBehaviour:
@@ -923,7 +924,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Radius: 0.19
-  m_Center: {x: 0, y: 0.2, z: 0}
+  m_Center: {x: 0, y: 0.19, z: 0}
 --- !u!54 &7246862423334343013
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1321,7 +1322,7 @@ GameObject:
   - component: {fileID: 6779474823770960882}
   - component: {fileID: 3116332040912771446}
   m_Layer: 6
-  m_Name: Main Camera
+  m_Name: Main Camera (Audio Listener)
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1335,8 +1336,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4315322951363399799}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.3034021, y: 2.880001, z: -29.9}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1721,7 +1722,7 @@ PositionConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_TranslationAtRest: {x: 0, y: 0.99, z: 0}
-  m_TranslationOffset: {x: 157.32, y: 4.6000004, z: 0.04}
+  m_TranslationOffset: {x: -0.78, y: -0.29999995, z: 0}
   m_AffectTranslationX: 1
   m_AffectTranslationY: 1
   m_AffectTranslationZ: 1

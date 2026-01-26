@@ -16,7 +16,6 @@ public class StageSelectManager : MonoBehaviour
 
     private void Awake()
     {
-        // 参照確保
         if (stages == null || stages.Length == 0)
             stages = FindObjectsOfType<StageNode>(true);
 
@@ -31,25 +30,20 @@ public class StageSelectManager : MonoBehaviour
 
     private void OnEnable()
     {
-        // OnEnableで遅延初期化
         StartCoroutine(InitializeAfterAllLoaded());
     }
 
     private IEnumerator InitializeAfterAllLoaded()
     {
-        // すべてのオブジェクト（特にPath）がAwake, Startを終えるのを待つ
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
 
-        // 全チェック → 全解除
-        for (int i = 0; i < clearedStages.Length; i++)
-            clearedStages[i] = true;
+        // デバッグ用初期化
         for (int i = 0; i < clearedStages.Length; i++)
             clearedStages[i] = false;
 
         clearedStages[startStageId] = true;
 
-        // Refresh実行
         RefreshDebug();
         CopyArray(clearedStages, prevClearedStages);
     }
@@ -65,9 +59,6 @@ public class StageSelectManager : MonoBehaviour
 
     private bool HasClearedStagesChanged()
     {
-        if (clearedStages == null || prevClearedStages == null) return false;
-        if (clearedStages.Length != prevClearedStages.Length) return true;
-
         for (int i = 0; i < clearedStages.Length; i++)
         {
             if (clearedStages[i] != prevClearedStages[i])
@@ -82,69 +73,67 @@ public class StageSelectManager : MonoBehaviour
             target[i] = source[i];
     }
 
-    public void UnlockStage(int stageId)
-    {
-        if (stageId < 0 || stageId >= stages.Length) return;
-        var stage = stages[stageId];
-        if (stage == null) return;
-
-        stage.Unlock();
-        clearedStages[stageId] = true;
-
-        foreach (var path in paths)
-        {
-            if (path.fromStage == stageId)
-                path.ShowPath();
-        }
-
-        foreach (int nextId in stage.nextStageIds)
-        {
-            if (nextId < 0 || nextId >= stages.Length) continue;
-            var nextStage = stages[nextId];
-
-            if (!nextStage.isUnlocked)
-            {
-                nextStage.gameObject.SetActive(true);
-                nextStage.isUnlocked = true;
-            }
-        }
-
-        LockConflictingBranches(stageId);
-    }
-
-    private void LockConflictingBranches(int clearedId)
-    {
-        foreach (var path in paths)
-        {
-            if (path.fromStage != clearedId && !clearedStages[path.fromStage])
-            {
-                if (clearedStages[clearedId] && !clearedStages[path.toStage])
-                    path.HidePath();
-            }
-        }
-    }
-
+    // ===============================
+    // ここがマップ管理の核
+    // ===============================
     [ContextMenu("Debug Refresh")]
     public void RefreshDebug()
     {
-        if (stages == null || paths == null) return;
-
-        foreach (var path in paths)
-            path.HidePath();
-
+        // ① 全ステージを表示 & ロック（黒）
         foreach (var stage in stages)
         {
-            stage.gameObject.SetActive(false);
-            stage.isUnlocked = false;
+            stage.gameObject.SetActive(true);   // ★非表示にしない
+            stage.SetLocked();
         }
 
+        // ② 全パスをロック（黒）
+        foreach (var path in paths)
+            path.SetState(StagePath.PathState.Locked);
+
+        // ③ スタート地点（銀）
+        if (startStageId >= 0 && startStageId < stages.Length)
+            stages[startStageId].SetAvailable();
+
+        // ④ クリア済みステージ（金）＋通過済みの道（金）
         for (int i = 0; i < clearedStages.Length; i++)
         {
-            if (clearedStages[i])
-                UnlockStage(i);
+            if (!clearedStages[i]) continue;
+
+            stages[i].SetCleared();
+
+            foreach (var path in paths)
+            {
+                if (path.fromStage == i && clearedStages[path.toStage])
+                    path.SetState(StagePath.PathState.Passed);
+            }
         }
 
-        if (startStageId >= 0 && startStageId < stages.Length)
-            stages[startStageId].gameObject.SetActive(true);
+        // ⑤ 次に行けるステージ（銀）＋道（銀）
+        for (int i = 0; i < clearedStages.Length; i++)
+        {
+            if (!clearedStages[i]) continue;
+
+            foreach (var path in paths)
+            {
+                if (path.fromStage == i && !clearedStages[path.toStage])
+                {
+                    path.SetState(StagePath.PathState.Available);
+                    stages[path.toStage].SetAvailable();
+                }
+            }
+        }
+    }
+
+    // ===============================
+    // ステージクリア時に呼ぶ
+    // ===============================
+    public void UnlockStage(int stageId)
+    {
+        if (stageId < 0 || stageId >= clearedStages.Length)
+            return;
+
+        clearedStages[stageId] = true;
+        RefreshDebug();
+        CopyArray(clearedStages, prevClearedStages);
     }
 }
