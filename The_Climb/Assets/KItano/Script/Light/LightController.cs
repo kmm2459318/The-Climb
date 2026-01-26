@@ -1,102 +1,79 @@
-﻿using UnityEngine;
-using System;
+﻿//using UnityEngine;
+//using System;
 
-public class LightController : MonoBehaviour
-{
-    [Header("ライト本体")]
-    [SerializeField] private Light targetLight;
+//public class LightController : MonoBehaviour
+//{
+//    // ① 光が当たったことを通知するイベント
+//    public static event Action<GameObject, Color> OnLightEnter;
 
-    [Header("ライトの色設定")]
-    [SerializeField] private Color whiteColor = Color.white;
-    [SerializeField] private Color purpleColor = new Color(0.5f, 0f, 1f);
+//    [Header("光線設定")]
+//    [SerializeField] private float lightDistance = 10f;     // 光の届く距離
+//    [SerializeField] private float lightRadius = 0.3f;      // 光の太さ
+//    [SerializeField] private LayerMask lightHitLayer;        // 光判定専用レイヤー
 
-    [Header("照射設定")]
-    [SerializeField] private float maxDistance = 20f;
+//    [Header("光の色")]
+//    [SerializeField] private Color lightColor = Color.white;
 
-    // 現在照射している相手
-    private GameObject currentHitObject = null;
+//    [Header("デバッグ")]
+//    [SerializeField] private bool showDebugRay = true;
 
-    // イベント（他のスクリプトが登録する）
-    public static event Action<GameObject, Color> OnLightEnter;
-    public static event Action<GameObject, Color> OnLightExit;
-    public static event Action<Color> OnLightColorChanged;
+//    void Update()
+//    {
+//        EmitLight();
+//    }
 
-    private bool isPurple = false;
+//    private void EmitLight()
+//    {
+//        Ray ray = new Ray(transform.position, transform.forward);
+//        RaycastHit hit;
 
-    void Start()
-    {
-        if (targetLight != null)
-            targetLight.color = whiteColor;
-    }
+//        // ② SphereCastで光線判定（距離調整可能）
+//        bool isHit = Physics.SphereCast(
+//            ray,
+//            lightRadius,
+//            out hit,
+//            lightDistance,
+//            lightHitLayer
+//        );
 
-    void Update()
-    {
-        HandleColorSwitch();
-        HandleDirection();
-        CheckRaycastHit();
-    }
+//        // ③ デバッグ表示
+//        if (showDebugRay)
+//        {
+//            Color debugColor = isHit ? Color.yellow : Color.blue;
+//            Debug.DrawRay(
+//                transform.position,
+//                transform.forward * lightDistance,
+//                debugColor
+//            );
+//        }
 
-    // -------------------------
-    // ① Eキーで色を切り替え
-    // -------------------------
-    private void HandleColorSwitch()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            isPurple = !isPurple;
-            Color newColor = isPurple ? purpleColor : whiteColor;
+//        if (!isHit) return;
 
-            targetLight.color = newColor;
+//        // ④ ヒットしたオブジェクト取得
+//        GameObject hitObj = hit.collider.gameObject;
 
-            // 他スクリプトへ通知
-            OnLightColorChanged?.Invoke(newColor);
-        }
-    }
+//        Debug.Log($"① 光ヒット検出：{hitObj.name}");
 
-    // -------------------------
-    // ② マウス方向にライトを向ける
-    // -------------------------
-    private void HandleDirection()
-    {
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = 10f; // カメラ距離調整
+//        // ⑤ LightRevealを持っているか確認
+//        LightReveal reveal = hitObj.GetComponent<LightReveal>();
+//        if (reveal == null)
+//        {
+//            Debug.Log($"② {hitObj.name} に LightReveal がありません");
+//            return;
+//        }
 
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
-        Vector3 dir = (worldPos - targetLight.transform.position).normalized;
+//        // ⑥ 光ヒットイベント発火
+//        Debug.Log($"③ OnLightEnter 発火：{hitObj.name}");
+//        OnLightEnter?.Invoke(hitObj, lightColor);
+//    }
 
-        targetLight.transform.forward = dir;
-    }
-
-    // -------------------------
-    // ③ 何を照らしているか毎フレーム確認
-    // -------------------------
-    private void CheckRaycastHit()
-    {
-        Ray ray = new Ray(targetLight.transform.position, targetLight.transform.forward);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance))
-        {
-            GameObject hitObj = hit.collider.gameObject;
-
-            if (currentHitObject != hitObj)
-            {
-                // 前のオブジェクトへの照射終了を通知
-                if (currentHitObject != null)
-                    OnLightExit?.Invoke(currentHitObject, targetLight.color);
-
-                // 新しいオブジェクトへ照射開始を通知
-                OnLightEnter?.Invoke(hitObj, targetLight.color);
-
-                currentHitObject = hitObj;
-            }
-        }
-        else
-        {
-            // 今照らしてない → 前のオブジェクトにExitを通知
-            if (currentHitObject != null)
-                OnLightExit?.Invoke(currentHitObject, targetLight.color);
-
-            currentHitObject = null;
-        }
-    }
-}
+//    // Sceneビューで視覚的に距離を確認
+//    private void OnDrawGizmosSelected()
+//    {
+//        Gizmos.color = Color.cyan;
+//        Gizmos.DrawLine(
+//            transform.position,
+//            transform.position + transform.forward * lightDistance
+//        );
+//    }
+//}
