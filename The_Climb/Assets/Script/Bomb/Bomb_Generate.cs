@@ -4,11 +4,9 @@ using UnityEngine.UIElements;
 
 public class Bomb_Generate : MonoBehaviour
 {
-    [SerializeField] GameObject bombPrefab;
-    [SerializeField] private PlayerMove p_move;
-    [SerializeField] private Bomb_Aim p_aim;
-    [SerializeField] private Transform left_pos;
-    [SerializeField] private Transform right_pos;
+    [SerializeField] GameObject bombPrefab; 
+    [SerializeField] private PlayerMove p_move; 
+    [SerializeField] private Bomb_Aim p_aim; 
     public int shoot_power = 10000;
 
     // 投げた爆弾を保持
