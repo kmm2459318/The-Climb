@@ -7,7 +7,9 @@ public class LightRaycaster : MonoBehaviour
 
     void Update()
     {
-        Ray ray = new Ray(transform.position, transform.forward);
+        Vector3 direction = transform.right; // ← XY平面方向
+
+        Ray ray = new Ray(transform.position, direction);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, rayDistance, targetLayer))
@@ -27,7 +29,7 @@ public class LightRaycaster : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(
             transform.position,
-            transform.position + transform.forward * rayDistance
+            transform.position + transform.right * rayDistance
         );
     }
 }

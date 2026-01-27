@@ -6578,11 +6578,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5419076589460122276, guid: d325ee2042778a242b675b510228292c, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8467798342521837750, guid: d325ee2042778a242b675b510228292c, type: 3}
       propertyPath: m_IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8668124130385842002, guid: d325ee2042778a242b675b510228292c, type: 3}
       propertyPath: m_Name
@@ -22643,6 +22643,8 @@ MonoBehaviour:
   stayTime: 2
   blinkDuration: 1
   blinkInterval: 0.15
+  raycastCollider: {fileID: 1176999748}
+  solidCollider: {fileID: 838546415}
 --- !u!1 &1322330766
 GameObject:
   m_ObjectHideFlags: 0
@@ -26594,6 +26596,10 @@ PrefabInstance:
       propertyPath: m_TranslationOffset.y
       value: 2.8000002
       objectReference: {fileID: 0}
+    - target: {fileID: 5883409209459298881, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      propertyPath: m_TranslationOffset.z
+      value: 0.04
+      objectReference: {fileID: 0}
     - target: {fileID: 6155158506116658984, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -26685,6 +26691,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8135964961070704614, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1813413349}
+    - targetCorrespondingSourceObject: {fileID: 7904816234959621641, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
 --- !u!114 &1551180857 stripped
 MonoBehaviour:
