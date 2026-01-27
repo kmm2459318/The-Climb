@@ -102,14 +102,14 @@ public class LightDarkWorld : MonoBehaviour
     {
         if (brightnessState == brightness.Dark && s == brightness.Light)  //闇→光
         {
-            if ((playerState.carryingBuddy || playerState.nearBell || buddyCarry.nearBuddy) && !buddyCarry.buddyController.beingKidnapped)  //Buddyおんぶしてるとき
-            {
+            //if ((playerState.carryingBuddy || playerState.nearBell || buddyCarry.nearBuddy) && !buddyCarry.buddyController.beingKidnapped)  //Buddyおんぶしてるとき
+            //{
                 brightnessState = brightness.Light;
                 //Debug.Log("■■■魔法「破壊超陽光」■■■");
                 lightTimer = lightDuration;
                 text.color = Color.black;
                 LayerChange(true);
-            }
+            //}
         }
         else if (brightnessState == brightness.Light && s == brightness.Dark)  //光→闇
         {
