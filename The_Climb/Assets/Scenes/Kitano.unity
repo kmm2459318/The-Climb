@@ -133,7 +133,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5033631}
-  - component: {fileID: 5033630}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -141,23 +140,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &5033630
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5033629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 237f1e61409b5594b8b434ba175dff18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LightRevealController
-  range: 10
-  hitLayer:
-    serializedVersion: 2
-    m_Bits: 134217728
-  lightColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &5033631
 Transform:
   m_ObjectHideFlags: 0
@@ -6581,7 +6563,7 @@ PrefabInstance:
     - target: {fileID: 3535751343086649932, guid: d325ee2042778a242b675b510228292c, type: 3}
       propertyPath: controller
       value: 
-      objectReference: {fileID: 5033630}
+      objectReference: {fileID: 0}
     - target: {fileID: 3535751343086649932, guid: d325ee2042778a242b675b510228292c, type: 3}
       propertyPath: solidCollider
       value: 
@@ -6594,14 +6576,26 @@ PrefabInstance:
       propertyPath: controller_Reveal
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5419076589460122276, guid: d325ee2042778a242b675b510228292c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467798342521837750, guid: d325ee2042778a242b675b510228292c, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8668124130385842002, guid: d325ee2042778a242b675b510228292c, type: 3}
       propertyPath: m_Name
       value: stealthobjectPrefab
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3535751343086649932, guid: d325ee2042778a242b675b510228292c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8668124130385842002, guid: d325ee2042778a242b675b510228292c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1322245487}
   m_SourcePrefab: {fileID: 100100000, guid: d325ee2042778a242b675b510228292c, type: 3}
 --- !u!1 &407624487
 GameObject:
@@ -22627,6 +22621,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1321190835}
   m_CullTransparentMesh: 1
+--- !u!1 &1322245486 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8668124130385842002, guid: d325ee2042778a242b675b510228292c, type: 3}
+  m_PrefabInstance: {fileID: 407022084}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1322245487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322245486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57b4508a7b2e582459c6e29d4b971452, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RaycastReactiveObject
+  startVisible: 0
+  fadeSpeed: 1
+  stayTime: 2
+  blinkDuration: 1
+  blinkInterval: 0.15
 --- !u!1 &1322330766
 GameObject:
   m_ObjectHideFlags: 0
@@ -22659,13 +22675,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38fb361506e03d0459a248260e589999, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightHide
-  hideTime_Hide: 2
-  stayHiddenTime_Hide: 3
-  blinkDuration_Hide: 2
-  blinkInterval_Hide: 0.2
-  lightHitCollider_Hide: {fileID: 0}
-  solidCollider_Hide: {fileID: 0}
-  controller_Hide: {fileID: 0}
 --- !u!65 &1322330768
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26666,13 +26675,16 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8135964961070704614, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1813413338}
-    - targetCorrespondingSourceObject: {fileID: 8135964961070704614, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1813413337}
-    - targetCorrespondingSourceObject: {fileID: 8135964961070704614, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1813413341}
+    - targetCorrespondingSourceObject: {fileID: 8135964961070704614, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1813413344}
+    - targetCorrespondingSourceObject: {fileID: 8135964961070704614, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1813413347}
+    - targetCorrespondingSourceObject: {fileID: 8135964961070704614, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1813413349}
   m_SourcePrefab: {fileID: 100100000, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
 --- !u!114 &1551180857 stripped
 MonoBehaviour:
@@ -31308,7 +31320,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8135964961070704614, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
   m_PrefabInstance: {fileID: 1551180856}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1813413337
+--- !u!114 &1813413341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813413330}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9671f32e0472f324d8c03c42debf5b2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LightController
+--- !u!114 &1813413344
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -31317,15 +31341,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1813413330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 237f1e61409b5594b8b434ba175dff18, type: 3}
+  m_Script: {fileID: 11500000, guid: 65d372b13010ac648a7a7f0f2674d669, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LightController
-  range: 10
-  hitLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  lightColor: {r: 1, g: 1, b: 1, a: 1}
---- !u!114 &1813413338
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerFlashLight
+--- !u!114 &1813413347
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -31337,7 +31356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e55e17448521a2840b3ad38e7c44b482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightAimToMouse
---- !u!114 &1813413341
+--- !u!114 &1813413349
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -31346,19 +31365,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1813413330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9671f32e0472f324d8c03c42debf5b2c, type: 3}
+  m_Script: {fileID: 11500000, guid: 99e1aeba6fad7c04d8563cad9e772a11, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LightController
-  lightDistance: 10
-  lightRadius: 0.3
-  lightHitLayer:
+  m_EditorClassIdentifier: Assembly-CSharp::LightRaycaster
+  rayDistance: 10
+  targetLayer:
+    serializedVersion: 2
     m_Bits: 134217728
-  lightColor:
-    r: 1
-    g: 1
-    b: 1
-    a: 1
-  showDebugRay: 1
 --- !u!1001 &1816479345
 PrefabInstance:
   m_ObjectHideFlags: 0
