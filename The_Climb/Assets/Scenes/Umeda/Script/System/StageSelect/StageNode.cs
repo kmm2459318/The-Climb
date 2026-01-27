@@ -1,41 +1,81 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
-using UnityEditor; // SceneAsset
+using UnityEditor;
 #endif
 using System.Collections.Generic;
 
 public class StageNode : MonoBehaviour
 {
+    // ==============================
+    // ステージ設定
+    // ==============================
     [Header("ステージ設定")]
     public int stageId;
 
 #if UNITY_EDITOR
-    public SceneAsset sceneAsset; // ここにシーンをD&D
+    public SceneAsset sceneAsset;   // Editor用
 #endif
 
-    private string sceneName; // 実行用のシーン名
+    [SerializeField, HideInInspector]
+    private string sceneName;       // Runtime用
 
     public List<int> nextStageIds = new List<int>();
-    public List<GameObject> connectedPaths = new List<GameObject>();
 
+    // ==============================
+    // 見た目（Sphere）
+    // ==============================
+    public enum NodeState
+    {
+        Locked,
+        Available,
+        Cleared
+    }
+
+    [Header("見た目（Sphere）")]
+    public Renderer nodeRenderer;   // 子SphereのRenderer
+    public Material lockedMat;      // 黒
+    public Material availableMat;   // 銀
+    public Material clearedMat;     // 金
+
+    [SerializeField]
+    private NodeState currentState = NodeState.Locked;
+
+    // ==============================
+    // UI
+    // ==============================
     [Header("UI設定")]
     public GameObject promptUI;
     public Vector3 uiOffset = new Vector3(0, 2, 0);
 
+    // ==============================
+    // 状態管理
+    // ==============================
     [HideInInspector] public bool isUnlocked = false;
     private bool playerNearby = false;
 
+    // ==============================
+    // 外部参照
+    // ==============================
     public StageRandomizer stageRandomizer;
     public StageRoute stageRoute;
-    
+
+    // ==============================
+    // Unity Lifecycle
+    // ==============================
     private void Awake()
     {
-        foreach (var path in connectedPaths)
-            if (path != null) path.SetActive(false);
+        // Renderer自動取得
+        if (nodeRenderer == null)
+            nodeRenderer = GetComponentInChildren<Renderer>();
+
+        if (nodeRenderer == null)
+            Debug.LogError($"[StageNode] Rendererが見つかりません: {name}");
 
         if (promptUI != null)
             promptUI.SetActive(false);
+
+        ApplyState(NodeState.Locked);
     }
 
     private void Start()
@@ -43,43 +83,64 @@ public class StageNode : MonoBehaviour
         RefreshSceneName();
     }
 
-    public void RefreshSceneName()
-    {
-#if UNITY_EDITOR
-        if (sceneAsset != null)
-            sceneName = sceneAsset.name;
-#endif
-#if UNITY_EDITOR
-        // 編集中にアセットが変更されたら名前も更新しておく
-        if (sceneAsset != null && sceneName != sceneAsset.name)
-            sceneName = sceneAsset.name;
-#endif
-    }
-
     private void Update()
     {
-        if (playerNearby && Input.GetKeyDown(KeyCode.Space))
+        if (playerNearby && isUnlocked && Input.GetKeyDown(KeyCode.Space))
         {
-            stageRandomizer.StartStage(stageId);
-            stageRoute.OnStageButtonPressed(stageId);
+            stageRandomizer?.StartStage(stageId);
+            stageRoute?.OnStageButtonPressed(stageId);
         }
 
         if (promptUI != null)
             promptUI.transform.position = transform.position + uiOffset;
     }
 
-
-    public void Unlock()
+    // ==============================
+    // 見た目・状態制御
+    // ==============================
+    public void ApplyState(NodeState state)
     {
-        if (isUnlocked) return;
-        isUnlocked = true;
+        currentState = state;
 
-        foreach (var path in connectedPaths)
-            if (path != null) path.SetActive(true);
+        switch (state)
+        {
+            case NodeState.Locked:
+                isUnlocked = false;
+                SetMaterial(lockedMat);
+                break;
+
+            case NodeState.Available:
+                isUnlocked = true;
+                SetMaterial(availableMat);
+                break;
+
+            case NodeState.Cleared:
+                isUnlocked = true;
+                SetMaterial(clearedMat);
+                break;
+        }
     }
 
+    private void SetMaterial(Material mat)
+    {
+        if (nodeRenderer == null || mat == null) return;
+
+        // material を使うことでインスタンス化される
+        nodeRenderer.material = mat;
+    }
+
+    // 外部から呼びやすいAPI
+    public void SetLocked() => ApplyState(NodeState.Locked);
+    public void SetAvailable() => ApplyState(NodeState.Available);
+    public void SetCleared() => ApplyState(NodeState.Cleared);
+
+    // ==============================
+    // Trigger
+    // ==============================
     private void OnTriggerEnter(Collider other)
     {
+        if (!isUnlocked) return;
+
         if (other.CompareTag("Player"))
         {
             playerNearby = true;
@@ -98,16 +159,20 @@ public class StageNode : MonoBehaviour
         }
     }
 
-    // Runtime用（SceneName を直接セット）
-    public void SetSceneName_Runtime(string name)
+    // ==============================
+    // Scene 名管理
+    // ==============================
+#if UNITY_EDITOR
+    public void RefreshSceneName()
     {
-        this.GetType(); // 空の安全策（消してもOK）
-        typeof(StageNode).ToString(); // これも消してOK
-                                      // 実行時に sceneName をセット
-        var sceneNameField = typeof(StageNode).GetField("sceneName",
-            System.Reflection.BindingFlags.NonPublic |
-            System.Reflection.BindingFlags.Instance);
-        if (sceneNameField != null)
-            sceneNameField.SetValue(this, name);
+        if (sceneAsset != null)
+            sceneName = sceneAsset.name;
+    }
+#endif
+
+    // Runtime用（ビルド後）
+    public string GetSceneName()
+    {
+        return sceneName;
     }
 }
