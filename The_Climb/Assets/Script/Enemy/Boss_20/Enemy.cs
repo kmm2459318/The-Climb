@@ -10,7 +10,10 @@ public class Enemy : MonoBehaviour
     private EnemyGeneration Generate;　　　//エネミー出現機能
     private EnemyDataBase dbManager;　　　 //エネミーのやっつけた数の判定
     public DropTable dropTable;            //ドロップアイテム
-    public int e_HP = 0;                   
+    public int e_HP = 0;
+
+    [Header("死体prefab")]
+    public GameObject CorpsePrefab;
 
     private bool e_isDead = false;                 //死んだときの2重処理防止 
 
@@ -68,6 +71,9 @@ public class Enemy : MonoBehaviour
             Generate.RemoveEnemy(gameObject);
         }
 
+        // 死体生成
+        SpawnCorpse();
+
         // ドロップ判定
         if (stats != null && stats.Period == "過去")
         {
@@ -76,7 +82,6 @@ public class Enemy : MonoBehaviour
 
         Debug.Log($"{stats?.EnemyName ?? "不明な敵"}が倒されました");
         Destroy(gameObject);
-        e_isDead = false;
     }
 
     void DropItem()
@@ -88,6 +93,14 @@ public class Enemy : MonoBehaviour
             {
                 Instantiate(item.DropPrefab, transform.position, Quaternion.identity);
             }
+        }
+    }
+
+    void SpawnCorpse()
+    {
+        if (CorpsePrefab != null)
+        {
+            GameObject corpse = Instantiate(CorpsePrefab , transform.position, transform.rotation);
         }
     }
 }
