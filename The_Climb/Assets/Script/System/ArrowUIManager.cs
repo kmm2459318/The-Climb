@@ -6,22 +6,29 @@ public class ArrowUIManager : MonoBehaviour
 {
     RectTransform arrowRectTransform = null;
 
-    private Transform target;
+    private Transform target;  //指すもの
     [SerializeField] private Camera uiCamera;
     [SerializeField] private RectTransform canvasRect;
     [SerializeField] private RectTransform arrowRect;
+    private GameObject player;
 
     private float rateScale = 4.5f;
     private float scaleMin = 0.5f;
     private float scaleMax = 1.5f;
 
-    [SerializeField] private Vector2 edgeBuffer = new Vector2(50f, 50f);
+    [SerializeField] private Vector2 edgeBuffer = new Vector2(50f, 50f);  //画面端からの余白
 
     [SerializeField] private List<Transform> buttons;
+    private HashSet<Transform> pressedButtons = new HashSet<Transform>();
 
     void Start()
     {
         arrowRectTransform = GetComponent<RectTransform>();
+
+        if (GameObject.FindWithTag("Player") != null)
+        {
+            player = GameObject.FindWithTag("Player");
+        }
 
         arrowRectTransform.localScale = Vector3.one;
         target = buttons[0].transform;
@@ -29,40 +36,85 @@ public class ArrowUIManager : MonoBehaviour
 
     void Update()
     {
-        //ターゲット設定
-        SetTarget();
-        Vector3 screenPos = uiCamera.WorldToScreenPoint(target.position);
-
-        bool isOnScreen =
-        screenPos.z > 0 &&
-        screenPos.x >= 0 && screenPos.x <= Screen.width &&
-        screenPos.y >= 0 && screenPos.y <= Screen.height;
-
-        //画面内なら非表示
-        if (isOnScreen)
+        if (player.transform.position.x > 600f)
         {
-            arrowRect.gameObject.SetActive(false);
-            ScreenInArrow(screenPos);
+            foreach (Transform btn in buttons)
+            {
+                PressureButton pb = btn.GetComponent<PressureButton>();
+                if (pb.pressCount != 0 && !pressedButtons.Contains(btn))
+                {
+                    OnSwitchPressed(btn);
+                }
+            }
+
+            //ターゲット設定
+            SetTarget();
+
+            //ターゲットが無ければ非表示
+            if (target == null)
+            {
+                arrowRect.gameObject.SetActive(false);
+                return;
+            }
+
+            //ターゲットのスクリーン座標取得
+            Vector3 screenPos = uiCamera.WorldToScreenPoint(target.position);
+
+            //画面内判定
+            bool isOnScreen =
+            screenPos.z > 0 &&
+            screenPos.x >= 0 && screenPos.x <= Screen.width &&
+            screenPos.y >= 0 && screenPos.y <= Screen.height;
+
+            //画面内なら非表示
+            if (isOnScreen)
+            {
+                arrowRect.gameObject.SetActive(false);
+                ScreenInArrow(screenPos);
+            }
+            else
+            {
+                ScreenOutArrow(screenPos);
+            }
         }
         else
         {
-            ScreenOutArrow(screenPos);
+            arrowRect.gameObject.SetActive(false);
         }
     }
-
     //各ボタンの距離を調べ、ターゲットを設定
     void SetTarget()
     {
         float minDistance = float.MaxValue;
+        Transform nearest = null;
+
         foreach (Transform btn in buttons)
+        { 
+            // 押されたスイッチは無視
+            if (pressedButtons.Contains(btn)) 
+                continue; 
+
+            //距離計算
+            Vector3 toTarget = btn.position - uiCamera.transform.position; 
+            float distance = toTarget.magnitude; 
+
+            //最短距離更新
+            if (distance < minDistance) 
+            { 
+                minDistance = distance; 
+                nearest = btn; 
+            } 
+        }
+        
+        target = nearest;
+    }
+
+    //スイッチが押されたときに呼び出される
+    private void OnSwitchPressed(Transform pressedSwitch)
+    {
+        if (!pressedButtons.Contains(pressedSwitch))
         {
-            Vector3 toTarget = btn.position - uiCamera.transform.position;
-            float distance = toTarget.magnitude;
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                target = btn;
-            }
+            pressedButtons.Add(pressedSwitch);
         }
     }
 
