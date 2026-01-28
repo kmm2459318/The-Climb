@@ -1,178 +1,185 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
+using TMPro;
+using System.Collections.Generic;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using System.Collections.Generic;
 
 public class StageNode : MonoBehaviour
 {
-    // ==============================
-    // ステージ設定
-    // ==============================
     [Header("ステージ設定")]
-    public int stageId;
+    public int stageId;   // 0始まり（StageRandomizer.StageNameと対応）
 
 #if UNITY_EDITOR
-    public SceneAsset sceneAsset;   // Editor用
+    public SceneAsset sceneAsset;
 #endif
 
-    [SerializeField, HideInInspector]
-    private string sceneName;       // Runtime用
-
-    public List<int> nextStageIds = new List<int>();
-
-    // ==============================
-    // 見た目（Sphere）
-    // ==============================
-    public enum NodeState
-    {
-        Locked,
-        Available,
-        Cleared
-    }
-
     [Header("見た目（Sphere）")]
-    public Renderer nodeRenderer;   // 子SphereのRenderer
-    public Material lockedMat;      // 黒
-    public Material availableMat;   // 銀
-    public Material clearedMat;     // 金
+    public Renderer nodeRenderer;
+    public Material lockedMat;       // 黒
+    public Material availableMat;    // 銀
+    public Material clearedMat;      // 金
 
-    [SerializeField]
-    private NodeState currentState = NodeState.Locked;
+    [Header("Canvas内 共通ステージ名テキスト")]
+    public TextMeshProUGUI sharedStageNameText;
+    public string unknownText = "???";
 
-    // ==============================
-    // UI
-    // ==============================
     [Header("UI設定")]
     public GameObject promptUI;
     public Vector3 uiOffset = new Vector3(0, 2, 0);
 
-    // ==============================
-    // 状態管理
-    // ==============================
     [HideInInspector] public bool isUnlocked = false;
     private bool playerNearby = false;
 
-    // ==============================
-    // 外部参照
-    // ==============================
+    [Header("外部参照")]
     public StageRandomizer stageRandomizer;
     public StageRoute stageRoute;
 
-    // ==============================
+    // ===============================
     // Unity Lifecycle
-    // ==============================
+    // ===============================
     private void Awake()
     {
-        // Renderer自動取得
         if (nodeRenderer == null)
             nodeRenderer = GetComponentInChildren<Renderer>();
-
-        if (nodeRenderer == null)
-            Debug.LogError($"[StageNode] Rendererが見つかりません: {name}");
 
         if (promptUI != null)
             promptUI.SetActive(false);
 
-        ApplyState(NodeState.Locked);
-    }
-
-    private void Start()
-    {
-        RefreshSceneName();
+        SetLocked();
     }
 
     private void Update()
     {
         if (playerNearby && isUnlocked && Input.GetKeyDown(KeyCode.Space))
         {
-            stageRandomizer?.StartStage(stageId);
-            stageRoute?.OnStageButtonPressed(stageId);
+            // StageRandomizerはButtonNoが1始まり
+            stageRandomizer.StartStage(stageId + 1);
+            stageRoute.OnStageButtonPressed(stageId);
         }
 
         if (promptUI != null)
             promptUI.transform.position = transform.position + uiOffset;
     }
 
-    // ==============================
-    // 見た目・状態制御
-    // ==============================
-    public void ApplyState(NodeState state)
+    // ===============================
+    // 見た目制御
+    // ===============================
+    public void SetLocked()
     {
-        currentState = state;
+        isUnlocked = false;
 
-        switch (state)
+        if (nodeRenderer != null && lockedMat != null)
+            nodeRenderer.material = lockedMat;
+    }
+
+    public void SetAvailable()
+    {
+        isUnlocked = true;
+
+        if (nodeRenderer != null && availableMat != null)
+            nodeRenderer.material = availableMat;
+    }
+
+    public void SetCleared()
+    {
+        isUnlocked = true;
+
+        if (nodeRenderer != null && clearedMat != null)
+            nodeRenderer.material = clearedMat;
+    }
+
+    // ===============================
+    // ステージ名表示制御
+    // ===============================
+    private void UpdateStageNameText()
+    {
+        if (sharedStageNameText == null)
+            return;
+
+        if (!isUnlocked)
         {
-            case NodeState.Locked:
-                isUnlocked = false;
-                SetMaterial(lockedMat);
-                break;
+            sharedStageNameText.text = unknownText;
+            return;
+        }
 
-            case NodeState.Available:
-                isUnlocked = true;
-                SetMaterial(availableMat);
-                break;
+        if (stageRandomizer == null)
+        {
+            sharedStageNameText.text = "No Randomizer";
+            return;
+        }
 
-            case NodeState.Cleared:
-                isUnlocked = true;
-                SetMaterial(clearedMat);
-                break;
+        if (stageId >= 0 && stageId < stageRandomizer.StageName.Length)
+        {
+            string internalName = stageRandomizer.StageName[stageId];
+            sharedStageNameText.text = GetDisplayStageName(internalName);
+        }
+        else
+        {
+            sharedStageNameText.text = "Invalid Stage";
         }
     }
 
-    private void SetMaterial(Material mat)
+    // ===============================
+    // 内部名 → 表示名変換
+    // ===============================
+    private string GetDisplayStageName(string internalName)
     {
-        if (nodeRenderer == null || mat == null) return;
-
-        // material を使うことでインスタンス化される
-        nodeRenderer.material = mat;
+        switch (internalName)
+        {
+            case "Umeda":
+                return "光が示す道";
+            case "Kitano":
+                return "ライトシフター";
+            case "Matsuyama":
+                return "アストラル";
+            case "Yuoka":
+                return "爆発ウーマン";
+            case "Nakamura":
+                return "陰陽相棒ステージ";
+            case "Nisiyama":
+                return "ターンオーバー";
+            default:
+                return internalName;
+        }
     }
 
-    // 外部から呼びやすいAPI
-    public void SetLocked() => ApplyState(NodeState.Locked);
-    public void SetAvailable() => ApplyState(NodeState.Available);
-    public void SetCleared() => ApplyState(NodeState.Cleared);
-
-    // ==============================
+    // ===============================
     // Trigger
-    // ==============================
+    // ===============================
     private void OnTriggerEnter(Collider other)
     {
-        if (!isUnlocked) return;
+        if (!other.CompareTag("Player"))
+            return;
 
-        if (other.CompareTag("Player"))
-        {
-            playerNearby = true;
-            if (promptUI != null)
-                promptUI.SetActive(true);
-        }
+        playerNearby = true;
+
+        if (promptUI != null)
+            promptUI.SetActive(true);
+
+        UpdateStageNameText();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            playerNearby = false;
-            if (promptUI != null)
-                promptUI.SetActive(false);
-        }
+        if (!other.CompareTag("Player"))
+            return;
+
+        playerNearby = false;
+
+        if (promptUI != null)
+            promptUI.SetActive(false);
+
+        if (sharedStageNameText != null)
+            sharedStageNameText.text = "";
     }
 
-    // ==============================
-    // Scene 名管理
-    // ==============================
 #if UNITY_EDITOR
     public void RefreshSceneName()
     {
         if (sceneAsset != null)
-            sceneName = sceneAsset.name;
+            sceneAsset.name.ToString();
     }
 #endif
-
-    // Runtime用（ビルド後）
-    public string GetSceneName()
-    {
-        return sceneName;
-    }
 }

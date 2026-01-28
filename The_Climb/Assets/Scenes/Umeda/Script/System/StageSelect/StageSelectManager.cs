@@ -2,18 +2,42 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
+public class BranchRule
+{
+    public int triggerStage;
+    public int[] blockFromStages;
+    public int[] blockToStages;
+}
+
+[System.Serializable]
+public class StageRequirement
+{
+    public int stage;
+    public int[] requiredAny;
+}
+
 public class StageSelectManager : MonoBehaviour
 {
-    [Header("参照設定")]
+    [Header("参照")]
     public StageNode[] stages;
     public StagePath[] paths;
 
-    [Header("デバッグ設定")]
+    [Header("デバッグ")]
     public int startStageId = 0;
     public bool[] clearedStages;
 
+    [Header("分岐ルール（Path排他）")]
+    public BranchRule[] branchRules;
+
+    [Header("ステージ解放条件（OR依存）")]
+    public StageRequirement[] stageRequirements;
+
     private bool[] prevClearedStages;
 
+    // ===============================
+    // Lifecycle
+    // ===============================
     private void Awake()
     {
         if (stages == null || stages.Length == 0)
@@ -22,7 +46,7 @@ public class StageSelectManager : MonoBehaviour
         if (paths == null || paths.Length == 0)
             paths = FindObjectsOfType<StagePath>(true);
 
-        if (clearedStages == null || clearedStages.Length < stages.Length)
+        if (clearedStages == null || clearedStages.Length != stages.Length)
             clearedStages = new bool[stages.Length];
 
         prevClearedStages = new bool[clearedStages.Length];
@@ -30,110 +54,211 @@ public class StageSelectManager : MonoBehaviour
 
     private void OnEnable()
     {
-        StartCoroutine(InitializeAfterAllLoaded());
+        StartCoroutine(Init());
     }
 
-    private IEnumerator InitializeAfterAllLoaded()
+    private IEnumerator Init()
     {
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForEndOfFrame();
+        yield return null;
+        yield return null;
 
-        // デバッグ用初期化
         for (int i = 0; i < clearedStages.Length; i++)
             clearedStages[i] = false;
 
+        // ★ Stage0 は常にON
         clearedStages[startStageId] = true;
 
-        RefreshDebug();
+        ApplyAllRules();
+        Refresh();
         CopyArray(clearedStages, prevClearedStages);
     }
 
     private void Update()
     {
-        if (Application.isPlaying && HasClearedStagesChanged())
-        {
-            RefreshDebug();
-            CopyArray(clearedStages, prevClearedStages);
-        }
-    }
+        if (!HasClearedChanged())
+            return;
 
-    private bool HasClearedStagesChanged()
-    {
-        for (int i = 0; i < clearedStages.Length; i++)
-        {
-            if (clearedStages[i] != prevClearedStages[i])
-                return true;
-        }
-        return false;
-    }
+        // ★ Stage0は絶対にtrue
+        clearedStages[startStageId] = true;
 
-    private void CopyArray(bool[] source, bool[] target)
-    {
-        for (int i = 0; i < source.Length; i++)
-            target[i] = source[i];
+        ApplyAllRules();
+        Refresh();
+        CopyArray(clearedStages, prevClearedStages);
     }
 
     // ===============================
-    // ここがマップ管理の核
+    // ルール総適用（核心）
     // ===============================
-    [ContextMenu("Debug Refresh")]
-    public void RefreshDebug()
+    private void ApplyAllRules()
     {
-        // ① 全ステージを表示 & ロック（黒）
-        foreach (var stage in stages)
+        bool changed;
+        do
         {
-            stage.gameObject.SetActive(true);   // ★非表示にしない
-            stage.SetLocked();
-        }
+            changed = false;
+            changed |= ApplyStageRequirements();
+            changed |= ApplyBranchExclusionToClearedStages();
 
-        // ② 全パスをロック（黒）
-        foreach (var path in paths)
-            path.SetState(StagePath.PathState.Locked);
-
-        // ③ スタート地点（銀）
-        if (startStageId >= 0 && startStageId < stages.Length)
-            stages[startStageId].SetAvailable();
-
-        // ④ クリア済みステージ（金）＋通過済みの道（金）
-        for (int i = 0; i < clearedStages.Length; i++)
-        {
-            if (!clearedStages[i]) continue;
-
-            stages[i].SetCleared();
-
-            foreach (var path in paths)
+            // ★ 毎ループでStage0を保証
+            if (!clearedStages[startStageId])
             {
-                if (path.fromStage == i && clearedStages[path.toStage])
-                    path.SetState(StagePath.PathState.Passed);
+                clearedStages[startStageId] = true;
+                changed = true;
+            }
+        }
+        while (changed);
+    }
+
+    // ===============================
+    // OR依存（親が1つでも必要）
+    // ===============================
+    private bool ApplyStageRequirements()
+    {
+        bool changed = false;
+
+        foreach (var req in stageRequirements)
+        {
+            // ★ Stage0は無条件
+            if (req.stage == startStageId)
+                continue;
+
+            if (!IsValid(req.stage)) continue;
+
+            bool satisfied = false;
+            foreach (int parent in req.requiredAny)
+            {
+                if (IsValid(parent) && clearedStages[parent])
+                {
+                    satisfied = true;
+                    break;
+                }
+            }
+
+            if (!satisfied && clearedStages[req.stage])
+            {
+                clearedStages[req.stage] = false;
+                changed = true;
             }
         }
 
-        // ⑤ 次に行けるステージ（銀）＋道（銀）
-        for (int i = 0; i < clearedStages.Length; i++)
-        {
-            if (!clearedStages[i]) continue;
+        return changed;
+    }
 
-            foreach (var path in paths)
+    // ===============================
+    // 分岐排他（ClearedStages）
+    // ===============================
+    private bool ApplyBranchExclusionToClearedStages()
+    {
+        bool changed = false;
+
+        foreach (var rule in branchRules)
+        {
+            if (!IsValid(rule.triggerStage)) continue;
+            if (rule.triggerStage == startStageId) continue;
+            if (!clearedStages[rule.triggerStage]) continue;
+
+            for (int i = 0; i < rule.blockFromStages.Length; i++)
             {
-                if (path.fromStage == i && !clearedStages[path.toStage])
+                int from = rule.blockFromStages[i];
+                int to = rule.blockToStages[i];
+
+                if (to == startStageId) continue;
+
+                if (IsValid(from) && IsValid(to))
                 {
-                    path.SetState(StagePath.PathState.Available);
-                    stages[path.toStage].SetAvailable();
+                    if (clearedStages[from] && clearedStages[to])
+                    {
+                        clearedStages[to] = false;
+                        changed = true;
+                    }
                 }
             }
         }
+
+        return changed;
     }
 
     // ===============================
-    // ステージクリア時に呼ぶ
+    // 表示更新
     // ===============================
-    public void UnlockStage(int stageId)
+    private void Refresh()
     {
-        if (stageId < 0 || stageId >= clearedStages.Length)
-            return;
+        HashSet<StagePath> blockedPaths = CalculateBlockedPaths();
 
-        clearedStages[stageId] = true;
-        RefreshDebug();
-        CopyArray(clearedStages, prevClearedStages);
+        foreach (var s in stages)
+        {
+            s.gameObject.SetActive(true);
+            s.SetLocked();
+        }
+
+        foreach (var p in paths)
+            p.SetState(StagePath.PathState.Locked);
+
+        // ★ Stage0は常に有効・クリア扱い
+        stages[startStageId].SetAvailable();
+        stages[startStageId].SetCleared();
+
+        for (int i = 0; i < clearedStages.Length; i++)
+            if (clearedStages[i])
+                stages[i].SetCleared();
+
+        foreach (var path in paths)
+        {
+            if (blockedPaths.Contains(path)) continue;
+            if (!clearedStages[path.fromStage]) continue;
+
+            if (clearedStages[path.toStage])
+            {
+                path.SetState(StagePath.PathState.Passed);
+            }
+            else
+            {
+                path.SetState(StagePath.PathState.Available);
+                stages[path.toStage].SetAvailable();
+            }
+        }
+    }
+
+    // ===============================
+    // Path排他
+    // ===============================
+    private HashSet<StagePath> CalculateBlockedPaths()
+    {
+        HashSet<StagePath> blocked = new HashSet<StagePath>();
+
+        foreach (var rule in branchRules)
+        {
+            if (!IsValid(rule.triggerStage)) continue;
+            if (!clearedStages[rule.triggerStage]) continue;
+
+            for (int i = 0; i < rule.blockFromStages.Length; i++)
+            {
+                int from = rule.blockFromStages[i];
+                int to = rule.blockToStages[i];
+
+                foreach (var path in paths)
+                    if (path.fromStage == from && path.toStage == to)
+                        blocked.Add(path);
+            }
+        }
+        return blocked;
+    }
+
+    // ===============================
+    // Utility
+    // ===============================
+    private bool IsValid(int id) => id >= 0 && id < stages.Length;
+
+    private bool HasClearedChanged()
+    {
+        for (int i = 0; i < clearedStages.Length; i++)
+            if (clearedStages[i] != prevClearedStages[i])
+                return true;
+        return false;
+    }
+
+    private void CopyArray(bool[] src, bool[] dst)
+    {
+        for (int i = 0; i < src.Length; i++)
+            dst[i] = src[i];
     }
 }
