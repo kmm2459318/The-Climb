@@ -28,7 +28,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     IPlanetDataProvider PlanetDataProvider;    //  天体のデータプロバイダ
 
     private float groundMoveForce = 0.7f;     //プレイヤーの地上移動速度
-    public float groundMaxSpeed = 6.459797f;   //プレイヤーの地上最高速度記憶
+    public float groundMaxSpeed = 7f;   //プレイヤーの地上最高速度記憶
     public float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 40f;    //空中での移動速度
     public float airMaxSpeed = 3f;     //空中での速度制限
