@@ -3,80 +3,119 @@ using System.Collections;
 
 public class RaycastReactiveObject : MonoBehaviour
 {
-    [Header("初期表示設定")]
-    public bool startVisible = true;  // 初期表示状態
+    [Header("初期状態")]
+    public bool startVisible = true;
 
     [Header("フェード設定")]
-    public float fadeSpeed = 1f;       // フェード速度
+    public float fadeSpeed = 1f;
 
-    [Header("待機＆点滅設定")]
-    public float stayTime = 2f;        // 完全表示／透明後の待機時間
-    public float blinkDuration = 1f;   // 点滅時間（完全表示時のみ）
-    public float blinkInterval = 0.15f;// 点滅間隔
+    [Header("待機・点滅設定")]
+    public float stayTime = 2f;
+    public float blinkDuration = 1f;
+    public float blinkInterval = 0.15f;
 
-    [Header("コライダー設定")]
-    public Collider raycastCollider;   // Raycast判定用（isTrigger = true）
-    public Collider solidCollider;     // 実体Collider（isTrigger = false）
+    [Header("Collider")]
+    public Collider raycastCollider;   // isTrigger = true
+    public Collider solidCollider;     // isTrigger = false
 
-    // 内部変数
+    // 内部状態
     private Renderer rend;
     private Material mat;
 
     private float currentAlpha;
+    private bool isCurrentlyVisible;
     private bool rayHitThisFrame;
-    private bool isLocked;
-    private bool hasCompletedThisCycle;
-    private bool awaitRaycastNextLoop; // 次ループをRaycast待ちか
 
+    private bool isLocked;
+    private bool awaitRaycastNextLoop;
+    private bool hasCompletedThisCycle;
+    private bool forceFadeOutAfterBlink;
+    private bool hasStateChangeStarted;
+    private bool autoReturnToVisible; // 出現スタート専用
     void Start()
     {
         rend = GetComponent<Renderer>();
         mat = rend.material;
 
-        currentAlpha = startVisible ? 1f : 0f;
+        isCurrentlyVisible = startVisible;
+        currentAlpha = isCurrentlyVisible ? 1f : 0f;
+
         ApplyState(currentAlpha);
 
-        raycastCollider.enabled = true;
-
-        Debug.Log($"[{name}] 初期化完了 | 初期表示状態: {(startVisible ? "表示" : "非表示")}");
+        Debug.Log($"[{name}] 初期化完了 | 初期状態: {(isCurrentlyVisible ? "表示" : "非表示")}");
     }
 
     void Update()
     {
         if (isLocked) return;
 
-        // 完全表示／完全透明後のループ待ち
+        // 次ループ開始待ち（Raycast必須）
         if (awaitRaycastNextLoop)
         {
             if (rayHitThisFrame)
             {
-                Debug.Log($"[{name}] 次ループ開始のRaycastを検知");
+                Debug.Log($"[{name}] 次のループ開始用Raycastを検知");
                 awaitRaycastNextLoop = false;
-                hasCompletedThisCycle = false; // 次ループ開始
+                hasCompletedThisCycle = false;
             }
-        }
 
-        // フェード処理
-        if (!awaitRaycastNextLoop)
+            rayHitThisFrame = false;
+            return;
+        }
+        float targetAlpha;
+
+        // 点滅後は強制透明化
+        if (forceFadeOutAfterBlink)
         {
-            float targetAlpha = rayHitThisFrame ? (startVisible ? 0f : 1f) : (startVisible ? 1f : 0f);
-
-            currentAlpha = Mathf.MoveTowards(currentAlpha, targetAlpha, fadeSpeed * Time.deltaTime);
-            ApplyState(currentAlpha);
-
-            // 完全到達判定
-            if (!hasCompletedThisCycle && Mathf.Approximately(currentAlpha, targetAlpha))
-            {
-                hasCompletedThisCycle = true;
-
-                if (targetAlpha == 1f)
-                    Debug.Log($"[{name}] オブジェクトが完全に表示されました");
-                else
-                    Debug.Log($"[{name}] オブジェクトが完全に透明になりました");
-
-                StartCoroutine(StateCompleteRoutine());
-            }
+            targetAlpha = 0f;
         }
+        else if (autoReturnToVisible)
+        {
+            // ★ 出現スタート専用：Raycast不要で出現
+            targetAlpha = 1f;
+        }
+        else
+        {
+            targetAlpha = rayHitThisFrame
+                ? (isCurrentlyVisible ? 0f : 1f)
+                : (isCurrentlyVisible ? 1f : 0f);
+        }
+
+
+        // フェード
+        currentAlpha = Mathf.MoveTowards(currentAlpha, targetAlpha, fadeSpeed * Time.deltaTime);
+        ApplyState(currentAlpha);
+
+        // 完全到達
+        if (!hasCompletedThisCycle
+    && hasStateChangeStarted
+    && Mathf.Approximately(currentAlpha, targetAlpha))
+        {
+            hasCompletedThisCycle = true;
+            hasStateChangeStarted = false;
+
+            isCurrentlyVisible = targetAlpha > 0.5f;
+
+            if (!isCurrentlyVisible)
+            {
+                Debug.Log($"[{name}] オブジェクトが完全に透明になりました");
+
+                // ★ 出現スタート専用ルート
+                if (startVisible)
+                {
+                    Debug.Log($"[{name}] 出現スタートのため、自動再出現ルートに入ります");
+                    autoReturnToVisible = true;
+                }
+            }
+            else
+            {
+                Debug.Log($"[{name}] オブジェクトが完全に表示されました");
+            }
+
+            StartCoroutine(StateCompleteRoutine());
+        }
+
+
 
         rayHitThisFrame = false;
     }
@@ -85,56 +124,70 @@ public class RaycastReactiveObject : MonoBehaviour
     public void OnRaycastHit()
     {
         if (!rayHitThisFrame)
-            Debug.Log($"[{name}] Raycastがオブジェクトに当たりました");
+        {
+            Debug.Log($"[{name}] Raycastが命中しました");
+            hasStateChangeStarted = true; 
+        }
 
         rayHitThisFrame = true;
     }
 
-    // アルファとColliderを反映
+
     void ApplyState(float alpha)
     {
         Color c = mat.color;
         c.a = alpha;
         mat.color = c;
 
-        // 実体Colliderのみ制御
+        // 実体Colliderは完全表示時のみ有効
         solidCollider.enabled = alpha >= 0.95f;
     }
 
-    // 完全到達後の待機・点滅・Raycast待ち設定
     IEnumerator StateCompleteRoutine()
     {
         isLocked = true;
 
-        Debug.Log($"[{name}] 完全到達 → 一定時間待機開始 ({stayTime}秒)");
+        Debug.Log($"[{name}] 完全到達後の待機開始（{stayTime}秒）");
         yield return new WaitForSeconds(stayTime);
 
         // 完全表示時のみ点滅
-        float targetAlpha = startVisible ? 1f : 0f;
-        if (targetAlpha == 1f)
+        if (isCurrentlyVisible)
         {
-            Debug.Log($"[{name}] 点滅開始（完全表示時のみ）");
+            Debug.Log($"[{name}] 点滅処理開始");
             yield return StartCoroutine(BlinkRoutine());
+            forceFadeOutAfterBlink = true;
         }
 
-        // 点滅後または完全透明時はRaycast待ちにする
+        // ★ 出現スタート専用：自動復帰
+        if (autoReturnToVisible)
+        {
+            Debug.Log($"[{name}] Raycastなしで自動的に出現状態へ戻ります");
+            autoReturnToVisible = false;
+            hasCompletedThisCycle = false;
+            isLocked = false;
+            yield break;
+        }
+
+        // 通常ルート
+        Debug.Log($"[{name}] 次ループはRaycast待ち");
         awaitRaycastNextLoop = true;
-        Debug.Log($"[{name}] 次のループ開始をRaycast待ちに設定");
 
         isLocked = false;
     }
 
-    // 点滅処理
+
+
     IEnumerator BlinkRoutine()
     {
-        int totalBlinks = Mathf.CeilToInt(blinkDuration / blinkInterval);
+        int blinkCount = Mathf.CeilToInt(blinkDuration / blinkInterval);
 
-        for (int i = 0; i < totalBlinks; i++)
+        for (int i = 0; i < blinkCount; i++)
         {
             rend.enabled = !rend.enabled;
             yield return new WaitForSeconds(blinkInterval);
         }
 
-        rend.enabled = true; // 最終的に必ず表示状態
+        rend.enabled = true;
+        Debug.Log($"[{name}] 点滅終了、表示状態を確定");
     }
 }
