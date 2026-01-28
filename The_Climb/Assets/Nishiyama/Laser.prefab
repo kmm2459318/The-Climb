@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0f9944653630ad84fb6ab7a999052f5b, type: 2}
+  - {fileID: 2100000, guid: 47884eb64e8753b4898d627ea14aa7ae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -134,6 +134,17 @@ MonoBehaviour:
   randomMoveSpeed: 2
   returnToCenterSpeed: 3
   randomMoveTime: 1.5
+  pushLaser: 0
+  moveDirection: {x: -1, y: 0, z: 0}
+  pushSpeed: 3
+  hideOnStart: 1
+  isSpawnPushLaser: 0
+  isPushLaser: 0
+  myTrigger: {fileID: 0}
+  enableAcceleration: 1
+  startSpeed: 2
+  maxSpeed: 6
+  acceleration: 0.5
   buttonGimmick: {fileID: 0}
 --- !u!1 &5213890763164283941
 GameObject:
