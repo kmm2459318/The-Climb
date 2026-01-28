@@ -95,8 +95,8 @@ public class CollapseBlock : MonoBehaviour
         //壊れるブロックの生成
         if (demolisher != null)
         {
+            demolisher.DemolishAsync();
             demolisher.Reset();
-            demolisher.Demolish();
             IsCollapsed = false;
         }
     }

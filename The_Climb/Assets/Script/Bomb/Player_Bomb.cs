@@ -68,19 +68,8 @@ public class Player_Bomb : MonoBehaviour
         
         foreach(var hit in hitColliders)
         {
-
             var obj = hit.gameObject;
 
-            // プレイヤーだけTransform操作
-            if (obj.CompareTag("Player"))
-            {
-                var knock = obj.GetComponent<KnockBack>();
-                if (knock != null)
-                {
-                    knock.ApplyBombKnockback(b_pos, b_force, b_radius);
-                }
-                continue;
-            }
             var rb = obj.GetComponent<Rigidbody>();
 
             if (rb == null) continue;
