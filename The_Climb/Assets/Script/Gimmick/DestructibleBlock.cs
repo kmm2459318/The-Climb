@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Hanzzz.MeshDemolisher;
+using UnityEngine;
 
 public class DestructibleBlock : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class DestructibleBlock : MonoBehaviour
 
     [SerializeField] private TimeGimmickBridge Bridge;  // 状態保存ブリッジ
     [SerializeField] private GameObject BlockObject;    // ブロック本体(ON/OFFを切り替える対象)
+    [SerializeField] private MeshDemolisherExample demolisher; //足場を壊す演出
 
     [SerializeField] TimeEra Era = TimeEra.Past;// このブロックが属する時代(過去/現代)
 
@@ -31,6 +33,7 @@ public class DestructibleBlock : MonoBehaviour
         {
             BlockObject = this.gameObject;
         }
+        Debug.Log("イベントが呼ばれました");
     }
 
     void OnEnable()
@@ -63,10 +66,12 @@ public class DestructibleBlock : MonoBehaviour
 
         IsVisible = IsActive;
 
-        // 表示オブジェクトのON/OFF
-        if (BlockObject != null)
+ 
+        // 壊れる時だけ演出
+        if (!IsActive && demolisher != null)
         {
-            BlockObject.SetActive(IsVisible);
+            demolisher.RequestDemolish();
+            Debug.Log("破壊します");
         }
     }
 
