@@ -177,23 +177,6 @@ public class PlayerMove2 : MonoBehaviour, IConveyorReceiver
     {
         // 空中：左右に力を加える
         Vector3 force = new Vector3(moveInput, 0f, 0f) * airMoveForce;
-        switch (jump.landingJumpNumber)
-        {
-            case 0:
-                {
-                    break;
-                }
-            case 1:
-                {
-                    force *= 1.2f;
-                    break;
-                }
-            default:
-                {
-                    force *= 1.4f;
-                    break;
-                }
-        }
         RigidBody.AddForce(force, ForceMode.Acceleration);
 
         // 最大空中速度を制限
