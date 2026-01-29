@@ -21,7 +21,7 @@ public class PressureButton : MonoBehaviour
     private GameObject buttonModel;  //ボタンのモデル
     [SerializeField] private Vector3 movePoint;  //ギミック：moveの向かう地点
 
-    private int pressCount = 0;  //現在押してる数
+    public int pressCount = 0;  //現在押してる数
     private float posY = 0;  //ボタンのＹ座標
 
     void Start()

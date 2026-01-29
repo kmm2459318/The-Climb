@@ -7,6 +7,7 @@ using TMPro;
 using UnityEditor.Rendering.Universal;
 #endif
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LightDarkWorld : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class LightDarkWorld : MonoBehaviour
     private BuddyCarry buddyCarry;
     private Light worldLight;
     private MeshRenderer backGround;
+    [SerializeField] private Image uiBackground;
     [SerializeField] private TextMeshProUGUI text;
 
     public enum brightness {Dark, Light};  //光と闇
@@ -158,6 +160,7 @@ public class LightDarkWorld : MonoBehaviour
             ObjectTransparency(blackGroup, transparency);
             worldLight.color = new Color(80f / 255f, 80f / 255f, 80f / 255f, 1f);
             backGround.material.color = Color.black;
+            uiBackground.color = Color.black;
         }
         else
         {
@@ -169,6 +172,7 @@ public class LightDarkWorld : MonoBehaviour
             ObjectTransparency(blackGroup, 1f);
             worldLight.color = Color.white;
             backGround.material.color = new Color(195f / 255f, 195f / 255f, 190f / 255f, 1f);
+            uiBackground.color = new Color(195f / 255f, 195f / 255f, 190f / 255f, 1f);
         }
     }
 
