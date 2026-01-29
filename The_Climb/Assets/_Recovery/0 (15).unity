@@ -259,6 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b42a8c65b60f3724cad776ba0c5f9d96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightDarkWorld
+  text: {fileID: 0}
   brightnessState: 0
 --- !u!4 &227370004
 Transform:
@@ -468,6 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f511187b3ca683b4fad27315c312b74b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerKnockBack
+  barrier: {fileID: 0}
   knockBacking: 0
   knockBackPower: 7
   coolTime: 0
@@ -483,6 +485,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f511187b3ca683b4fad27315c312b74b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerKnockBack
+  barrier: {fileID: 0}
   knockBacking: 0
   knockBackPower: 7
   coolTime: 0
@@ -2073,8 +2076,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bomb_Generate
   bombPrefab: {fileID: 5538171996706550729, guid: 4141135c405070149a20c521a59fb2a5, type: 3}
   p_move: {fileID: 682688704}
-  left_pos: {fileID: 1247663958}
-  right_pos: {fileID: 1653478484}
+  p_aim: {fileID: 0}
   shoot_power: 10000
 --- !u!1001 &1785987223
 PrefabInstance:
@@ -2087,6 +2089,14 @@ PrefabInstance:
     - target: {fileID: 2272384167279023827, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_Name
       value: PlayerNakamura
+      objectReference: {fileID: 0}
+    - target: {fileID: 5883409209459298881, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      propertyPath: m_TranslationOffset.x
+      value: -0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5883409209459298881, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      propertyPath: m_TranslationOffset.y
+      value: 1.96
       objectReference: {fileID: 0}
     - target: {fileID: 7802671223314821339, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: TrampolinePower
@@ -2142,6 +2152,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2205381300897396991, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 682688689}
+    - targetCorrespondingSourceObject: {fileID: 7904816234959621641, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
 --- !u!1 &1827026923
 GameObject:
