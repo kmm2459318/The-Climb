@@ -62,13 +62,11 @@ public class BuddyCarry : MonoBehaviour
                 // おんぶ解除：接地中かつおんぶ中かつ反転していない場合のみ可能
                 if (state.isGrounded && state.carryingBuddy && (playerMove == null || !playerMove.IsUpsideDown))
                 {
-                    state.carryingBuddy = false;
                     buddyPos.constraintActive = false;
                     buddy.transform.position = transform.position + Vector3.up * 0.5f;
                 }
                 else if (nearBuddy && !state.carryingBuddy)  //おんぶしてない場合、バディをおんぶする
                 {
-                    state.carryingBuddy = true;
                     buddyPos.constraintActive = true;
                     buddyController.moving = false;
                 }
