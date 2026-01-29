@@ -24,6 +24,11 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     [SerializeField] private bool upsideDown = false; // 天井歩行モード
     [SerializeField] private float customGravity = 9.81f; // 通常重力に近い値
 
+    [Header("Buddy 背中追従用")]
+    [SerializeField] private Transform buddyBackPoint;
+    [SerializeField] private float buddyBackOffsetY = 0.6f; // 地面時の背中位置
+
+
     IPlayerDataProvider PlayerDataProvider;    //  プレイヤーのデータプロバイダ
     IPlanetDataProvider PlanetDataProvider;    //  天体のデータプロバイダ
 
@@ -142,6 +147,8 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
                     }
                 }
             }
+
+            UpdateBuddyBackPoint(); 
         }
 
         // 4. まだ有効なColliderが見つかっていない場合、子オブジェクトを探す
@@ -486,6 +493,21 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         stuckTimer = 0f;
     }
 }
+
+    private void UpdateBuddyBackPoint()
+    {
+        if (buddyBackPoint == null) return;
+
+        Vector3 localPos = buddyBackPoint.localPosition;
+
+        // 天井なら背中位置を反転
+        localPos.y = upsideDown
+            ? -Mathf.Abs(buddyBackOffsetY)
+            : Mathf.Abs(buddyBackOffsetY);
+
+        buddyBackPoint.localPosition = localPos;
+    }
+
 
     private IEnumerator TemporarilyDisableColliders()
     {
