@@ -54,18 +54,7 @@ public class PlayerAnimation : MonoBehaviour
             //Debug.Log("ジャンプ Step " + animStep);
             isJumping = true; // ロックをかける
 
-            switch (animStep)
-            {
-                case 1:
-                    animator.SetTrigger("JumpAnimStep1");
-                    break;
-                case 2:
-                    animator.SetTrigger("JumpAnimStep2");
-                    break;
-                case 3:
-                    animator.SetTrigger("JumpAnimStep3");
-                    break;
-            }
+            animator.SetTrigger("JumpAnimStep1");
         }
     }
 
