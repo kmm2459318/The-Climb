@@ -4,30 +4,70 @@ using UnityEngine;
 
 public class SequentialMover : MonoBehaviour
 {
-    [Header("ライトの移動用スクリプト(直線)")]
     [Header("移動ポイント")]
-    public List<Transform> waypoints = new List<Transform>(); // 移動先のオブジェクト
-    public float speed = 3f; // 移動速度
-    public float stopDuration = 0f; // 各地点で停止する時間（秒）。0なら止まらない
+    public List<Transform> waypoints = new List<Transform>();
+    public float speed = 3f;
+    public float stopDuration = 0f;
 
-    private int currentIndex = 0; // 現在のターゲット
-    private bool isWaiting = false; // 停止中フラグ
+    [Header("スイッチ（任意）")]
+    public Switch startSwitch;
+
+    private int currentIndex = 0;
+    private bool isWaiting = false;
+
+    // ★ 追加
+    private bool hasStarted = false;
+    private bool lastSwitchState = false;
+
+    private Vector3 startPosition;
+
+    void Start()
+    {
+        startPosition = transform.position;
+
+        if (startSwitch != null)
+            lastSwitchState = startSwitch.IsPressed;
+    }
 
     void Update()
+    {
+        // スイッチ未設定 → 常時動作
+        if (startSwitch == null)
+        {
+            Move();
+            return;
+        }
+
+        bool currentSwitchState = startSwitch.IsPressed;
+
+        // ▼ スイッチが押された瞬間
+        if (!lastSwitchState && currentSwitchState)
+        {
+            // 初回 or 再押下 → 最初から
+            ResetMover();
+            hasStarted = true;
+        }
+
+        lastSwitchState = currentSwitchState;
+
+        // ★ まだ一度も起動していないなら動かない
+        if (!hasStarted) return;
+
+        Move();
+    }
+
+    void Move()
     {
         if (waypoints.Count == 0 || isWaiting) return;
 
         Transform target = waypoints[currentIndex];
         if (target == null) return;
 
-        // 現在位置からターゲット方向への移動
         Vector3 direction = (target.position - transform.position).normalized;
         transform.position += direction * speed * Time.deltaTime;
 
-        // ターゲットに到達したかチェック（誤差を考慮）
         if (Vector3.Distance(transform.position, target.position) < 0.1f)
         {
-            // 次の地点へ進む前に停止処理を挟む
             StartCoroutine(WaitAndMoveNext());
         }
     }
@@ -36,12 +76,18 @@ public class SequentialMover : MonoBehaviour
     {
         isWaiting = true;
 
-        // 停止時間が設定されている場合は待機
         if (stopDuration > 0f)
             yield return new WaitForSeconds(stopDuration);
 
-        // 次のターゲットに移動（ループ）
         currentIndex = (currentIndex + 1) % waypoints.Count;
         isWaiting = false;
+    }
+
+    void ResetMover()
+    {
+        StopAllCoroutines();
+        isWaiting = false;
+        currentIndex = 0;
+        transform.position = startPosition;
     }
 }

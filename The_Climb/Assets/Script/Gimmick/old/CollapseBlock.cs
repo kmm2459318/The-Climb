@@ -1,4 +1,4 @@
-﻿using Unity.VisualScripting;
+﻿using Hanzzz.MeshDemolisher;
 using UnityEngine;
 
 public class CollapseBlock : MonoBehaviour
@@ -7,15 +7,17 @@ public class CollapseBlock : MonoBehaviour
     public float RespawnDelay  = 3f;　 //リスポーンするまでの時間
 
     private bool IsCollapsing = false; //崩れる処理が進行中か判定
+    private bool IsCollapsed  = false; //崩れたかどうかの判定
     private float CollapseTimer;       //崩れるまでのタイマー
     private float RespawnTimer;        //リスポーンまでのタイマー
 
-    private GameObject VisualPart;     //見た目用の子オブジェクト(足場の見た目部分)
+ 
     private Collider HitBoxCollider;   //当たり判定用コライダー
+
+    [SerializeField] private MeshDemolisherExample demolisher; //足場を壊す演出
 
     void Start()
     {
-        VisualPart = transform.GetChild(0).gameObject; //非表示にする足場の見た目(子オブジェクト)を取得
         HitBoxCollider = GetComponent<Collider>();     //自身のコライダーを取得
         CollapseTimer = CollapseDelay;                 //タイマーを初期化
     }
@@ -33,16 +35,16 @@ public class CollapseBlock : MonoBehaviour
             }
         }
 
-        //非アクティブ時、リスポーンタイマーを進める
-        if (VisualPart != null && !VisualPart.activeSelf)
+
+        if (IsCollapsed)
         {
             Debug.Log("非アクティブ中のリスポーン処理");
             RespawnTimer -= Time.deltaTime;
-            if(RespawnTimer <=0)
+            if (RespawnTimer <= 0)
             {
                 Respawn();
             }
-        }
+        }       
     }
 
     //プレイヤーが上に乗った時に崩れる処理を進行
@@ -71,14 +73,14 @@ public class CollapseBlock : MonoBehaviour
             HitBoxCollider.enabled = false;
         }
 
-        //見た目を非表示(子オブジェクト)
-        if(VisualPart != null)
-        {
-            VisualPart.SetActive(false);
-        }
+        //破壊を開始する
+        if (demolisher != null)
+            demolisher.RequestDemolish();
 
+        
         CollapseTimer = CollapseDelay;
         IsCollapsing = false;
+        IsCollapsed = true;
         RespawnTimer = RespawnDelay;
     }
 
@@ -90,9 +92,12 @@ public class CollapseBlock : MonoBehaviour
             HitBoxCollider.enabled = true;
         }
 
-        if(VisualPart != null)
+        //壊れるブロックの生成
+        if (demolisher != null)
         {
-            VisualPart.SetActive(true);
+            demolisher.DemolishAsync();
+            demolisher.Reset();
+            IsCollapsed = false;
         }
     }
 }

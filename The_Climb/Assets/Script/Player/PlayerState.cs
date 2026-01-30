@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TheClimb.Item;
+using TMPro;
 
 public class PlayerState : MonoBehaviour, IImpactable
 {
@@ -12,10 +13,12 @@ public class PlayerState : MonoBehaviour, IImpactable
 
     [HideInInspector] public Rigidbody RigidBody;
     [HideInInspector] public InputManager inputManager;
-    PlayerMove move;
-    PlayerJump jump;
-    PlayerSpecialAction special;
+    [HideInInspector] public PlayerMove move;
+    [HideInInspector] public PlayerJump jump;
+    [HideInInspector] public PlayerSpecialAction special;
     [HideInInspector] public PlayerAnimation PlayerAnimation;
+    [HideInInspector] public GameObject hukidashi;
+    [HideInInspector] public TextMeshPro hukidashiText;
 
     int lowGroundLayer;
 
@@ -59,6 +62,11 @@ public class PlayerState : MonoBehaviour, IImpactable
         // PlayerContext.Instance.RegistPlayerState(this);
         RigidBody = GetComponent<Rigidbody>();
         ImpactableRegistry.Register(this);
+
+        //吹き出しオブジェクトの取得
+        hukidashi = transform.Find("Hukidashi").gameObject;
+        hukidashiText = hukidashi.transform.Find("HukidashiText").GetComponent<TextMeshPro>();
+        hukidashi.SetActive(false);
     }
 
     void OnEnable()
@@ -214,7 +222,6 @@ public class PlayerState : MonoBehaviour, IImpactable
 
             if (landingJumpCounter > landingJumpTime)
             {
-                jump.landingJumpNumber = 0;
                 special.meteorHighJumpOK = false;
                 LandingJumpReset();
             }

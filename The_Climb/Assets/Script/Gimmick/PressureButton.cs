@@ -2,7 +2,7 @@
 
 public class PressureButton : MonoBehaviour
 {
-    private enum GimmickType  //ギミックの種類
+    private enum GimmickType  //ギミックの種類（種類を増やしたい場合はここに追加）
     { 
         appear = 0,
         destroy = 1
@@ -21,7 +21,7 @@ public class PressureButton : MonoBehaviour
     private GameObject buttonModel;  //ボタンのモデル
     [SerializeField] private Vector3 movePoint;  //ギミック：moveの向かう地点
 
-    private int pressCount = 0;  //現在押してる数
+    public int pressCount = 0;  //現在押してる数
     private float posY = 0;  //ボタンのＹ座標
 
     void Start()
@@ -60,6 +60,7 @@ public class PressureButton : MonoBehaviour
     {
         buttonModel.transform.position = new Vector3(transform.position.x,  posY - 0.18f, 0);
 
+        //ギミックの処理（種類を増やしたい場合はここに関数を追加）
         switch (type)
         {
             case GimmickType.appear:
@@ -75,6 +76,7 @@ public class PressureButton : MonoBehaviour
     {
         buttonModel.transform.position = new Vector3(transform.position.x, posY, 0);
 
+        //ギミックの処理
         switch (type)
         {
             case GimmickType.appear:
@@ -86,6 +88,7 @@ public class PressureButton : MonoBehaviour
         }
     }
 
+    //出現・消滅のギミック処理
     private void AppearGimmick(bool on)
     {
         target.SetActive(on);

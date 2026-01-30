@@ -1,23 +1,29 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
-#if UNITY_EDITOR
-using UnityEditor; // SceneAsset
-#endif
+using TMPro;
 using System.Collections.Generic;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class StageNode : MonoBehaviour
 {
     [Header("ステージ設定")]
-    public int stageId;
+    public int stageId;   // 0始まり（StageRandomizer.StageNameと対応）
 
 #if UNITY_EDITOR
-    public SceneAsset sceneAsset; // ここにシーンをD&D
+    public SceneAsset sceneAsset;
 #endif
 
-    private string sceneName; // 実行用のシーン名
+    [Header("見た目（Sphere）")]
+    public Renderer nodeRenderer;
+    public Material lockedMat;       // 黒
+    public Material availableMat;    // 銀
+    public Material clearedMat;      // 金
 
-    public List<int> nextStageIds = new List<int>();
-    public List<GameObject> connectedPaths = new List<GameObject>();
+    [Header("Canvas内 共通ステージ名テキスト")]
+    public TextMeshProUGUI sharedStageNameText;
+    public string unknownText = "???";
 
     [Header("UI設定")]
     public GameObject promptUI;
@@ -26,41 +32,30 @@ public class StageNode : MonoBehaviour
     [HideInInspector] public bool isUnlocked = false;
     private bool playerNearby = false;
 
+    [Header("外部参照")]
     public StageRandomizer stageRandomizer;
     public StageRoute stageRoute;
-    
+
+    // ===============================
+    // Unity Lifecycle
+    // ===============================
     private void Awake()
     {
-        foreach (var path in connectedPaths)
-            if (path != null) path.SetActive(false);
+        if (nodeRenderer == null)
+            nodeRenderer = GetComponentInChildren<Renderer>();
 
         if (promptUI != null)
             promptUI.SetActive(false);
-    }
 
-    private void Start()
-    {
-        RefreshSceneName();
-    }
-
-    public void RefreshSceneName()
-    {
-#if UNITY_EDITOR
-        if (sceneAsset != null)
-            sceneName = sceneAsset.name;
-#endif
-#if UNITY_EDITOR
-        // 編集中にアセットが変更されたら名前も更新しておく
-        if (sceneAsset != null && sceneName != sceneAsset.name)
-            sceneName = sceneAsset.name;
-#endif
+        SetLocked();
     }
 
     private void Update()
     {
-        if (playerNearby && Input.GetKeyDown(KeyCode.Space))
+        if (playerNearby && isUnlocked && Input.GetKeyDown(KeyCode.Space))
         {
-            stageRandomizer.StartStage(stageId);
+            // StageRandomizerはButtonNoが1始まり
+            stageRandomizer.StartStage(stageId + 1);
             stageRoute.OnStageButtonPressed(stageId);
         }
 
@@ -68,46 +63,123 @@ public class StageNode : MonoBehaviour
             promptUI.transform.position = transform.position + uiOffset;
     }
 
-
-    public void Unlock()
+    // ===============================
+    // 見た目制御
+    // ===============================
+    public void SetLocked()
     {
-        if (isUnlocked) return;
-        isUnlocked = true;
+        isUnlocked = false;
 
-        foreach (var path in connectedPaths)
-            if (path != null) path.SetActive(true);
+        if (nodeRenderer != null && lockedMat != null)
+            nodeRenderer.material = lockedMat;
     }
 
+    public void SetAvailable()
+    {
+        isUnlocked = true;
+
+        if (nodeRenderer != null && availableMat != null)
+            nodeRenderer.material = availableMat;
+    }
+
+    public void SetCleared()
+    {
+        isUnlocked = true;
+
+        if (nodeRenderer != null && clearedMat != null)
+            nodeRenderer.material = clearedMat;
+    }
+
+    // ===============================
+    // ステージ名表示制御
+    // ===============================
+    private void UpdateStageNameText()
+    {
+        if (sharedStageNameText == null)
+            return;
+
+        if (!isUnlocked)
+        {
+            sharedStageNameText.text = unknownText;
+            return;
+        }
+
+        if (stageRandomizer == null)
+        {
+            sharedStageNameText.text = "No Randomizer";
+            return;
+        }
+
+        if (stageId >= 0 && stageId < stageRandomizer.StageName.Length)
+        {
+            string internalName = stageRandomizer.StageName[stageId];
+            sharedStageNameText.text = GetDisplayStageName(internalName);
+        }
+        else
+        {
+            sharedStageNameText.text = "Invalid Stage";
+        }
+    }
+
+    // ===============================
+    // 内部名 → 表示名変換
+    // ===============================
+    private string GetDisplayStageName(string internalName)
+    {
+        switch (internalName)
+        {
+            case "Umeda":
+                return "光が示す道";
+            case "Kitano":
+                return "ライトシフター";
+            case "Matsuyama":
+                return "アストラル";
+            case "Yuoka":
+                return "爆発ウーマン";
+            case "Nakamura":
+                return "陰陽相棒ステージ";
+            case "Nisiyama":
+                return "ターンオーバー";
+            default:
+                return internalName;
+        }
+    }
+
+    // ===============================
+    // Trigger
+    // ===============================
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            playerNearby = true;
-            if (promptUI != null)
-                promptUI.SetActive(true);
-        }
+        if (!other.CompareTag("Player"))
+            return;
+
+        playerNearby = true;
+
+        if (promptUI != null)
+            promptUI.SetActive(true);
+
+        UpdateStageNameText();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            playerNearby = false;
-            if (promptUI != null)
-                promptUI.SetActive(false);
-        }
+        if (!other.CompareTag("Player"))
+            return;
+
+        playerNearby = false;
+
+        if (promptUI != null)
+            promptUI.SetActive(false);
+
+        if (sharedStageNameText != null)
+            sharedStageNameText.text = "";
     }
 
-    // Runtime用（SceneName を直接セット）
-    public void SetSceneName_Runtime(string name)
+#if UNITY_EDITOR
+    public void RefreshSceneName()
     {
-        this.GetType(); // 空の安全策（消してもOK）
-        typeof(StageNode).ToString(); // これも消してOK
-                                      // 実行時に sceneName をセット
-        var sceneNameField = typeof(StageNode).GetField("sceneName",
-            System.Reflection.BindingFlags.NonPublic |
-            System.Reflection.BindingFlags.Instance);
-        if (sceneNameField != null)
-            sceneNameField.SetValue(this, name);
+        if (sceneAsset != null)
+            sceneAsset.name.ToString();
     }
+#endif
 }

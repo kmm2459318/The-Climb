@@ -48,12 +48,9 @@ public class Player_Bomb : MonoBehaviour
 
         PlayParticle();
         ApplyExplosionForce();
-        Debug.Log("爆発しました");
-
         // コールバック(プレイヤー側に爆発したことを知らせる)
-        onExploded.Invoke();
+        onExploded?.Invoke();
         CameraShake.Instance.Shake(0.15f,0.11f);
-
         Destroy(gameObject); //爆弾を削除
     }
 
@@ -71,6 +68,7 @@ public class Player_Bomb : MonoBehaviour
         foreach(var hit in hitColliders)
         {
             var obj = hit.gameObject;
+
             var rb = obj.GetComponent<Rigidbody>();
 
             if (rb == null) continue;
@@ -86,9 +84,9 @@ public class Player_Bomb : MonoBehaviour
         switch (obj.tag)
         {
             case "BreakingWall":
+                Debug.Log("壁を発見");
                 DestructibleBlock Block = obj.GetComponent<DestructibleBlock>();
                 Block.BreakBlock();
-                Debug.Log("壁を破壊しました");    
                 break;
         
             case "Enemy":
