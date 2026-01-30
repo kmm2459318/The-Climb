@@ -2,6 +2,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.Rendering.BoolParameter;
 
 public class WarpDoor : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class WarpDoor : MonoBehaviour
     private PlayerState state;
     private GameObject hukidashi;     //吹き出しオブジェクト
     private TextMeshPro hukidashiText;  //吹き出しテキスト
+    private GameObject buddyMissing;  //Buddyがいないときの吹き出しオブジェクト
+    private float displayTime = 2.0f;  //Buddyがいないときの吹き出し表示時間
+    private bool buddyMissingActive = false;  //Buddyがいないときの吹き出しが表示中か判定
     [SerializeField] private bool buddyStage = false;  //ここはBuddyステージか？
 
     void Start()
@@ -28,21 +32,41 @@ public class WarpDoor : MonoBehaviour
         {
             buddyStage = true;
         }
+
+        buddyMissing = transform.Find("BuddyMissing").gameObject;
+        buddyMissing.SetActive(false);
     }
 
     void Update()
     {
-        if (nearPlayer && Input.GetKeyDown(KeyCode.W) && ((buddyStage && state.carryingBuddy) || !buddyStage))
+        if (nearPlayer && Input.GetKeyDown(KeyCode.W))
         {
-            if (canGoBack)
+            if ((buddyStage && state.carryingBuddy) || !buddyStage)
             {
-                player.GetComponent<Rigidbody>().MovePosition(goToDoor.transform.position + new Vector3(0f, -1f, 0f));
+                if (canGoBack)
+                {
+                    player.GetComponent<Rigidbody>().MovePosition(goToDoor.transform.position + new Vector3(0f, -1f, 0f));
+                }
+                else
+                {
+                    player.GetComponent<Rigidbody>().MovePosition(goToWhere.transform.position);
+                }
             }
-            else
+            else if (!buddyMissingActive)
             {
-                player.GetComponent<Rigidbody>().MovePosition(goToWhere.transform.position);
+                //Buddyがいないときの吹き出し表示
+                buddyMissing.SetActive(true);
+                buddyMissingActive = true;
+                Invoke("HideMissingBuddy", displayTime);
             }
         }
+    }
+
+    //吹き出し非表示
+    private void HideMissingBuddy()
+    {
+        buddyMissing.SetActive(false);
+        buddyMissingActive = false;
     }
 
     private void OnTriggerEnter(Collider other)

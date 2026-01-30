@@ -153,7 +153,6 @@ public class PlayerSpecialAction : MonoBehaviour
             meteorDrop = true;
             meteorDropUsed = true;
             meteorHighJumpOK = true;
-            jump.landingJumpNumber = 0;
             meteorDropAttack.SetActive(true);
 
             if (state.playerDirectionRight)  //向いてる方向によって進む方向変化
