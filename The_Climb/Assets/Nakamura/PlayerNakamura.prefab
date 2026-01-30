@@ -174,7 +174,7 @@ Transform:
   m_GameObject: {fileID: 1212621685012259266}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.85, z: -1.3}
+  m_LocalPosition: {x: 0, y: 1.85, z: 0}
   m_LocalScale: {x: 0.19, y: 0.19, z: 0.19}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -573,7 +573,7 @@ Transform:
   m_GameObject: {fileID: 2205381300897396991}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.78, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -744,7 +744,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  landingJumpNumber: 0
   isOnTrampoline: 0
   TrampolinePower: 1.5
   gravityPower: 20
@@ -766,9 +765,11 @@ MonoBehaviour:
   reverseHorizontal: 0
   upsideDown: 0
   customGravity: 9.81
+  buddyBackPoint: {fileID: 0}
+  buddyBackOffsetY: 0.6
   groundMaxSpeed: 7
   moveInput: 0
-  airMaxSpeed: 7
+  airMaxSpeed: 9
   slipping: 0
   slipVelocity: {x: 0, y: 0, z: 0}
   PlayerAnimation: {fileID: 0}
@@ -1021,12 +1022,24 @@ MonoBehaviour:
   respawnPoints:
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   currentIndex: 0
   checkpointVisuals:
   - {fileID: 0}
   - {fileID: 0}
-  maxHeightFromCheckpoint: 30
-  fallDistanceFromCheckpoint: 20
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  maxHeightFromCheckpoint: 162
+  fallDistanceFromCheckpoint: 10
   switchesToReset: []
 --- !u!114 &7424387911693393458
 MonoBehaviour:
@@ -1095,7 +1108,7 @@ GameObject:
   - component: {fileID: 7913675319463823891}
   m_Layer: 6
   m_Name: PlayerNakamura
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1164,8 +1177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bomb_Generate
   bombPrefab: {fileID: 5538171996706550729, guid: 4141135c405070149a20c521a59fb2a5, type: 3}
   p_move: {fileID: 523186103618612158}
-  left_pos: {fileID: 8465813409642410617}
-  right_pos: {fileID: 8062250422258864948}
+  p_aim: {fileID: 0}
   shoot_power: 1000
 --- !u!1 &3297981378293651251
 GameObject:
@@ -1286,7 +1298,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8062250422258864948}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1326,7 +1338,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3797337442103233341
 Transform:
   m_ObjectHideFlags: 0
@@ -1617,7 +1629,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1085016168667484187
 Transform:
   m_ObjectHideFlags: 0
@@ -1721,7 +1733,7 @@ PositionConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_TranslationAtRest: {x: 0, y: 0.99, z: 0}
-  m_TranslationOffset: {x: -0.78, y: -0.29999995, z: 0}
+  m_TranslationOffset: {x: 0, y: -0.29999995, z: 0}
   m_AffectTranslationX: 1
   m_AffectTranslationY: 1
   m_AffectTranslationZ: 1
@@ -1808,7 +1820,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7904816234959621641}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.31}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2023,7 +2035,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6888408907588733425
 Transform:
   m_ObjectHideFlags: 0
@@ -2072,7 +2084,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8465813409642410617}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2216,7 +2228,7 @@ Transform:
   m_GameObject: {fileID: 8885361978425400945}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.88}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3055,6 +3067,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1947981595970533561, guid: 78151935ea7686a41a220138d81f770d, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618736439020368021, guid: 78151935ea7686a41a220138d81f770d, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}

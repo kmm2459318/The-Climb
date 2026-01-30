@@ -22,8 +22,8 @@ public class LightDarkWorld : MonoBehaviour
     public enum brightness {Dark, Light};  //光と闇
     public brightness brightnessState = brightness.Dark;  //現在の世界の輝度
 
-    private float lightDuration = 15f;     //光の継続時間
-    private float lightTimer = 0f;         //光の世界の時間private
+    //private float lightDuration = 15f;     //光の継続時間
+    //private float lightTimer = 0f;         //光の世界の時間private
     private float transparency = 0.3f;     //白と黒の床壁の透明度
     private List<GameObject> whiteGroup = new List<GameObject>();
     private List<GameObject> blackGroup = new List<GameObject>();
@@ -86,18 +86,18 @@ public class LightDarkWorld : MonoBehaviour
         }
 
         //光闇世界の違い
-        if (brightnessState == brightness.Dark)  //闇の世界
-        {
+        //if (brightnessState == brightness.Dark)  //闇の世界
+        //{
 
-        }
-        else  //光の世界
-        {
-            lightTimer -= Time.deltaTime;
-            if (lightTimer <= 0)
-            {
-                LightDarkChange(brightness.Dark);
-            }
-        }
+        //}
+        //else  //光の世界
+        //{
+        //    lightTimer -= Time.deltaTime;
+        //    if (lightTimer <= 0)
+        //    {
+        //        LightDarkChange(brightness.Dark);
+        //    }
+        //}
     }
 
     private void LightDarkChange(brightness s)
@@ -108,7 +108,7 @@ public class LightDarkWorld : MonoBehaviour
             //{
                 brightnessState = brightness.Light;
                 //Debug.Log("■■■魔法「破壊超陽光」■■■");
-                lightTimer = lightDuration;
+                //lightTimer = lightDuration;
                 text.color = Color.black;
                 LayerChange(true);
             //}
