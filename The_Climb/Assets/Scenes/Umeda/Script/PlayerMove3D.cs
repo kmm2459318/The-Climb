@@ -123,11 +123,6 @@ public class PlayerMove3D : MonoBehaviour, IConveyorReceiver
 
         Vector3 force = inputDir * airMoveForce;
 
-        switch (jump.landingJumpNumber)
-        {
-            case 1: force *= 1.2f; break;
-            case > 1: force *= 1.4f; break;
-        }
 
         RigidBody.AddForce(force, ForceMode.Acceleration);
 
