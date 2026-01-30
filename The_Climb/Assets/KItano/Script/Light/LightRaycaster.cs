@@ -3,26 +3,42 @@
 public class LightRaycaster : MonoBehaviour
 {
     public float rayDistance = 10f;
-    public LayerMask targetLayer;
+
+    // Rayが当たる対象すべて（Block + Reactive）
+    public LayerMask hitLayer;
+
+    // 光を遮るレイヤー
+    public LayerMask blockLayer;
 
     void Update()
     {
-        Vector3 direction = transform.right; // ← XY平面方向
+        Vector3 direction = transform.right; // XY平面のライト向き
 
-        Ray ray = new Ray(transform.position, direction);
+        // コライダーから少しだけ外に出すオフセット
+        const float startOffset = 0.1f;
+
+        Vector3 startPos = transform.position - direction * startOffset;
+
+        Ray ray = new Ray(startPos, direction);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, rayDistance, targetLayer))
-        {
-            RaycastReactiveObject reactive =
-                hit.collider.GetComponent<RaycastReactiveObject>();
+        if (!Physics.Raycast(ray, out hit, rayDistance, hitLayer))
+            return;
 
-            if (reactive != null)
-            {
-                reactive.OnRaycastHit();
-            }
+        // Block 判定
+        if (((1 << hit.collider.gameObject.layer) & blockLayer) != 0)
+        {
+            Debug.Log("hit");
+            return;
+        }
+
+        var reactive = hit.collider.GetComponent<RaycastReactiveObject>();
+        if (reactive != null)
+        {
+            reactive.OnRaycastHit();
         }
     }
+
 
     void OnDrawGizmos()
     {
