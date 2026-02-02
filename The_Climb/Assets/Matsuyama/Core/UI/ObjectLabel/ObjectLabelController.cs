@@ -72,7 +72,13 @@ namespace TheClimb.Core
 
         void TimeItemUpdate()    //  時間制限系アイテムのUpdate
         {
-            label.text = itemContoroller.RemainCount.ToString();
+            float remainFuseTime = itemContoroller.RemainCount;
+            int display = Mathf.CeilToInt(remainFuseTime);
+            label.text = display.ToString();    //  0じゃなくて1の表示の時に爆発させるために繰り上げ
+            if(itemContoroller.RemainCount <= 0)
+            {
+                label.enabled = false;
+            }
         }
     }
 }
