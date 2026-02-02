@@ -119,16 +119,15 @@ public class StageRandomizer : MonoBehaviour
     // 指定されたボタン番号のステージをロード
     public void StartStage(int ButtonNo)
     {
-        // ButtonNoは1始まりなので、インデックスは-1する
         int stageIndex = ButtonNo - 1;
+
+        // ★ 進行用StageIdは「1始まり」
+        PlayerPrefs.SetInt("CurrentStageId", stageIndex + 1);
+        PlayerPrefs.Save();
 
         if (stageIndex >= 0 && stageIndex < StageName.Length)
         {
             System.Loading.SceneLoader.Instance.LoadScene(StageName[stageIndex]);
-        }
-        else
-        {
-            Debug.LogError($"指定されたステージ番号 {ButtonNo} (Index: {stageIndex}) は範囲外です。");
         }
     }
 }

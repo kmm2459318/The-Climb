@@ -222,7 +222,6 @@ public class PlayerState : MonoBehaviour, IImpactable
 
             if (landingJumpCounter > landingJumpTime)
             {
-                jump.landingJumpNumber = 0;
                 special.meteorHighJumpOK = false;
                 LandingJumpReset();
             }
