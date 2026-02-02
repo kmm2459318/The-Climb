@@ -28,6 +28,13 @@ namespace Hanzzz.MeshDemolisher
         private bool requestDemolish;　　　　　　　　　　　　　　　　　　　//外部からの要求フラグ
         private bool isDemolished;　　　　　　　　　　　　　　　　　　　　 //二重破壊防止用
 
+        /// =============================
+        /// 実行時に割れ目を作る
+        /// =============================
+        private void Awake()
+        {
+            Demolish();
+        }
         // =============================
         // プレイヤーが乗ったかの判定or爆弾があったかの判定
         // =============================
