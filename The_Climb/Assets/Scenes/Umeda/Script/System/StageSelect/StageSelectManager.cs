@@ -22,6 +22,7 @@ public class StageSelectManager : MonoBehaviour
     [Header("参照")]
     public StageNode[] stages;
     public StagePath[] paths;
+    private StageRandomizer stageRandomizer;
 
     [Header("デバッグ")]
     public int startStageId = 0;
@@ -98,6 +99,30 @@ public class StageSelectManager : MonoBehaviour
 
         CopyArray(clearedStages, prevClearedStages);
         SaveClearedStages();
+    }
+
+    public void OnStageSelected(int stageId)
+    {
+        if (!IsValid(stageId))
+        {
+            stageRandomizer.StartStage(stageId);
+            return;
+        }
+        // ロックされてたら無視
+        if (!clearedStages[stageId])
+        {
+            Debug.Log("ロックされてたら無視");
+            return;
+        }
+            
+
+        Debug.Log($"Stage Selected: {stageId}");
+
+        // 例：次のシーンへ
+        PlayerPrefs.SetInt("SelectedStage", stageId);
+
+        //⭐⭐★★
+        stageRandomizer.StartStage(stageId);
     }
 
     // ===============================

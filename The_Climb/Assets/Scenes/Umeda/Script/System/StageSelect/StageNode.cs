@@ -35,6 +35,7 @@ public class StageNode : MonoBehaviour
     [Header("外部参照")]
     public StageRandomizer stageRandomizer;
     public StageRoute stageRoute;
+    public StageSelectManager stageSelectManager;
 
     // ===============================
     // Unity Lifecycle
@@ -54,9 +55,11 @@ public class StageNode : MonoBehaviour
     {
         if (playerNearby && isUnlocked && Input.GetKeyDown(KeyCode.Space))
         {
-            // StageRandomizerはButtonNoが1始まり
-            stageRandomizer.StartStage(stageId + 1);
-            stageRoute.OnStageButtonPressed(stageId);
+            // ★ ステージに入った瞬間にクリア扱い
+            PlayerPrefs.SetInt("LastClearedStage", stageId);
+            PlayerPrefs.Save();
+
+            stageSelectManager.OnStageSelected(stageId);
         }
 
         if (promptUI != null)
