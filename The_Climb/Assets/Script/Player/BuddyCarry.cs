@@ -64,11 +64,13 @@ public class BuddyCarry : MonoBehaviour
                 {
                     buddyPos.constraintActive = false;
                     buddy.transform.position = transform.position + Vector3.up * 0.5f;
+                    state.carryingBuddy = false;
                 }
                 else if (nearBuddy && !state.carryingBuddy)  //おんぶしてない場合、バディをおんぶする
                 {
                     buddyPos.constraintActive = true;
                     buddyController.moving = false;
+                    state.carryingBuddy = true;
                 }
                 else if (!state.carryingBuddy && nearCallBell)  //ベルを鳴らしてバディを誘導
                 {

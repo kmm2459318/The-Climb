@@ -25,10 +25,6 @@ public class PlayerJump : MonoBehaviour
     private float maxJumpSpeed = 12f;　//空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();　//ジャンプの速度カーブ
 
-    [Header("着地ジャンプ")]
-    public int landingJumpNumber = 0;　//着地ジャンプの連続回数
-    private float landingLowJumpPower = 15f;　//一回目着地ジャンプのパワー
-    private float landingHighJumpPower = 17f;　//二回目の着地ジャンプパワー
 
     [Header("トランポリン")]
     public bool isOnTrampoline = false;　//トランポリンに乗ってるかの判定
@@ -93,14 +89,6 @@ public class PlayerJump : MonoBehaviour
 
             special.headingAttack.SetActive(true);
 
-            if (!state.carryingBuddy)
-            {
-                if (landingJumpNumber >= 2)
-                    JumpPower = landingHighJumpPower;
-                else if (landingJumpNumber == 1)
-                    JumpPower = landingLowJumpPower;
-            }
-
             if (isOnTrampoline)
             {
                 TrampolineJumping = true;
@@ -140,7 +128,6 @@ public class PlayerJump : MonoBehaviour
 
                 if (state.landingJumpOn)
                 {
-                    landingJumpNumber++;
                     state.LandingJumpReset();
                 }
             }
@@ -150,7 +137,6 @@ public class PlayerJump : MonoBehaviour
                 {
                     jumpCoolActive = true;
                     special.meteorHighJump = true;
-                    landingJumpNumber++;
                     special.headingAttack.SetActive(true);
                 }
                 special.meteorHighJumpOK = false;
