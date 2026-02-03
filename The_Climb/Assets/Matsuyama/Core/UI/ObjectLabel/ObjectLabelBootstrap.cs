@@ -1,22 +1,32 @@
 ﻿using UnityEngine;
+using TheClimb.Item;
+using TheClimb.Astral;
+using TMPro;
 
 namespace TheClimb.Core
 {
+    [RequireComponent(typeof(ObjectLabelController))]
     public class ObjectLabelBootstrap : MonoBehaviour    //  オブジェクトラベルBootstrap
     {
-        [SerializeField, Tooltip("衝撃球のトランスフォームプロパティ")]
-        Transform _impactBallTF;
-        
+        [SerializeField]
+        ScriptableObject itemLabelDef;
+        [SerializeField]
+        Transform _labelTargetTF;
+        [SerializeField]
+        AttractableListenerBase _itemController;
+        [SerializeField]
+        TextMeshPro _label;
+
         ObjectLabelContext _ctx;
         
         void Awake()
         {
-            _ctx = new ObjectLabelContext(Camera.main.transform, _impactBallTF);
+            _ctx = new ObjectLabelContext(Camera.main.transform, _labelTargetTF, _itemController, _label);
         }
 
         void Start()
         {
-            GetComponent<ObjectLabel>().Initialize(_ctx);
+            GetComponent<ObjectLabelController>().Initialize(itemLabelDef as IItemLabelDef ,_ctx);
         }
     }
 }
