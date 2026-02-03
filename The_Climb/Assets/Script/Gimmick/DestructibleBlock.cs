@@ -14,6 +14,7 @@ public class DestructibleBlock : MonoBehaviour
     [SerializeField] private GameObject BlockObject;    // ブロック本体(ON/OFFを切り替える対象)
     [SerializeField] private MeshDemolisherExample demolisher; //足場を壊す演出
 
+    [SerializeField] private GameObject dark; // 暗闇
     [SerializeField] TimeEra Era = TimeEra.Past;// このブロックが属する時代(過去/現代)
 
     private bool IsVisible = true;  //現在ブロックが表示されているか
@@ -72,6 +73,11 @@ public class DestructibleBlock : MonoBehaviour
         {
             demolisher.RequestDemolish();
             Debug.Log("破壊します");
+        }
+
+        if (!IsActive && dark != null)
+        {
+            dark.SetActive(false);
         }
     }
 
