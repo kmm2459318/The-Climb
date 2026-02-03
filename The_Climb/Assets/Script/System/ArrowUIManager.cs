@@ -130,7 +130,7 @@ public class ArrowUIManager : MonoBehaviour
 
         arrowRect.rotation = Quaternion.Euler(0f, 0f, 0f);
 
-        pos.y += 190f;  //少し上にずらす
+        pos.y += 200f;  //少し上にずらす
 
         //位置変換
         Vector2 localPos;
