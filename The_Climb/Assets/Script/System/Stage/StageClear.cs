@@ -16,6 +16,8 @@ public class StageClear : MonoBehaviour
         int currentStageId = PlayerPrefs.GetInt("CurrentStageId", 0);
         int lastClearedStage = PlayerPrefs.GetInt("LastClearedStage", 0);
 
+        PlayerPrefs.SetInt($"{SceneManager.GetActiveScene().name}", 1);
+
         Debug.Log($"ステージ {currentStageId} クリア");
 
         // ★ 最大値のみ更新（戻り防止）
