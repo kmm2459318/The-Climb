@@ -1,6 +1,7 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 public class PlayerMind : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class PlayerMind : MonoBehaviour
     private int sanityMax = 100;             //正気度の最大値
     private bool inFog = false;              //霧の中
     private float erosionIncreaseCounter = 0f; //侵蝕増加分の追跡
+    private bool buddyStage = false;         //相棒ステージか判定
 
     void Start()
     {
@@ -18,31 +20,39 @@ public class PlayerMind : MonoBehaviour
         {
             lightDarkWorld = GameObject.Find("LightDarkWorld").GetComponent<LightDarkWorld>();
         }
+
+        if (SceneManager.GetActiveScene().name == "Nakamura")
+        {
+            buddyStage = true;
+        }
     }
 
     void Update()
     {
-        //正気度１００超えたら１００にする
-        if (state.sanityLevel > sanityMax)
+        if (buddyStage)
         {
-            state.sanityLevel = sanityMax;
-        }
-        //侵蝕度０下回ったら０にする
-        if (state.erosionLevel < 0)
-        {
-            state.erosionLevel = 0;
-        }
-
-        //暗い闇の中で侵蝕度増加
-        if (lightDarkWorld != null)
-        {
-            if (lightDarkWorld.brightnessState == LightDarkWorld.brightness.Dark)
+            //正気度１００超えたら１００にする
+            if (state.sanityLevel > sanityMax)
             {
-                ErosionIncrease();
+                state.sanityLevel = sanityMax;
             }
-            else if (!inFog)  //光かつNot霧の中で侵蝕度リセット
+            //侵蝕度０下回ったら０にする
+            if (state.erosionLevel < 0)
             {
-                ErosionReset();
+                state.erosionLevel = 0;
+            }
+
+            //暗い闇の中で侵蝕度増加
+            if (lightDarkWorld != null)
+            {
+                if (lightDarkWorld.brightnessState == LightDarkWorld.brightness.Dark)
+                {
+                    ErosionIncrease();
+                }
+                else if (!inFog)  //光かつNot霧の中で侵蝕度リセット
+                {
+                    ErosionReset();
+                }
             }
         }
     }
