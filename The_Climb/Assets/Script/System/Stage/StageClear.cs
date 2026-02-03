@@ -1,31 +1,23 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class StageClear : MonoBehaviour
 {
-    private bool isClearing = false;
+    private bool cleared = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (isClearing) return;
+        if (cleared) return;
         if (!other.CompareTag("Player")) return;
 
-        isClearing = true;
+        cleared = true;
 
-        // 現在のステージID（StageRandomizerでセット済み）
-        int currentStageId = PlayerPrefs.GetInt("CurrentStageId", 0);
-        int lastClearedStage = PlayerPrefs.GetInt("LastClearedStage", 0);
-
-        Debug.Log($"ステージ {currentStageId} クリア");
-
-        // ★ 最大値のみ更新（戻り防止）
-        if (currentStageId > lastClearedStage)
+        int stageId = PlayerPrefs.GetInt("CurrentStageId", -1);
+        if (stageId >= 0)
         {
-            PlayerPrefs.SetInt("LastClearedStage", currentStageId);
+            PlayerPrefs.SetInt("LastClearedStage", stageId);
             PlayerPrefs.Save();
         }
 
-        // ステージセレクトへ戻る
         System.Loading.SceneLoader.Instance.LoadScene("StageSelect");
     }
 }
