@@ -10,10 +10,13 @@ namespace TheClimb.Item
         ItemStateMachine itemStateMachine;                             //  ItemのStateMachine
         ImpactBallContext _ctx;
         ItemCommandProvider itemCommandProvider;                       //  アイテムコマンドプロバイダープロバイダー
+        ImpactBallRuntimeData _runtimeData;
 
         IItemStateContext itemStateContext;    //  Stateコンテキスト
 
         public IItemState currentState => itemStateMachine.CurrentState;    //  現在のステートを返す
+
+        public override float RemainCount => _runtimeData._RemainingFuseTime;
 
         private void OnEnable()
         {
@@ -27,7 +30,10 @@ namespace TheClimb.Item
             ItemEventBus.onExplosion -= HandleExplosionInpact;
         }
 
-        //public void Initialize(ImpactBallConfigSO configSO, ImpactBallRuntimeData runtimeData, ICorutineRunner corutineRunner, IPlayerDataProvider playerDataProvider)    //  初期化
+        private void Update()
+        {
+            //Debug.Log();
+        }
         public void Initialize(ImpactBallContext ctx, ICorutineRunner coroutineRunner)    //  初期化
         {
             IImpactable targetPlayer = ImpactableRegistry.GetPlayer();
@@ -38,6 +44,8 @@ namespace TheClimb.Item
             itemStateMachine = new ItemStateMachine(itemStateFactory, itemCommandProvider, this.transform);
 
             itemStateContext = new ItemStateContext(itemStateMachine, this.transform, itemStateFactory);
+
+            _runtimeData = ctx.RuntimeData;
 
             itemCommandProvider.InjectContext(itemStateMachine, itemStateContext);
             itemStateMachine.Initialize();    //  ステートマシーン初期化
