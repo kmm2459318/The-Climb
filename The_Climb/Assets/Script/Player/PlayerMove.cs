@@ -24,11 +24,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     [SerializeField] private bool upsideDown = false; // 天井歩行モード
     [SerializeField] private float customGravity = 9.81f; // 通常重力に近い値
 
-    [Header("Buddy 背中追従用")]
-    [SerializeField] private Transform buddyBackPoint;
-    [SerializeField] private float buddyBackOffsetY = 0.6f; // 地面時の背中位置
-
-
     IPlayerDataProvider PlayerDataProvider;    //  プレイヤーのデータプロバイダ
     IPlanetDataProvider PlanetDataProvider;    //  天体のデータプロバイダ
 
@@ -36,7 +31,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     public float groundMaxSpeed = 7f;   //プレイヤーの地上最高速度記憶
     public float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 40f;    //空中での移動速度
-    public float airMaxSpeed = 3f;     //空中での速度制限
+    public float airMaxSpeed = 9f;     //空中での速度制限
 
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
     public Vector3 slipVelocity;                //滑り時のVelocity
@@ -148,7 +143,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
                 }
             }
 
-            UpdateBuddyBackPoint(); 
+
         }
 
         // 4. まだ有効なColliderが見つかっていない場合、子オブジェクトを探す
@@ -221,7 +216,9 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         //// 地面の判定をリセット
         state.isGrounded = false;
 
-       Debug.Log($"{name} が上下反転！（現在: {(upsideDown ? "天井" : "地面")}）");
+       
+
+        Debug.Log($"{name} が上下反転！（現在: {(upsideDown ? "天井" : "地面")}）");
     }
 
     public void ResetGravity()
@@ -366,11 +363,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
        
         RigidBody.AddForce(force, ForceMode.Acceleration);
 
-        // 最大空中速度を制限
-        if (!special.quickJumpUsed && !special.highJumpUsed)
-        {
-            airMaxSpeed = 10f;
-        }
         Vector3 horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
         if (horizontalVelocity.magnitude > airMaxSpeed)
         {
@@ -477,21 +469,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         stuckTimer = 0f;
     }
 }
-
-    private void UpdateBuddyBackPoint()
-    {
-        if (buddyBackPoint == null) return;
-
-        Vector3 localPos = buddyBackPoint.localPosition;
-
-        // 天井なら背中位置を反転
-        localPos.y = upsideDown
-            ? -Mathf.Abs(buddyBackOffsetY)
-            : Mathf.Abs(buddyBackOffsetY);
-
-        buddyBackPoint.localPosition = localPos;
-    }
-
 
     private IEnumerator TemporarilyDisableColliders()
     {
