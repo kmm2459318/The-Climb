@@ -17,10 +17,15 @@ public class RespawnOnTouch : MonoBehaviour
     {
         if (collision.collider.CompareTag("Player"))
         {
-            if (!playerBarrier.TryBlockAttack())
-            {
-                PlayerRespawnUmeda respawn = collision.collider.GetComponent<PlayerRespawnUmeda>();
+            PlayerRespawnUmeda respawn = collision.collider.GetComponent<PlayerRespawnUmeda>();
 
+            if (playerBarrier == null)
+            {
+                respawn.Respawn();
+                return;
+            }
+            else if (!playerBarrier.TryBlockAttack())
+            {
                 if (respawn != null)
                 {
                     respawn.Respawn();

@@ -21,7 +21,7 @@ public class SanityErosionCountText : MonoBehaviour
     {
         if (lightDarkWorld != null)
         {
-            text.text = lightDarkWorld.brightnessState + " SAN : " + playerState.sanityLevel + " ERO : " + playerState.erosionLevel;
+            text.text = lightDarkWorld.brightnessState + " SAN : " + playerState.sanityLevel;
         }
     }
 }
