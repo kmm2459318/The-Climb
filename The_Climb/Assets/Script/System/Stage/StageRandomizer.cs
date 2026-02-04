@@ -44,6 +44,14 @@ public class StageRandomizer : MonoBehaviour
 
     public void StartStage(int stageId)
     {
+        if (stageId < 0 || stageId >= StageName.Length)
+        {
+            Debug.LogError(
+                $"StageRandomizer: stageId={stageId} が StageName の範囲外（Size={StageName.Length}）"
+            );
+            return;
+        }
+
         PlayerPrefs.SetInt("CurrentStageId", stageId);
         PlayerPrefs.Save();
 

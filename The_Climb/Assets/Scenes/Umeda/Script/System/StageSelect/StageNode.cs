@@ -81,6 +81,8 @@ public class StageNode : MonoBehaviour
 
     public void SetAvailable()
     {
+        Debug.Log($"{name} SetAvailable");
+
         isInteractable = true;
 
         if (nodeRenderer && availableMat)

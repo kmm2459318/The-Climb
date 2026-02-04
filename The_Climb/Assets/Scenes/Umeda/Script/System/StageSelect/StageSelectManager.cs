@@ -35,6 +35,7 @@ public class StageSelectManager : MonoBehaviour
 
     [Header("デバッグ：クリア状態")]
     [SerializeField] private bool[] clearedStages;
+    bool[] selectedByBranch;
 
     [Header("デバッグ：分岐シミュレーション")]
     [SerializeField] private DebugBranch[] debugBranches;
@@ -64,6 +65,8 @@ public class StageSelectManager : MonoBehaviour
             paths = FindObjectsOfType<StagePath>(true);
 
         clearedStages = new bool[stages.Length];
+
+        selectedByBranch = new bool[stages.Length];
     }
 
     private void OnEnable()
@@ -81,14 +84,25 @@ public class StageSelectManager : MonoBehaviour
         if (IsValid(startStageId))
             clearedStages[startStageId] = true;
 
-        // ステージ突入＝即クリア
-        if (PlayerPrefs.HasKey("CurrentStageId"))
-        {
-            int entered = PlayerPrefs.GetInt("CurrentStageId");
-            if (IsValid(entered))
-                clearedStages[entered] = true;
+        //// ステージ突入＝即クリア
+        //if (PlayerPrefs.HasKey("CurrentStageId"))
+        //{
+        //    int entered = PlayerPrefs.GetInt("CurrentStageId");
+        //    if (IsValid(entered))
+        //        clearedStages[entered] = true;
 
-            PlayerPrefs.DeleteKey("CurrentStageId");
+        //    PlayerPrefs.DeleteKey("CurrentStageId");
+        //}
+
+        // ★ ゴールしたステージのみをクリア扱いにする
+        if (PlayerPrefs.HasKey("JustClearedStageId"))
+        {
+            int cleared = PlayerPrefs.GetInt("JustClearedStageId");
+
+            if (IsValid(cleared))
+                clearedStages[cleared] = true;
+
+            PlayerPrefs.DeleteKey("JustClearedStageId");
         }
 
         ApplyAllRules();
@@ -189,7 +203,7 @@ public class StageSelectManager : MonoBehaviour
         foreach (var rule in branchRules)
         {
             if (!IsValid(rule.triggerStage)) continue;
-            if (!clearedStages[rule.triggerStage]) continue;
+            if (!selectedByBranch[rule.triggerStage]) continue;
 
             bool fromMatch = false;
             foreach (int f in rule.blockFromStages)
@@ -237,13 +251,22 @@ public class StageSelectManager : MonoBehaviour
 
     private void ApplyDebugBranches()
     {
+        // =========================
         // 全リセット
+        // =========================
         for (int i = 0; i < clearedStages.Length; i++)
+        {
             clearedStages[i] = false;
+            selectedByBranch[i] = false;
+        }
 
-        // Start は常にクリア
-        clearedStages[startStageId] = true;
+        // Start は常にクリア扱い
+        if (IsValid(startStageId))
+            clearedStages[startStageId] = true;
 
+        // =========================
+        // 分岐の連鎖解決
+        // =========================
         bool changed;
         do
         {
@@ -251,7 +274,9 @@ public class StageSelectManager : MonoBehaviour
 
             foreach (var b in debugBranches)
             {
+                // ---------
                 // 親条件チェック
+                // ---------
                 bool parentOK = true;
                 foreach (int p in b.parentStages)
                 {
@@ -262,6 +287,7 @@ public class StageSelectManager : MonoBehaviour
                     }
                 }
 
+                // 親が成立していない → この分岐は無効
                 if (!parentOK)
                 {
                     if (b.selectedStage != -1)
@@ -272,18 +298,21 @@ public class StageSelectManager : MonoBehaviour
                     continue;
                 }
 
-                // 選択反映
+                // ---------
+                // 選択ステージ反映
+                // ---------
                 if (b.selectedStage != -1 && IsValid(b.selectedStage))
                 {
                     if (!clearedStages[b.selectedStage])
                     {
                         clearedStages[b.selectedStage] = true;
+                        selectedByBranch[b.selectedStage] = true; // ★重要
                         changed = true;
                     }
                 }
             }
         }
-        while (changed); // 連鎖分岐対応
+        while (changed); // 分岐2 → 分岐3 などの連鎖対応
     }
 
 
