@@ -1,10 +1,9 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerAbilityManager : MonoBehaviour
 {
-    
-   
     public GameObject umeAbi;
     public GameObject kitaAbi;
     public GameObject nakaAbi;
@@ -39,10 +38,19 @@ public class PlayerAbilityManager : MonoBehaviour
         //}
 
         for (int i = 0; i < abilityBools.Length; i++)
+        {
             if (PlayerPrefs.GetInt($"{abilityNames[i]}") == 0)
             {
-                abilityBools[i].active = false;
+                abilityBools[i].SetActive(false);
+                Debug.Log("出すスキルを表示する");
+                Debug.Log($"{abilityNames[i]} / active={abilityBools[i].activeSelf}");
+
+            }else
+            {
+                abilityBools[i].SetActive(true);
+                Debug.Log($"{abilityNames[i]} / active={abilityBools[i].activeSelf}");
             }
+        }
 
         AbilityChange(0); // スタート時のアビリティを設定
     }
