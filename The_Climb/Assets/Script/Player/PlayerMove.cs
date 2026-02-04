@@ -36,7 +36,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     public float groundMaxSpeed = 7f;   //プレイヤーの地上最高速度記憶
     public float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 40f;    //空中での移動速度
-    public float airMaxSpeed = 3f;     //空中での速度制限
+    public float airMaxSpeed = 9f;     //空中での速度制限
 
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
     public Vector3 slipVelocity;                //滑り時のVelocity
@@ -366,11 +366,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
        
         RigidBody.AddForce(force, ForceMode.Acceleration);
 
-        // 最大空中速度を制限
-        if (!special.quickJumpUsed && !special.highJumpUsed)
-        {
-            airMaxSpeed = 10f;
-        }
         Vector3 horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
         if (horizontalVelocity.magnitude > airMaxSpeed)
         {
