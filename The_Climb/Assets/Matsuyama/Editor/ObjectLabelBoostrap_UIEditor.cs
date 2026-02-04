@@ -11,7 +11,7 @@ namespace TheClimb.Core
             serializedObject.Update();
 
             EditorGUILayout.HelpBox("ラベルのScriptableObject", MessageType.Info);
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("itemLabelDef"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("_labelConfig"));
 
             EditorGUILayout.HelpBox("ラベルを表示する対象", MessageType.Info);
             EditorGUILayout.PropertyField(serializedObject.FindProperty("_labelTargetTF"));
