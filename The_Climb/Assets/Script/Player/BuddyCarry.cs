@@ -77,7 +77,6 @@ public class BuddyCarry : MonoBehaviour
                     buddyController.GuideTo(callBellPosX);
                 }
             }
-
         }
     }
 
