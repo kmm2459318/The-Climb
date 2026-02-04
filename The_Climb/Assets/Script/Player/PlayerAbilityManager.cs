@@ -45,6 +45,10 @@ public class PlayerAbilityManager : MonoBehaviour
                 Debug.Log("出すスキルを表示する");
                 Debug.Log($"{abilityNames[i]} / active={abilityBools[i].activeSelf}");
 
+            }else
+            {
+                abilityBools[i].SetActive(true);
+                Debug.Log($"{abilityNames[i]} / active={abilityBools[i].activeSelf}");
             }
         }
 
