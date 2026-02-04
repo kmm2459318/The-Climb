@@ -176,7 +176,7 @@ public class PlayerState : MonoBehaviour, IImpactable
             }
 
             //正気度０もしくは侵蝕度１００で死
-            if (sanityLevel <= 0 || erosionLevel >= 100)
+            if (sanityLevel <= 0)
             {
                 PlayerDead();
             }
