@@ -17,7 +17,7 @@ public class KidnapBuddy : MonoBehaviour
         if (!handController.buddyController.beingKidnapped && !handController.isKidnapping 
             && ((gameObject.layer == 18 && lightDark.brightnessState == LightDarkWorld.brightness.Light) 
             || (gameObject.layer == 19 && lightDark.brightnessState == LightDarkWorld.brightness.Dark) 
-            || gameObject.layer == 0))
+            || gameObject.layer == 29))
         {
             if (other.CompareTag("Buddy") && !handController.playerState.carryingBuddy)  //Buddyが孤立してる場合
             {
