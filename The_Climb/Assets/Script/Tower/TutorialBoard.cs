@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class TutorialBoard : MonoBehaviour
 {
@@ -12,17 +13,30 @@ public class TutorialBoard : MonoBehaviour
     [SerializeField] private bool imageChange = false;  //チュートリアル用の画像を切り替えるか
     [Header("画像の切り替わる間隔の時間")]
     [SerializeField] private float changeCoolTime = 1f;  //チュートリアル画像の切り替え時間
+    [Header("ビデオプレイヤー")]
+    [SerializeField] private VideoPlayer videoPlayer;  //チュートリアル画像の切り替え時間
     private float changeTimer = 0f;  //チュートリアル画像の切り替えタイマー
     private bool displayed = false;  //今表示されているか判定
     private float currentY = 0f;  //現在のYのScale
     private float appearSpeed = 5f;  //出現・消滅スピード
 
+    private void Awake()
+    {
+        if (videoPlayer != null)    //  チュートリアルビデオ再生準備
+        {
+            videoPlayer.playOnAwake = false;
+            videoPlayer.time = 0;
+            videoPlayer.Prepare();
+            videoPlayer.prepareCompleted += OnPrepared;
+        }
+    }
+
     void Start()
     {
         Transform parent = transform.parent;
         visual = parent.Find("Visual").gameObject;
-        tutorial1 = visual.transform.Find("Tutorial1").gameObject;
-        tutorial2 = visual.transform.Find("Tutorial2").gameObject;
+        tutorial1 = visual.transform.Find("Tutorial1")?.gameObject;
+        tutorial2 = visual.transform.Find("Tutorial2")?.gameObject;
 
         //初期セッティング
         if (alwaysAppeared)
@@ -34,8 +48,11 @@ public class TutorialBoard : MonoBehaviour
         }
         else
             visual.transform.localScale = new Vector3(1, 0, 1);
-        tutorial1.SetActive(true);
-        tutorial2.SetActive(false);
+        if (tutorial1 != null && tutorial2 != null)
+        {
+            tutorial1.SetActive(true);
+            tutorial2.SetActive(false);
+        }
     }
 
     void Update()
@@ -53,6 +70,12 @@ public class TutorialBoard : MonoBehaviour
                 changeTimer = 0f;
             }
         }
+    }
+
+    void OnPrepared(VideoPlayer vp)    //  ビデオ再生準備ができた時に動く
+    {
+        vp.time = 0;
+        vp.Play();
     }
 
     //看板出現
@@ -100,8 +123,11 @@ public class TutorialBoard : MonoBehaviour
 
         //完全消滅のためリセット
         changeTimer = 0f;
-        tutorial1.SetActive(true);
-        tutorial2.SetActive(false);
+        if (tutorial1 != null && tutorial2 != null)
+        {
+            tutorial1.SetActive(true);
+            tutorial2.SetActive(false);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
