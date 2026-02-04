@@ -28,6 +28,13 @@ namespace Hanzzz.MeshDemolisher
         private bool requestDemolish;　　　　　　　　　　　　　　　　　　　//外部からの要求フラグ
         private bool isDemolished;　　　　　　　　　　　　　　　　　　　　 //二重破壊防止用
 
+        /// =============================
+        /// 実行時に割れ目を作る
+        /// =============================
+        private void Awake()
+        {
+            Demolish();
+        }
         // =============================
         // プレイヤーが乗ったかの判定or爆弾があったかの判定
         // =============================
@@ -162,6 +169,7 @@ namespace Hanzzz.MeshDemolisher
         [ContextMenu("割れ目の調整（実行中用）")] 
         public async void DemolishAsync() 
         {
+            targetGameObject.SetActive(true);
             Enumerable.Range(0, resultParent.childCount).Select(i => resultParent.GetChild(i)).ToList().ForEach(x => DestroyImmediate(x.gameObject));
             List<Transform> breakPoints = Enumerable.Range(0, breakPointsParent.childCount).Select(x => breakPointsParent.GetChild(x)).ToList();
             var watch = System.Diagnostics.Stopwatch.StartNew(); List<GameObject> res = await meshDemolisher.DemolishAsync(targetGameObject, breakPoints, interiorMaterial); 
