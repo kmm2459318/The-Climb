@@ -12,21 +12,27 @@ public class StageClear : MonoBehaviour
 
         isClearing = true;
 
-        // 現在のステージID（StageRandomizerでセット済み）
-        int currentStageId = PlayerPrefs.GetInt("CurrentStageId", 0);
-        int lastClearedStage = PlayerPrefs.GetInt("LastClearedStage", 0);
+        // StageRandomizer / StageSelectManager 共通で使っているID
+        int currentStageId = PlayerPrefs.GetInt("CurrentStageId", -1);
 
+        if (currentStageId == -1)
+        {
+            Debug.LogError("StageClear: CurrentStageId が取得できません");
+        }
+        else
+        {
+            Debug.Log($"ステージ {currentStageId} をクリア");
         string key = SceneManager.GetActiveScene().name;
         PlayerPrefs.SetInt(key, 1);
 
         Debug.Log($"{key} の値 = " + PlayerPrefs.GetInt(key));
 
-        Debug.Log($"ステージ {currentStageId} クリア");
+            // ★ ゴール時のみ「本当にクリアしたステージ」を渡す
+            PlayerPrefs.SetInt("JustClearedStageId", currentStageId);
 
-        // ★ 最大値のみ更新（戻り防止）
-        if (currentStageId > lastClearedStage)
-        {
-            PlayerPrefs.SetInt("LastClearedStage", currentStageId);
+            // （任意）シーン単位のクリアフラグが必要なら残す
+            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name, 1);
+
             PlayerPrefs.Save();
         }
 
