@@ -14,7 +14,7 @@ public class BossStalkerHandController : MonoBehaviour
     private float stalkTime = 8.0f;      //行動：Stalkの時間
     private float stopTime = 0.5f;       //行動：Stopの時間
     private float stalkerTimer = 0f;     //行動ローテーション用タイマー
-    private float speed = 4.0f;          //移動速度
+    private float speed = 3.0f;          //移動速度
     private float childRadius = 6f;      //追従の半径
     private Vector3 stalkTarget = Vector3.zero;  //追跡ターゲット
 
