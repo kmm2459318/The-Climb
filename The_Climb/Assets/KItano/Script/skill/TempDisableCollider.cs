@@ -4,17 +4,27 @@ using System.Collections.Generic;
 
 public class TempDisableColliders : MonoBehaviour
 {
-    [SerializeField] private List<Collider> colliders = new List<Collider>(); // 無効化したいコライダーたち
-    [SerializeField] private float duration = 2f; // 無効化しておく時間
-    [SerializeField] private float cooldownTime = 3f; // クールタイム(秒)
-    private float currentCooldownTimer = 0f; // クールタイムタイマー
+    [SerializeField] private List<Collider> colliders = new List<Collider>();
+
+    [SerializeField] private float duration = 2f;
+    [SerializeField] private float cooldownTime = 3f;
+
+    [Header("スキル使用回数制限")]
+    [SerializeField] private int maxUseCount = 3;   // ← 後から自由に変更可能
+    private int currentUseCount = 0;                 // ← 今まで使った回数
+
+    private float currentCooldownTimer = 0f;
     private bool isRunning = false;
 
     void Update()
     {
-        // isRunning(効果中またはクールタイム中)なら発動できない
-        if (Input.GetKeyDown(KeyCode.Q) && !isRunning && PlayerPrefs.GetInt("KitanoAbi") == 1)
+        // 使用条件
+        if (Input.GetKeyDown(KeyCode.Q)
+            && !isRunning
+            && currentUseCount < maxUseCount
+            && PlayerPrefs.GetInt("KitanoAbi") == 1)
         {
+            currentUseCount++; // ★ 発動した瞬間にカウント
             StartCoroutine(DisableRoutine());
         }
     }
@@ -23,24 +33,23 @@ public class TempDisableColliders : MonoBehaviour
     {
         isRunning = true;
 
-        // 全コライダーを無効化
+        // Collider 無効化
         foreach (var col in colliders)
         {
             if (col != null)
                 col.enabled = false;
         }
 
-        // 指定時間待つ(効果時間)
         yield return new WaitForSeconds(duration);
 
-        // 全コライダーを再び有効化
+        // Collider 有効化
         foreach (var col in colliders)
         {
             if (col != null)
                 col.enabled = true;
         }
-        
-        // クールタイム処理
+
+        // クールタイム
         currentCooldownTimer = 0f;
         while (currentCooldownTimer < cooldownTime)
         {
@@ -53,14 +62,11 @@ public class TempDisableColliders : MonoBehaviour
     }
 
     /// <summary>
-    /// クールタイム進行状況を取得(0.0~1.0、1.0が満タン)
+    /// クールタイム進行状況 (0.0〜1.0)
     /// </summary>
     public float GetCooldownProgress()
     {
-        if (!isRunning)
-        {
-            return 0f; // 待機状態
-        }
+        if (!isRunning) return 0f;
 
         if (currentCooldownTimer > 0f)
         {
@@ -69,5 +75,13 @@ public class TempDisableColliders : MonoBehaviour
         }
 
         return 0f;
+    }
+
+    /// <summary>
+    /// 残り使用回数を取得（UI用）
+    /// </summary>
+    public int GetRemainingUseCount()
+    {
+        return maxUseCount - currentUseCount;
     }
 }
