@@ -2,6 +2,6 @@
 {
     public interface IItemLabelDef    //  アイテム定義インターフェース
     {
-        ItemKind ItemKind { get; }    //  アイテムの種類
+        ObjectKind ItemKind { get; }    //  アイテムの種類
     }
 }

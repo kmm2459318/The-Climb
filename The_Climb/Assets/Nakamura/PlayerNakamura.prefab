@@ -128,7 +128,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7051969432426644713
 Transform:
   m_ObjectHideFlags: 0
@@ -146,7 +146,7 @@ Transform:
   - {fileID: 4358670078306372837}
   - {fileID: 8324916517863604317}
   - {fileID: 5732955722947232990}
-  m_Father: {fileID: 2842087964171949232}
+  m_Father: {fileID: 7913675319463823891}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1212621685012259266
 GameObject:
@@ -1074,6 +1074,7 @@ MonoBehaviour:
   - {fileID: 5500657178859689209}
   duration: 0.5
   cooldownTime: 3
+  maxUseCount: 3
 --- !u!135 &5500657178859689209
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1125,6 +1126,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4482164429748942666}
+  - {fileID: 7051969432426644713}
   - {fileID: 1494689640004218747}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1587,7 +1589,6 @@ Transform:
   - {fileID: 3244965420165921694}
   - {fileID: 8154169629791860124}
   - {fileID: 7900053413377813681}
-  - {fileID: 7051969432426644713}
   m_Father: {fileID: 1494689640004218747}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3935254520221966741

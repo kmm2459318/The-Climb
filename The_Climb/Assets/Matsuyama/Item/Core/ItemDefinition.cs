@@ -6,11 +6,11 @@ namespace TheClimb.Item
     public class impactBallLabelDef : ScriptableObject , IItemLabelDef    //  アイテム定義
     {
         [Header("アイテムの種類")]
-        [SerializeField] ItemKind itemKind;    //  アイテムの種類(Inspector用)
+        [SerializeField] ObjectKind itemKind;    //  アイテムの種類(Inspector用)
         [Header("アイテムの表示位置補正")]
         [SerializeField] Vector3 LabelOffset;    //  ラベル表示位置補正
 
         //  --  Public Propety
-        public ItemKind ItemKind => itemKind;    //  アイテムの種類
+        public ObjectKind ItemKind => itemKind;    //  アイテムの種類
     }
 }
