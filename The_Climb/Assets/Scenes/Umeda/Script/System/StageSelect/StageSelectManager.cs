@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using static StageSelectManager;
 
 [System.Serializable]
 public class BranchRule
@@ -23,23 +24,37 @@ public class StageSelectManager : MonoBehaviour
     public StageNode[] stages;
     public StagePath[] paths;
 
-    [Header("デバッグ")]
+    [Header("開始ステージ")]
     public int startStageId = 0;
-    public bool[] clearedStages;
 
-    [Header("分岐ルール（Path排他）")]
+    [Header("分岐ルール（排他）")]
     public BranchRule[] branchRules;
 
-    [Header("ステージ解放条件（OR依存）")]
+    [Header("OR解放条件")]
     public StageRequirement[] stageRequirements;
 
-    private bool[] prevClearedStages;
+    [Header("デバッグ：クリア状態")]
+    [SerializeField] private bool[] clearedStages;
+    bool[] selectedByBranch;
+
+    [Header("デバッグ：分岐シミュレーション")]
+    [SerializeField] private DebugBranch[] debugBranches;
+
+    [System.Serializable]
+    public class DebugBranch
+    {
+        public int branchIndex;          // 分岐番号（0,1,2...）
+        public int[] parentStages;       // この分岐が有効になる条件
+        public int[] selectableStages;   // この分岐で選べるステージ
+
+        [HideInInspector]
+        public int selectedStage = -1;   // 選択中（-1 = 未選択）
+    }
 
     private const string CLEARED_KEY = "ClearedStages";
-    private const string LAST_CLEARED_KEY = "LastClearedStage";
 
     // ===============================
-    // Lifecycle
+    // Unity Lifecycle
     // ===============================
     private void Awake()
     {
@@ -49,10 +64,9 @@ public class StageSelectManager : MonoBehaviour
         if (paths == null || paths.Length == 0)
             paths = FindObjectsOfType<StagePath>(true);
 
-        if (clearedStages == null || clearedStages.Length != stages.Length)
-            clearedStages = new bool[stages.Length];
+        clearedStages = new bool[stages.Length];
 
-        prevClearedStages = new bool[stages.Length];
+        selectedByBranch = new bool[stages.Length];
     }
 
     private void OnEnable()
@@ -63,154 +77,110 @@ public class StageSelectManager : MonoBehaviour
     private IEnumerator Init()
     {
         yield return null;
-        yield return null;
 
-        // ① 永続データロード
         LoadClearedStages();
 
-        // ② Stage0は常にON
-        clearedStages[startStageId] = true;
-
-        // ③ 今回クリア分を反映（1回限り）
-        ApplyLastClearedStage();
-
-        // ④ ルール適用
-        ApplyAllRules();
-
-        // ⑤ 表示更新
-        Refresh();
-
-        CopyArray(clearedStages, prevClearedStages);
-        SaveClearedStages();
-    }
-
-    private void Update()
-    {
-        if (!HasClearedChanged())
-            return;
-
-        // Stage0保証
-        if (!clearedStages[startStageId])
+        // Start は常にクリア
+        if (IsValid(startStageId))
             clearedStages[startStageId] = true;
 
+        //// ステージ突入＝即クリア
+        //if (PlayerPrefs.HasKey("CurrentStageId"))
+        //{
+        //    int entered = PlayerPrefs.GetInt("CurrentStageId");
+        //    if (IsValid(entered))
+        //        clearedStages[entered] = true;
+
+        //    PlayerPrefs.DeleteKey("CurrentStageId");
+        //}
+
+        // ★ ゴールしたステージのみをクリア扱いにする
+        if (PlayerPrefs.HasKey("JustClearedStageId"))
+        {
+            int cleared = PlayerPrefs.GetInt("JustClearedStageId");
+
+            if (IsValid(cleared))
+                clearedStages[cleared] = true;
+
+            PlayerPrefs.DeleteKey("JustClearedStageId");
+        }
+
         ApplyAllRules();
         Refresh();
-
-        CopyArray(clearedStages, prevClearedStages);
         SaveClearedStages();
     }
 
     // ===============================
-    // ルール総適用
+    // 外部呼び出し
+    // ===============================
+    public void OnStageSelected(int stageId)
+    {
+        if (!IsValid(stageId)) return;
+
+        PlayerPrefs.SetInt("CurrentStageId", stageId);
+        PlayerPrefs.Save();
+
+        FindObjectOfType<StageRandomizer>().StartStage(stageId);
+    }
+
+    // ===============================
+    // ルール適用
     // ===============================
     private void ApplyAllRules()
     {
-        bool changed;
-        do
-        {
-            changed = false;
-            changed |= ApplyStageRequirements();
-            changed |= ApplyBranchExclusionToClearedStages();
-
-            if (!clearedStages[startStageId])
-            {
-                clearedStages[startStageId] = true;
-                changed = true;
-            }
-        }
-        while (changed);
+        ApplyStageRequirements();
     }
 
-    // ===============================
-    // OR依存
-    // ===============================
-    private bool ApplyStageRequirements()
+    // OR 条件
+    private void ApplyStageRequirements()
     {
-        bool changed = false;
-
         foreach (var req in stageRequirements)
         {
-            if (req.stage == startStageId) continue;
             if (!IsValid(req.stage)) continue;
 
-            bool satisfied = false;
-            foreach (int parent in req.requiredAny)
+            bool ok = false;
+            foreach (int p in req.requiredAny)
             {
-                if (IsValid(parent) && clearedStages[parent])
+                if (IsValid(p) && clearedStages[p])
                 {
-                    satisfied = true;
+                    ok = true;
                     break;
                 }
             }
 
-            if (!satisfied && clearedStages[req.stage])
-            {
+            if (!ok)
                 clearedStages[req.stage] = false;
-                changed = true;
-            }
         }
-
-        return changed;
     }
 
     // ===============================
-    // 分岐排他
-    // ===============================
-    private bool ApplyBranchExclusionToClearedStages()
-    {
-        bool changed = false;
-
-        foreach (var rule in branchRules)
-        {
-            if (!IsValid(rule.triggerStage)) continue;
-            if (!clearedStages[rule.triggerStage]) continue;
-
-            for (int i = 0; i < rule.blockFromStages.Length; i++)
-            {
-                int from = rule.blockFromStages[i];
-                int to = rule.blockToStages[i];
-
-                if (to == startStageId) continue;
-                if (!IsValid(from) || !IsValid(to)) continue;
-
-                if (clearedStages[from] && clearedStages[to])
-                {
-                    clearedStages[to] = false;
-                    changed = true;
-                }
-            }
-        }
-
-        return changed;
-    }
-
-    // ===============================
-    // 表示更新
+    // 表示更新（Path 主体）
     // ===============================
     private void Refresh()
     {
-        HashSet<StagePath> blockedPaths = CalculateBlockedPaths();
-
+        // ① 初期化：全部 Locked
         foreach (var s in stages)
         {
-            s.gameObject.SetActive(true);
+            s.isInteractable = false;
             s.SetLocked();
         }
 
         foreach (var p in paths)
             p.SetState(StagePath.PathState.Locked);
 
-        stages[startStageId].SetAvailable();
-        stages[startStageId].SetCleared();
+        // ② クリア済み
+        for (int i = 0; i < stages.Length; i++)
+        {
+            if (!clearedStages[i]) continue;
 
-        for (int i = 0; i < clearedStages.Length; i++)
-            if (clearedStages[i])
-                stages[i].SetCleared();
+            stages[i].SetCleared();
+        }
 
+        // ③ Path ベースで進行可能判定
         foreach (var path in paths)
         {
-            if (blockedPaths.Contains(path)) continue;
             if (!clearedStages[path.fromStage]) continue;
+            if (IsBlockedPath(path)) continue;
 
             if (clearedStages[path.toStage])
             {
@@ -219,34 +189,40 @@ public class StageSelectManager : MonoBehaviour
             else
             {
                 path.SetState(StagePath.PathState.Available);
+                stages[path.toStage].isInteractable = true;
                 stages[path.toStage].SetAvailable();
             }
         }
     }
 
     // ===============================
-    // Path排他
+    // 分岐判定（★ここが核心）
     // ===============================
-    private HashSet<StagePath> CalculateBlockedPaths()
+    private bool IsBlockedPath(StagePath path)
     {
-        HashSet<StagePath> blocked = new HashSet<StagePath>();
-
         foreach (var rule in branchRules)
         {
             if (!IsValid(rule.triggerStage)) continue;
-            if (!clearedStages[rule.triggerStage]) continue;
+            if (!selectedByBranch[rule.triggerStage]) continue;
 
-            for (int i = 0; i < rule.blockFromStages.Length; i++)
+            bool fromMatch = false;
+            foreach (int f in rule.blockFromStages)
             {
-                int from = rule.blockFromStages[i];
-                int to = rule.blockToStages[i];
+                if (path.fromStage == f)
+                {
+                    fromMatch = true;
+                    break;
+                }
+            }
+            if (!fromMatch) continue;
 
-                foreach (var path in paths)
-                    if (path.fromStage == from && path.toStage == to)
-                        blocked.Add(path);
+            foreach (int t in rule.blockToStages)
+            {
+                if (path.toStage == t)
+                    return true;
             }
         }
-        return blocked;
+        return false;
     }
 
     // ===============================
@@ -261,24 +237,11 @@ public class StageSelectManager : MonoBehaviour
 
     private void LoadClearedStages()
     {
-        if (!PlayerPrefs.HasKey(CLEARED_KEY))
-            return;
+        if (!PlayerPrefs.HasKey(CLEARED_KEY)) return;
 
         string[] parts = PlayerPrefs.GetString(CLEARED_KEY).Split(',');
-
         for (int i = 0; i < parts.Length && i < clearedStages.Length; i++)
             bool.TryParse(parts[i], out clearedStages[i]);
-    }
-
-    private void ApplyLastClearedStage()
-    {
-        if (!PlayerPrefs.HasKey(LAST_CLEARED_KEY)) return;
-
-        int stage = PlayerPrefs.GetInt(LAST_CLEARED_KEY);
-        if (IsValid(stage))
-            clearedStages[stage] = true;
-
-        PlayerPrefs.DeleteKey(LAST_CLEARED_KEY);
     }
 
     // ===============================
@@ -286,17 +249,83 @@ public class StageSelectManager : MonoBehaviour
     // ===============================
     private bool IsValid(int id) => id >= 0 && id < stages.Length;
 
-    private bool HasClearedChanged()
+    private void ApplyDebugBranches()
     {
+        // =========================
+        // 全リセット
+        // =========================
         for (int i = 0; i < clearedStages.Length; i++)
-            if (clearedStages[i] != prevClearedStages[i])
-                return true;
-        return false;
+        {
+            clearedStages[i] = false;
+            selectedByBranch[i] = false;
+        }
+
+        // Start は常にクリア扱い
+        if (IsValid(startStageId))
+            clearedStages[startStageId] = true;
+
+        // =========================
+        // 分岐の連鎖解決
+        // =========================
+        bool changed;
+        do
+        {
+            changed = false;
+
+            foreach (var b in debugBranches)
+            {
+                // ---------
+                // 親条件チェック
+                // ---------
+                bool parentOK = true;
+                foreach (int p in b.parentStages)
+                {
+                    if (!IsValid(p) || !clearedStages[p])
+                    {
+                        parentOK = false;
+                        break;
+                    }
+                }
+
+                // 親が成立していない → この分岐は無効
+                if (!parentOK)
+                {
+                    if (b.selectedStage != -1)
+                    {
+                        b.selectedStage = -1;
+                        changed = true;
+                    }
+                    continue;
+                }
+
+                // ---------
+                // 選択ステージ反映
+                // ---------
+                if (b.selectedStage != -1 && IsValid(b.selectedStage))
+                {
+                    if (!clearedStages[b.selectedStage])
+                    {
+                        clearedStages[b.selectedStage] = true;
+                        selectedByBranch[b.selectedStage] = true; // ★重要
+                        changed = true;
+                    }
+                }
+            }
+        }
+        while (changed); // 分岐2 → 分岐3 などの連鎖対応
     }
 
-    private void CopyArray(bool[] src, bool[] dst)
+
+#if UNITY_EDITOR
+    private void OnValidate()
     {
-        for (int i = 0; i < src.Length; i++)
-            dst[i] = src[i];
+        if (!Application.isPlaying) return;
+        if (stages == null || clearedStages == null) return;
+
+        ApplyDebugBranches();
+        ApplyAllRules();
+        Refresh();
+        SaveClearedStages();
     }
+#endif
 }

@@ -10,6 +10,10 @@ public class StageRoute : MonoBehaviour
     // 通過済みステージを保存
     private HashSet<int> visitedStages = new HashSet<int>();
 
+    // ★追加：直前の分岐情報
+    private int lastFromStage = -1;
+    private int lastToStage = -1;
+
     // ステージ分岐辞書
     private Dictionary<int, List<int>> routes = new Dictionary<int, List<int>>()
     {
@@ -26,38 +30,42 @@ public class StageRoute : MonoBehaviour
 
     void Start()
     {
-        // 直前に選ばれたステージ番号を取得（初回は0）
         int lastStage = PlayerPrefs.GetInt("SelectStage", 0);
 
-        // 通過済みステージの情報を読み込み
+        lastFromStage = PlayerPrefs.GetInt("LastFromStage", -1);
+        lastToStage = PlayerPrefs.GetInt("LastToStage", -1);
+
         LoadVisitedStages();
 
-        // 最初に有効化するボタンを設定
-        SetActiveButtons(routes[lastStage]);
+        List<int> actives = new List<int>(routes[lastStage]);
+
+        // ★分岐制御：選ばれなかった方をロック
+        if (lastFromStage == lastStage && lastToStage != -1)
+        {
+            actives.RemoveAll(x => x != lastToStage);
+        }
+
+        SetActiveButtons(actives);
     }
 
     public void OnStageButtonPressed(int buttonNumber)
     {
         Debug.Log("選択されたボタン番号：" + buttonNumber);
 
-        // 通過済みとして登録
+        int currentStage = PlayerPrefs.GetInt("SelectStage", 0);
+
+        // ★分岐情報を保存
+        PlayerPrefs.SetInt("LastFromStage", currentStage);
+        PlayerPrefs.SetInt("LastToStage", buttonNumber);
+
         visitedStages.Add(buttonNumber);
         SaveVisitedStages();
 
-        // 次に進むステージを決定
-        int nextStage = buttonNumber;
-        PlayerPrefs.SetInt("SelectStage", nextStage);
+        PlayerPrefs.SetInt("SelectStage", buttonNumber);
 
-        // 次の選択肢を表示
-        if (routes.ContainsKey(nextStage))
-        {
-            SetActiveButtons(routes[nextStage]);
-        }
-        else
-        {
-            // 終点
-            SetActiveButtons(new List<int>());
-        }
+        List<int> actives = new List<int>(routes[buttonNumber]);
+
+        SetActiveButtons(actives);
     }
 
     // ボタンの有効/無効と色を切り替える
@@ -72,19 +80,19 @@ public class StageRoute : MonoBehaviour
             if (visitedStages.Contains(buttonIndex))
             {
                 // 通過済み → 無効化＋黄色
-                btn.enabled = false;
+                //btn.enabled = false;
                 //btnImage.color = Color.yellow;
             }
             else if (activeNumbers.Contains(buttonIndex))
             {
                 // 現在選択可能 → 有効化＋白
-                btn.enabled = true;
+                //btn.enabled = true;
                 //btnImage.color = Color.white;
             }
             else
             {
                 // それ以外 → 無効化＋灰色
-                btn.enabled = false;
+                //btn.enabled = false;
                 //btnImage.color = Color.gray;
             }
         }
