@@ -31,11 +31,6 @@ namespace TheClimb.Item
             ItemEventBus.onAttractiong -= HandleCountTillActivate;
             ItemEventBus.onExplosion -= HandleExplosionInpact;
         }
-
-        private void Update()
-        {
-            //Debug.Log();
-        }
         public void Initialize(ImpactBallContext ctx, ICorutineRunner coroutineRunner)    //  初期化
         {
             IImpactable targetPlayer = ImpactableRegistry.GetPlayer();
