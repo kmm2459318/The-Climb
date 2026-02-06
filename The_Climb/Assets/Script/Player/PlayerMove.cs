@@ -4,7 +4,6 @@ using TheClimb.Item;
 using TheClimb.Player;
 using TheClimb.Astral;
 using System.Collections;
-using System.Collections.Generic;
 
 public class PlayerMove : MonoBehaviour, IConveyorReceiver
 {
@@ -358,6 +357,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     private void AirPlayerMove()
     {
+
         // 空中：左右に力を加える
         Vector3 force = new Vector3(moveInput, 0f, 0f) * airMoveForce;
        

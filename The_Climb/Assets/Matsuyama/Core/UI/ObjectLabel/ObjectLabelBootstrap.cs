@@ -9,7 +9,7 @@ namespace TheClimb.Core
     public class ObjectLabelBootstrap : MonoBehaviour    //  オブジェクトラベルBootstrap
     {
         [SerializeField]
-        ScriptableObject itemLabelDef;
+        ObjectLabelConfigBase _labelConfig;
         [SerializeField]
         Transform _labelTargetTF;
         [SerializeField]
@@ -26,7 +26,7 @@ namespace TheClimb.Core
 
         void Start()
         {
-            GetComponent<ObjectLabelController>().Initialize(itemLabelDef as IItemLabelDef ,_ctx);
+            GetComponent<ObjectLabelController>().Initialize(_labelConfig, _ctx);
         }
     }
 }
