@@ -22,6 +22,10 @@ public class StageClear : MonoBehaviour
         else
         {
             Debug.Log($"ステージ {currentStageId} をクリア");
+        string key = SceneManager.GetActiveScene().name;
+        PlayerPrefs.SetInt(key, 1);
+
+        Debug.Log($"{key} の値 = " + PlayerPrefs.GetInt(key));
 
             // ★ ゴール時のみ「本当にクリアしたステージ」を渡す
             PlayerPrefs.SetInt("JustClearedStageId", currentStageId);
