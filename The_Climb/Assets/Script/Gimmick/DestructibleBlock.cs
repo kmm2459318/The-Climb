@@ -73,6 +73,8 @@ public class DestructibleBlock : MonoBehaviour
         {
             demolisher.RequestDemolish();
             Debug.Log("破壊します");
+            Collider col = GetComponent<Collider>();
+            col.enabled = false;
         }
 
         if (!IsActive && dark != null)
