@@ -1,22 +1,23 @@
 ﻿using System;
 using UnityEngine;
+using TMPro;
 using TheClimb.Item;
 using TheClimb.Astral;
-using TMPro;
+using System.Collections;
 
 namespace TheClimb.Core
 {
     public class ObjectLabelController : MonoBehaviour    //  オブジェクトのラベルの制御をするクラス
     {
-        [Header("ラベル設定")]
-        [SerializeField] private Vector3 _offset;    //  ラベルオフセット
-
+        ObjectLabelConfigBase _labelConfig;    //  ラベルのコンフィグ
         AttractableListenerBase itemContoroller;    //  アイテムコントローラー
         TextMeshPro label;    //  オブジェクトテキスト
-        IItemLabelDef itemDefinition;    //  アイテム定義
         Transform _labelTargetTF;    //  衝撃球のトランスフォーム
         Transform _labelRootTF;    //  ラベルのRootオブジェクトのトランスフォーム
         Transform _cameraTF;    //  カメラのトランスフォーム
+        RectTransform _rectTF;
+        Vector3 _originLabelPos;
+        Coroutine effectProcessRoutine = null;
 
         //  --  Unity LifeCycle
 
@@ -25,30 +26,37 @@ namespace TheClimb.Core
             LookCamera();    //  カメラ方向を向かせる
             HomingObject();    //  テキストをオブジェクトに追従
 
-
-            Action action = itemDefinition.ItemKind switch    //  アイテム種類で分別する、簡易ステートパターン
+            Action process = _labelConfig.ObjectKind switch    //  アイテム種類で分別する、簡易ステートパターン
             {
-                ItemKind.Time_Action => () => TimeItemUpdate(),
+                ObjectKind.Time_Action => () => TimeItemUpdate(),
                 _ => () => Debug.LogWarning($"ItemKind value is Unacceptable")
             };
 
-            action();
+            if(_labelConfig.EffectType != LabelEffectType.None && effectProcessRoutine == null)
+            {
+                //effectProcessRoutine = StartCoroutine(Shake());    //  🐻🐻🐻🐻🐻🐻🐻🐻
+            }
+
+            process();
+            //effectProcess();
         }
 
         //  --  Public API
 
-        public void Initialize(IItemLabelDef defSO, ObjectLabelContext _context)    //  表示するためのトランスフォームと、SOの参照をもらってる
+        public void Initialize(ObjectLabelConfigBase config, ObjectLabelContext _context)    //  表示するためのトランスフォームと、SOの参照をもらってる
         {
-            itemDefinition = defSO;
+            _labelConfig = config;
 
             _cameraTF = _context.MainCameraTF;
             _labelTargetTF = _context.ImpactBallTF;
 
             _labelRootTF = this.transform;
-            _labelRootTF.localPosition = _offset;
+            _labelRootTF.localPosition = _labelConfig.LabelOffset;
 
             itemContoroller = _context.ItemController;
             label = _context.ObjectLabel;
+            _rectTF = label.rectTransform;
+            _originLabelPos = _rectTF.anchoredPosition3D;
         }
 
         //  --  Private API
@@ -61,7 +69,7 @@ namespace TheClimb.Core
             if (dir.sqrMagnitude < 0.0001f)
             { return; }
 
-            _labelRootTF.position = _labelTargetTF.position + _offset;
+            _labelRootTF.position = _labelTargetTF.position + _labelConfig.LabelOffset;
             _labelRootTF.rotation = Quaternion.LookRotation(dir);
         }
 
@@ -70,15 +78,52 @@ namespace TheClimb.Core
             _labelRootTF.position = _labelTargetTF.position;
         }
 
+        //  固有処理関数(ラベル処理)
+
         void TimeItemUpdate()    //  時間制限系アイテムのUpdate
+        {
+            ApplyFuseTime();
+        }
+        
+        void ApplyFuseTime()    //  爆発までの時間をテキストに反映する
         {
             float remainFuseTime = itemContoroller.RemainCount;
             int display = Mathf.CeilToInt(remainFuseTime);
             label.text = display.ToString();    //  0じゃなくて1の表示の時に爆発させるために繰り上げ
-            if(itemContoroller.RemainCount <= 0)
+            if (itemContoroller.RemainCount <= 0)
             {
                 label.enabled = false;
             }
         }
+
+        //  固有処理関数(エフェクト)
+
+        //IEnumerator Shake()    //  テキスト震え
+        //{
+        //    try
+        //    {
+        //        Debug.Log("悪党が奏でるこの歌");
+
+        //        float CountProgress = itemContoroller.ConfigFuseTime / itemContoroller.RemainCount;
+        //        float time = 0f;
+
+        //        while (_labelConfig.ShakeFrequency > time)
+        //        {
+        //            time += Time.deltaTime;
+        //            yield return null;
+        //        }
+        //        Vector2 p = UnityEngine.Random.insideUnitCircle * _labelConfig.ShakeAmplitude;    //  🐻🐻🐻🐻🐻🐻🐻🐻
+
+        //        _rectTF.anchoredPosition3D = _originLabelPos + new Vector3(p.x, p.y, 0);
+        //    }
+        //    finally
+        //    {
+        //        OnShakeFinished();    //  状態変数管理
+        //    }
+        //}
+        //void OnShakeFinished()    //  Shakekコルーチン終了時の変数管理
+        //{
+        //    effectProcessRoutine = null;
+        //}
     }
 }
