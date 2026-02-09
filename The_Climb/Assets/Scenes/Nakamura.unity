@@ -33849,6 +33849,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.4
       objectReference: {fileID: 0}
+    - target: {fileID: 3501854841218167341, guid: 79c396e647da4904c950ebf75723ceb5, type: 3}
+      propertyPath: m_Constraints
+      value: 62
+      objectReference: {fileID: 0}
     - target: {fileID: 3760129720374230422, guid: 79c396e647da4904c950ebf75723ceb5, type: 3}
       propertyPath: m_Radius
       value: 0.5
@@ -42742,6 +42746,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1294823810}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1302594828 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 720856421252685816, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+  m_PrefabInstance: {fileID: 4157918281770853029}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b4aa8d1f22b95c4e800d76a2d9a0025, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bomb_Aim
 --- !u!1 &1304539681
 GameObject:
   m_ObjectHideFlags: 0
@@ -43010,6 +43025,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f72696b2727a94fb882aaf85828d6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageClear
+  enableDelay: 0.5
 --- !u!1818360608 &1316387262
 PositionConstraint:
   m_ObjectHideFlags: 0
@@ -43672,7 +43688,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!114 &1335353855
 MonoBehaviour:
@@ -70950,6 +70966,10 @@ PrefabInstance:
       propertyPath: 'checkpointVisuals.Array.data[7]'
       value: 
       objectReference: {fileID: 1929746588}
+    - target: {fileID: 6652043380875015280, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      propertyPath: p_aim
+      value: 
+      objectReference: {fileID: 1302594828}
     - target: {fileID: 7913675319463823891, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -70990,7 +71010,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8497364920415798541, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
