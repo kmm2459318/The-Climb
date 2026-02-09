@@ -118,7 +118,7 @@ public class StageNode : MonoBehaviour
             }
             else if (stageRandomizer && stageId < stageRandomizer.StageName.Length)
             {
-                stageNameText.text = stageRandomizer.StageName[stageId];
+                stageNameText.text = stageRandomizer.StageName[stageId - 1];
             }
         }
     }
