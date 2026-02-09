@@ -2,40 +2,34 @@
 
 public class GimmickSwitch : MonoBehaviour
 {
-    private TimeGimmickBridge Bridge;        // 状態保存ブリッジ
+    [SerializeField] private Switch SwitchSource;
     [SerializeField] private SwitchReceiver[] Receivers;
 
-    private bool IsOn = false; // 押されたかどうか（内部状態）
+    private bool IsActivated = false; // 押されたかどうか（内部状態）
 
     public Switch Switch;
 
-    private void Awake()
-    {
-        // Bridge 自動取得
-        if (Bridge == null) Bridge = GetComponent<TimeGimmickBridge>();
-    }
 
     private void Update()
     {
-        if (IsOn) return;
+        if (IsActivated) return;
 
         if (Switch != null && Switch.IsPressed)
         {
-            IsOn = true;
-            ActivateSwitch();
+            Activate();
         }
     }
 
     // スイッチが押された時の処理
-    private void ActivateSwitch()
+    private void Activate()
     {
-        Bridge?.ReportState(true);      // 状態を保存
+        IsActivated = true;
         
         foreach (var r in Receivers)
         {
             if (r != null)
             {
-                r.ApplyCurrentState();
+                r.Activate();
             }
         }
 
