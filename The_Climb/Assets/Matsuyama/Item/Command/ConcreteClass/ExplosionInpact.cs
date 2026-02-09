@@ -9,6 +9,7 @@ namespace TheClimb.Item
         ImpactBallContext _ctx;                //  衝撃球コンテキスト
         ImpactBallRuntimeData _runtimeData;    //  衝撃球コンテキスト
         GameObject _explosionEffect;    //  爆発時のエフェクト(仮実装だから消すかも)
+        GameObject _sparkingEffect;    //  ビリビリエフェクト(仮実装だから消すかも)
         Transform _playerTransform;    //  プレイヤーのトランスフォーム
         Transform _planetTransform;    //  プレイヤーのトランスフォーム
         Rigidbody playerRigidBody;    //  プレイヤーのリジッドボディ
@@ -23,6 +24,7 @@ namespace TheClimb.Item
             _ctx = ctx;
             _runtimeData = ctx.RuntimeData;
             _explosionEffect = explodeEffect;    //  爆発時のエフェクト(仮実装だから消すかも)
+            _sparkingEffect = sparkEffect;    //  ビリビリエフェクト(仮実装だから消すかも)
 
             _itemStateFactory = stateFactory;
             _corutineRunner = corutineRunner;
@@ -38,6 +40,7 @@ namespace TheClimb.Item
         
         public override void Execute()    //  衝撃波炸裂実行
         {
+            _sparkingEffect.SetActive(false);
             _explosionEffect.SetActive(true);    //  爆発時のエフェクト(仮実装だから消すかも)
             _corutineRunner.StartCoroutine(ExplosionImapct());
         }
