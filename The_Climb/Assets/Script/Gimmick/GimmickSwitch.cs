@@ -7,14 +7,13 @@ public class GimmickSwitch : MonoBehaviour
 
     private bool IsActivated = false; // 押されたかどうか（内部状態）
 
-    public Switch Switch;
 
 
     private void Update()
     {
         if (IsActivated) return;
 
-        if (Switch != null && Switch.IsPressed)
+        if (SwitchSource != null && SwitchSource.IsPressed)
         {
             Activate();
         }

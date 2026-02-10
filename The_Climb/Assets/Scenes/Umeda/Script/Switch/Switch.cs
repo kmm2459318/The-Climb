@@ -43,6 +43,7 @@ public class Switch : MonoBehaviour
 
     void Press()
     {
+        Debug.Log("Pressed!");
         isPressed = true;
 
         // ▼ 孫オブジェクトだけを下げる

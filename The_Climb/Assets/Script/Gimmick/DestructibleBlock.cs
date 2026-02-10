@@ -7,7 +7,7 @@ public class DestructibleBlock : MonoBehaviour
     [SerializeField] private GameObject BlockObject;    // ブロック本体(ON/OFFを切り替える対象)
     [SerializeField] private MeshDemolisherExample demolisher; //足場を壊す演出
 
-    [SerializeField] private GameObject dark; // 暗闇
+    [SerializeField] private GameObject[] dark; // 暗闇
 
     private bool IsBroken = false; 
 
@@ -43,7 +43,13 @@ public class DestructibleBlock : MonoBehaviour
         // 暗闇があれば消す
         if (dark != null)
         {
-            dark.SetActive(false);
+            foreach (var d in dark)
+            {
+                if (d != null)
+                {
+                    d.SetActive(false);
+                }
+            }
         }
 
         Debug.Log("ブロックを破壊しました");

@@ -19,7 +19,7 @@ public class SwitchReceiver : MonoBehaviour
     {
         if (InactiveObject != null)
         {
-            InactiveObject.SetActive(true);
+            InactiveObject.SetActive(false);
         }
 
         if (ActiveObject != null)
