@@ -1,5 +1,6 @@
 ﻿using TheClimb.Core;
 using TheClimb.Player;
+using UnityEngine;
 
 namespace TheClimb.Item
 {
@@ -15,12 +16,12 @@ namespace TheClimb.Item
         public CountTillActivate countTillActivate {get ;}    //  アクティブになるまでカウントする
         public ExplosionInpact explosionInpact{get ;}    //  アクティブになるまでカウントする
 
-        public ItemCommandProvider(ImpactBallContext ctx, IItemStateFactory stateFactory, ICorutineRunner coroutineRunner, IImpactable targetPlayer)    //  コンストラクタ
+        public ItemCommandProvider(ImpactBallContext ctx, IItemStateFactory stateFactory, ICorutineRunner coroutineRunner, IImpactable targetPlayer, GameObject explosionEffect, GameObject sparkingEffect)    //  コンストラクタ
         {
             _ctx = ctx;
 
             countTillActivate = new CountTillActivate(_ctx, stateFactory, coroutineRunner);
-            explosionInpact = new ExplosionInpact(_ctx, stateFactory, coroutineRunner, targetPlayer);
+            explosionInpact = new ExplosionInpact(_ctx, stateFactory, coroutineRunner, targetPlayer, explosionEffect, sparkingEffect);
         }
 
         public void InjectContext(ICommandContext context, IItemStateContext itemStateContext)    //  コンテキスト依存注入
