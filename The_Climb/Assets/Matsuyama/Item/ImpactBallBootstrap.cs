@@ -8,8 +8,10 @@ namespace TheClimb.Item
     {
         [SerializeField] ImpactBallConfigSO _configSO;    //  衝撃球コンフィグ
         [SerializeField] CoroutineRunner _coroutineRunner;    //  コルーチンランナー
+        [SerializeField] GameObject explosionEffectPrefab_Deprecated;    //  爆発時のエフェクト(仮実装だから削除するかも)
+        [SerializeField] GameObject sparkingEffect;    //  ビリビリしてるエフェクト(仮実装だから削除するかも)
 
-         ImpactBallRuntimeData _runtimeData;    //  実行中のデータ
+        ImpactBallRuntimeData _runtimeData;    //  実行中のデータ
 
         void Start()
         {
@@ -22,7 +24,7 @@ namespace TheClimb.Item
                 this.GetComponent<Rigidbody>()
                 );
 
-            GetComponent<ImpactBallController>().Initialize(context, _coroutineRunner);
+            GetComponent<ImpactBallController>().Initialize(context, _coroutineRunner, explosionEffectPrefab_Deprecated, sparkingEffect);
         }
     }
 }
