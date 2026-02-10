@@ -23,7 +23,7 @@ namespace Hanzzz.MeshDemolisher
         [SerializeField] private int processPerFrame = 3;　　　　　　　　　//1フレームで物理を有効にする数
 
 
-        private static MeshDemolisher meshDemolisher = new MeshDemolisher();　//破片のGameObjectを生成するクラス　　
+        private  MeshDemolisher meshDemolisher = new MeshDemolisher();　//破片のGameObjectを生成するクラス　　
 
         private bool requestDemolish;　　　　　　　　　　　　　　　　　　　//外部からの要求フラグ
         private bool isDemolished;　　　　　　　　　　　　　　　　　　　　 //二重破壊防止用
@@ -33,6 +33,7 @@ namespace Hanzzz.MeshDemolisher
         /// =============================
         private void Awake()
         {
+            meshDemolisher = new MeshDemolisher();
             Demolish();
         }
         // =============================
@@ -109,7 +110,7 @@ namespace Hanzzz.MeshDemolisher
                 Rigidbody rb = piece.gameObject.AddComponent<Rigidbody>();
                 rb.useGravity = true;
                 rb.isKinematic = false;
-                rb.WakeUp(); 
+                rb.WakeUp();
 
                 //処理を軽くする為
                 processed++;
@@ -118,6 +119,14 @@ namespace Hanzzz.MeshDemolisher
                     processed = 0;
                     yield return null;
                 }
+            }
+
+            foreach (Transform piece in resultParent)
+            {
+                if (piece == null) continue;
+
+                foreach (Collider col in piece.GetComponentsInChildren<Collider>())
+                    col.enabled = false;
             }
         }
 
