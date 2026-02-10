@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -23,8 +23,10 @@ public class StageSelectManager : MonoBehaviour
     public StageNode[] stages;
     public StagePath[] paths;
 
-    [Header("デバッグ")]
+    [Header("開始ステージ")]
     public int startStageId = 0;
+
+    [Header("ステージ状態")]
     public bool[] clearedStages;
 
     [Header("分岐ルール（Path排他）")]
@@ -34,9 +36,6 @@ public class StageSelectManager : MonoBehaviour
     public StageRequirement[] stageRequirements;
 
     private bool[] prevClearedStages;
-
-    private const string CLEARED_KEY = "ClearedStages";
-    private const string LAST_CLEARED_KEY = "LastClearedStage";
 
     // ===============================
     // Lifecycle
@@ -52,7 +51,7 @@ public class StageSelectManager : MonoBehaviour
         if (clearedStages == null || clearedStages.Length != stages.Length)
             clearedStages = new bool[stages.Length];
 
-        prevClearedStages = new bool[stages.Length];
+        prevClearedStages = new bool[clearedStages.Length];
     }
 
     private void OnEnable()
@@ -65,39 +64,66 @@ public class StageSelectManager : MonoBehaviour
         yield return null;
         yield return null;
 
-        // ① 永続データロード
-        LoadClearedStages();
+        // ★ 初期化（完全リセットはしない）
+        LoadClearedFromPrefs();
 
-        // ② Stage0は常にON
+        // ★ Stage0 は常に解放
         clearedStages[startStageId] = true;
 
-        // ③ 今回クリア分を反映（1回限り）
-        ApplyLastClearedStage();
-
-        // ④ ルール適用
         ApplyAllRules();
-
-        // ⑤ 表示更新
         Refresh();
-
         CopyArray(clearedStages, prevClearedStages);
-        SaveClearedStages();
     }
 
     private void Update()
     {
+        // ★ ゴール直後の反映
+        ApplyJustClearedStage();
+
         if (!HasClearedChanged())
             return;
 
-        // Stage0保証
         if (!clearedStages[startStageId])
             clearedStages[startStageId] = true;
 
         ApplyAllRules();
         Refresh();
-
         CopyArray(clearedStages, prevClearedStages);
-        SaveClearedStages();
+    }
+
+    // ===============================
+    // ゴール反映（最新仕様対応）
+    // ===============================
+    private void ApplyJustClearedStage()
+    {
+        if (!PlayerPrefs.HasKey("JustClearedStageId"))
+            return;
+
+        int stageId = PlayerPrefs.GetInt("JustClearedStageId");
+
+        if (IsValid(stageId))
+            clearedStages[stageId] = true;
+
+        PlayerPrefs.DeleteKey("JustClearedStageId");
+    }
+
+    // ===============================
+    // 保存データ復元
+    // ===============================
+    private void LoadClearedFromPrefs()
+    {
+        for (int i = 0; i < clearedStages.Length; i++)
+        {
+            clearedStages[i] = PlayerPrefs.GetInt($"StageCleared_{i}", 0) == 1;
+        }
+    }
+
+    private void SaveClearedToPrefs()
+    {
+        for (int i = 0; i < clearedStages.Length; i++)
+        {
+            PlayerPrefs.SetInt($"StageCleared_{i}", clearedStages[i] ? 1 : 0);
+        }
     }
 
     // ===============================
@@ -119,6 +145,8 @@ public class StageSelectManager : MonoBehaviour
             }
         }
         while (changed);
+
+        SaveClearedToPrefs();
     }
 
     // ===============================
@@ -170,8 +198,8 @@ public class StageSelectManager : MonoBehaviour
                 int from = rule.blockFromStages[i];
                 int to = rule.blockToStages[i];
 
-                if (to == startStageId) continue;
                 if (!IsValid(from) || !IsValid(to)) continue;
+                if (to == startStageId) continue;
 
                 if (clearedStages[from] && clearedStages[to])
                 {
@@ -250,38 +278,6 @@ public class StageSelectManager : MonoBehaviour
     }
 
     // ===============================
-    // Save / Load
-    // ===============================
-    private void SaveClearedStages()
-    {
-        string data = string.Join(",", clearedStages);
-        PlayerPrefs.SetString(CLEARED_KEY, data);
-        PlayerPrefs.Save();
-    }
-
-    private void LoadClearedStages()
-    {
-        if (!PlayerPrefs.HasKey(CLEARED_KEY))
-            return;
-
-        string[] parts = PlayerPrefs.GetString(CLEARED_KEY).Split(',');
-
-        for (int i = 0; i < parts.Length && i < clearedStages.Length; i++)
-            bool.TryParse(parts[i], out clearedStages[i]);
-    }
-
-    private void ApplyLastClearedStage()
-    {
-        if (!PlayerPrefs.HasKey(LAST_CLEARED_KEY)) return;
-
-        int stage = PlayerPrefs.GetInt(LAST_CLEARED_KEY);
-        if (IsValid(stage))
-            clearedStages[stage] = true;
-
-        PlayerPrefs.DeleteKey(LAST_CLEARED_KEY);
-    }
-
-    // ===============================
     // Utility
     // ===============================
     private bool IsValid(int id) => id >= 0 && id < stages.Length;
@@ -298,5 +294,35 @@ public class StageSelectManager : MonoBehaviour
     {
         for (int i = 0; i < src.Length; i++)
             dst[i] = src[i];
+    }
+
+    // ===============================
+    // Stage選択（StageNodeから呼ばれる）
+    // ===============================
+    public void OnStageSelected(int stageId)
+    {
+        // 範囲チェック
+        if (stageId < 0 || stageId >= stages.Length)
+            return;
+
+        // 進行不可なら無視
+        if (!stages[stageId].isInteractable)
+            return;
+
+        Debug.Log($"Stage Selected: {stageId}");
+
+        // ★ 現在選択したステージIDを保存
+        PlayerPrefs.SetInt("CurrentStageId", stageId);
+        PlayerPrefs.Save();
+
+        // ★ StageRandomizer に処理を任せる
+        if (stages[stageId].stageRandomizer != null)
+        {
+            stages[stageId].stageRandomizer.StartStage(stageId);
+        }
+        else
+        {
+            Debug.LogError("StageRandomizer が設定されていません");
+        }
     }
 }

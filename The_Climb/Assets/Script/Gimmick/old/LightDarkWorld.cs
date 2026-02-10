@@ -160,6 +160,7 @@ public class LightDarkWorld : MonoBehaviour
             ObjectTransparency(blackGroup, transparency);
             worldLight.color = new Color(80f / 255f, 80f / 255f, 80f / 255f, 1f);
             backGround.material.color = Color.black;
+
             uiBackground.color = Color.black;
         }
         else

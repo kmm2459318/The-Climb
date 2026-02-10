@@ -7,5 +7,6 @@ namespace TheClimb.Astral
         public virtual void OnAttract() { }
         
         public virtual float RemainCount { get; }
+        public virtual float ConfigFuseTime { get; }
     }
 }
