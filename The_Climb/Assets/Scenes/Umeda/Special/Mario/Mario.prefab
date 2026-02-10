@@ -77735,10 +77735,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.27
+  m_Radius: 0.22
   m_Height: 0.98
   m_Direction: 1
-  m_Center: {x: 0, y: 0.44, z: 0}
+  m_Center: {x: 0.0075, y: 0.44, z: 0}
 --- !u!54 &8446751941847935539
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -77778,16 +77778,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c8626c00f44894797e831233b6b79c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MarioController
-  moveSpeed: 5
+  moveSpeed: 7.5
   dashMultiplier: 1.5
-  jumpForce: 12
+  jumpForce: 20
   airTurnRate: 0.15
   groundCheck: {fileID: 2458743224096527666}
   groundRadius: 0.15
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  fallGravityMultiplier: 5
+  fallGravityMultiplier: 1
   lowJumpMultiplier: 5
   turnDuration: 0.15
   turnSlideForce: 1.2
