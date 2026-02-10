@@ -117,6 +117,11 @@ public class StageRandomizer : MonoBehaviour
         {
             // 現在のステージIDを1始まりで保存（進行管理用）
             PlayerPrefs.SetInt("CurrentStageId", stageIndex + 1); // 1から始まるIDを設定
+
+            // ★要望：ステージに入った時、対応する番号+1の要素を解放するためにJustClearedStageIdをセット
+            // これにより StageSelectManager 側で次のステージが解放される仕組み
+            PlayerPrefs.SetInt("JustClearedStageId", stageIndex + 1); // 次のステージ番号をセット
+
             PlayerPrefs.Save(); // 変更を確定
 
             // 指定されたシーンをロード

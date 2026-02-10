@@ -617,6 +617,8 @@ Transform:
   - {fileID: 449906437535052886}
   - {fileID: 4919399665747905587}
   - {fileID: 5193727237307064781}
+  - {fileID: 8465813409642410617}
+  - {fileID: 8062250422258864948}
   - {fileID: 3797337442103233341}
   - {fileID: 2842087964171949232}
   - {fileID: 6888408907588733425}
@@ -1200,8 +1202,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7900053413377813681}
   - component: {fileID: 6652043380875015280}
-  - component: {fileID: 4277678565508524336}
-  - component: {fileID: 8497364920415798541}
   - component: {fileID: 2155115064638306828}
   - component: {fileID: 720856421252685816}
   m_Layer: 0
@@ -1224,8 +1224,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8465813409642410617}
-  - {fileID: 8062250422258864948}
   - {fileID: 6955567577418749589}
   - {fileID: 640074540164460274}
   m_Father: {fileID: 2842087964171949232}
@@ -1244,9 +1242,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bomb_Generate
   bombPrefab: {fileID: 5538171996706550729, guid: 4141135c405070149a20c521a59fb2a5, type: 3}
   p_move: {fileID: 523186103618612158}
-  p_aim: {fileID: 4277678565508524336}
-  shoot_power: 1000
---- !u!114 &4277678565508524336
   p_aim: {fileID: 720856421252685816}
   shoot_power: 1000
 --- !u!114 &2155115064638306828
@@ -1275,21 +1270,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bomb_Aim
   aimCamera: {fileID: 8340758325500542246}
   player: {fileID: 1494689640004218747}
-  p_leftPos: {fileID: 8465813409642410617}
-  p_rightPos: {fileID: 8062250422258864948}
-  last_Direction: 0
---- !u!114 &8497364920415798541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2823422040379671111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 521727ba905894644896ba78872e5884, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraShake
   p_leftPos: {fileID: 6955567577418749589}
   p_rightPos: {fileID: 640074540164460274}
   last_Direction: 0
@@ -1427,13 +1407,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3898728609131289267}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.11, y: 0.81, z: 0.501}
+  m_LocalRotation: {x: -0, y: -0, z: 0.20636408, w: 0.9784753}
+  m_LocalPosition: {x: 0.32044044, y: 0.89997613, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7900053413377813681}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Father: {fileID: 1494689640004218747}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 23.679}
 --- !u!1 &4315322951363399799
 GameObject:
   m_ObjectHideFlags: 0
@@ -2213,12 +2193,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8173998676569225857}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.15, y: 0.82, z: 0.516}
+  m_LocalRotation: {x: -0, y: -0, z: -0.2168692, w: 0.9762007}
+  m_LocalPosition: {x: -0.3996552, y: 0.93821454, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7900053413377813681}
+  m_Father: {fileID: 1494689640004218747}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8255661152037794988
 GameObject:
