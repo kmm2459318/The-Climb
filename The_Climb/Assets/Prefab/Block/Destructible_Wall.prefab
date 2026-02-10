@@ -4954,7 +4954,6 @@ GameObject:
   - component: {fileID: 5560622109580767075}
   - component: {fileID: 8759742605211958083}
   - component: {fileID: 1503567749992861352}
-  - component: {fileID: 9059754432643437360}
   - component: {fileID: 2028911138987038029}
   m_Layer: 3
   m_Name: Destructible_Wall
@@ -5015,28 +5014,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8d6f80b9e8b37547a84f8a7c63d225f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DestructibleBlock
-  Bridge: {fileID: 9059754432643437360}
   BlockObject: {fileID: 1229892496249558730}
   demolisher: {fileID: 6483850063903356995}
-  dark: {fileID: 0}
-  Era: 0
---- !u!114 &9059754432643437360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1229892496249558730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47f34ca73af2d8449a8301dacf800ff9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeGimmickBridge
-  GimmickId: Block
-  DefaultState: 1
-  OnStateApplied:
-    m_PersistentCalls:
-      m_Calls: []
+  dark:
+  - {fileID: 0}
 --- !u!54 &2028911138987038029
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -20162,7 +20143,7 @@ MonoBehaviour:
   resultScale: 0.9
   shrinkDuration: 1
   fallTimeBeforeShrink: 1.5
-  maxFallingPieces: 15
+  maxFallingPieces: 7
   processPerFrame: 5
 --- !u!1 &4600935447017536316
 GameObject:
