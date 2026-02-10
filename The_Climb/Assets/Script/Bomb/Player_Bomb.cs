@@ -98,6 +98,15 @@ public class Player_Bomb : MonoBehaviour
                 }
                 break;
 
+            case "StalkerHand":
+                obj.GetComponent<KidnapBuddy>().handController.ReleaseBuddy();
+                break;
+
+            case "BossStalker":
+                var boss = obj.transform.parent.gameObject.GetComponent<BossStalkerHandController>();
+                boss.BossStalkerSlow();
+                break;
+
             default: 
             //何もしない
             break;
