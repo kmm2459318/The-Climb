@@ -33,38 +33,23 @@ public class StageNameDisplay : MonoBehaviour
 
     public void UpdateStageNames()
     {
-        string[] currentStages = stageRandomizer.StageName;
+        string[] displayNames = stageRandomizer.StageName; // 表示用名の配列
 
-        if (currentStages == null || currentStages.Length == 0)
+        if (displayNames == null || displayNames.Length == 0)
         {
-            Debug.LogWarning("StageRandomizerのステージリストが空です。");
+            Debug.LogWarning("StageRandomizerのステージ名リストが空です。");
             return;
         }
 
         for (int i = 0; i < stageNameTexts.Count; i++)
         {
-            if (i >= currentStages.Length) break;
+            if (i >= displayNames.Length) break;
 
             if (stageNameTexts[i] != null)
             {
-                string sceneName = currentStages[i];
-                string displayName = GetDisplayName(sceneName);
-                stageNameTexts[i].text = displayName;
+                // StageRandomizerのStageNameには既に表示用の名前が入っているためそのまま使用
+                stageNameTexts[i].text = displayNames[i];
             }
         }
-    }
-
-    private string GetDisplayName(string sceneName)
-    {
-        foreach (var mapping in stageMappings)
-        {
-            if (mapping.sceneName == sceneName)
-            {
-                return mapping.displayName;
-            }
-        }
-        
-        // マッピングが見つからない場合はシーン名をそのまま表示（または警告）
-        return sceneName;
     }
 }
