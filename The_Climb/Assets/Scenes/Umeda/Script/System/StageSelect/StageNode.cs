@@ -116,9 +116,9 @@ public class StageNode : MonoBehaviour
             {
                 stageNameText.text = unknownText;
             }
-            else if (stageRandomizer && stageId < stageRandomizer.StageName.Length)
+            else if (stageRandomizer && stageId - 1 < stageRandomizer.StageName.Length)
             {
-                stageNameText.text = stageRandomizer.StageName[stageId - 1];
+                stageNameText.text = stageRandomizer.StageName[stageId - 1]; // 表示用の名前をセット
             }
         }
     }
