@@ -80,7 +80,10 @@ public class StageRandomizer : MonoBehaviour
         if (NormalStagePool.Count > 0) result[3] = Random.Range(0, NormalStagePool.Count);
 
         // 規則3: 7 (ボスプール)
-        if (BossStagePool.Count > 0) result[7] = Random.Range(0, BossStagePool.Count) + 1000;
+        if (BossStagePool.Count > 0)
+        {
+            result[7] = Random.Range(0, BossStagePool.Count) + 1000;
+        }
 
         _currentSlotIndices = result;
         ApplyIndicesToResult();
