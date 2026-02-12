@@ -33,7 +33,8 @@ public class StalkerHome : MonoBehaviour
             StartCoroutine(StalkerSpawn());
         }
 
-        if (myStalker == null && !buddy.beingKidnapped && spawned)
+        // myStalkerがnull（未生成）または非アクティブ（倒された/消えた）なら再生成フラグを落とす
+        if ((myStalker == null || !myStalker.activeSelf) && !buddy.beingKidnapped && spawned)
         {
             spawned = false;
             called = false;
@@ -46,7 +47,18 @@ public class StalkerHome : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
-        myStalker = Instantiate(stalkerPrefab, transform);
+        if (myStalker == null)
+        {
+            // 初回生成
+            myStalker = Instantiate(stalkerPrefab, transform);
+        }
+        else
+        {
+            // 2回目以降は再利用
+            myStalker.transform.position = transform.position; // 位置をHomeに戻す
+            myStalker.SetActive(true);
+        }
+        
         spawned = true;
         //myStalker.transform.SetParent(transform);
     }

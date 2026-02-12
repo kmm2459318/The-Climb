@@ -17,6 +17,7 @@ public class BossStalkerHandController : MonoBehaviour
     private float speed = 3.0f;          //移動速度
     private float childRadius = 6f;      //追従の半径
     private Vector3 stalkTarget = Vector3.zero;  //追跡ターゲット
+    private bool isSlowed = false;       //減速中フラグ
 
     void Start()
     {
@@ -105,4 +106,62 @@ public class BossStalkerHandController : MonoBehaviour
             yield return null;
         }
     }
+
+    //ボスストーカーハンド減速処理
+    public void BossStalkerSlow()
+    {
+        StartCoroutine(SlowSpeed());
+    }
+
+    private IEnumerator SlowSpeed()
+    {
+        if (isSlowed) yield break;
+
+        isSlowed = true;
+
+        //元の速度を保存
+        float originalSpeed = speed;
+        speed = originalSpeed * 0.33f;
+
+        //MeshRenderer取得
+        MeshRenderer[] renderers = new MeshRenderer[stalkers.Length];
+        for (int i = 0; i < stalkers.Length; i++)
+        {
+            if (stalkers[i] != null)
+            {
+                renderers[i] = stalkers[i].GetComponent<MeshRenderer>();
+            }
+        }
+
+        float duration = 5.0f;  //点滅持続時間
+        float blinkInterval = 0.1f;  //点滅間隔
+        float timer = 0f;
+
+        //点滅処理
+        while (timer < duration)
+        {
+            bool isVisible = Mathf.Repeat(timer, blinkInterval * 2) < blinkInterval;
+
+            foreach (var r in renderers)
+            {
+                if (r != null)
+                    r.enabled = isVisible;
+            }
+
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        //最後は必ず表示
+        foreach (var r in renderers)
+        {
+            if (r != null)
+                r.enabled = true;
+        }
+
+        //速度戻
+        speed = originalSpeed;
+        isSlowed = false;
+    }
 }
+
