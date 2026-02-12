@@ -107,7 +107,7 @@ public class PlayerKnockBack : MonoBehaviour
             }
             else if (!coolTime)
             {
-                if (other.gameObject.tag == "Boss" && !knockBacking)
+                if (other.gameObject.tag == "BossStalker" && !knockBacking)
                 {
                     if (!barrier.unlocking && barrier.barrierActive)
                     {

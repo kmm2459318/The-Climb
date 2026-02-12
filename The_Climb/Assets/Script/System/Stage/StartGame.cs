@@ -1,30 +1,40 @@
-﻿#if UNITY_EDITOR
-using UnityEditor.Overlays;
-#endif
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class StartGame : MonoBehaviour
 {
-    public string[] StageName;
+    [FormerlySerializedAs("ScenePool")]
+    [FormerlySerializedAs("StageName")]
+    public string[] SceneName; // リセット対象の全シーン名
+
     public void GameStart()
     {
-        PlayerPrefs.SetInt("GameStart", 1); // ステージをシャッフル・リセットするかどうかのフラグ
-        PlayerPrefs.SetInt("SelectStage", 0); // 選択位置をリセット
+        PlayerPrefs.SetInt("GameStart", 1); 
+        PlayerPrefs.SetInt("SelectStage", 0); 
 
-        // 古いクリア情報のキーを個別にリセット
         PlayerPrefs.DeleteKey("VisitedStages"); 
-        PlayerPrefs.DeleteKey("ClearedStages"); // StageSelectManagerで使っているキーも削除しておく
+        PlayerPrefs.DeleteKey("ClearedStages"); 
         
-        for(int i= 0; StageName.Length>i; i++ )
+        // シーン名ベースのフラグリセット
+        if (SceneName != null)
         {
-            PlayerPrefs.SetInt($"{StageName[i]}", 0); // 各シーン名ごとのクリア情報をリセット
+            foreach (string scene in SceneName)
+            {
+                PlayerPrefs.SetInt(scene, 0);
+            }
         }
+
+        // ステージIDベースのフラグリセット (0〜20)
+        for (int i = 0; i < 20; i++)
+        {
+            PlayerPrefs.SetInt($"StageCleared_{i}", 0);
+        }
+        PlayerPrefs.DeleteKey("JustClearedStageId");
         
         PlayerPrefs.Save();
-        SceneManager.LoadScene("StageSelect"); // ステージ選択シーンへ遷移
+        SceneManager.LoadScene("StageSelect"); 
     }
-
     public void EndGame()
     {
         SceneManager.LoadScene("Title");
