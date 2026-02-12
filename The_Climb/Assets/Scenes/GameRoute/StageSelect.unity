@@ -700,15 +700,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07c6e39bb198c5e468d1c539fb99dd5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageRandomizer
-  StageName:
+  NormalStagePool:
+  - sceneName: Umeda
+    stageName: "\u5149\u304C\u793A\u3059\u9053"
+    loadingImage: {fileID: 21300000, guid: 50c931da19e3c134b85b8186db9220b4, type: 3}
+  - sceneName: Kitano
+    stageName: "\u30E9\u30A4\u30C8\u30B7\u30D5\u30BF\u30FC"
+    loadingImage: {fileID: 21300000, guid: c6779c9d621116d43843de6e256673e1, type: 3}
+  - sceneName: Nakamura
+    stageName: "\u9670\u967D\u76F8\u68D2\u30B9\u30C6\u30FC\u30B8"
+    loadingImage: {fileID: 21300000, guid: 7585cfbf466b55a428fb56b9b48d7773, type: 3}
+  - sceneName: Nisiyama
+    stageName: "\u30BF\u30FC\u30F3\u30AA\u30FC\u30D0\u30FC"
+    loadingImage: {fileID: 21300000, guid: 3b5b3837db0f2554e98d9c587e5a330c, type: 3}
+  - sceneName: Matsuyama
+    stageName: "\u30A2\u30B9\u30C8\u30E9\u30EB"
+    loadingImage: {fileID: 21300000, guid: 4775d9fe8c7e7b4438b79910bb64f395, type: 3}
+  - sceneName: Yuoka
+    stageName: "\u7206\u5F3E\u30A6\u30FC\u30DE\u30F3"
+    loadingImage: {fileID: 21300000, guid: e40d8bbb83295cc42ba8d7a0a60a13b9, type: 3}
+  BossStagePool:
+  - sceneName: GameClear
+    stageName: "\u3052\u30FC\u3080\u304F\u308A\u3042"
+    loadingImage: {fileID: 0}
+  SceneName:
   - Umeda
   - Kitano
-  - Matsuyama
-  - Yuoka
   - Nakamura
   - Nisiyama
-  BossStageName:
-  - GameClear
+  - Matsuyama
+  - Yuoka
+  StageName:
+  - "\u5149\u304C\u793A\u3059\u9053"
+  - "\u30E9\u30A4\u30C8\u30B7\u30D5\u30BF\u30FC"
+  - "\u9670\u967D\u76F8\u68D2\u30B9\u30C6\u30FC\u30B8"
+  - "\u30BF\u30FC\u30F3\u30AA\u30FC\u30D0\u30FC"
+  - "\u30A2\u30B9\u30C8\u30E9\u30EB"
+  - "\u7206\u5F3E\u30A6\u30FC\u30DE\u30F3"
+  LoadingImage:
+  - {fileID: 21300000, guid: 02d6bbb2a83a5aa4dac562114c9a51fa, type: 3}
+  - {fileID: 21300000, guid: 3132dc562a2f56c43b93537324df0016, type: 3}
+  - {fileID: 21300000, guid: e825e6a88eb7ba5498dbf61b0b773f13, type: 3}
+  - {fileID: 21300000, guid: 297133e9cd4dad84881f1982de8d8f82, type: 3}
+  - {fileID: 21300000, guid: 0bb7570522ddf7444aef6c30584c2086, type: 3}
+  - {fileID: 21300000, guid: 72eb99bf1c8eeaf4390869c3c392d0c1, type: 3}
 --- !u!114 &83725480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -770,8 +805,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2151fd385f8b674469871bd33bcb051e, type: 2}
+  m_sharedMaterial: {fileID: 1633993605079096494, guid: 2151fd385f8b674469871bd33bcb051e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3342,7 +3377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

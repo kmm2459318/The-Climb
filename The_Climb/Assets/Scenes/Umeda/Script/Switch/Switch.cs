@@ -14,6 +14,9 @@ public class Switch : MonoBehaviour
     [Header("押下量")]
     public float pressDownDistance = 2.0f;
 
+    [Header("押下後の挙動")]
+    public bool destroyOnPressed = false; // ★ 追加
+
     private Vector3 visualInitialLocalPos;
     private Vector3 colliderInitialLocalPos;
     private bool isPressed = false;
@@ -43,6 +46,7 @@ public class Switch : MonoBehaviour
 
     void Press()
     {
+        Debug.Log("Pressed!");
         isPressed = true;
 
         // ▼ 孫オブジェクトだけを下げる
@@ -56,6 +60,12 @@ public class Switch : MonoBehaviour
 
         if (switchText != null)
             switchText.SetActive(false);
+
+        // ★ 押したら削除する設定
+        if (destroyOnPressed)
+        {
+            Destroy(gameObject);
+        }
     }
 
     // PlayerRespawnUmeda から呼ばれる

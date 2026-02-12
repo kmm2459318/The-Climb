@@ -14,17 +14,21 @@ namespace TheClimb.Item
         Transform _planetTransform;    //  プレイヤーのトランスフォーム
         Rigidbody playerRigidBody;    //  プレイヤーのリジッドボディ
 
+        GameObject Impactball;    //  衝撃球(仮実装だから消すかも)
+
         ICommandContext _commandContext;
         IItemStateFactory _itemStateFactory;
         ICorutineRunner _corutineRunner;   //  コルーチンランナー
         IItemStateContext _ItemStateContext;
 
-        public ExplosionInpact(ImpactBallContext ctx, IItemStateFactory stateFactory, ICorutineRunner corutineRunner, IImpactable targetPlayer, GameObject explodeEffect, GameObject sparkEffect)    //  コンストラクタ
+        public ExplosionInpact
+            (ImpactBallContext ctx, IItemStateFactory stateFactory, ICorutineRunner corutineRunner, IImpactable targetPlayer, GameObject explodeEffect, GameObject sparkEffect, GameObject ball)    //  コンストラクタ
         {
             _ctx = ctx;
             _runtimeData = ctx.RuntimeData;
             _explosionEffect = explodeEffect;    //  爆発時のエフェクト(仮実装だから消すかも)
             _sparkingEffect = sparkEffect;    //  ビリビリエフェクト(仮実装だから消すかも)
+            Impactball = ball;
 
             _itemStateFactory = stateFactory;
             _corutineRunner = corutineRunner;
@@ -49,7 +53,8 @@ namespace TheClimb.Item
         {
             float ExplosionForce = _ctx.ConfigSO.ExplosionForce;     //  爆発の衝撃力
             float ExplosionRange = _ctx.ConfigSO.ExplosionRadius;    //  爆発の半径
-            
+
+            ParticleSystem particleSystem = _explosionEffect.GetComponent<ParticleSystem>();
             _playerTransform.gameObject.layer = LayerMask.NameToLayer("BlowingPlayer");
 
             Debug.Log("kaboom");
@@ -71,7 +76,14 @@ namespace TheClimb.Item
             }
 
             _playerTransform.gameObject.layer = LayerMask.NameToLayer("Player");
-            
+
+
+            while(particleSystem != null && particleSystem.IsAlive())
+            {
+                yield return null;
+            }
+
+            UnityEngine.Object.Destroy(Impactball);
             //_commandContext.ChangeState(_itemStateFactory.CreateState(ItemStateID.Idle), _ItemStateContext);
         }
     }
