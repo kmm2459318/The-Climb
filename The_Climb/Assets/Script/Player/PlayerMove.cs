@@ -29,7 +29,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private float groundMoveForce = 0.7f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 7f;   //プレイヤーの地上最高速度記憶
     public float moveInput = 0f;        //プレイヤーの移動方向
-    private float airMoveForce = 40f;    //空中での移動速度
+    private float airMoveForce = 30f;    //空中での移動速度
     public float airMaxSpeed = 9f;     //空中での速度制限
 
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
