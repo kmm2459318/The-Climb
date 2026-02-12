@@ -20400,7 +20400,7 @@ GameObject:
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &1329565197
 Transform:
@@ -20411,8 +20411,8 @@ Transform:
   m_GameObject: {fileID: 1329565196}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.1785, y: 50.1, z: 0.00001001358}
-  m_LocalScale: {x: 0.05160565, y: 5.719639, z: 1}
+  m_LocalPosition: {x: -0.174919, y: 50.5615, z: 0.00001001358}
+  m_LocalScale: {x: 0.058767654, y: 4.7965436, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2124483798}
@@ -20449,9 +20449,9 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
+  m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
@@ -20463,7 +20463,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: f81916c5e80cf6849a137f31e82be2d3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20471,7 +20471,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
+  m_ReceiveGI: 2
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -23684,7 +23684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3795983342216181676, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: respawnPoints.Array.size
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3795983342216181676, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: fallDistanceFromCheckpoint
@@ -23727,8 +23727,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2034096063}
     - target: {fileID: 3795983342216181676, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      propertyPath: 'respawnPoints.Array.data[9]'
+      value: 
+      objectReference: {fileID: 1734752905}
+    - target: {fileID: 3795983342216181676, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: checkpointVisuals.Array.size
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3795983342216181676, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: 'checkpointVisuals.Array.data[0]'
@@ -23766,6 +23770,10 @@ PrefabInstance:
       propertyPath: 'checkpointVisuals.Array.data[8]'
       value: 
       objectReference: {fileID: 2034096064}
+    - target: {fileID: 3795983342216181676, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      propertyPath: 'checkpointVisuals.Array.data[9]'
+      value: 
+      objectReference: {fileID: 1734752906}
     - target: {fileID: 4315322951363399799, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -27002,6 +27010,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 889694849047767146, guid: 712db903fdba71a41bfbd62dea1d3edd, type: 3}
   m_PrefabInstance: {fileID: 307484644}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1734752906 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1677174119063863683, guid: 712db903fdba71a41bfbd62dea1d3edd, type: 3}
+  m_PrefabInstance: {fileID: 307484644}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0b5cdeab17d0c347b9db02303d2044d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CheckpointVisual
 --- !u!1 &1735019746
 GameObject:
   m_ObjectHideFlags: 0
