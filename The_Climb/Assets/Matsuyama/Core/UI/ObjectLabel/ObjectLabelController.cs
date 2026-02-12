@@ -69,8 +69,11 @@ namespace TheClimb.Core
             if (dir.sqrMagnitude < 0.0001f)
             { return; }
 
-            _labelRootTF.position = _labelTargetTF.position + _labelConfig.LabelOffset;
-            _labelRootTF.rotation = Quaternion.LookRotation(dir);
+            if (_labelTargetTF == null || _labelRootTF == null || _labelConfig == null)
+            {
+                _labelRootTF.position = _labelTargetTF.position + _labelConfig.LabelOffset;
+                _labelRootTF.rotation = Quaternion.LookRotation(dir);
+            }
         }
 
         void HomingObject()    //  テキストをオブジェクトに追従させる
