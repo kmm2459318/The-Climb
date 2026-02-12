@@ -53,7 +53,8 @@ namespace TheClimb.Item
         {
             float ExplosionForce = _ctx.ConfigSO.ExplosionForce;     //  爆発の衝撃力
             float ExplosionRange = _ctx.ConfigSO.ExplosionRadius;    //  爆発の半径
-            
+
+            ParticleSystem particleSystem = _explosionEffect.GetComponent<ParticleSystem>();
             _playerTransform.gameObject.layer = LayerMask.NameToLayer("BlowingPlayer");
 
             Debug.Log("kaboom");
@@ -76,9 +77,8 @@ namespace TheClimb.Item
 
             _playerTransform.gameObject.layer = LayerMask.NameToLayer("Player");
 
-            ParticleSystem particleSystem = _explosionEffect.GetComponent<ParticleSystem>();
 
-            while(particleSystem.IsAlive())
+            while(particleSystem != null && particleSystem.IsAlive())
             {
                 yield return null;
             }
