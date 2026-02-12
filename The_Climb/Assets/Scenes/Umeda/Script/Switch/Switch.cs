@@ -1,7 +1,14 @@
 ﻿using UnityEngine;
+using System;
 
 public class Switch : MonoBehaviour
 {
+    // ★ 全Switch共通イベント
+    public static event Action<Switch> OnSwitchPressed;
+
+    [Header("識別ID（Activatorと一致させる）")]
+    public string switchID;
+
     [Header("下がる見た目（孫オブジェクト）")]
     public Transform visualObject;
 
@@ -14,8 +21,8 @@ public class Switch : MonoBehaviour
     [Header("押下量")]
     public float pressDownDistance = 2.0f;
 
-    [Header("押下後の挙動")]
-    public bool destroyOnPressed = false; // ★ 追加
+    [Header("押下後に削除")]
+    public bool destroyOnPressed = false;
 
     private Vector3 visualInitialLocalPos;
     private Vector3 colliderInitialLocalPos;
@@ -25,7 +32,6 @@ public class Switch : MonoBehaviour
 
     void Start()
     {
-        // ★ 必ず localPosition（親基準）
         if (visualObject != null)
             visualInitialLocalPos = visualObject.localPosition;
 
@@ -37,8 +43,6 @@ public class Switch : MonoBehaviour
     {
         if (isPressed) return;
         if (!other.CompareTag("Player")) return;
-
-        // 上から踏んだ判定
         if (other.transform.position.y < transform.position.y) return;
 
         Press();
@@ -46,10 +50,8 @@ public class Switch : MonoBehaviour
 
     void Press()
     {
-        Debug.Log("Pressed!");
         isPressed = true;
 
-        // ▼ 孫オブジェクトだけを下げる
         if (visualObject != null)
             visualObject.localPosition =
                 visualInitialLocalPos + Vector3.down * pressDownDistance;
@@ -61,19 +63,19 @@ public class Switch : MonoBehaviour
         if (switchText != null)
             switchText.SetActive(false);
 
-        // ★ 押したら削除する設定
+        // ★ 通知（Destroy前に必ず呼ぶ）
+        OnSwitchPressed?.Invoke(this);
+
         if (destroyOnPressed)
         {
             Destroy(gameObject);
         }
     }
 
-    // PlayerRespawnUmeda から呼ばれる
     public void ForceReset()
     {
         isPressed = false;
 
-        // ▲ 初期位置に完全復帰
         if (visualObject != null)
             visualObject.localPosition = visualInitialLocalPos;
 

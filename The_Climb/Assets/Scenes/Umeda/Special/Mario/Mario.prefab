@@ -77693,6 +77693,8 @@ GameObject:
   - component: {fileID: 8549617170033914282}
   - component: {fileID: 8446751941847935539}
   - component: {fileID: 4906707843603746261}
+  - component: {fileID: 1550284331326572626}
+  - component: {fileID: 2793122725586961441}
   m_Layer: 6
   m_Name: Mario
   m_TagString: Player
@@ -77800,6 +77802,45 @@ MonoBehaviour:
   gameOverModel: {fileID: 4325114005903873832}
   walkInterval: 0.15
   dashWalkSpeedMultiplier: 0.6
+  deathJumpForce: 8
+  deathGravityMultiplier: 1.5
+  deathWaitTime: 1
+  ignoreGroundLayerName: Ground
+  normalLayerName: Player
+  respawnDelay: 1
+--- !u!114 &1550284331326572626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6418517486402446691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f0b9d0a380903545be5d764f029003b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHP: 1
+  currentHP: 0
+  isInvincible: 0
+--- !u!114 &2793122725586961441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6418517486402446691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 186f369dbb59ecb48b78ec329da2b3db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawnUmeda
+  respawnPoints: []
+  currentIndex: 0
+  checkpointVisuals: []
+  maxHeightFromCheckpoint: 30
+  fallDistanceFromCheckpoint: 20
+  switchesToReset: []
 --- !u!1 &6434779573220726677
 GameObject:
   m_ObjectHideFlags: 0

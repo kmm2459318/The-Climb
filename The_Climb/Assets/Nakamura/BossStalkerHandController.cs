@@ -115,6 +115,23 @@ public class BossStalkerHandController : MonoBehaviour
 
     private IEnumerator SlowSpeed()
     {
+        // 爆発の力で回転などがかかると挙動がおかしくなるため、ヒットするたびに毎回リセットする
+        MeshRenderer[] renderers = new MeshRenderer[stalkers.Length];
+        for (int i = 0; i < stalkers.Length; i++)
+        {
+            if (stalkers[i] != null)
+            {
+                renderers[i] = stalkers[i].GetComponent<MeshRenderer>();
+                
+                var rb = stalkers[i].GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.linearVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                }
+            }
+        }
+
         if (isSlowed) yield break;
 
         isSlowed = true;
@@ -122,16 +139,6 @@ public class BossStalkerHandController : MonoBehaviour
         //元の速度を保存
         float originalSpeed = speed;
         speed = originalSpeed * 0.33f;
-
-        //MeshRenderer取得
-        MeshRenderer[] renderers = new MeshRenderer[stalkers.Length];
-        for (int i = 0; i < stalkers.Length; i++)
-        {
-            if (stalkers[i] != null)
-            {
-                renderers[i] = stalkers[i].GetComponent<MeshRenderer>();
-            }
-        }
 
         float duration = 5.0f;  //点滅持続時間
         float blinkInterval = 0.1f;  //点滅間隔

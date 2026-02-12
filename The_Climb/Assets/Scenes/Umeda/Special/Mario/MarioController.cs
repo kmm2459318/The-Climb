@@ -4,6 +4,14 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 public class MarioController : MonoBehaviour
 {
+    public static class MarioInput
+    {
+        public static bool Left;
+        public static bool Right;
+        public static bool Jump;
+        public static bool Dash;
+    }
+
     [Header("移動")]
     public float moveSpeed = 5f;
     public float dashMultiplier = 1.5f;
@@ -39,6 +47,15 @@ public class MarioController : MonoBehaviour
     public float walkInterval = 0.15f;
     public float dashWalkSpeedMultiplier = 0.6f;
 
+    [Header("死亡演出")]
+    public float deathJumpForce = 8f;
+    public float deathGravityMultiplier = 1.5f;
+
+    [Header("死亡後処理")]
+    public float deathWaitTime = 2.5f;   // 落下演出時間
+    public string ignoreGroundLayerName = "IgnoreGround";
+    public string normalLayerName = "Player";
+
     Rigidbody rb;
     Vector3 baseScale;
 
@@ -48,9 +65,17 @@ public class MarioController : MonoBehaviour
     bool isFacingRight = true;
     bool isTurning;
     bool isDead;
+    Collider[] allColliders;
 
     float walkTimer;
     int walkStep;
+
+    PlayerHealth health;
+
+    void Awake()
+    {
+        allColliders = GetComponentsInChildren<Collider>();
+    }
 
     void Start()
     {
@@ -59,6 +84,10 @@ public class MarioController : MonoBehaviour
 
         baseScale = transform.localScale;
         ShowIdle();
+
+        health = GetComponent<PlayerHealth>();
+        if (health != null)
+            health.OnDead += GameOver;
     }
 
     void Update()
@@ -68,7 +97,7 @@ public class MarioController : MonoBehaviour
         HandleInput();
         CheckGround();
         HandleJump();
-        HandleFacingAndTurn(); // ★ ここが肝
+        HandleFacingAndTurn();
         UpdateModel();
     }
 
@@ -83,8 +112,8 @@ public class MarioController : MonoBehaviour
     // ===== 入力 =====
     void HandleInput()
     {
-        bool left = Input.GetKey(KeyCode.A);
-        bool right = Input.GetKey(KeyCode.D);
+        bool left = Input.GetKey(KeyCode.A) || MarioInput.Left;
+        bool right = Input.GetKey(KeyCode.D) || MarioInput.Right;
 
         if (left && !right) lastDirection = -1;
         else if (right && !left) lastDirection = 1;
@@ -98,11 +127,11 @@ public class MarioController : MonoBehaviour
         if (moveInput == 0 || isTurning) return;
 
         bool wantRight = moveInput > 0;
-
-        // 向きが同じなら何もしない
         if (wantRight == isFacingRight) return;
 
-        bool isDashing = Input.GetKey(KeyCode.LeftShift);
+        bool isDashing =
+            Input.GetKey(KeyCode.LeftShift) || MarioInput.Dash;
+
         bool canTurn =
             isDashing &&
             isGrounded &&
@@ -114,7 +143,6 @@ public class MarioController : MonoBehaviour
         }
         else
         {
-            // 通常の方向転換（即反転）
             isFacingRight = wantRight;
             ApplyFacing();
         }
@@ -145,7 +173,7 @@ public class MarioController : MonoBehaviour
     void HandleMovement()
     {
         float speed = moveSpeed;
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) || MarioInput.Dash)
             speed *= dashMultiplier;
 
         float targetX = moveInput * speed;
@@ -164,7 +192,12 @@ public class MarioController : MonoBehaviour
     // ===== ジャンプ =====
     void HandleJump()
     {
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) && isGrounded)
+        if (
+            (Input.GetKeyDown(KeyCode.W) ||
+             Input.GetKeyDown(KeyCode.Space) ||
+             MarioInput.Jump)
+            && isGrounded
+        )
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, 0f);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -202,7 +235,7 @@ public class MarioController : MonoBehaviour
         }
 
         float interval = walkInterval;
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) || MarioInput.Dash)
             interval *= dashWalkSpeedMultiplier;
 
         walkTimer += Time.deltaTime;
@@ -227,9 +260,12 @@ public class MarioController : MonoBehaviour
                 * (fallGravityMultiplier - 1f)
                 * Time.fixedDeltaTime;
         }
-        else if (rb.linearVelocity.y > 0 &&
-                !Input.GetKey(KeyCode.Space) &&
-                !Input.GetKey(KeyCode.W))
+        else if (
+            rb.linearVelocity.y > 0 &&
+            !Input.GetKey(KeyCode.Space) &&
+            !Input.GetKey(KeyCode.W) &&
+            !MarioInput.Jump
+        )
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y
                 * (lowJumpMultiplier - 1f)
@@ -270,13 +306,100 @@ public class MarioController : MonoBehaviour
         jumpModel.SetActive(true);
     }
 
+    public float respawnDelay = 2f;  // Inspectorで調整可能
+
+    public bool IsDead()
+    {
+        return isDead;
+    }
+
     public void GameOver()
     {
+        if (isDead) return;
         isDead = true;
-        rb.linearVelocity = Vector3.zero;
-        rb.isKinematic = true;
+
+        health.isInvincible = true;
+
+        foreach (var col in allColliders)
+            col.enabled = false;
 
         DisableAllModels();
         gameOverModel.SetActive(true);
+
+        rb.linearVelocity = Vector3.zero;
+        rb.useGravity = true;
+        rb.isKinematic = false;
+
+        rb.AddForce(Vector3.up * deathJumpForce, ForceMode.Impulse);
+
+        StartCoroutine(DeathRoutine());
+    }
+
+    IEnumerator RespawnAfterDelay()
+    {
+        yield return new WaitForSeconds(respawnDelay);
+
+        PlayerRespawnUmeda respawn = GetComponent<PlayerRespawnUmeda>();
+        if (respawn != null)
+            respawn.Respawn();
+    }
+
+    IEnumerator DeathRoutine()
+    {
+        float timer = 0f;
+
+        while (timer < deathWaitTime)
+        {
+            timer += Time.deltaTime;
+
+            if (rb.linearVelocity.y < 0)
+            {
+                rb.linearVelocity += Vector3.up * Physics.gravity.y
+                    * (deathGravityMultiplier - 1f)
+                    * Time.deltaTime;
+            }
+
+            yield return null;
+        }
+
+        PlayerRespawnUmeda respawn = GetComponent<PlayerRespawnUmeda>();
+        if (respawn != null)
+            respawn.Respawn();
+    }
+
+    void OnDestroy()
+    {
+        if (health != null)
+            health.OnDead -= GameOver;
+    }
+
+    public void OnRespawnComplete()
+    {
+        isDead = false;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.useGravity = true;
+        rb.isKinematic = false;
+
+        DisableAllModels();
+        ShowIdle();
+    }
+
+    public void OnRespawn()
+    {
+        foreach (var col in allColliders)
+            col.enabled = true;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.useGravity = true;
+        rb.isKinematic = false;
+
+        DisableAllModels();
+        ShowIdle();
+
+        isDead = false;
+
+        if (health != null)
+            health.isInvincible = false;
     }
 }
