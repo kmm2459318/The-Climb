@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4919448824078385586}
   - component: {fileID: 3661826666915378143}
   - component: {fileID: 2415071718737551677}
-  - component: {fileID: 560359448464590111}
   - component: {fileID: 1240331062538512853}
   - component: {fileID: 1393150751320695986}
   - component: {fileID: 454354378039624443}
@@ -97,25 +96,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &560359448464590111
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7385546555637798942}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57b4508a7b2e582459c6e29d4b971452, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RaycastReactiveObject
-  startVisible: 1
-  fadeSpeed: 1
-  stayTime: 2
-  blinkDuration: 1
-  blinkInterval: 0.15
-  raycastCollider: {fileID: 1240331062538512853}
-  solidCollider: {fileID: 0}
 --- !u!65 &1240331062538512853
 BoxCollider:
   m_ObjectHideFlags: 0
