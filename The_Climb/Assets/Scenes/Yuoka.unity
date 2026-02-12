@@ -1368,7 +1368,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 750564755}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!20 &750564758
 Camera:
   m_ObjectHideFlags: 0
@@ -1919,7 +1919,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: e6d32360cb2992d41984b9d41888411a, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.4
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -2120,7 +2120,7 @@ Transform:
   m_GameObject: {fileID: 1329880484}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.2, y: 0.95, z: 0}
+  m_LocalPosition: {x: 0.11, y: 0.81, z: 0.584}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2153,7 +2153,7 @@ Transform:
   m_GameObject: {fileID: 1334153089}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.0012232412, w: 0.9999993}
-  m_LocalPosition: {x: -2.1002998, y: -0.18000007, z: 0.54}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2646,7 +2646,7 @@ Transform:
   m_GameObject: {fileID: 1545418405}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.08, y: 0.95, z: 0}
+  m_LocalPosition: {x: -0.15, y: 0.82, z: 0.596}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3142,7 +3142,8 @@ PrefabInstance:
       propertyPath: orthographic size
       value: 8.5
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6779474823770960882, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1494689640004218747, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
@@ -3207,7 +3208,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1793864179}
   - component: {fileID: 1793864178}
-  - component: {fileID: 1793864177}
   - component: {fileID: 1793864176}
   m_Layer: 6
   m_Name: Main Camera (1)
@@ -3260,14 +3260,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!81 &1793864177
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1793864175}
-  m_Enabled: 1
 --- !u!20 &1793864178
 Camera:
   m_ObjectHideFlags: 0

@@ -68,8 +68,18 @@ public class Player_Bomb : MonoBehaviour
     {
         if (explosionSound != null)
         {
-            // オブジェクトが破棄されても音が鳴るようにPlayClipAtPointを使用
-            AudioSource.PlayClipAtPoint(explosionSound, b_pos, explosionVolume);
+            // 2Dサウンドとして再生するためのオブジェクト生成
+            GameObject audioObj = new GameObject("ExplosionAudio");
+            audioObj.transform.position = b_pos;
+            AudioSource source = audioObj.AddComponent<AudioSource>();
+            
+            source.clip = explosionSound;
+            source.volume = explosionVolume;
+            source.spatialBlend = 0f; // 2Dサウンドに設定
+            source.Play();
+
+            // 再生終了後にオブジェクトを破棄
+            Destroy(audioObj, explosionSound.length);
         }
     }
 
