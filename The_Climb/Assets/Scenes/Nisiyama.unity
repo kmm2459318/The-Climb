@@ -868,6 +868,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 74279579}
   m_CullTransparentMesh: 1
+--- !u!114 &81335090 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6413119067095405200, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+  m_PrefabInstance: {fileID: 1048148777}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5def2b1a4d9953439cd3886043d4f60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheClimb.Core.CoroutineRunner
 --- !u!1001 &81886201
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3041,6 +3052,107 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2115532525370219114, guid: 3e0b27995236dbc42ae8994da28579bf, type: 3}
   m_PrefabInstance: {fileID: 426509593}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &380783787
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6448490988650228214, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: _coroutineRunner
+      value: 
+      objectReference: {fileID: 81335090}
+    - target: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -7.0498
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.1169739
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.612
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8650649013814523906, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      propertyPath: m_Name
+      value: ImpactBallContent
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4798003920217392951, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 6932033032493081027, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 380783789}
+  m_SourcePrefab: {fileID: 100100000, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+--- !u!1 &380783788 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6932033032493081027, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
+  m_PrefabInstance: {fileID: 380783787}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &380783789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380783788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1001 &387213079
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17205,3 +17317,4 @@ SceneRoots:
   - {fileID: 1123716066}
   - {fileID: 1668893117}
   - {fileID: 497387692}
+  - {fileID: 380783787}

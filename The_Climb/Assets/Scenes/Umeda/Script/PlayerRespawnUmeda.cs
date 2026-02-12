@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using TheClimb.Astral;
 
 public class PlayerRespawnUmeda : MonoBehaviour
 {
@@ -34,6 +35,11 @@ public class PlayerRespawnUmeda : MonoBehaviour
 
     [Header("リスポーン時にリセットするスイッチ")]
     public List<Switch> switchesToReset = new List<Switch>();
+
+    //[Header("衝撃球のリセットために必要なデータ")]
+    //[SerializeField] List<ImpactBallRespornData> impactBallRespornDatas;    //  衝撃球のリセットに必要なデータ(簡易実装の為後からリファクタ)
+    //[Header("今のステージが天体かどうか")]
+    //[SerializeField] bool isAstralStage;    //  現在が宇宙ステージかを確認するフラグ(簡易実装のため後からリファクタ)
 
 
     // ---------------------------------------------------------
@@ -173,11 +179,30 @@ public class PlayerRespawnUmeda : MonoBehaviour
         }
         else
         {
+            //if(isAstralStage)    //  天体ステージだったら衝撃球を生成する(簡易実装の為後からリファクタ)
+            //{ RespownImpactBall(); }
+
             // 他のシーンでは旧来のリスポーン処理（位置だけ戻す等）
             RespawnNormal();
         }
     }
 
+    //void RespownImpactBall()    //  衝撃球再生成(簡易実装の為後からリファクタ)
+    //{
+    //    if (impactBallRespornDatas != null && isAstralStage)
+    //    {
+    //        foreach (var ball in impactBallRespornDatas)
+    //        {
+    //            if (ball == null || ball.ImpactBall == null)
+    //            {
+    //                Debug.Log("ImpactBallDatasにnullがある");
+    //                continue;
+    //            }
+
+    //            Instantiate(ball.ImpactBall, ball.GenratePosition, Quaternion.identity);
+    //        }
+    //    }
+    //}
     // 元々のリスポーン処理（Nakamura以外用）
     private void RespawnNormal()
     {
