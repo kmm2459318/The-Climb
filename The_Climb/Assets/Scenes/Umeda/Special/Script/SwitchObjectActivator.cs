@@ -2,36 +2,60 @@
 
 public class SwitchObjectActivator : MonoBehaviour
 {
-    [Header("参照するスイッチ（子でもOK）")]
-    public Switch targetSwitch;
+    [Header("反応するSwitchのID")]
+    public string targetSwitchID;
 
-    [Header("無効化するオブジェクト")]
-    public GameObject disableTarget;
+    [Header("スポーンするプレハブ")]
+    public GameObject spawnPrefab;
 
-    [Header("有効化するオブジェクト")]
-    public GameObject enableTarget;
+    [Header("スポーン位置")]
+    public Transform spawnPoint;
 
-    private bool executed = false;
+    [Header("デスポーンするオブジェクト")]
+    public GameObject despawnTarget;
 
-    void Update()
+    [Header("一度だけ実行")]
+    public bool executeOnce = true;
+
+    private bool executed;
+
+    void OnEnable()
     {
-        if (executed) return;
-        if (targetSwitch == null) return;
+        Switch.OnSwitchPressed += OnSwitchPressed;
+    }
 
-        if (targetSwitch.IsPressed)
-        {
-            Execute();
-        }
+    void OnDisable()
+    {
+        Switch.OnSwitchPressed -= OnSwitchPressed;
+    }
+
+    void OnSwitchPressed(Switch sw)
+    {
+        if (executeOnce && executed) return;
+
+        // ★ ID一致判定
+        if (sw.switchID != targetSwitchID) return;
+
+        Execute();
     }
 
     void Execute()
     {
         executed = true;
 
-        if (disableTarget != null)
-            disableTarget.SetActive(false);
+        // スポーン or 再アクティブ
+        if (spawnPrefab != null)
+        {
+            Vector3 pos = spawnPoint != null ? spawnPoint.position : transform.position;
+            Quaternion rot = spawnPoint != null ? spawnPoint.rotation : Quaternion.identity;
 
-        if (enableTarget != null)
-            enableTarget.SetActive(true);
+            Instantiate(spawnPrefab, pos, rot);
+        }
+
+        // デスポーン
+        if (despawnTarget != null)
+        {
+            Destroy(despawnTarget);
+        }
     }
 }
