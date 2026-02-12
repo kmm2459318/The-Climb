@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
+using TheClimb.Astral;
+using System.Collections.Generic;
 
 public class PlayerRespawn : MonoBehaviour
 {
     Rigidbody rb;
 
     private Vector3 lastSavePos; //リスポーン位置
+
+    [SerializeField] List<ImpactBallRespornData> impactBallRespornDatas;    //  衝撃球のリセットに必要なデータ(簡易実装の為後からリファクタ)
 
     void Start()
     {

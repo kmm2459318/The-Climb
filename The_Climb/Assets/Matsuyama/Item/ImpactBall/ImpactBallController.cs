@@ -31,13 +31,13 @@ namespace TheClimb.Item
             ItemEventBus.onAttractiong -= HandleCountTillActivate;
             ItemEventBus.onExplosion -= HandleExplosionInpact;
         }
-        public void Initialize(ImpactBallContext ctx, ICorutineRunner coroutineRunner, GameObject Effect, GameObject sparkingEffect)    //  初期化
+        public void Initialize(ImpactBallContext ctx, ICorutineRunner coroutineRunner, GameObject Effect, GameObject sparkingEffect, GameObject ImpactBallRoot)    //  初期化
         {
             IImpactable targetPlayer = ImpactableRegistry.GetPlayer();
             Debug.Log(targetPlayer);
 
             itemStateFactory = new ItemStateFactory();
-            itemCommandProvider = new ItemCommandProvider(ctx, itemStateFactory, coroutineRunner, targetPlayer, Effect, sparkingEffect);
+            itemCommandProvider = new ItemCommandProvider(ctx, itemStateFactory, coroutineRunner, targetPlayer, Effect, sparkingEffect, ImpactBallRoot);
             itemStateMachine = new ItemStateMachine(itemStateFactory, itemCommandProvider, this.transform);
 
             itemStateContext = new ItemStateContext(itemStateMachine, this.transform, itemStateFactory);
@@ -51,6 +51,7 @@ namespace TheClimb.Item
 
         public override void OnAttract()    //  引き寄せられた時の処理
         {
+            Debug.Log(itemStateMachine == null);
             itemStateMachine.ChangeState(itemStateFactory.CreateState(ItemStateID.Attracting), itemStateContext);    //  状態変更
         }
 

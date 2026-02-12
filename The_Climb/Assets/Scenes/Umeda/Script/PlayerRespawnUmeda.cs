@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using TheClimb.Astral;
 
 public class PlayerRespawnUmeda : MonoBehaviour
 {
@@ -39,12 +40,18 @@ public class PlayerRespawnUmeda : MonoBehaviour
     [Header("リスポーン時にリセットするスイッチ")]
     public List<Switch> switchesToReset = new List<Switch>();
 
+    //[Header("衝撃球のリセットために必要なデータ")]
+    //[SerializeField] List<ImpactBallRespornData> impactBallRespornDatas;    //  衝撃球のリセットに必要なデータ(簡易実装の為後からリファクタ)
+    //[Header("今のステージが天体かどうか")]
+    //[SerializeField] bool isAstralStage;    //  現在が宇宙ステージかを確認するフラグ(簡易実装のため後からリファクタ)
+
 
     // ---------------------------------------------------------
     // シーンリロードを跨いで値を保持するためのstatic変数
     // ---------------------------------------------------------
     private static int lastCheckpointIndex = -1;
     private static List<string> persistentButtonIDs = new List<string>();
+    private static int kitanoSkillUseCount = -1; // Kitanoスキルの使用回数保持用
 
     void Start()
     {
@@ -122,6 +129,15 @@ public class PlayerRespawnUmeda : MonoBehaviour
         {
             playerHealth.ResetHealth();
         }
+        // Kitanoスキルの使用回数復帰
+        if (kitanoSkillUseCount >= 0)
+        {
+            TempDisableColliders kitanoSkill = FindAnyObjectByType<TempDisableColliders>();
+            if (kitanoSkill != null)
+            {
+                kitanoSkill.CurrentUseCount = kitanoSkillUseCount;
+            }
+        }
     }
 
     void Update()
@@ -159,7 +175,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
     public void Respawn()
     {
         // Nakamuraシーンの場合のみ、シーンリロードによる初期化を行う
-        if (buddyStage)
+        if (SceneManager.GetActiveScene().name == "Nakamura")
         {
             // 1. 維持したいPressureButtonの状態を保存
             persistentButtonIDs.Clear();
@@ -180,6 +196,13 @@ public class PlayerRespawnUmeda : MonoBehaviour
                 }
             }
 
+            // Kitanoスキルの使用回数を保存
+            TempDisableColliders kitanoSkill = FindAnyObjectByType<TempDisableColliders>();
+            if (kitanoSkill != null)
+            {
+                kitanoSkillUseCount = kitanoSkill.CurrentUseCount;
+            }
+
             // 2. 現在のチェックポイントIndexを保存
             lastCheckpointIndex = currentIndex;
 
@@ -189,11 +212,30 @@ public class PlayerRespawnUmeda : MonoBehaviour
         }
         else
         {
+            //if(isAstralStage)    //  天体ステージだったら衝撃球を生成する(簡易実装の為後からリファクタ)
+            //{ RespownImpactBall(); }
+
             // 他のシーンでは旧来のリスポーン処理（位置だけ戻す等）
             RespawnNormal();
         }
     }
 
+    //void RespownImpactBall()    //  衝撃球再生成(簡易実装の為後からリファクタ)
+    //{
+    //    if (impactBallRespornDatas != null && isAstralStage)
+    //    {
+    //        foreach (var ball in impactBallRespornDatas)
+    //        {
+    //            if (ball == null || ball.ImpactBall == null)
+    //            {
+    //                Debug.Log("ImpactBallDatasにnullがある");
+    //                continue;
+    //            }
+
+    //            Instantiate(ball.ImpactBall, ball.GenratePosition, Quaternion.identity);
+    //        }
+    //    }
+    //}
     // 元々のリスポーン処理（Nakamura以外用）
     private void RespawnNormal()
     {
