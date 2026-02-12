@@ -31,6 +31,9 @@ public class IronGolemEnemy : MonoBehaviour
     public float idleLegSwingSpeed = 2f;
     public float idleArmSwingSpeed = 2f;
 
+    [Header("攻撃ダメージ")]
+    public int attackDamage = 1;
+
     [Header("攻撃アニメ（腕）")]
     public float attackWindupAngle = 0f;
     public float attackSwingAngle = 170f;
@@ -221,6 +224,14 @@ public class IronGolemEnemy : MonoBehaviour
 
         if (target != null)
         {
+            // 体力を減らす
+            PlayerHealth health = target.GetComponent<PlayerHealth>();
+            if (health != null)
+            {
+                health.TakeDamage(attackDamage);
+            }
+
+            // 吹き飛ばし
             Rigidbody targetRb = target.GetComponent<Rigidbody>();
             if (targetRb != null)
             {
