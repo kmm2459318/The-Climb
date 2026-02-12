@@ -56,7 +56,17 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     void Start()
     {
+        Application.targetFrameRate = 60; // 60FPSに固定
+        QualitySettings.vSyncCount = 1;   // VSync有効
+
+        // MSAA設定（可能な場合）
+        QualitySettings.antiAliasing = 4;
+
         RigidBody = GetComponent<Rigidbody>();
+        
+        // 移動時のジッター（カクつき）を防ぐために補間を有効か
+        RigidBody.interpolation = RigidbodyInterpolation.Interpolate;
+
         state = GetComponent<PlayerState>();
         jump = gameObject.GetComponent<PlayerJump>();
         special = gameObject.GetComponent<PlayerSpecialAction>();
