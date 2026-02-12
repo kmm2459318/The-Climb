@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,16 +19,13 @@ namespace System.Loading
 
         private void Awake()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
+            if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
                 return;
             }
+
+            Instance = this;
 
             if (loadingScreenUI != null)
             {
@@ -36,24 +33,37 @@ namespace System.Loading
             }
         }
 
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+        }
+
         /// <summary>
         /// Loads a scene by name with a loading screen.
         /// </summary>
         /// <param name="sceneName">The name of the scene to load.</param>
-        public void LoadScene(string sceneName)
+        /// <param name="backgroundImage">Optional background image to display.</param>
+        public void LoadScene(string sceneName, Sprite backgroundImage = null)
         {
-            StartCoroutine(LoadSceneAsync(sceneName));
+            StartCoroutine(LoadSceneAsync(sceneName, backgroundImage));
         }
 
-        private IEnumerator LoadSceneAsync(string sceneName)
+        private IEnumerator LoadSceneAsync(string sceneName, Sprite backgroundImage = null)
         {
             if (loadingScreenUI != null)
             {
                 loadingScreenUI.SetActive(true);
                 loadingScreenUI.UpdateProgress(0);
 
-                // Set a random background image
-                if (backgroundImages != null && backgroundImages.Count > 0)
+                // もし個別画像が指定されていればそれを使用、なければランダムに選択
+                if (backgroundImage != null)
+                {
+                    loadingScreenUI.SetBackgroundImage(backgroundImage);
+                }
+                else if (backgroundImages != null && backgroundImages.Count > 0)
                 {
                     int randomIndex = UnityEngine.Random.Range(0, backgroundImages.Count);
                     loadingScreenUI.SetBackgroundImage(backgroundImages[randomIndex]);
@@ -61,6 +71,12 @@ namespace System.Loading
             }
 
             AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+            if (operation == null)
+            {
+                Debug.LogError($"[SceneLoader] Failed to start loading scene: '{sceneName}'. Operation is null.");
+                if (loadingScreenUI != null) loadingScreenUI.SetActive(false);
+                yield break;
+            }
             operation.allowSceneActivation = false;
 
             float timer = 0f;

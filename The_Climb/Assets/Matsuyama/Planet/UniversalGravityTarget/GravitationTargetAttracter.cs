@@ -45,6 +45,10 @@ namespace TheClimb.UniversalGravity
 
                         if(targetData.currentStateIDProperty != GravitationTargetStateID.Attracting)
                         {
+                            if(targetData == null)
+                            {
+                                Debug.Log("生成された");
+                            }
                             targetData.OnAttract();
                         }
                         Vector3 AttractForce = AttractVectleCaluculate.CalculateAttractVectle(this.transform.position, targetPosition, CurrentPlanetMass, targetStatusBlock.Mass, Distance);

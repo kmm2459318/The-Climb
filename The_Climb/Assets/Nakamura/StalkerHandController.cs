@@ -47,11 +47,15 @@ public class StalkerHandController : MonoBehaviour
         }
     }
 
+    private int defaultLayer; //初期レイヤー
+    private float sanityDrainTimer = 0f; //正気度減少タイマー
+
     void Awake()
     {
         lightDarkWorld = FindAnyObjectByType<LightDarkWorld>();
 
         home = transform.position;
+        defaultLayer = gameObject.layer; //初期レイヤー保存
 
         mainStalker = transform.GetChild(3).gameObject.transform;
         childStalker1 = transform.GetChild(2).gameObject.transform;
@@ -70,23 +74,62 @@ public class StalkerHandController : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    void OnEnable()
     {
-        if (lightDarkWorld != null)
+        //変数リセット
+        ResetActive();
+
+        //子ストーカーの位置リセット
+        for (int i = 1; i < stalkers.Length; i++)
         {
-            //消える際白黒リストから削除
-            for (int i = 0; i < stalkers.Length; i++)
-                lightDarkWorld.UnregisterObject(stalkers[i].gameObject);
+            stalkers[i].localPosition = Vector3.zero;
+        }
+
+        if (buddy != null)
+        {
+             // ターゲット再設定などがもし必要なら
         }
     }
 
+    void OnDisable()
+    {
+        //if (lightDarkWorld != null)
+        //{
+        //    //消える際白黒リストから削除
+        //    for (int i = 0; i < stalkers.Length; i++)
+        //        lightDarkWorld.UnregisterObject(stalkers[i].gameObject);
+        //}
+    }
+    
     void Update()
     {
         //誘拐中
         if (isKidnapping)
         {
             mainStalker.transform.LookAt(home);
-            transform.Translate(mainStalker.transform.forward * (speed / 2) * Time.deltaTime, Space.World);
+            
+            // Homeとの距離を確認
+            float distanceToHome = Vector3.Distance(mainStalker.transform.position, home);
+            
+            if (distanceToHome > 0.1f)
+            {
+                // 移動
+                transform.Translate(mainStalker.transform.forward * (speed / 2) * Time.deltaTime, Space.World);
+                sanityDrainTimer = 0f;
+            }
+            else
+            {
+                // 到着したら移動停止 & 正気度減少
+                sanityDrainTimer += Time.deltaTime;
+                if (sanityDrainTimer >= 1.0f)
+                {
+                    sanityDrainTimer = 0f;
+                    if (playerState != null)
+                    {
+                        playerState.sanityLevel -= 1;
+                    }
+                }
+            }
         }
         else  //追跡行動ローテーション
         {
@@ -144,9 +187,9 @@ public class StalkerHandController : MonoBehaviour
                 }
             }
 
-            //他のストーカーハンドが捕まえたら、もしくはプレイヤーと離れすぎたら消滅
+            //他のストーカーハンドが捕まえたら、もしくはプレイヤーと離れすぎたら消滅 (非表示)
             if (buddyController.beingKidnapped || (Vector3.Distance(mainStalker.position, player.transform.position) > 35f))
-                Destroy(gameObject);
+                gameObject.SetActive(false);
         }
 
         //ChildStalkerの挙動
@@ -190,12 +233,31 @@ public class StalkerHandController : MonoBehaviour
         StartCoroutine(ChildPosReset());
     }
 
-    //Buddy救出＆その敵消滅
+    //Buddy救出＆その敵消滅 (非表示)
     public void ReleaseBuddy()
     {
         buddyController.beingKidnapped = false;
         playerState.carryingBuddy = true;
         buddyController.SetConstraintTarget(player.transform);
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+    }
+
+    //変数リセット
+    public void ResetActive()
+    {
+        stalkerTimer = 0f;
+        isKidnapping = false;
+        mainStalker.transform.localPosition = Vector3.zero; //MainStalkerの位置リセット（ローカル座標）
+        mainStalker.transform.localRotation = Quaternion.identity; //回転リセット
+        
+        //レイヤーリセット
+        if (defaultLayer != 0) // defaultLayerが取得できていれば
+        {
+            gameObject.layer = defaultLayer;
+            for (int i = 0; i < stalkers.Length; i++)
+                if (stalkers[i] != null) stalkers[i].gameObject.layer = defaultLayer;
+        }
+        
+        sanityDrainTimer = 0f;
     }
 }
