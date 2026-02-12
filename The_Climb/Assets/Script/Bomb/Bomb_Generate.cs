@@ -31,6 +31,15 @@ public class Bomb_Generate : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        // ローカルX座標とローカルY座標を0に固定
+        Vector3 pos = transform.localPosition;
+        pos.x = 0;
+        pos.y = 0;
+        transform.localPosition = pos;
+    }
+
     //爆弾の処理
     private void ShootBomb()
     {
