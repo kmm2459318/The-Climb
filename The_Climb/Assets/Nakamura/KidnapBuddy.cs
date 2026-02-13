@@ -25,6 +25,9 @@ public class KidnapBuddy : MonoBehaviour
             }
             else if (other.CompareTag("Player") && handController.playerState.carryingBuddy)  //Buddyをおんぶしてる場合
             {
+                // バリア発動中はStalkerHandを無効化 (バリア発動)
+                if (handController.playerKnock.barrier.TryBlockAttack()) return;
+
                 PlayerMind playerMind = other.GetComponent<PlayerMind>();
 
                 //敵とプレイヤーの位置でノックバックの方向を決める
