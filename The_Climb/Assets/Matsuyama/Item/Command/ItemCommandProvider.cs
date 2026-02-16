@@ -17,12 +17,12 @@ namespace TheClimb.Item
         public ExplosionInpact explosionInpact{get ;}    //  アクティブになるまでカウントする
 
         public ItemCommandProvider
-            (ImpactBallContext ctx, IItemStateFactory stateFactory, ICorutineRunner coroutineRunner, IImpactable targetPlayer, GameObject explosionEffect, GameObject sparkingEffect, GameObject Ball)    //  コンストラクタ
+            (ImpactBallContext ctx, IItemStateFactory stateFactory, IImpactable targetPlayer, GameObject explosionEffect, GameObject sparkingEffect, GameObject Ball)    //  コンストラクタ
         {
             _ctx = ctx;
 
-            countTillActivate = new CountTillActivate(_ctx, stateFactory, coroutineRunner);
-            explosionInpact = new ExplosionInpact(_ctx, stateFactory, coroutineRunner, targetPlayer, explosionEffect, sparkingEffect, Ball);
+            countTillActivate = new CountTillActivate(_ctx, stateFactory);
+            explosionInpact = new ExplosionInpact(_ctx, stateFactory, targetPlayer, explosionEffect, sparkingEffect, Ball);
         }
 
         public void InjectContext(ICommandContext context, IItemStateContext itemStateContext)    //  コンテキスト依存注入

@@ -22,7 +22,7 @@ namespace TheClimb.Item
         IItemStateContext _ItemStateContext;
 
         public ExplosionInpact
-            (ImpactBallContext ctx, IItemStateFactory stateFactory, ICorutineRunner corutineRunner, IImpactable targetPlayer, GameObject explodeEffect, GameObject sparkEffect, GameObject ball)    //  コンストラクタ
+            (ImpactBallContext ctx, IItemStateFactory stateFactory, IImpactable targetPlayer, GameObject explodeEffect, GameObject sparkEffect, GameObject ball)    //  コンストラクタ
         {
             _ctx = ctx;
             _runtimeData = ctx.RuntimeData;
@@ -31,7 +31,6 @@ namespace TheClimb.Item
             Impactball = ball;
 
             _itemStateFactory = stateFactory;
-            _corutineRunner = corutineRunner;
             _planetTransform = ctx.Transform;
             _playerTransform = targetPlayer.TransformGetter;
             playerRigidBody = targetPlayer.RigidbodyGetter;
@@ -46,7 +45,7 @@ namespace TheClimb.Item
         {
             _sparkingEffect.SetActive(false);
             _explosionEffect.SetActive(true);    //  爆発時のエフェクト(仮実装だから消すかも)
-            _corutineRunner.StartCoroutine(ExplosionImapct());
+            ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(ExplosionImapct());
         }
 
         IEnumerator ExplosionImapct()    //  衝撃を炸裂させる    //  距離で制限・当たり判定無効化時間調整・エフェクト調整

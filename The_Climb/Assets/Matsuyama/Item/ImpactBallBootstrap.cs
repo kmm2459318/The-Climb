@@ -7,7 +7,7 @@ namespace TheClimb.Item
     public class ImpactBallBootstrap : MonoBehaviour   //  衝撃球Bootstrap
     {
         [SerializeField] ImpactBallConfigSO _configSO;    //  衝撃球コンフィグ
-        [SerializeField] CoroutineRunner _coroutineRunner;    //  コルーチンランナー
+        //[SerializeField] CoroutineRunner _coroutineRunner;    //  コルーチンランナー
         [SerializeField] GameObject explosionEffectPrefab_Deprecated;    //  爆発時のエフェクト(仮実装だから削除するかも)
         [SerializeField] GameObject sparkingEffect;    //  ビリビリしてるエフェクト(仮実装だから削除するかも)
         [SerializeField] GameObject impactBallRoot;    //  衝撃球Root(仮実装だから削除するかも)
@@ -25,7 +25,7 @@ namespace TheClimb.Item
                 this.GetComponent<Rigidbody>()
                 );
 
-            GetComponent<ImpactBallController>().Initialize(context, _coroutineRunner, explosionEffectPrefab_Deprecated, sparkingEffect, impactBallRoot);
+            GetComponent<ImpactBallController>().Initialize(context, explosionEffectPrefab_Deprecated, sparkingEffect, impactBallRoot);
         }
     }
 }

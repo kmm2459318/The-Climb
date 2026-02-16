@@ -5,13 +5,12 @@ namespace TheClimb.Astral
 {
     public class PlanetCommandProvider    //  天体のコマンドプロバイダー
     {
-     
-        public OrbitalFollower orbitalFollower { get;}
+        public FollowOrbital followOrbital { get;}
         public RotationPlanet rotationPlanet{ get;}
 
         public PlanetCommandProvider(Transform PlanetTF, Transform PlayerTF, GravitationStatusBlock gravitationStat, OrbitalStatusBlock orbitalStat, OrbitalContext orbitalCtx)
         {
-            orbitalFollower = new OrbitalFollower(orbitalCtx);
+            followOrbital = new FollowOrbital(orbitalCtx);
             rotationPlanet = new RotationPlanet(PlanetTF, gravitationStat);
         }
     }

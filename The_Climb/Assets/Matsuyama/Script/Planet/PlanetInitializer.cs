@@ -19,8 +19,9 @@ namespace TheClimb.Core
             _PlanetDataProvider = PlanetContext.Instance._PlanetDataProvider;
             _PlayerDataProvider = PlayerContext.Instance._PlayerDataProvider; ;
 
-            _runner = CoroutineRunnerContext.Instance._corutineRunner;
-            _planetController.Initialize(_PlanetDataProvider, _PlayerDataProvider, _runner);
+            //_runner = CoroutineRunnerContext.Instance._corutineRunner;
+            //_planetController.Initialize(_PlanetDataProvider, _PlayerDataProvider, _runner);
+            _planetController.Initialize(_PlanetDataProvider, _PlayerDataProvider);
         }
     }
 }

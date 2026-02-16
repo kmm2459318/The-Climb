@@ -26,12 +26,12 @@ namespace TheClimb.Astral
         {
             planetStateMachine.ChangeState(planetStateFactory.CreateIdleState());
         }
-        public void Initialize(IPlanetDataProvider planetDataProvider, IPlayerDataProvider playerDataProvider, ICorutineRunner runner)    //  初期化
+        public void Initialize(IPlanetDataProvider planetDataProvider, IPlayerDataProvider playerDataProvider)    //  初期化
         {
             planetStateMachine = new PlanetStateMachine();
-            orbitalContext = new OrbitalContext(this.transform, currentOrbitalStat, playerDataProvider.TransformProperty, runner);
+            orbitalContext = new OrbitalContext(this.transform, currentOrbitalStat, playerDataProvider.TransformProperty);
             planetCommandProvider = new PlanetCommandProvider(this.transform, playerDataProvider.TransformProperty, currentGravitationStat, currentOrbitalStat, orbitalContext);
-            planetCommandProvider.orbitalFollower.Initialize();
+            planetCommandProvider.followOrbital.Initialize();
             planetStateFactory = new PlanetStateFactory(this, planetStateMachine, planetCommandProvider);
             PlanetEventBus.ActivePlanet(playerDataProvider.TransformProperty, currentOrbitalStat.OrbitRadius, currentOrbitalStat.OrbitalSamples);    //  半円を表示
         }

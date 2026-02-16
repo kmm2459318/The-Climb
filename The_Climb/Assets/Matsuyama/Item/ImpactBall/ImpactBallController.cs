@@ -31,13 +31,14 @@ namespace TheClimb.Item
             ItemEventBus.onAttractiong -= HandleCountTillActivate;
             ItemEventBus.onExplosion -= HandleExplosionInpact;
         }
-        public void Initialize(ImpactBallContext ctx, ICorutineRunner coroutineRunner, GameObject Effect, GameObject sparkingEffect, GameObject ImpactBallRoot)    //  初期化
+        //public void Initialize(ImpactBallContext ctx, ICorutineRunner coroutineRunner, GameObject Effect, GameObject sparkingEffect, GameObject ImpactBallRoot)    //  初期化
+        public void Initialize(ImpactBallContext ctx, GameObject Effect, GameObject sparkingEffect, GameObject ImpactBallRoot)    //  初期化
         {
             IImpactable targetPlayer = ImpactableRegistry.GetPlayer();
             Debug.Log(targetPlayer);
 
             itemStateFactory = new ItemStateFactory();
-            itemCommandProvider = new ItemCommandProvider(ctx, itemStateFactory, coroutineRunner, targetPlayer, Effect, sparkingEffect, ImpactBallRoot);
+            itemCommandProvider = new ItemCommandProvider(ctx, itemStateFactory, targetPlayer, Effect, sparkingEffect, ImpactBallRoot);
             itemStateMachine = new ItemStateMachine(itemStateFactory, itemCommandProvider, this.transform);
 
             itemStateContext = new ItemStateContext(itemStateMachine, this.transform, itemStateFactory);

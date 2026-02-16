@@ -5,20 +5,18 @@ using TheClimb.Logging;
 
 namespace TheClimb.Astral
 {
-    public class OrbitalFollower : PlanetCommadBase    //  軌道追従クラス
+    public class FollowOrbital : PlanetCommadBase    //  PlanetControllerから呼ばれる、天体をマウス位置に追従させるコマンド
     {
-        OrbitalContext _context;        //  コンテキスト
+        OrbitalContext _context;        //  コンテキスト、Bootstrapから渡される
+        
+        ICorutineRunner _CoroutineRunner;    //  コルーチンランナー
         Coroutine orbitalFollowLoop;    //  天体が軌道上を動く
 
-        ICorutineRunner _CoroutineRunner;    //  コルーチンランナー
-
-        float startAngle;    //  開始角度
         bool IsRunning;      //  Followコルーチンが走っているかどうか
 
-        public OrbitalFollower(OrbitalContext orbitalCtx)    //  コンストラクタ
+        public FollowOrbital(OrbitalContext orbitalCtx)    //  コンストラクタ
         {
             _context = orbitalCtx;
-            _CoroutineRunner = orbitalCtx._corutineRunner;
         }
 
         public void Initialize()    //  初期化
@@ -27,8 +25,8 @@ namespace TheClimb.Astral
         public override void Execute()    //  軌道追従実行
         {
             if (IsRunning) { return; }
-
-            orbitalFollowLoop = _CoroutineRunner.StartCoroutine(OrbitalFollowLoop());    //  マウス追従ループ開始
+            ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(OrbitalFollowLoop());
+            //orbitalFollowLoop = _CoroutineRunner.StartCoroutine(OrbitalFollowLoop());    //  マウス追従ループ開始
         }
 
         IEnumerator OrbitalFollowLoop()    //  マウス位置に応じて円軌道を追従させるコルーチンループ

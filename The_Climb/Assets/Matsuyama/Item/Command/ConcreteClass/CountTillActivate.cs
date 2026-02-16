@@ -15,15 +15,12 @@ namespace TheClimb.Item
         ICorutineRunner _coroutineRunner;    //  コルーチンランナー
         IItemStateContext _ItemStateContext;
 
-        public CountTillActivate(ImpactBallContext ctx, IItemStateFactory stateFactory, ICorutineRunner runner)    //  コンストラクタ
+        public CountTillActivate(ImpactBallContext ctx, IItemStateFactory stateFactory)    //  コンストラクタ
         {
             _ctx = ctx;
             _runtimeData = ctx.RuntimeData;
 
             _itemStateFactory = stateFactory;
-            _coroutineRunner = runner;
-            
-            
         }
 
         public void InjectContext(ICommandContext commandContext, IItemStateContext itemStateContext)    //  コンテキスト注入
@@ -35,7 +32,8 @@ namespace TheClimb.Item
         public override void Execute()    //  カウント開始
         {
             LogUtility.Log(LogPrefix.countTillActivate, "爆発タイマーカウント開始", LogLevel.Debug);
-            _coroutineRunner.StartCoroutine(CountTillExplosion());
+            //_coroutineRunner.StartCoroutine(CountTillExplosion());
+            ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(CountTillExplosion());
         }
 
         IEnumerator CountTillExplosion()    //  爆発するまでカウントするコルーチン

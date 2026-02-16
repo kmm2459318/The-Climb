@@ -8,11 +8,10 @@ namespace TheClimb.Core
         public Transform _playerTransform;    //  プレイヤートランスフォーム
 
         public ICorutineRunner _corutineRunner;    //  コルーチンランナー
-        public OrbitalContext(Transform planetTF, OrbitalStatusBlock status, Transform playerTF, ICorutineRunner runner)
+        public OrbitalContext(Transform planetTF, OrbitalStatusBlock status, Transform playerTF)
             : base (planetTF, status)    //  コンテキスト
         {
             _playerTransform = playerTF;
-            _corutineRunner = runner;
         }
     }
 }

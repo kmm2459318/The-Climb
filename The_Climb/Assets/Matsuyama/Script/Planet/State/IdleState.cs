@@ -18,7 +18,7 @@ namespace TheClimb.Astral
         public void Enter()    //  Idle状態突入時の関数
         {
             LogUtility.Log(LogPrefix.idleState, "IdleState突入", LogLevel.VerBose);
-            _CommandProvider.orbitalFollower.Execute();
+            _CommandProvider.followOrbital.Execute();
         }
         public void Update()    //  Idle状態中の関数
         {
