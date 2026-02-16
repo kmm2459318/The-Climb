@@ -10,6 +10,8 @@ public class PlayerRespawnUmeda : MonoBehaviour
     private Rigidbody rb;
     private PlayerMove playerMove;
 
+    private PlayerHealth playerHealth;
+
     [Header("リスポーンポイントリスト")]
     public List<Transform> respawnPoints = new List<Transform>(); // 手動設定用リスト
 
@@ -33,6 +35,8 @@ public class PlayerRespawnUmeda : MonoBehaviour
 
     public static Action OnPlayerRespawn;
 
+    MarioController mario;
+
     [Header("リスポーン時にリセットするスイッチ")]
     public List<Switch> switchesToReset = new List<Switch>();
 
@@ -47,9 +51,13 @@ public class PlayerRespawnUmeda : MonoBehaviour
     // ---------------------------------------------------------
     private static int lastCheckpointIndex = -1;
     private static List<string> persistentButtonIDs = new List<string>();
+    private static int kitanoSkillUseCount = -1; // Kitanoスキルの使用回数保持用
 
     void Start()
     {
+        mario = GetComponent<MarioController>();
+        playerHealth = GetComponent<PlayerHealth>();
+
         rb = GetComponent<Rigidbody>();
         playerMove = GetComponent<PlayerMove>();
 
@@ -60,6 +68,8 @@ public class PlayerRespawnUmeda : MonoBehaviour
             player = GameObject.Find("PlayerModel");
             playerState = player.GetComponent<PlayerState>();
             buddyCarry = player.GetComponent<BuddyCarry>();
+
+            playerHealth = GetComponent<PlayerHealth>();
 
             // リロード直後かどうか判定：lastCheckpointIndexが有効なら復帰処理を行う
             if (lastCheckpointIndex >= 0)
@@ -114,10 +124,26 @@ public class PlayerRespawnUmeda : MonoBehaviour
                 }
             }
         }
+
+        if (playerHealth != null)
+        {
+            playerHealth.ResetHealth();
+        }
+        // Kitanoスキルの使用回数復帰
+        if (kitanoSkillUseCount >= 0)
+        {
+            TempDisableColliders kitanoSkill = FindAnyObjectByType<TempDisableColliders>();
+            if (kitanoSkill != null)
+            {
+                kitanoSkill.CurrentUseCount = kitanoSkillUseCount;
+            }
+        }
     }
 
     void Update()
     {
+        if (mario != null && mario.IsDead()) return;
+
         if (currentRespawnPoint == null && respawnPoints.Count > 0) return;
 
         // チェックポイント未設定時の安全策（Startで設定されるはずだが念のため）
@@ -149,7 +175,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
     public void Respawn()
     {
         // Nakamuraシーンの場合のみ、シーンリロードによる初期化を行う
-        if (buddyStage)
+        if (SceneManager.GetActiveScene().name == "Nakamura")
         {
             // 1. 維持したいPressureButtonの状態を保存
             persistentButtonIDs.Clear();
@@ -168,6 +194,13 @@ public class PlayerRespawnUmeda : MonoBehaviour
                         Debug.LogWarning($"⚠️ PressureButton '{btn.name}' は keepStateAfterRespawn=true ですが、buttonID が空です。状態は保存されません。");
                     }
                 }
+            }
+
+            // Kitanoスキルの使用回数を保存
+            TempDisableColliders kitanoSkill = FindAnyObjectByType<TempDisableColliders>();
+            if (kitanoSkill != null)
+            {
+                kitanoSkillUseCount = kitanoSkill.CurrentUseCount;
             }
 
             // 2. 現在のチェックポイントIndexを保存
@@ -239,11 +272,27 @@ public class PlayerRespawnUmeda : MonoBehaviour
             OnPlayerRespawn?.Invoke();
         }
 
+        rb.linearVelocity = Vector3.zero;
+        rb.MovePosition(currentRespawnPoint.position);
+
+        OnPlayerRespawn?.Invoke();
+
         // 全スイッチを強制リセット
         foreach (var sw in switchesToReset)
         {
             if (sw != null)
                 sw.ForceReset();
+        }
+
+        MarioController mario = GetComponent<MarioController>();
+        if (mario != null)
+        {
+            mario.OnRespawn();
+        }
+
+        if (playerHealth != null)
+        {
+            playerHealth.ResetHealth();
         }
     }
 
