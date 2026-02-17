@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using TheClimb.UniversalGravity;
 
 namespace TheClimb.Astral
 {
@@ -7,9 +6,6 @@ namespace TheClimb.Astral
     public class GravitationStatusBlock    //  天体ステータスブロック
     {
         [Header("万有引力")]
-        [Tooltip("重力自体の影響レベル(現在未使用)")]
-        public GravitationLevel gravitationLevel;    //  重力レベル(未使用)
-
         [Tooltip("質量(引き寄せ力)")]
         public float Mass;             //  質量(引き寄せ力)
         [Tooltip("引き寄せ半径")]

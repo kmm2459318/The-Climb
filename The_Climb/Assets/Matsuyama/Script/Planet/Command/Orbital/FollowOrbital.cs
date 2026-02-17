@@ -46,26 +46,29 @@ namespace TheClimb.Astral
             float elapsed = 0f;    //  経過時間
             float startAngle = Mathf.Atan2(obj.position.y - centerTF.position.y, obj.position.x - centerTF.position.x) * Mathf.Rad2Deg;    //  開始アングル
 
-            while (elapsed < duration)
+            if (obj != null && centerTF != null)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (plane.Raycast(ray, out float distance))
+                while (elapsed < duration)
                 {
-                    Vector3 mousePos = ray.GetPoint(distance);
-                    float endAngle = Mathf.Atan2(mousePos.y - centerTF.position.y, mousePos.x - centerTF.position.x) * Mathf.Rad2Deg;
-                    if (endAngle < 0) endAngle += 360f;
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    if (plane.Raycast(ray, out float distance))
+                    {
+                        Vector3 mousePos = ray.GetPoint(distance);
+                        float endAngle = Mathf.Atan2(mousePos.y - centerTF.position.y, mousePos.x - centerTF.position.x) * Mathf.Rad2Deg;
+                        if (endAngle < 0) endAngle += 360f;
 
-                    float t = elapsed / duration;
-                    float angle = Mathf.LerpAngle(startAngle, endAngle, t) * Mathf.Deg2Rad;
+                        float t = elapsed / duration;
+                        float angle = Mathf.LerpAngle(startAngle, endAngle, t) * Mathf.Deg2Rad;
 
-                    obj.position = centerTF.position + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * radius;
+                        obj.position = centerTF.position + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * radius;
 
-                    if (elapsed + Time.deltaTime <= duration)
-                        startAngle = endAngle;
+                        if (elapsed + Time.deltaTime <= duration)
+                            startAngle = endAngle;
+                    }
+
+                    elapsed += Time.deltaTime;
+                    yield return null;
                 }
-
-                elapsed += Time.deltaTime;
-                yield return null;
             }
         }
 

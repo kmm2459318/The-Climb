@@ -2,7 +2,7 @@
 
 namespace TheClimb.Astral
 {
-    public interface IPlanetDataProvider    //  天体データ提供
+    public interface IPlanetDataProvider
     {
         public Vector3 PositionProperty { get; }
     }

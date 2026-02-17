@@ -1,6 +1,6 @@
 ﻿namespace TheClimb.Astral
 {
-    public enum GravitationTargetStateID
+    public enum AttractTargetStateID
     {
         Idle,
         Attracting,

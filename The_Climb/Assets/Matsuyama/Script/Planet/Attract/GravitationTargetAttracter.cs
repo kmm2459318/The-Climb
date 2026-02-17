@@ -8,8 +8,6 @@ namespace TheClimb.UniversalGravity
         [SerializeField] PlanetStatus planetStatus;         //  天体のステータス群
         GravitationStatusBlock gravitationStatusBlock;                //  天体のステータスクブロック
 
-        public GravitationLevel CurrentGravitationLevel;    //  重力レベル
-        IAttractableListener[] attractableListeners;    //  万有引力操作対象リスナー達
 
         float CurrentAttractRange;    //  現在の万有引力の影響半径
         float CurrentPlanetMass;      //  現在の万有引力の強さ
@@ -17,9 +15,6 @@ namespace TheClimb.UniversalGravity
         void Awake()
         {
             gravitationStatusBlock = planetStatus.GetGraviatationStatus(PlanetIDs.Earth);    //  地球のステータス取得
-
-            CurrentGravitationLevel = gravitationStatusBlock.gravitationLevel;
-            attractableListeners = GetComponents<IAttractableListener>();
 
             CurrentPlanetMass = gravitationStatusBlock.Mass;
             CurrentAttractRange = gravitationStatusBlock.AttractRange;
@@ -29,9 +24,10 @@ namespace TheClimb.UniversalGravity
         {
             AttractTarget();    //  ターゲット引き寄せ
         }
+
         void AttractTarget()    //  ターゲットを引き寄せる
         {
-            foreach (GravitationTargetEntry targetEntry in GravitationObjectResistry.Entries)
+            foreach (AttractTargetEntry targetEntry in AttractObjResistry.Entries)
             {
                 Vector3 targetPosition = targetEntry.target.transform.position;
                 float Distance = Vector3.Distance(this.transform.position, targetPosition);
@@ -40,10 +36,10 @@ namespace TheClimb.UniversalGravity
                 {
                     if (targetEntry.target.TryGetComponent<IAttractable>(out var targetData))
                     {
-                        GravitationTargetStatusBlock targetStatusBlock = targetData.statProperty;
+                        AttractTargetStatusBlock targetStatusBlock = targetData.statProperty;
                         Debug.Log(targetStatusBlock);
 
-                        if(targetData.currentStateIDProperty != GravitationTargetStateID.Attracting)
+                        if(targetData.currentStateIDProperty != AttractTargetStateID.Attracting)
                         {
                             if(targetData == null)
                             {
