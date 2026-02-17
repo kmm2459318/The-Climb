@@ -10,11 +10,11 @@ namespace TheClimb.Core
         private void Awake()
         {
             coroutineRunnerFacade = new CoroutineRunnerFacade(coroutineRunner) as ICoroutineRunnerFacade;
+            ServiceLocator.Register<ICoroutineRunnerFacade>(coroutineRunnerFacade);
         }
 
         private void Start()
         {
-            ServiceLocator.Register<ICoroutineRunnerFacade>(coroutineRunnerFacade);
         }
     }
 }

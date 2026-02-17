@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
-using TheClimb.Player;
 using TheClimb.Core;
+using TheClimb.Player;
 
 namespace TheClimb.Astral
 {
+    [RequireComponent(typeof(PlanetBootstrap))]
+    [DisallowMultipleComponent]
     public class PlanetController : MonoBehaviour    //  天体を包括的にコントロールする
     {
         [SerializeField] PlanetStatus planetStatus;           //  天体のステータス
@@ -26,12 +28,11 @@ namespace TheClimb.Astral
         {
             planetStateMachine.ChangeState(planetStateFactory.CreateIdleState());
         }
-        public void Initialize(IPlanetDataProvider planetDataProvider, IPlayerDataProvider playerDataProvider)    //  初期化
+        public void Initialize(IPlayerDataProvider playerDataProvider)    //  初期化
         {
             planetStateMachine = new PlanetStateMachine();
             orbitalContext = new OrbitalContext(this.transform, currentOrbitalStat, playerDataProvider.TransformProperty);
             planetCommandProvider = new PlanetCommandProvider(this.transform, playerDataProvider.TransformProperty, currentGravitationStat, currentOrbitalStat, orbitalContext);
-            planetCommandProvider.followOrbital.Initialize();
             planetStateFactory = new PlanetStateFactory(this, planetStateMachine, planetCommandProvider);
             PlanetEventBus.ActivePlanet(playerDataProvider.TransformProperty, currentOrbitalStat.OrbitRadius, currentOrbitalStat.OrbitalSamples);    //  半円を表示
         }

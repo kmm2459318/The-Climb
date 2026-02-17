@@ -9,20 +9,16 @@ namespace TheClimb.Astral
     {
         OrbitalContext _context;        //  コンテキスト、Bootstrapから渡される
         
-        ICorutineRunner _CoroutineRunner;    //  コルーチンランナー
         Coroutine orbitalFollowLoop;    //  天体が軌道上を動く
 
         bool IsRunning;      //  Followコルーチンが走っているかどうか
 
-        public FollowOrbital(OrbitalContext orbitalCtx)    //  コンストラクタ
+        public FollowOrbital(OrbitalContext orbitalCtx)    //  PlanetCommandProviderから呼ばれる
         {
             _context = orbitalCtx;
         }
 
-        public void Initialize()    //  初期化
-        {  /*  後記可能性のために定義  */  }
-
-        public override void Execute()    //  軌道追従実行
+        public override void Execute()    //  軌道追従開始
         {
             if (IsRunning) { return; }
             ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(OrbitalFollowLoop());
@@ -77,7 +73,7 @@ namespace TheClimb.Astral
         {
             if (orbitalFollowLoop != null)
             {
-                _CoroutineRunner.StopCoroutine(orbitalFollowLoop);
+                ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(OrbitalFollowLoop());
                 orbitalFollowLoop = null;
             }
             IsRunning = false;
