@@ -1,5 +1,5 @@
-﻿using TheClimb.UniversalGravity;
-using UnityEngine;
+﻿using UnityEngine;
+using TheClimb.UniversalGravity;
 
 namespace TheClimb.Astral
 {
@@ -7,9 +7,14 @@ namespace TheClimb.Astral
     public class GravitationStatusBlock    //  天体ステータスブロック
     {
         [Header("万有引力")]
+        [Tooltip("重力自体の影響レベル(現在未使用)")]
         public GravitationLevel gravitationLevel;    //  重力レベル(未使用)
-        public float RotationSpeed;    //  天体自転速度
+
+        [Tooltip("質量(引き寄せ力)")]
+        public float Mass;             //  質量(引き寄せ力)
+        [Tooltip("引き寄せ半径")]
         public float AttractRange;     //  引き寄せ半径
-        public float Mass;             //  引き寄せ半径
+        [Tooltip("自転速度")]
+        public float RotationSpeed;    //  天体自転速度
     }
 }

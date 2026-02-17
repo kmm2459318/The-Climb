@@ -1,17 +1,18 @@
-﻿using TheClimb.Astral;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace TheClimb.Core
+namespace TheClimb.Astral
 {
-    public class OrbitalContext : PlanetCommandBaseCtx    //  軌道コンテキスト
+    public class OrbitalContext : PlanetCommandBaseCtx    //  orbitalのcommandClassに渡すためのctx
     {
-        public Transform _playerTransform;    //  プレイヤートランスフォーム
 
-        public ICorutineRunner _corutineRunner;    //  コルーチンランナー
+        //  --  publicAPI
+
+        public Transform playerTransform;    //  orbitalの中心位置用
+
         public OrbitalContext(Transform planetTF, OrbitalStatusBlock status, Transform playerTF)
             : base (planetTF, status)    //  コンテキスト
         {
-            _playerTransform = playerTF;
+            playerTransform = playerTF;
         }
     }
 }

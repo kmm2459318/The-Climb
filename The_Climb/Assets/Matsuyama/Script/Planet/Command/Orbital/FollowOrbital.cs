@@ -31,10 +31,10 @@ namespace TheClimb.Astral
             while (true)
             {
                 yield return MoveAlongCircleByAngle(
-                    _context._planetTransform,
-                    _context._playerTransform,
-                    _context._orbitalStatusBlock.OrbitRadius,
-                    _context._orbitalStatusBlock.Duration
+                    _context.planetTransform,
+                    _context.playerTransform,
+                    _context.orbitalStatusBlock.OrbitRadius,
+                    _context.orbitalStatusBlock.Duration
                     );
             }
         }

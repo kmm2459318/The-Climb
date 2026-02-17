@@ -4,30 +4,32 @@ using UnityEngine;
 namespace TheClimb.Astral
 {
     [CreateAssetMenu(fileName = "PlanetStatus", menuName = "Planet/Status")]
-    public class PlanetStatus : ScriptableObject    //  プラネットステータス
+    public class PlanetStatus : ScriptableObject    //  天体の大本ステータス
     {
-        //  敵の状態とステータスをもつクラス
+        //  インスペクター表示用のステータスクラス
         [System.Serializable]
         public class PlanetIDStatusPair    //  ステータスブロックが増えてきたらブロックをまとめたクラス作成
         {
             public PlanetIDs CustomerName;                 //  敵の状態(通常時と狂暴化)
             public GravitationStatusBlock gravitationStatus;    //  質量などのステータスクラス
-            public OrbitalStatusBlock orbitalStatus;       //  軌道のステータスクラス
+            public OrbitalStatusBlock orbitalStatus;       //  円軌道のステータスクラス
         }
 
         [Header("PlanetStatus")]
-        public List<PlanetIDStatusPair> planetIDStatus = new();    //  状態とステータスを持つクラスのリスト(データ入力用)
+        public List<PlanetIDStatusPair> planetIDStatus = new();    //  インスペクター用ステータスリスト
+        Dictionary<PlanetIDs, (GravitationStatusBlock gravitationStatus, OrbitalStatusBlock orbitalStatus) > StatusMap;    //  処理用ステータス辞書
 
-        Dictionary<PlanetIDs, (GravitationStatusBlock gravitationStatus, OrbitalStatusBlock orbitalStatus) > StatusMap;    //  状態とステータスの辞書(処理用)
+        //  --  UnityLifeCycle
 
         void OnEnable()
         {
-            //  スーテータスマップの初期化
+            //  インスペクター用のリストから処理用の辞書を構築
             BuildStatMap();
         }
+        
+        // --  Private method
 
-        //  ステータスマップ初期化
-        void BuildStatMap()
+        void BuildStatMap()    //  インスペクター用リストからkvpを取り出して処理用の辞書に入れる
         {
             StatusMap = new();
             foreach (var pair in planetIDStatus)
@@ -39,23 +41,21 @@ namespace TheClimb.Astral
             }
         }
 
-        //  IDに応じた万有引力ステータスの取得
-        public GravitationStatusBlock GetGraviatationStatus(PlanetIDs PlanetID)
+        // --  Public method
+
+        public GravitationStatusBlock GetGraviatationStatus(PlanetIDs PlanetID)    //  IDに応じた万有引力ステータスの取得
         {
             return StatusMap.TryGetValue(PlanetID, out var data) ? data.gravitationStatus : null;
         }
 
-        //  IDに応じた軌道スタータスの取得
-        public OrbitalStatusBlock GetOrbitalStatus(PlanetIDs PlanetID)
+        public OrbitalStatusBlock GetOrbitalStatus(PlanetIDs PlanetID)    //  IDに応じた軌道スタータスの取得
         {
             return StatusMap.TryGetValue(PlanetID, out var data) ? data.orbitalStatus : null;
         }
 
-        //  IDに応じたすべてのステータスを保持
-        public (GravitationStatusBlock gravitationStatus, OrbitalStatusBlock orbitalStatus)? GetFullStatus(PlanetIDs id)
+        public (GravitationStatusBlock gravitationStatus, OrbitalStatusBlock orbitalStatus)? GetFullStatus(PlanetIDs id)    //  IDに応じたすべてのステータスを保持
         {
             return StatusMap.TryGetValue(id, out var data) ? data : null;
         }
-
     }
 }

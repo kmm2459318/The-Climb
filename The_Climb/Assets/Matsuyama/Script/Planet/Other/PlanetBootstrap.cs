@@ -5,7 +5,7 @@ namespace TheClimb.Astral
 {
     [RequireComponent(typeof(PlanetController))]
     [DisallowMultipleComponent]
-    public class PlanetBootstrap : MonoBehaviour
+    public class PlanetBootstrap : MonoBehaviour    //  後に改善予定
     {
         [SerializeField] PlanetController controller;
 

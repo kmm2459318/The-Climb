@@ -1,31 +1,22 @@
-﻿using System;
-
-namespace TheClimb.Astral
+﻿namespace TheClimb.Astral
 {
-    //  敵キャラのステート管理
     public class PlanetStateMachine
     {
-        public event Action<IPlanetState> OnStateChanged;    //  状態が変化したとき
 
-        IPlanetState CurrentEnemyState;    //  敵キャラの現在のステート
+        //  --  Public API
 
-        //  現在の状態を返すプロパティ
-        public IPlanetState CurrentStateProperty => CurrentEnemyState;
-
-        //  状態変更関数
+        public IPlanetState CurrentPlanetState { get; private set; }
+        
         public void ChangeState(IPlanetState newState)
         {
-            CurrentEnemyState?.Exit();
-            CurrentEnemyState = newState;
-            CurrentEnemyState?.Enter();
-
-            OnStateChanged?.Invoke(CurrentEnemyState);
+            CurrentPlanetState?.Exit();
+            CurrentPlanetState = newState;
+            CurrentPlanetState?.Enter();
         }
 
-        //  ステートごとの状態実行
         public void Update()
         {
-            CurrentEnemyState?.Update();
+            CurrentPlanetState?.Update();
         }
     }
 }

@@ -10,8 +10,6 @@ namespace TheClimb.Astral
 
         public static PlanetContext Instance { get; private set; }
         public PlanetController _PlanetController { get; private set; }
-        
-        public IPlanetDataProvider _PlanetDataProvider { get; private set; }
 
         void Awake()
         {
@@ -22,8 +20,6 @@ namespace TheClimb.Astral
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            _PlanetDataProvider = new PlanetDataProvider(PlanetTransform);
         }
 
         public void RegistPlanetController(PlanetController planetController)    //  登録メソッド

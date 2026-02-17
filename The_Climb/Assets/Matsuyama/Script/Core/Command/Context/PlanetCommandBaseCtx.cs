@@ -1,17 +1,16 @@
-﻿using TheClimb.Astral;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace TheClimb.Core
+namespace TheClimb.Astral
 {
-    public abstract class PlanetCommandBaseCtx    //  天体コマンドパターンコンテキスト
+    public abstract class PlanetCommandBaseCtx     //  天体のコマンドパターンのBaseCtx
     {
-        public Transform _planetTransform { get; protected set; }    //  天体トランスフォーム
-        public OrbitalStatusBlock _orbitalStatusBlock { get; protected set; }    //  軌道のステータスブロック
+        public Transform planetTransform { get; protected set; }
+        public OrbitalStatusBlock orbitalStatusBlock { get; protected set; }    //  円軌道のステータスブロック
 
-        protected PlanetCommandBaseCtx(Transform planetTF, OrbitalStatusBlock orbitalStatus)    //  コンストラクタ
+        protected PlanetCommandBaseCtx(Transform planetTF, OrbitalStatusBlock orbitalStatus)
         {
-            _planetTransform = planetTF;
-            _orbitalStatusBlock = orbitalStatus;
+            planetTransform = planetTF;
+            orbitalStatusBlock = orbitalStatus;
         }
     }
 }

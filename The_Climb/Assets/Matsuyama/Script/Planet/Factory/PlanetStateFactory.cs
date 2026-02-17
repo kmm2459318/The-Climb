@@ -2,21 +2,23 @@
 {
     public class PlanetStateFactory    //  天体のStateを生成するファクトリー
     {
-        readonly PlanetController _planetStateController;    //  天体コントローラーインスタンス
-        readonly PlanetStateMachine _planetStateMachine;     //  天体ステートマシーンインスタンス
-        readonly PlanetCommandProvider _commandProvider;     // 天体のコマンドプロバイダ
+        readonly PlanetController controller;
+        readonly PlanetStateMachine stateMachine;
+        readonly PlanetCommandProvider commandProvider;
 
-        public PlanetStateFactory(PlanetController planetController, PlanetStateMachine planetStateMachine, PlanetCommandProvider commandProvider)    //  コンストラクタ
+        public PlanetStateFactory(PlanetController controller, PlanetStateMachine sm, PlanetCommandProvider cmdProvider)    //  Controllerから呼ばれる
         {
-            _planetStateController = planetController;
-            _planetStateMachine = planetStateMachine;
-            _commandProvider = commandProvider;
+            this.controller = controller;
+            stateMachine = sm;
+            commandProvider = cmdProvider;
         }
+
         public IPlanetState CreateIdleState()    //  IdleState生成
         {
-            return new IdleState(_planetStateController, _planetStateMachine, _commandProvider);
+            return new IdleState(commandProvider);
         }
-        //  ジャンプ状態生成
+
+        //  ジャンプ状態生成    現在は未使用
         //public IEnemyState CreateJumpState()
         //{
         //    return new JumpState(_kickerMoveCommander, _enemyStateMachine, this);

@@ -1,30 +1,26 @@
-﻿using TheClimb.Logging;
-
-namespace TheClimb.Astral
+﻿namespace TheClimb.Astral
 {
-    public class IdleState : IPlanetState    //  Idle状態
+    public class IdleState : IPlanetState
     {
-        PlanetController _planetController;        //  プラネットコントローラーインスタンス
-        PlanetStateMachine _planetStateMachine;    //  プラネットステートマシーンインスタンス
-        PlanetCommandProvider _CommandProvider;    //  コマンドプロバイダ
+        PlanetCommandProvider commandProvider;
 
-        public IdleState(PlanetController planetController, PlanetStateMachine planetStateMachine, PlanetCommandProvider commandProvider)    //  コンストラクタ
+        public IdleState(PlanetCommandProvider cmdProvider)
         {
-            _planetController = planetController;
-            _planetStateMachine = planetStateMachine;
-            _CommandProvider = commandProvider;
+            commandProvider = cmdProvider;
         }
-        
-        public void Enter()    //  Idle状態突入時の関数
+
+        //  --  Public method
+
+        public void Enter()
         {
-            LogUtility.Log(LogPrefix.idleState, "IdleState突入", LogLevel.VerBose);
-            _CommandProvider.followOrbital.Execute();
+            commandProvider.followOrbital.Execute();    //  マウスに位置に対応した円軌道上のポジションに動くループ実行
         }
-        public void Update()    //  Idle状態中の関数
+        public void Update()
         {
-            _CommandProvider.rotationPlanet.Execute();
+            commandProvider.rotationPlanet.Execute();    //  天体を自転させるループ実行
         }
-        public void Exit()    //  Idle状態を抜ける時の関数
+
+        public void Exit()
         {
 
         }
