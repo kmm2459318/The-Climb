@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UIElements;
-using Zenject.SpaceFighter;
+
 
 public class BuddyController : MonoBehaviour
 {
