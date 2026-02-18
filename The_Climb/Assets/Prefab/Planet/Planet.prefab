@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 5496812098583802603}
   - component: {fileID: 8842033325888672681}
   - component: {fileID: 7871740841882949350}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Earth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,6 +354,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheClimb.Astral.PlanetBootstrap
   controller: {fileID: 5286019221911273519}
+  playerTransform: {fileID: 0}
+  playerRigidBody: {fileID: 0}
 --- !u!114 &8842033325888672681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,7 +369,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheClimb.UniversalGravity.GravitationTargetAttracter
   planetStatus: {fileID: 11400000, guid: 3ae0bec0d150acc45887f4b08c5f96a7, type: 2}
-  CurrentGravitationLevel: 1
 --- !u!136 &7871740841882949350
 CapsuleCollider:
   m_ObjectHideFlags: 0
