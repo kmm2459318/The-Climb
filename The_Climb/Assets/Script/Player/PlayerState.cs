@@ -106,12 +106,19 @@ public class PlayerState : MonoBehaviour, IImpactable
         whiteGround = (whiteIndex != -1) ? (1 << whiteIndex) : 0;
         blackGround = (blackIndex != -1) ? (1 << blackIndex) : 0;
 
-        // インスペクターまたはスクリプトで設定
+        //インスペクターまたはスクリプトで設定
         //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         RigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
         Physics.gravity = new Vector3(0, -45F, 0); // Gを倍にする
+
+        //プレイヤー生成時にワールドの状態（光/闇）を再適用
+        var lightDarkWorld = FindFirstObjectByType<LightDarkWorld>();
+        if (lightDarkWorld != null)
+        {
+            lightDarkWorld.ApplyCurrentState(this);
+        }
     }
 
 
@@ -140,7 +147,7 @@ public class PlayerState : MonoBehaviour, IImpactable
         else
         {
             // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.right * 0.09f, groundCheck.position + Vector3.left * 0.09f, groundCheckRadius, groundLayerMask);
+            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.right * 0.08f, groundCheck.position + Vector3.left * 0.08f, groundCheckRadius, groundLayerMask);
 
             //空中時、isJumpOKを反応させない
             if (isAir)
