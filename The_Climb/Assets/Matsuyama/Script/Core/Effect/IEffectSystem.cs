@@ -6,5 +6,6 @@ namespace TheClimb.Core
     {
         void Play(EffectKey key, Vector3 pos);
         void Stop(EffectKey key);
+        public void ActiveEffect(EffectKey key, GameObject effectRoot);
     }
 }
