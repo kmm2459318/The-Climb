@@ -28,38 +28,50 @@ public class LightDarkWorld : MonoBehaviour
     private List<GameObject> whiteGroup = new List<GameObject>();
     private List<GameObject> blackGroup = new List<GameObject>();
 
-    void Start()
+    void Awake()
     {
         player = GameObject.Find("PlayerModel");
-        playerState = player.GetComponent<PlayerState>();
-        buddyCarry = player.GetComponent<BuddyCarry>();
-        worldLight = GameObject.Find("Directional Light").GetComponent<Light>();
-        backGround = GameObject.Find("StageBackGround").GetComponent<MeshRenderer>();
+        if(player != null)
+            playerState = player.GetComponent<PlayerState>();
+            
+        buddyCarry = player != null ? player.GetComponent<BuddyCarry>() : null;
+        
+        var lightObj = GameObject.Find("Directional Light");
+        if(lightObj != null)
+            worldLight = lightObj.GetComponent<Light>();
+            
+        var bgObj = GameObject.Find("StageBackGround");
+        if(bgObj != null)
+            backGround = bgObj.GetComponent<MeshRenderer>();
 
         //白い床
         AddRange(whiteGroup, GameObject.FindGameObjectsWithTag("LightWhite"));
 
         //黒い床
         AddRange(blackGroup, GameObject.FindGameObjectsWithTag("DarkBlack"));
+        
+        // 初期状態適用（ただしStartでLayerChange(false)が呼ばれていたので、それはStartに残すか、ここで呼ぶか。
+        // 元のロジックではStartで呼んでいたので、依存関係があるかもしれないが、
+        // 変数初期化自体はAwakeでやるべき）
+    }
 
-        ////StalkerHand
-        //var stalkers = GameObject.FindGameObjectsWithTag("StalkerHand");
-
-        //int whiteLayer = LayerMask.NameToLayer("WhiteOther");
-        //int blackLayer = LayerMask.NameToLayer("BlackOther");
-
-        //foreach (var s in stalkers)
-        //{
-        //    if (s.layer == whiteLayer)
-        //    {
-        //        whiteGroup.Add(s);
-        //    }
-        //    else if (s.layer == blackLayer)
-        //    {
-        //        blackGroup.Add(s);
-        //    }
-        //}
+    void Start()
+    {
         LayerChange(false);
+    }
+    
+    // ... (AddRange method remains same) ...
+
+    // ... (Update and LightDarkChange methods remain same) ...
+
+    // 他のクラスから現在の状態を適用し直すためのメソッド
+    public void ApplyCurrentState(PlayerState pState = null)
+    {
+        if(pState != null)
+        {
+            this.playerState = pState;
+        }
+        LayerChange(brightnessState == brightness.Light);
     }
 
     private void AddRange(List<GameObject> list, GameObject[] objs)
@@ -122,17 +134,21 @@ public class LightDarkWorld : MonoBehaviour
         }
     }
 
+    // 他のクラスから現在の状態を適用し直すためのメソッド
+
+
     private void LayerChange(bool isLight)
     {
         int player = LayerMask.NameToLayer("Player");
         int buddy = LayerMask.NameToLayer("Buddy");
+        int bomb = LayerMask.NameToLayer("Bomb");
         int ground = LayerMask.NameToLayer("Ground");
         int whiteGround = LayerMask.NameToLayer("WhiteGround");
         int blackGround = LayerMask.NameToLayer("BlackGround");
         int whiteOther = LayerMask.NameToLayer("WhiteOther");
         int blackOther = LayerMask.NameToLayer("BlackOther");
 
-        int[] target = { player, buddy };  //動く側のレイヤー
+        int[] target = { player, buddy, bomb };  //動く側のレイヤー
         (int layer, bool whatBrightness)[] obj = {
             (whiteGround, true),
             (blackGround, false),
