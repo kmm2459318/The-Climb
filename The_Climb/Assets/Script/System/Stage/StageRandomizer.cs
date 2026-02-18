@@ -15,6 +15,8 @@ public class StageRandomizer : MonoBehaviour
     // --- インスペクター設定用 (リスト形式でグループ化) ---
     [Header("ステージ設定 (インスペクターで設定)")]
     public List<StagePoolData> NormalStagePool = new List<StagePoolData>();
+    public Sprite[] StageSprites;
+    public Texture[] StageTextures;
 
     [Header("ボス設定")]
     public List<StagePoolData> BossStagePool = new List<StagePoolData>();

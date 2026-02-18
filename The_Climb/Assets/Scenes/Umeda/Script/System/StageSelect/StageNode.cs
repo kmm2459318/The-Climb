@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -38,6 +39,16 @@ public class StageNode : MonoBehaviour
     public StageRandomizer stageRandomizer;
 
     // ===============================
+    // ★ 画像表示機能（追加）
+    // ===============================
+    [Header("Stage Image")]
+    public Image stageImage;          // Sprite用
+    public RawImage stageRawImage;    // Texture用
+
+    public Sprite unknownSprite;      // ロック中用（任意）
+    public Texture unknownTexture;    // ロック中用（任意）
+
+    // ===============================
     // Unity Lifecycle
     // ===============================
     private void Awake()
@@ -45,16 +56,18 @@ public class StageNode : MonoBehaviour
         if (nodeRenderer == null)
             nodeRenderer = GetComponentInChildren<Renderer>(true);
 
-        // 初期状態はロック（非表示にはしない）
+        // 初期状態はロック
         SetLocked();
 
         if (promptUI)
             promptUI.SetActive(false);
+
+        HideStageImage();
     }
 
     private void Update()
     {
-        // UI追従だけは常に行う
+        // UI追従
         if (promptUI)
             promptUI.transform.position = transform.position + uiOffset;
 
@@ -69,7 +82,7 @@ public class StageNode : MonoBehaviour
     }
 
     // ===============================
-    // 見た目制御（★重要）
+    // 見た目制御
     // ===============================
     public void SetLocked()
     {
@@ -91,7 +104,6 @@ public class StageNode : MonoBehaviour
 
     public void SetCleared()
     {
-        // クリア済みは「押せない」
         isInteractable = false;
 
         if (nodeRenderer && clearedMat)
@@ -118,9 +130,11 @@ public class StageNode : MonoBehaviour
             }
             else if (stageRandomizer && stageId - 1 < stageRandomizer.StageName.Length)
             {
-                stageNameText.text = stageRandomizer.StageName[stageId - 1]; // 表示用の名前をセット
+                stageNameText.text = stageRandomizer.StageName[stageId - 1];
             }
         }
+
+        ShowStageImage();
     }
 
     private void OnTriggerExit(Collider other)
@@ -134,6 +148,55 @@ public class StageNode : MonoBehaviour
 
         if (stageNameText)
             stageNameText.text = "";
+
+        HideStageImage();
+    }
+
+    // ===============================
+    // ★ 画像制御（追加）
+    // ===============================
+    private void ShowStageImage()
+    {
+        if (!isInteractable)
+        {
+            // ロック中
+            if (stageImage && unknownSprite)
+            {
+                stageImage.sprite = unknownSprite;
+                stageImage.gameObject.SetActive(true);
+            }
+
+            if (stageRawImage && unknownTexture)
+            {
+                stageRawImage.texture = unknownTexture;
+                stageRawImage.gameObject.SetActive(true);
+            }
+            return;
+        }
+
+        // 解放済み
+        if (stageRandomizer == null) return;
+
+        if (stageImage && stageId - 1 < stageRandomizer.StageSprites.Length)
+        {
+            stageImage.sprite = stageRandomizer.StageSprites[stageId - 1];
+            stageImage.gameObject.SetActive(true);
+        }
+
+        if (stageRawImage && stageId - 1 < stageRandomizer.StageTextures.Length)
+        {
+            stageRawImage.texture = stageRandomizer.StageTextures[stageId - 1];
+            stageRawImage.gameObject.SetActive(true);
+        }
+    }
+
+    private void HideStageImage()
+    {
+        if (stageImage)
+            stageImage.gameObject.SetActive(false);
+
+        if (stageRawImage)
+            stageRawImage.gameObject.SetActive(false);
     }
 
 #if UNITY_EDITOR
