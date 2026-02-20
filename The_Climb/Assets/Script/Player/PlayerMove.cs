@@ -29,7 +29,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private float groundMoveForce = 50f;     //プレイヤーの地上移動速度
     public float groundMaxSpeed = 7f;   //プレイヤーの地上最高速度記憶
     public float moveInput = 0f;        //プレイヤーの移動方向
-    private float airMoveForce = 25f;    //空中での移動速度
+    private float airMoveForce = 20f;    //空中での移動速度
     public float airMaxSpeed = 9f;     //空中での速度制限
     private Vector3 horizontalVelocity = Vector3.zero;
 
@@ -152,8 +152,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
                     }
                 }
             }
-
-
         }
 
         // 4. まだ有効なColliderが見つかっていない場合、子オブジェクトを探す
@@ -340,7 +338,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         {
             moveInput *= -1f;
         }
-
     }
 
 
@@ -364,21 +361,26 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             }
             //RigidBody.linearVelocity = new Vector3(force.x * Time.deltaTime * 1000.0f, RigidBody.linearVelocity.y, 0f);
         }
-        else if(!special.meteorHighJump && !jump.jumpCoolActive && RigidBody.linearVelocity.x != 0f && moveInput == 0f)
+        else if(!special.meteorHighJump && !jump.jumpCoolActive && RigidBody.linearVelocity.x != 0f)  //着地しているときに移動入力がない場合はぴたっとで止まる
         {
-            Debug.Log("慣性で止まるよ");
-            Vector3 vel = RigidBody.linearVelocity;
-            vel.x = Mathf.MoveTowards(vel.x, 0f, groundMoveForce * Time.fixedDeltaTime);
-            RigidBody.linearVelocity = vel;
+            //ぴたっと止まる
+            //if (moveInput == 0f)
+            //{
+            //    RigidBody.linearVelocity = new Vector3(0f, RigidBody.linearVelocity.y, 0f);
+            //}
+            //else  //慣性で止まる
+            //{
+                Debug.Log("慣性で止まるよ");
+                Vector3 vel = RigidBody.linearVelocity;
+                vel.x = Mathf.MoveTowards(vel.x, 0f, groundMoveForce * Time.fixedDeltaTime);
+                RigidBody.linearVelocity = vel;
+            //}
             //RigidBody.linearVelocity = new Vector3(0f, RigidBody.linearVelocity.y, 0f);
         }
-
-        
     }
 
     private void AirPlayerMove()
     {
-
         // 空中：左右に力を加える
         Vector3 force = new Vector3(moveInput, 0f, 0f) * airMoveForce;
        
@@ -514,5 +516,4 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             }
         }
     }
-
 }
