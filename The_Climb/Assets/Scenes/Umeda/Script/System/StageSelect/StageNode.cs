@@ -8,7 +8,7 @@ using UnityEditor;
 
 public class StageNode : MonoBehaviour
 {
-    [Header("ステージ設定")]
+    [Header("Stage")]
     public int stageId;
 
 #if UNITY_EDITOR
@@ -16,7 +16,7 @@ public class StageNode : MonoBehaviour
     public SceneAsset sceneAsset;
 #endif
 
-    [Header("見た目")]
+    [Header("Visual")]
     public Renderer nodeRenderer;
     public Material lockedMat;
     public Material availableMat;
@@ -24,80 +24,65 @@ public class StageNode : MonoBehaviour
 
     [Header("UI")]
     public TextMeshProUGUI stageNameText;
-    public string unknownText = "???";
     public GameObject promptUI;
     public Vector3 uiOffset = new Vector3(0, 2, 0);
 
-    // ★ StageSelectManager から直接触られる
-    [Header("State")]
-    public bool isInteractable = false;
+    [Header("Preview Canvas")]
+    public Image stageImage;
+    public RawImage stageRawImage;
+
+    [Header("Unknown")]
+    public Sprite unknownSprite;
+    public Texture unknownTexture;
+
+    [Header("External")]
+    public StageRandomizer stageRandomizer;
+    public StageSelectManager stageSelectManager;
 
     private bool playerNearby;
-
-    [Header("外部参照")]
-    public StageSelectManager stageSelectManager;
-    public StageRandomizer stageRandomizer;
+    public bool isInteractable;
 
     // ===============================
-    // ★ 画像表示機能（追加）
-    // ===============================
-    [Header("Stage Image")]
-    public Image stageImage;          // Sprite用
-    public RawImage stageRawImage;    // Texture用
-
-    public Sprite unknownSprite;      // ロック中用（任意）
-    public Texture unknownTexture;    // ロック中用（任意）
-
-    // ===============================
-    // Unity Lifecycle
+    // Unity
     // ===============================
     private void Awake()
     {
         if (nodeRenderer == null)
             nodeRenderer = GetComponentInChildren<Renderer>(true);
 
-        // 初期状態はロック
         SetLocked();
 
         if (promptUI)
             promptUI.SetActive(false);
 
-        HideStageImage();
+        HideImage();
     }
 
     private void Update()
     {
-        // UI追従
         if (promptUI)
             promptUI.transform.position = transform.position + uiOffset;
 
-        if (!isInteractable) return;
-        if (!playerNearby) return;
-        if (stageSelectManager == null) return;
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (isInteractable && playerNearby && Input.GetKeyDown(KeyCode.Space))
         {
-            stageSelectManager.OnStageSelected(stageId);
+            if (stageSelectManager != null)
+                stageSelectManager.OnStageSelected(stageId);
         }
     }
 
     // ===============================
-    // 見た目制御
+    // 状態制御
     // ===============================
     public void SetLocked()
     {
         isInteractable = false;
-
         if (nodeRenderer && lockedMat)
             nodeRenderer.material = lockedMat;
     }
 
     public void SetAvailable()
     {
-        Debug.Log($"{name} SetAvailable");
-
         isInteractable = true;
-
         if (nodeRenderer && availableMat)
             nodeRenderer.material = availableMat;
     }
@@ -105,7 +90,6 @@ public class StageNode : MonoBehaviour
     public void SetCleared()
     {
         isInteractable = false;
-
         if (nodeRenderer && clearedMat)
             nodeRenderer.material = clearedMat;
     }
@@ -125,16 +109,12 @@ public class StageNode : MonoBehaviour
         if (stageNameText)
         {
             if (!isInteractable)
-            {
-                stageNameText.text = unknownText;
-            }
+                stageNameText.text = "???";
             else if (stageRandomizer && stageId - 1 < stageRandomizer.StageName.Length)
-            {
                 stageNameText.text = stageRandomizer.StageName[stageId - 1];
-            }
         }
 
-        ShowStageImage();
+        ShowImage();
     }
 
     private void OnTriggerExit(Collider other)
@@ -149,17 +129,16 @@ public class StageNode : MonoBehaviour
         if (stageNameText)
             stageNameText.text = "";
 
-        HideStageImage();
+        HideImage();
     }
 
     // ===============================
-    // ★ 画像制御（追加）
+    // 画像制御
     // ===============================
-    private void ShowStageImage()
+    private void ShowImage()
     {
         if (!isInteractable)
         {
-            // ロック中
             if (stageImage && unknownSprite)
             {
                 stageImage.sprite = unknownSprite;
@@ -174,23 +153,17 @@ public class StageNode : MonoBehaviour
             return;
         }
 
-        // 解放済み
         if (stageRandomizer == null) return;
 
-        if (stageImage && stageId - 1 < stageRandomizer.StageSprites.Length)
+        Sprite sprite = stageRandomizer.GetStagePreviewSprite(stageId);
+        if (sprite)
         {
-            stageImage.sprite = stageRandomizer.StageSprites[stageId - 1];
+            stageImage.sprite = sprite;
             stageImage.gameObject.SetActive(true);
-        }
-
-        if (stageRawImage && stageId - 1 < stageRandomizer.StageTextures.Length)
-        {
-            stageRawImage.texture = stageRandomizer.StageTextures[stageId - 1];
-            stageRawImage.gameObject.SetActive(true);
         }
     }
 
-    private void HideStageImage()
+    private void HideImage()
     {
         if (stageImage)
             stageImage.gameObject.SetActive(false);
@@ -201,7 +174,7 @@ public class StageNode : MonoBehaviour
 
 #if UNITY_EDITOR
     // ===============================
-    // Editor補助
+    // Editor補助（★エラー対策で復活）
     // ===============================
     public void RefreshSceneName()
     {
