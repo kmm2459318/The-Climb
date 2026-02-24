@@ -1,7 +1,18 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class ShortThornyCudgelController : MonoBehaviour
 {
+    [Header("Audio Sources")]
+    public AudioSource audioSource;
+    public AudioClip shortStretchSound;
+    public AudioClip longStretchSound_1;
+    public AudioClip longStretchSound_2;
+    public AudioClip collisionSound;
+    public AudioClip shrinkSound_1;
+    public AudioClip shrinkSound_2;
+    public AudioClip resetSound;
+
     [Header("初回クールタイム（秒）")]
     public float initialCooldown = 1f;
 
@@ -40,11 +51,15 @@ public class ShortThornyCudgelController : MonoBehaviour
 
     private float timer = 0f;
     private float moveSpeed = 0f;
+    private Coroutine loopSoundCoroutine;
 
     void Start()
     {
         baseLocalPosition = transform.localPosition;
         timer = 0f;
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -67,19 +82,20 @@ public class ShortThornyCudgelController : MonoBehaviour
                 float t1 = Mathf.Clamp01(timer / shortStretchDuration);
                 float easedT1 = Mathf.SmoothStep(0f, 1f, t1);
                 transform.localPosition = Vector3.Lerp(shortStretchStart, shortStretchEnd, easedT1);
-                Rotate(stretchRotationSpeed); // 左回転
+                Rotate(stretchRotationSpeed);
                 timer += Time.deltaTime;
                 if (t1 >= 1f) StartLongStretch();
                 break;
 
             case State.LongStretch:
                 transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetLocalPosition, moveSpeed * Time.deltaTime);
-                Rotate(stretchRotationSpeed); // 左回転
+                Rotate(stretchRotationSpeed);
                 if (Vector3.Distance(transform.localPosition, targetLocalPosition) < 0.01f)
                 {
                     longStretchEnd = transform.localPosition;
                     timer = 0f;
                     currentState = State.Cooldown3;
+                    OnLongStretchFinished(); // Cooldown3開始時にCollision再生
                 }
                 break;
 
@@ -90,20 +106,24 @@ public class ShortThornyCudgelController : MonoBehaviour
             case State.Shrinking:
                 float t3 = Mathf.Clamp01(timer / shrinkDuration);
                 transform.localPosition = Vector3.Lerp(longStretchEnd, baseLocalPosition, t3);
-                Rotate(-shrinkRotationSpeed); // 右回転
+                Rotate(-shrinkRotationSpeed);
                 timer += Time.deltaTime;
                 if (t3 >= 1f)
                 {
                     timer = 0f;
                     transform.localRotation = Quaternion.identity;
                     currentState = State.Cooldown1;
+                    OnShrinkFinished(); // Cooldown1開始時にReset再生
                 }
                 break;
         }
     }
 
+    // --- 各フェーズ開始・終了時の音処理 ---
+
     void StartShortStretch()
     {
+        PlayOneShot(shortStretchSound);
         timer = 0f;
         shortStretchStart = baseLocalPosition;
         shortStretchEnd = baseLocalPosition + Vector3.up * shortStretchDistance;
@@ -112,18 +132,75 @@ public class ShortThornyCudgelController : MonoBehaviour
 
     void StartLongStretch()
     {
+        StartLoopSequence(longStretchSound_1, longStretchSound_2);
         timer = 0f;
         targetLocalPosition = shortStretchEnd + Vector3.up * longStretchDistance;
         moveSpeed = longStretchDistance / longStretchDuration;
         currentState = State.LongStretch;
     }
 
+    void OnLongStretchFinished()
+    {
+        StopLoopSound();
+        PlayOneShot(collisionSound);
+    }
+
     void StartShrinking()
     {
+        StartLoopSequence(shrinkSound_1, shrinkSound_2);
         timer = 0f;
         targetLocalPosition = baseLocalPosition;
         currentState = State.Shrinking;
     }
+
+    void OnShrinkFinished()
+    {
+        StopLoopSound();
+        PlayOneShot(resetSound);
+    }
+
+    // --- オーディオ制御ヘルパー ---
+
+    void PlayOneShot(AudioClip clip)
+    {
+        if (clip != null && audioSource != null)
+            audioSource.PlayOneShot(clip);
+    }
+
+    void StartLoopSequence(AudioClip startClip, AudioClip loopClip)
+    {
+        StopLoopSound();
+        loopSoundCoroutine = StartCoroutine(PlaySequenceCoroutine(startClip, loopClip));
+    }
+
+    IEnumerator PlaySequenceCoroutine(AudioClip startClip, AudioClip loopClip)
+    {
+        if (audioSource == null) yield break;
+
+        audioSource.clip = startClip;
+        audioSource.loop = false;
+        audioSource.Play();
+
+        yield return new WaitUntil(() => !audioSource.isPlaying);
+
+        audioSource.clip = loopClip;
+        audioSource.loop = true;
+        audioSource.Play();
+    }
+
+    void StopLoopSound()
+    {
+        if (loopSoundCoroutine != null)
+            StopCoroutine(loopSoundCoroutine);
+
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+        }
+    }
+
+    // --- 既存の計算メソッド ---
 
     void Rotate(float speed)
     {
