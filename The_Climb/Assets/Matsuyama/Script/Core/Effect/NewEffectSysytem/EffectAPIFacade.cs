@@ -8,6 +8,10 @@ namespace TheClimb.Core
         {
             ServiceLocator.Resolve<IEffectSystem>().Play(key, pos);
         }
+        public static void Play(EffectKey key, Transform parent)    //  エフェクト再生
+        {
+            ServiceLocator.Resolve<IEffectSystem>().Play(key, parent);
+        }
         public static void Stop(EffectKey key)    //  エフェクト停止
         {
             ServiceLocator.Resolve<IEffectSystem>().Stop(key);

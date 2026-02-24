@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TheClimb.Astral;
+using UnityEngine;
 
 namespace TheClimb.Core
 {
@@ -6,12 +7,18 @@ namespace TheClimb.Core
     {
         InputSystem_Actions inputAction_System;
 
-        InputHandleBase inputReceiver;    //  入力を受け付けるクラス
+        [SerializeField] InputHandleBase playerInputHandle;
+        [SerializeField] Transform planetTF;
+        PlanetAbilityBase planetAbilityBase;
 
         void Awake()
         {
-            //    inputAction_System = new InputSystem_Actions();
-            //    inputReceiver = new PlayerInputHandle(inputAction_System); 
+            inputAction_System = new InputSystem_Actions();
+            planetAbilityBase = new PlanetAbility(planetTF) as PlanetAbilityBase;
+        }
+        void Start()
+        {
+            playerInputHandle.Initialize(inputAction_System, planetAbilityBase);
         }
     }
 }

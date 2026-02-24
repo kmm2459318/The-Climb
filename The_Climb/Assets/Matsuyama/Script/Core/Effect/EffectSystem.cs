@@ -17,7 +17,7 @@ namespace TheClimb.Core
 
         private void OnDestroy()
         {
-            //ServiceLocator.Unregister<IEffectSystem>();    // シーン破棄時に解除（任意だが安全）
+            ServiceLocator.Unregister<IEffectSystem>(this);
         }
 
         //  --  Public API
@@ -35,6 +35,23 @@ namespace TheClimb.Core
             Stop(key);    //  エフェクトを一回再生終了する
 
             var instance = Instantiate(definition.prefab, position, definition.prefab.transform.rotation);
+
+            playingEffects[key] = instance;
+        }
+
+        public void Play(EffectKey key, Transform parent)    //  エフェクト再生(親追従)
+        {
+            // 定義解決
+            var definition = catalog.Get(key);
+            if (definition == null)
+            {
+                Debug.LogWarning($"EffectDefinition not found : {key}");
+                return;
+            }
+
+            Stop(key);    //  エフェクトを一回再生終了する
+
+            var instance = Instantiate(definition.prefab, parent);
 
             playingEffects[key] = instance;
         }
