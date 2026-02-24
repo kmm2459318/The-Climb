@@ -101,6 +101,28 @@ public class Enemy : MonoBehaviour
         if (CorpsePrefab != null)
         {
             GameObject corpse = Instantiate(CorpsePrefab , transform.position, transform.rotation);
+
+            Rigidbody rb = corpse.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                // 吹き飛ばし
+                Vector3 force = new Vector3(
+                    Random.Range(-5f, 5f),
+                    Random.Range(10f,15f),
+                    Random.Range(-5f, 5f)
+                );
+
+                rb.AddForce(force, ForceMode.Impulse);
+
+                // 回転
+                Vector3 torque = new Vector3(
+                    Random.Range(-5f, 5f),
+                    Random.Range(-5f, 5f),
+                    Random.Range(-5f, 5f)
+                );
+
+                rb.AddTorque(torque, ForceMode.Impulse);
+            }
         }
     }
 }
