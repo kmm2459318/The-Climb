@@ -14,7 +14,7 @@ public class Bomb_Generate : MonoBehaviour
 
     void Update()
     {
-
+        if (Time.timeScale == 0f) return;
         p_aim.UpdateDirection(p_move.MoveInput);
         //爆弾発射
         if (Input.GetMouseButtonDown(0))

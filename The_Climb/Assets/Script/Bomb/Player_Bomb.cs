@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.Audio;
 
 public class Player_Bomb : MonoBehaviour
 {
@@ -9,6 +9,7 @@ public class Player_Bomb : MonoBehaviour
     [SerializeField] float b_upward = 0;
     [SerializeField] float b_time = 3;
     [SerializeField] AudioClip explosionSound; // 爆発SE
+    [SerializeField] private AudioMixerGroup seMixerGroup;
     [SerializeField, Range(0f, 1f)] float explosionVolume = 1f; // 爆発音量
     public int b_damage = 5;
 
@@ -76,6 +77,7 @@ public class Player_Bomb : MonoBehaviour
             source.clip = explosionSound;
             source.volume = explosionVolume;
             source.spatialBlend = 0f; // 2Dサウンドに設定
+            source.outputAudioMixerGroup = seMixerGroup;
             source.Play();
 
             // 再生終了後にオブジェクトを破棄
