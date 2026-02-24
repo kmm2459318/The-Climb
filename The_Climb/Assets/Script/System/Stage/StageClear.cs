@@ -40,6 +40,11 @@ public class StageClear : MonoBehaviour
             PlayerPrefs.SetInt("LastClearedStage", currentStageId);
         }
 
+        // ★ StageSelectManager への通知用
+        PlayerPrefs.SetInt("JustClearedStageId", currentStageId);
+        // ★ 永続化用
+        PlayerPrefs.SetInt($"StageCleared_{currentStageId}", 1);
+
         PlayerPrefs.Save();
 
         // ステージセレクトへ
