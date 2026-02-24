@@ -166,7 +166,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
 
         // デバッグ用：Rキーでリスポーン
         // playerStateがnullの場合のエラー回避
-        if (playerState != null && (Input.GetKeyDown(KeyCode.R) || playerState.erosionLevel >= 100 || playerState.sanityLevel <= 0))
+        if (playerState != null && (Input.GetKeyDown(KeyCode.R) || playerState.sanityLevel <= 0))
         {
             Respawn();
         }
