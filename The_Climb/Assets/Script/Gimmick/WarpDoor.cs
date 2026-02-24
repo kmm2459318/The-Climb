@@ -39,16 +39,19 @@ public class WarpDoor : MonoBehaviour
 
     void Update()
     {
+        //ドア使用
         if (nearPlayer && Input.GetKeyDown(KeyCode.W))
         {
             if ((buddyStage && state.carryingBuddy) || !buddyStage)
             {
                 if (canGoBack)
                 {
+                    //ドアに移動
                     player.GetComponent<Rigidbody>().MovePosition(goToDoor.transform.position + new Vector3(0f, -1f, 0f));
                 }
                 else
                 {
+                    //指定した場所に移動
                     player.GetComponent<Rigidbody>().MovePosition(goToWhere.transform.position);
                 }
             }
