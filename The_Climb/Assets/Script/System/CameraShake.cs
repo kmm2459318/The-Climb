@@ -6,19 +6,22 @@ public class CameraShake : MonoBehaviour
 {
     public static CameraShake Instance;
 
-    private Vector3 ShakeOffset = Vector3.zero;
-    private Coroutine ShakeCoroutine;
+    private Vector3 ShakeOffset = Vector3.zero; // 現在の振動量
+    private Coroutine ShakeCoroutine;           // 実行中の振動処理
 
     private void Awake()
     {
+        // シングルトン登録
         Instance = this;
     }
 
     private void LateUpdate()
     {
+        // PlayerCameraFollowerが位置を確定した後に、振動分だけ位置を加算する
         transform.position += ShakeOffset;
     }
 
+    // 振動開始
     public void Shake(float Duration = 0.2f, float Magnitude = 0.3f)
     {
         if (ShakeCoroutine != null)
@@ -26,13 +29,17 @@ public class CameraShake : MonoBehaviour
             StopCoroutine(ShakeCoroutine);
         }
 
+        // 振動処理を開始
         ShakeCoroutine = StartCoroutine(ShakeRoutine(Duration, Magnitude));
     }
 
+    // 振動処理
     private IEnumerator ShakeRoutine(float Duration, float Magnitude)
     {
+        // 経過時間
         float Elapsed = 0f;
 
+        // 指定時間が経過するまで繰り返す
         while (Elapsed < Duration)
         {
             float X = Random.Range(-1f, 1f) * Magnitude;
@@ -44,6 +51,7 @@ public class CameraShake : MonoBehaviour
             yield return null;
         }
 
+        // 終了時にオフセットをリセット
         ShakeOffset = Vector3.zero;
     }
 }
