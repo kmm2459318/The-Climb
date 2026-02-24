@@ -1,50 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Serialization;
 
 [System.Serializable]
 public class StagePoolData
 {
+    [Header("Stage")]
     public string sceneName;
     public string stageName;
+
+    [Header("Images")]
     public Sprite loadingImage;
+    public Sprite stagePreviewSprite;
 }
 
 public class StageRandomizer : MonoBehaviour
 {
-    // --- インスペクター設定用 (リスト形式でグループ化) ---
-    [Header("ステージ設定 (インスペクターで設定)")]
+    [Header("ステージ設定")]
     public List<StagePoolData> NormalStagePool = new List<StagePoolData>();
-
-    [Header("ボス設定")]
     public List<StagePoolData> BossStagePool = new List<StagePoolData>();
 
-
-    // --- 実行時の結果 (他のスクリプトが参照する) ---
-    [Header("シャッフル結果 (他のスクリプトが参照)")]
+    [Header("結果（他スクリプト参照用）")]
     public string[] SceneName = new string[8];
     public string[] StageName = new string[8];
     public Sprite[] LoadingImage = new Sprite[8];
 
-    // 各スロットがプールの何番目か (型判定用に1000+はボス)
     private int[] _currentSlotIndices = new int[8];
-
 
     private void Start()
     {
-        // 配列の初期化 (8スロット固定)
-        SceneName = new string[8];
-        StageName = new string[8];
-        LoadingImage = new Sprite[8];
-
-        // ゲーム開始フラグがあるか、保存された並び順がない場合にシャッフルを実行
         if (PlayerPrefs.GetInt("GameStart") == 1 || !PlayerPrefs.HasKey("StageIndexOrder"))
         {
             Shuffle();
-            
-            // 全フラグリセット (0〜20)
-            for (int i = 0; i <= 20; i++) PlayerPrefs.SetInt($"StageCleared_{i}", 0);
-            
+
+            for (int i = 0; i <= 20; i++)
+                PlayerPrefs.SetInt($"StageCleared_{i}", 0);
+
             PlayerPrefs.DeleteKey("JustClearedStageId");
             PlayerPrefs.SetInt("GameStart", 0);
             PlayerPrefs.Save();
@@ -57,106 +47,96 @@ public class StageRandomizer : MonoBehaviour
 
     private void Shuffle()
     {
-        List<int> poolIndices = new List<int>();
-        for (int i = 0; i < NormalStagePool.Count; i++) poolIndices.Add(i);
+        List<int> pool = new List<int>();
+        for (int i = 0; i < NormalStagePool.Count; i++)
+            pool.Add(i);
 
-        // シャッフル
-        for (int i = 0; i < poolIndices.Count; i++)
+        for (int i = 0; i < pool.Count; i++)
         {
-            int r = Random.Range(i, poolIndices.Count);
-            (poolIndices[i], poolIndices[r]) = (poolIndices[r], poolIndices[i]);
+            int r = Random.Range(i, pool.Count);
+            (pool[i], pool[r]) = (pool[r], pool[i]);
         }
 
         int[] result = new int[8];
 
-        // 規則1: 0, 1, 2, 4, 5, 6 (通常)
         int[] normalSlots = { 0, 1, 2, 4, 5, 6 };
-        for (int i = 0; i < normalSlots.Length; i++)
-        {
-            if (i < poolIndices.Count) result[normalSlots[i]] = poolIndices[i];
-        }
+        for (int i = 0; i < normalSlots.Length && i < pool.Count; i++)
+            result[normalSlots[i]] = pool[i];
 
-        // 規則2: 3 (通常プールから重複許可)
-        if (NormalStagePool.Count > 0) result[3] = Random.Range(0, NormalStagePool.Count);
+        if (NormalStagePool.Count > 0)
+            result[3] = Random.Range(0, NormalStagePool.Count);
 
-        // 規則3: 7 (ボスプール)
         if (BossStagePool.Count > 0)
-        {
             result[7] = Random.Range(0, BossStagePool.Count) + 1000;
-        }
 
         _currentSlotIndices = result;
-        ApplyIndicesToResult();
-        
+        Apply();
         PlayerPrefs.SetString("StageIndexOrder", string.Join(",", _currentSlotIndices));
-        PlayerPrefs.Save();
     }
 
     private void Load()
     {
-        if (PlayerPrefs.HasKey("StageIndexOrder"))
-        {
-            string[] strings = PlayerPrefs.GetString("StageIndexOrder").Split(',');
-            if (strings.Length == 8)
-            {
-                for (int i = 0; i < 8; i++) _currentSlotIndices[i] = int.Parse(strings[i]);
-                ApplyIndicesToResult();
-            }
-        }
+        string[] s = PlayerPrefs.GetString("StageIndexOrder").Split(',');
+        for (int i = 0; i < 8; i++)
+            _currentSlotIndices[i] = int.Parse(s[i]);
+
+        Apply();
     }
 
-    private void ApplyIndicesToResult()
+    private void Apply()
     {
         for (int i = 0; i < 8; i++)
         {
             int idx = _currentSlotIndices[i];
-            
-            if (idx >= 1000) // ボス
+
+            if (idx >= 1000)
             {
-                int bIdx = idx - 1000;
-                if (bIdx < BossStagePool.Count)
-                {
-                    SceneName[i] = BossStagePool[bIdx].sceneName;
-                    StageName[i] = BossStagePool[bIdx].stageName;
-                    LoadingImage[i] = BossStagePool[bIdx].loadingImage;
-                }
+                var d = BossStagePool[idx - 1000];
+                SceneName[i] = d.sceneName;
+                StageName[i] = d.stageName;
+                LoadingImage[i] = d.loadingImage;
             }
-            else // 通常
+            else
             {
-                if (idx < NormalStagePool.Count)
-                {
-                    SceneName[i] = NormalStagePool[idx].sceneName;
-                    StageName[i] = NormalStagePool[idx].stageName;
-                    LoadingImage[i] = NormalStagePool[idx].loadingImage;
-                }
+                var d = NormalStagePool[idx];
+                SceneName[i] = d.sceneName;
+                StageName[i] = d.stageName;
+                LoadingImage[i] = d.loadingImage;
             }
         }
     }
 
-    // 他のスクリプトからは 1始まりのステージID (1〜8) が渡される
+    public Sprite GetStagePreviewSprite(int stageId)
+    {
+        int slot = stageId - 1;
+        if (slot < 0 || slot >= _currentSlotIndices.Length)
+            return null;
+
+        int idx = _currentSlotIndices[slot];
+
+        if (idx >= 1000)
+        {
+            int b = idx - 1000;
+            return (b >= 0 && b < BossStagePool.Count)
+                ? BossStagePool[b].stagePreviewSprite
+                : null;
+        }
+        else
+        {
+            return (idx >= 0 && idx < NormalStagePool.Count)
+                ? NormalStagePool[idx].stagePreviewSprite
+                : null;
+        }
+    }
+
     public void StartStage(int id)
     {
-        int arrayIdx = id - 1; // 内部スロットに変換
+        PlayerPrefs.SetInt("CurrentStageId", id);
+        PlayerPrefs.Save();
 
-        if (arrayIdx >= 0 && arrayIdx < 8)
-        {
-            // StageSelectManager用 (1始まり)
-            PlayerPrefs.SetInt("JustClearedStageId", id);
-            // 他システム用 (1始まり)
-            PlayerPrefs.SetInt("CurrentStageId", id);
-            PlayerPrefs.Save();
-
-            string scene = SceneName[arrayIdx];
-            Sprite img = LoadingImage[arrayIdx];
-
-            if (string.IsNullOrEmpty(scene))
-            {
-                Debug.LogError($"[StageRandomizer] ステージ {id} のシーン名が空です。インスペクターで NormalStagePool / BossStagePool を設定してください。");
-                return;
-            }
-            
-            Debug.Log($"Loading Stage {id}: Scene={scene}, Image={(img ? img.name : "null")}");
-            System.Loading.SceneLoader.Instance.LoadScene(scene, img);
-        }
+        System.Loading.SceneLoader.Instance.LoadScene(
+            SceneName[id - 1],
+            LoadingImage[id - 1]
+        );
     }
 }
