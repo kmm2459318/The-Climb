@@ -557,6 +557,7 @@ GameObject:
   - component: {fileID: 7424387911693393458}
   - component: {fileID: 8326955060575073608}
   - component: {fileID: 5500657178859689209}
+  - component: {fileID: 3218909003156477711}
   m_Layer: 6
   m_Name: PlayerModel
   m_TagString: Player
@@ -826,10 +827,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f511187b3ca683b4fad27315c312b74b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  barrier: {fileID: 1574359323053428553}
-  knockBacking: 0
   knockBackPower: 7
+  knockBacking: 0
   coolTime: 0
+  barrier: {fileID: 1574359323053428553}
 --- !u!114 &2892514810113950073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -898,7 +899,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.4, y: 1.39, z: 0.5}
   m_Center: {x: 0, y: 0.73, z: 0}
@@ -919,7 +920,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 0.19
   m_Center: {x: 0, y: 0.19, z: 0}
@@ -1055,6 +1056,8 @@ MonoBehaviour:
   - {fileID: 248480542058028626}
   - {fileID: 682831879393390009}
   - {fileID: 5500657178859689209}
+  - {fileID: 3218909003156477711}
+  - {fileID: 5500657178859689209}
   transparentDuration: 0.5
 --- !u!114 &8326955060575073608
 MonoBehaviour:
@@ -1072,6 +1075,8 @@ MonoBehaviour:
   - {fileID: 248480542058028626}
   - {fileID: 682831879393390009}
   - {fileID: 5500657178859689209}
+  - {fileID: 5500657178859689209}
+  - {fileID: 3218909003156477711}
   duration: 0.5
   cooldownTime: 3
   maxUseCount: 3
@@ -1096,6 +1101,29 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.13
   m_Center: {x: 0, y: 0.84, z: 0}
+--- !u!136 &3218909003156477711
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2205381300897396991}
+  m_Material: {fileID: 13400000, guid: ccad5117684807a4d8c7f0713eb78fef, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 1.42
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.71, z: 0}
 --- !u!1 &2272384167279023827
 GameObject:
   m_ObjectHideFlags: 0
@@ -3006,6 +3034,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  lowGroundLayer:
+    serializedVersion: 2
+    m_Bits: 0
   groundCheck: {fileID: 7738019847170628624}
   groundCheckRadius: 0.2
 --- !u!111 &8851244117799253545
@@ -3363,6 +3394,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5496812098583802603, guid: 78151935ea7686a41a220138d81f770d, type: 3}
+      propertyPath: playerRigidBody
+      value: 
+      objectReference: {fileID: 7246862423334343013}
+    - target: {fileID: 5496812098583802603, guid: 78151935ea7686a41a220138d81f770d, type: 3}
+      propertyPath: playerTransform
+      value: 
+      objectReference: {fileID: 1494689640004218747}
     - target: {fileID: 6385021355133966636, guid: 78151935ea7686a41a220138d81f770d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.21

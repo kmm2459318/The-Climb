@@ -36,6 +36,7 @@ public class StageSelectManager : MonoBehaviour
     public StageRequirement[] stageRequirements;
 
     private bool[] prevClearedStages;
+    private bool isInitialized = false;
 
     // ===============================
     // Lifecycle
@@ -73,10 +74,13 @@ public class StageSelectManager : MonoBehaviour
         ApplyAllRules();
         Refresh();
         CopyArray(clearedStages, prevClearedStages);
+        isInitialized = true;
     }
 
     private void Update()
     {
+        if (!isInitialized) return;
+
         // ★ ゴール直後の反映
         ApplyJustClearedStage();
 
