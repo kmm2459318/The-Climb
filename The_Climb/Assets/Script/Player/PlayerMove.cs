@@ -349,7 +349,11 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             RigidBody.AddForce(BeltVelocity, ForceMode.Acceleration);
         }
 
-        if (moveInput != 0f)
+        if (moveInput == 0f && RigidBody.linearVelocity.x != 0f && state.landing)  //着地しているときに移動入力がない場合はぴたっとで止まる
+        {
+            RigidBody.linearVelocity = new Vector3(0f, RigidBody.linearVelocity.y, 0f);
+        }
+        else if (moveInput != 0f)
         {
             // 地上：慣性なし、即応する左右移動
             Vector3 force = new Vector3(moveInput, 0f, 0f) * groundMoveForce;
@@ -361,7 +365,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             }
             //RigidBody.linearVelocity = new Vector3(force.x * Time.deltaTime * 1000.0f, RigidBody.linearVelocity.y, 0f);
         }
-        else if(!special.meteorHighJump && !jump.jumpCoolActive && RigidBody.linearVelocity.x != 0f)  //着地しているときに移動入力がない場合はぴたっとで止まる
+        else if (!special.meteorHighJump && !jump.jumpCoolActive && RigidBody.linearVelocity.x != 0f)  //ぴたっと止まる
         {
             //ぴたっと止まる
             //if (moveInput == 0f)
@@ -375,7 +379,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
                 vel.x = Mathf.MoveTowards(vel.x, 0f, groundMoveForce * Time.fixedDeltaTime);
                 RigidBody.linearVelocity = vel;
             //}
-            //RigidBody.linearVelocity = new Vector3(0f, RigidBody.linearVelocity.y, 0f);
         }
     }
 
