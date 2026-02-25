@@ -23,6 +23,12 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     [SerializeField] private bool upsideDown = false; // 天井歩行モード
     [SerializeField] private float customGravity = 9.81f; // 通常重力に近い値
 
+    [Header("Hovering Settings")]
+    [SerializeField] public float rideHeight = 0.5f; // 目標の浮遊高度
+    [SerializeField] public float rideSpringStrength = 500f; // バネの強さ
+    [SerializeField] public float rideSpringDamper = 50f; // バネの減衰力
+    [SerializeField] public float hoverRayCastLength = 1.0f; // 地面検知のレイの長さ
+
     IPlayerDataProvider PlayerDataProvider;    //  プレイヤーのデータプロバイダ
     IPlanetDataProvider PlanetDataProvider;    //  天体のデータプロバイダ
 
@@ -308,7 +314,39 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             }
         }
 
+        ApplyHoveringForce();
         ApplyCustomGravity();
+    }
+
+    private void ApplyHoveringForce()
+    {
+        // 落下中または上昇中はジャンプの挙動を優先する場合の考慮
+        // if (jump.jumping) return; // ジャンプ中はホバーを切るか弱めるか検討（状況による）
+
+        // 地面へのRaycast
+        Vector3 rayOrigin = transform.position + (upsideDown ? Vector3.down : Vector3.up) * 0.1f; // コライダー内から発射すると当たらないことがあるので少しオフセット
+        Vector3 rayDirection = upsideDown ? Vector3.up : Vector3.down;
+
+        if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, hoverRayCastLength, state.groundLayerMask))
+        {
+            // Rayの方向の速度を取得
+            Vector3 vel = RigidBody.linearVelocity;
+            Vector3 rayDir = rayDirection;
+
+            float rayDirVelocity = Vector3.Dot(rayDir, vel);
+
+            // 理想の高さとの差分（変位）を計算
+            // オフセット0.1fを足した位置からRayを撃っているので、rideHeight＋0.1fが目標距離
+            float targetDistance = rideHeight + 0.1f;
+            float x = hit.distance - targetDistance;
+
+            // バネの計算：フックの法則 (F = -kx - cv)
+            float springForce = (x * rideSpringStrength) - (rayDirVelocity * rideSpringDamper);
+
+            // 力を加える（rayの当たる方向の逆＝上向きに力を加える）
+            // springForceがマイナスのとき（沈み込みすぎたとき）、rayDirection(下) * マイナス = 上向きの力
+            RigidBody.AddForce(rayDirection * springForce);
+        }
     }
 
     private void MoveOperation()
