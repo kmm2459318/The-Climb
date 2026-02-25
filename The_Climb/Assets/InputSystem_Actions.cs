@@ -129,7 +129,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""AstralAbility"",
+                    ""name"": ""ChargeAstralAbility"",
                     ""type"": ""Button"",
                     ""id"": ""0d079910-64f3-41e0-9a0d-9720116ad245"",
                     ""expectedControlType"": """",
@@ -242,21 +242,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""6e40492a-c727-46e4-9c24-e791ab22bb3a"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Hold(duration=3)"",
+                    ""interactions"": ""Hold(duration=0.2)"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""AstralAbility"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""76ea255d-f319-4f3b-ae12-39e5c9da33b7"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""AstralAbility"",
+                    ""action"": ""ChargeAstralAbility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1022,7 +1011,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_LeftMove = m_Player.FindAction("LeftMove", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Down = m_Player.FindAction("Down", throwIfNotFound: true);
-        m_Player_AstralAbility = m_Player.FindAction("AstralAbility", throwIfNotFound: true);
+        m_Player_ChargeAstralAbility = m_Player.FindAction("ChargeAstralAbility", throwIfNotFound: true);
         // PlayerUmeda
         m_PlayerUmeda = asset.FindActionMap("PlayerUmeda", throwIfNotFound: true);
         m_PlayerUmeda_LeftMove = m_PlayerUmeda.FindAction("LeftMove", throwIfNotFound: true);
@@ -1128,7 +1117,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_LeftMove;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Down;
-    private readonly InputAction m_Player_AstralAbility;
+    private readonly InputAction m_Player_ChargeAstralAbility;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1157,9 +1146,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Down => m_Wrapper.m_Player_Down;
         /// <summary>
-        /// Provides access to the underlying input action "Player/AstralAbility".
+        /// Provides access to the underlying input action "Player/ChargeAstralAbility".
         /// </summary>
-        public InputAction @AstralAbility => m_Wrapper.m_Player_AstralAbility;
+        public InputAction @ChargeAstralAbility => m_Wrapper.m_Player_ChargeAstralAbility;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1198,9 +1187,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Down.started += instance.OnDown;
             @Down.performed += instance.OnDown;
             @Down.canceled += instance.OnDown;
-            @AstralAbility.started += instance.OnAstralAbility;
-            @AstralAbility.performed += instance.OnAstralAbility;
-            @AstralAbility.canceled += instance.OnAstralAbility;
+            @ChargeAstralAbility.started += instance.OnChargeAstralAbility;
+            @ChargeAstralAbility.performed += instance.OnChargeAstralAbility;
+            @ChargeAstralAbility.canceled += instance.OnChargeAstralAbility;
         }
 
         /// <summary>
@@ -1224,9 +1213,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Down.started -= instance.OnDown;
             @Down.performed -= instance.OnDown;
             @Down.canceled -= instance.OnDown;
-            @AstralAbility.started -= instance.OnAstralAbility;
-            @AstralAbility.performed -= instance.OnAstralAbility;
-            @AstralAbility.canceled -= instance.OnAstralAbility;
+            @ChargeAstralAbility.started -= instance.OnChargeAstralAbility;
+            @ChargeAstralAbility.performed -= instance.OnChargeAstralAbility;
+            @ChargeAstralAbility.canceled -= instance.OnChargeAstralAbility;
         }
 
         /// <summary>
@@ -1696,12 +1685,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDown(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "AstralAbility" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "ChargeAstralAbility" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnAstralAbility(InputAction.CallbackContext context);
+        void OnChargeAstralAbility(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerUmeda" which allows adding and removing callbacks.
