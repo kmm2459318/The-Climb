@@ -2,17 +2,19 @@
 
 public class GimmickSwitch : MonoBehaviour
 {
-    [SerializeField] private Switch SwitchSource;
-    [SerializeField] private SwitchReceiver[] Receivers;
+    [SerializeField] private Switch SwitchSource; // 押下状態を監視するスイッチ
 
-    private bool IsActivated = false; // 押されたかどうか（内部状態）
+    [Header("作動させるギミック")]
+    [SerializeField] private SwitchReceiver[] Receivers; // 作動対象のギミック
 
-
+    private bool IsActivated = false; // 押されたかどうか
 
     private void Update()
     {
+        // すでに作動済みなら何もしない
         if (IsActivated) return;
 
+        // スイッチが存在し、押されたら作動
         if (SwitchSource != null && SwitchSource.IsPressed)
         {
             Activate();
@@ -22,8 +24,10 @@ public class GimmickSwitch : MonoBehaviour
     // スイッチが押された時の処理
     private void Activate()
     {
+        // 再実行防止
         IsActivated = true;
         
+        // 登録されたギミックを順番に作動
         foreach (var r in Receivers)
         {
             if (r != null)

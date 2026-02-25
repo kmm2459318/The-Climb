@@ -11,6 +11,7 @@ public class PlayerAnimation : MonoBehaviour
     private PlayerState PlayerState;
 
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask lowGroundLayer;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.2f;
 
@@ -60,6 +61,6 @@ public class PlayerAnimation : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
+        return Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer) || Physics.CheckSphere(groundCheck.position, groundCheckRadius, lowGroundLayer);
     }
 }
