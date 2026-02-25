@@ -22,9 +22,20 @@ public class BuddyUIManager : MonoBehaviour
         arrowRectTransform.localScale = Vector3.one;
     }
 
-    void Update()
+    void LateUpdate()
     {
         Vector3 screenPos = uiCamera.WorldToScreenPoint(target.position);
+
+        // ターゲットがカメラの後ろにいる場合の処理 Z < 0
+        if (screenPos.z < 0.0f)
+        {
+            screenPos *= -1.0f;
+            // 画面中心から遠ざける方向へ押し出す
+            Vector3 center = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+            Vector3 diff = (screenPos - center).normalized;
+            if (diff.sqrMagnitude == 0) diff = Vector3.up; 
+            screenPos = center + diff * Mathf.Max(Screen.width, Screen.height) * 2f; 
+        }
 
         bool isOnScreen =
         screenPos.z > 0 &&
@@ -41,10 +52,6 @@ public class BuddyUIManager : MonoBehaviour
         //画面外なら表示
         buddyRect.gameObject.SetActive(true);
 
-        //Vector3 toTarget = target.position - uiCamera.transform.position;
-        //float distance = toTarget.magnitude;
-        //float scale = Mathf.Clamp(rateScale / distance, scaleMin, scaleMax);
-
         //画面端クランプ
         screenPos.x = Mathf.Clamp(screenPos.x, edgeBuffer.x, Screen.width - edgeBuffer.x);
         screenPos.y = Mathf.Clamp(screenPos.y, edgeBuffer.y, Screen.height - edgeBuffer.y);
@@ -54,7 +61,7 @@ public class BuddyUIManager : MonoBehaviour
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvasRect,
             screenPos,
-            null,
+            null, // 元通りnullに戻す（OverlayCanvas用）
             out localPos
         );
 

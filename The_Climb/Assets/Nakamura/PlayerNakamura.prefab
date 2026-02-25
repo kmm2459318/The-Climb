@@ -764,9 +764,9 @@ MonoBehaviour:
   reverseHorizontal: 0
   upsideDown: 0
   customGravity: 9.81
-  groundMaxSpeed: 7
+  groundMaxSpeed: 6.5
   moveInput: 0
-  airMaxSpeed: 9
+  airMaxSpeed: 7
   slipping: 0
   slipVelocity: {x: 0, y: 0, z: 0}
   PlayerAnimation: {fileID: 0}
@@ -1054,6 +1054,8 @@ MonoBehaviour:
   - {fileID: 248480542058028626}
   - {fileID: 682831879393390009}
   - {fileID: 5500657178859689209}
+  - {fileID: 3218909003156477711}
+  - {fileID: 5500657178859689209}
   transparentDuration: 0.5
 --- !u!114 &8326955060575073608
 MonoBehaviour:
@@ -1071,6 +1073,8 @@ MonoBehaviour:
   - {fileID: 248480542058028626}
   - {fileID: 682831879393390009}
   - {fileID: 5500657178859689209}
+  - {fileID: 5500657178859689209}
+  - {fileID: 3218909003156477711}
   duration: 0.5
   cooldownTime: 3
   maxUseCount: 3
@@ -3027,6 +3031,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  lowGroundLayer:
+    serializedVersion: 2
+    m_Bits: 0
   groundCheck: {fileID: 7738019847170628624}
   groundCheckRadius: 0.2
 --- !u!111 &8851244117799253545
