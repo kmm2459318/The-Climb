@@ -2169,10 +2169,10 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 88
-  m_CollisionDetection: 2
+  m_Constraints: 72
+  m_CollisionDetection: 0
 --- !u!114 &166202637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2180,7 +2180,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 166202634}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 354fbe92795b4204e85d64dcd36f9fb6, type: 3}
   m_Name: 
@@ -2195,28 +2195,6 @@ MonoBehaviour:
   dashSpeed: 14
   dashDuration: 5
   dashCooldown: 1
---- !u!195 &166202640
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 166202634}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!1 &171735988
 GameObject:
   m_ObjectHideFlags: 0
@@ -11590,9 +11568,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1077356408, guid: c6cfc32748fb5004aa11a1be074b5c58, type: 3}
       insertIndex: -1
       addedObject: {fileID: 166202635}
-    - targetCorrespondingSourceObject: {fileID: 1077356408, guid: c6cfc32748fb5004aa11a1be074b5c58, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 166202640}
   m_SourcePrefab: {fileID: 100100000, guid: c6cfc32748fb5004aa11a1be074b5c58, type: 3}
 --- !u!4 &814446897 stripped
 Transform:
@@ -26897,7 +26872,6 @@ GameObject:
   - component: {fileID: 1737453375}
   - component: {fileID: 1737453374}
   - component: {fileID: 1737453373}
-  - component: {fileID: 1737453376}
   m_Layer: 3
   m_Name: Cube (109)
   m_TagString: Ground
@@ -26997,38 +26971,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737453371}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1737453376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1737453371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
-  m_SerializedVersion: 0
-  m_AgentTypeID: 0
-  m_CollectObjects: 0
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_GenerateLinks: 0
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
-  m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: f329a753422886145a8de74635211dd8, type: 2}
-  m_BuildHeightMesh: 0
 --- !u!4 &1747199351 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1801273408940309876, guid: 05b54ef17de66b04098663a29c5e60ec, type: 3}

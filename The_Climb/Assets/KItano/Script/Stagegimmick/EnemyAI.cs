@@ -44,12 +44,17 @@ public class EnemyAI : MonoBehaviour
 
     private int moveDir = 1; // 1:右 -1:左
 
+    private Rigidbody rb;
     void Start()
     {
         leftLimit = transform.position.x - patrolRange;
         rightLimit = transform.position.x + patrolRange;
+    
     }
-
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
     void Update()
     {
         switch (currentState)
@@ -88,10 +93,17 @@ public class EnemyAI : MonoBehaviour
         Move(moveSpeed);
 
         // 巡回範囲内で左右反転
+        
         if (transform.position.x > rightLimit)
+        {
             moveDir = -1;
+            FaceDirection();
+        }
         else if (transform.position.x < leftLimit)
+        {
             moveDir = 1;
+            FaceDirection();
+        }
     }
 
     // ----------------------
@@ -114,6 +126,7 @@ public class EnemyAI : MonoBehaviour
             {
                 currentState = State.Chase;
                 moveDir = (dx > 0) ? 1 : -1;
+                FaceDirection();
             }
         }
     }
@@ -125,7 +138,7 @@ public class EnemyAI : MonoBehaviour
     {
         float dx = player.position.x - transform.position.x;
         moveDir = (dx > 0) ? 1 : -1;
-
+        FaceDirection();
         Move(moveSpeed);
     }
 
@@ -164,6 +177,7 @@ public class EnemyAI : MonoBehaviour
     // ----------------------
     void Idle()
     {
+        rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
         idleTimer -= Time.deltaTime;
 
         if (idleTimer <= 0f)
@@ -202,6 +216,10 @@ public class EnemyAI : MonoBehaviour
     // ----------------------
     void Move(float speed)
     {
-        transform.Translate(Vector2.right * moveDir * speed * Time.deltaTime);
+        rb.linearVelocity = new Vector3(moveDir * speed, rb.linearVelocity.y, 0);
+    }
+    void FaceDirection()
+    {
+        transform.forward = new Vector3(moveDir, 0, 0);
     }
 }
