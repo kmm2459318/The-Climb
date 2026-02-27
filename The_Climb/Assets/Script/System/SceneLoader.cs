@@ -127,14 +127,14 @@ namespace System.Loading
             // シーンを有効化
             operation.allowSceneActivation = true;
 
+            Time.timeScale = 1f;
+            _isLoading = false;
+
             // シーンの完全な切り替わりを待つ
             while (!operation.isDone)
             {
                 yield return null;
             }
-
-            Time.timeScale = 1f;
-            _isLoading = false;
 
             if (loadingScreenUI != null)
             {
