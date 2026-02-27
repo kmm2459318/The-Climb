@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34fea479c4cbe72409c150eef1c2a98b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StartGame
-  SceneName:
+  StageName:
   - Umeda
   - Kitano
   - Nakamura
@@ -634,10 +634,6 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3000219329589322106, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4026104293785980840, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -698,10 +694,6 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 69d59051d9069824aa7592fa871f7d27, type: 2}
-    - target: {fileID: 7789240811443544062, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8004878425675677970, guid: 5b50fa08c7b44c544a67abdcf7a817bd, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -1446,52 +1438,6 @@ Terrain:
   m_EnableHeightmapRayTracing: 1
   m_EnableTreesAndDetailsRayTracing: 0
   m_TreeMotionVectorModeOverride: 3
---- !u!1 &2146001809
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2146001811}
-  - component: {fileID: 2146001810}
-  m_Layer: 0
-  m_Name: ReenableObjectsOnLoader
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2146001810
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2146001809}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b29f5b5a72a745144b2de9db5fc66c6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ReenableObjectsOnLoad
-  targetObjects:
-  - {fileID: 162092828}
---- !u!4 &2146001811
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2146001809}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &4374919195759800439
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1562,4 +1508,3 @@ SceneRoots:
   - {fileID: 1748069135}
   - {fileID: 589371019}
   - {fileID: 1929534424}
-  - {fileID: 2146001811}
