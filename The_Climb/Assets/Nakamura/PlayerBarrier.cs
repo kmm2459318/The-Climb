@@ -11,7 +11,7 @@ public class PlayerBarrier : MonoBehaviour
     private bool barrierChargeOK = false;  //バリア発動可能か
     public bool unlocking = false;        //バリア解除中
     //private float barrierDuration = 10f;  //バリアの効果時間
-    private float barrierCoolTime = 10f;   //クールタイム
+    private float barrierCoolTime = 7f;   //クールタイム
     private float barrierTimer = 0f;      //バリアの時間関係
 
     void Start()
