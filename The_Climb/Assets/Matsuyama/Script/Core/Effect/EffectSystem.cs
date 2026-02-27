@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TheClimb.Core
 {
@@ -56,7 +57,20 @@ namespace TheClimb.Core
             playingEffects[key] = instance;
         }
 
-        public void Stop(EffectKey key)    //  エフェクト停止
+        public async void Stop(EffectKey key)    //  エフェクト停止
+        {
+            if (!playingEffects.TryGetValue(key, out var instance))
+                return;
+
+            var ps = instance.GetComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+
+            await WaitUntillDead(ps);
+
+            Destroy(instance);
+            playingEffects.Remove(key);
+        }
+        public void StopSudden(EffectKey key)    //  エフェクト停止
         {
             if (!playingEffects.TryGetValue(key, out var instance))
                 return;
@@ -72,6 +86,16 @@ namespace TheClimb.Core
                 effectRoot.SetActive(true);
             }
             playingEffects[key] = effectRoot;
+        }
+
+        //  --  Private method
+
+        async Task WaitUntillDead(ParticleSystem ps)    //  エフェクトが再生終了するまで待つ
+        {
+            while (ps != null && ps.IsAlive(true))
+            {
+                await Task.Yield();
+            }
         }
     }
 }

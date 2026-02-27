@@ -16,5 +16,9 @@ namespace TheClimb.Core
         {
             ServiceLocator.Resolve<IEffectSystem>().Stop(key);
         }
+        public static void StopSudden(EffectKey key)    //  エフェクト停止
+        {
+            ServiceLocator.Resolve<IEffectSystem>().StopSudden(key);
+        }
     }
 }

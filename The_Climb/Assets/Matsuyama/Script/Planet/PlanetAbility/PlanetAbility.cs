@@ -38,11 +38,13 @@ namespace TheClimb.Astral
             if (!isChargeComplete)
             {
                 ServiceLocator.Resolve<ICoroutineRunnerFacade>().StopCoroutine(chargeCoroutine);
+                EffectAPIWindow.Stop(new EffectKey(GameMode.Astral, EffectKind.AwakePower));
             }
             else
             {
                 Debug.Log("かめじゃめじゃ");
             }
+            isChargeComplete = false;
         }
 
     }
