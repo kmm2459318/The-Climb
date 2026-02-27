@@ -19,6 +19,9 @@ namespace System.Loading
 
         private bool _canProceed = false; // ボタンが押されたかどうかのフラグ
 
+        public static bool IsLoading => Instance != null && Instance._isLoading;
+        private bool _isLoading = false;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -55,6 +58,7 @@ namespace System.Loading
 
         private IEnumerator LoadSceneAsync(string sceneName, Sprite backgroundImage = null)
         {
+            _isLoading = true;
             _canProceed = false; // フラグのリセット
 
             Time.timeScale = 0;
@@ -130,6 +134,7 @@ namespace System.Loading
             }
 
             Time.timeScale = 1f;
+            _isLoading = false;
 
             if (loadingScreenUI != null)
             {
