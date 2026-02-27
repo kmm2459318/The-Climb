@@ -4,7 +4,7 @@ using UnityEditor.ShortcutManagement;
 #endif
 using UnityEngine;
 using UnityEngine.Playables;
-
+using Zenject.SpaceFighter;
 
 public class StalkerHome : MonoBehaviour
 {

@@ -19,6 +19,15 @@ public class SkillPlatformSpawner : MonoBehaviour
 
     private bool canUseSkill = true;
     private float cooldownTimer = 0f; // クールタイムの残り時間を追跡
+    private PlayerMove playerMove; // プレイヤーの移動制御クラス
+
+    void Start()
+    {
+        if (player != null)
+        {
+            playerMove = player.GetComponent<PlayerMove>(); // プレイヤーの移動制御クラスを取得
+        }
+    }
 
     /// <summary>
     /// クールタイム進行状況を取得(0.0~1.0、1.0が満タン)
@@ -41,7 +50,7 @@ public class SkillPlatformSpawner : MonoBehaviour
 
         if (Input.GetKeyDown(activateKey) && canUseSkill && PlayerPrefs.GetInt("UmedaAbi") == 1)
         {
-            StartCoroutine(SpawnPlatform());
+            StartCoroutine(SpawnPlatform()); // 足場を生成する
         }
     }
 
@@ -50,11 +59,16 @@ public class SkillPlatformSpawner : MonoBehaviour
         canUseSkill = false;
 
         // プレイヤーの足元の座標を取得
-        Vector3 spawnPos = player.position + spawnOffset;
+        Vector3 currentOffset = spawnOffset;
+        if (playerMove != null && playerMove.IsUpsideDown)
+        {
+            currentOffset.y *= -1; // 上下反転している場合はオフセットを反転
+        }
+        Vector3 spawnPos = player.position + currentOffset;
 
         // 足場とトリガーを生成
-        GameObject platform = Instantiate(platformPrefab, spawnPos, Quaternion.identity);
-        GameObject trigger = Instantiate(triggerColliderPrefab, spawnPos, Quaternion.identity);
+        GameObject platform = Instantiate(platformPrefab, spawnPos, Quaternion.identity); // 足場を生成
+        GameObject trigger = Instantiate(triggerColliderPrefab, spawnPos, Quaternion.identity); // トリガーを生成
 
         // トリガーの縮小アニメーション
         float timer = 0f;
@@ -70,14 +84,14 @@ public class SkillPlatformSpawner : MonoBehaviour
 
         // コライダーが完全に縮んだ瞬間
         // → 足場とトリガーをZ軸方向にずらす
-        platform.transform.position += new Vector3(0, 0, zShiftOnEnd);
-        trigger.transform.position += new Vector3(0, 0, zShiftOnEnd);
+        platform.transform.position += new Vector3(0, 0, zShiftOnEnd); // 足場をずらす
+        trigger.transform.position += new Vector3(0, 0, zShiftOnEnd); // トリガーをずらす
 
         // 少し待ってから破壊（0.1秒で自然な消え方に）
         yield return new WaitForSeconds(0.1f);
 
-        platform.SetActive(false);
-        trigger.SetActive(false);
+        platform.SetActive(false); // 足場を非表示にする
+        trigger.SetActive(false); // トリガーを非表示にする
 
         // クールタイム(タイマーを更新しながら待機)
         cooldownTimer = skillCooldown;
