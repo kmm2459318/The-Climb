@@ -23,15 +23,14 @@ namespace TheClimb.Core
         void SetReaction()
         {
             inputSystem_Action.Player.Enable();
-            //inputSystem_Action.Player.ChargeAstralAbility.started += planetAbility.ChargePower;
-            inputSystem_Action.Player.ChargeAstralAbility.performed += planetAbility.ChargePower;
-            //inputSystem_Action.Player.AstralAbility.performed +=  
+            inputSystem_Action.Player.AstralAbility.started += planetAbility.ChargeAbility;
+            inputSystem_Action.Player.AstralAbility.canceled += planetAbility.BurstChargeForce;
         }
 
         void SetOffReaction()
         {
-            //inputSystem_Action.Player.ChargeAstralAbility.started -= planetAbility.ChargePower;
-            inputSystem_Action.Player.ChargeAstralAbility.performed += planetAbility.ChargePower;
+            inputSystem_Action.Player.AstralAbility.performed -= planetAbility.ChargeAbility;
+            inputSystem_Action.Player.AstralAbility.canceled -= planetAbility.BurstChargeForce;
             inputSystem_Action.Player.Disable();
         }
     }

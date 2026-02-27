@@ -7,14 +7,18 @@ namespace TheClimb.Core
     {
         InputSystem_Actions inputAction_System;
 
+        [Tooltip("プレイヤーの入力受付スクリプト")]
         [SerializeField] InputHandleBase playerInputHandle;
+
+        [Tooltip("天体の能力処理に必要なScriptableObject")]
+        [SerializeField] PlanetAbilityStatsBase abilityStats;
         [SerializeField] Transform planetTF;
         PlanetAbilityBase planetAbilityBase;
 
         void Awake()
         {
             inputAction_System = new InputSystem_Actions();
-            planetAbilityBase = new PlanetAbility(planetTF) as PlanetAbilityBase;
+            planetAbilityBase = new PlanetAbility(abilityStats, planetTF) as PlanetAbilityBase;
         }
         void Start()
         {
