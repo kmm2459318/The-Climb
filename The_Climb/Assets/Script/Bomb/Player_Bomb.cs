@@ -8,8 +8,6 @@ public class Player_Bomb : MonoBehaviour
     [SerializeField] float b_radius = 5;
     [SerializeField] float b_upward = 0;
     [SerializeField] float b_time = 3;
-    [SerializeField] AudioClip explosionSound; // 爆発SE
-    [SerializeField, Range(0f, 1f)] float explosionVolume = 1f; // 爆発音量
     public int b_damage = 5;
 
     private float b_explosion = 0;
@@ -49,7 +47,6 @@ public class Player_Bomb : MonoBehaviour
         b_pos = transform.position;
 
         PlayParticle();
-        PlayExplosionSound(); // SEを再生
         ApplyExplosionForce();
         // コールバック(プレイヤー側に爆発したことを知らせる)
         onExploded?.Invoke();
@@ -61,26 +58,6 @@ public class Player_Bomb : MonoBehaviour
     void PlayParticle()
     {
         Instantiate(explosion, b_pos, Quaternion.identity);
-    }
-
-    //SE再生
-    void PlayExplosionSound()
-    {
-        if (explosionSound != null)
-        {
-            // 2Dサウンドとして再生するためのオブジェクト生成
-            GameObject audioObj = new GameObject("ExplosionAudio");
-            audioObj.transform.position = b_pos;
-            AudioSource source = audioObj.AddComponent<AudioSource>();
-            
-            source.clip = explosionSound;
-            source.volume = explosionVolume;
-            source.spatialBlend = 0f; // 2Dサウンドに設定
-            source.Play();
-
-            // 再生終了後にオブジェクトを破棄
-            Destroy(audioObj, explosionSound.length);
-        }
     }
 
     //爆風

@@ -106,19 +106,12 @@ public class PlayerState : MonoBehaviour, IImpactable
         whiteGround = (whiteIndex != -1) ? (1 << whiteIndex) : 0;
         blackGround = (blackIndex != -1) ? (1 << blackIndex) : 0;
 
-        //インスペクターまたはスクリプトで設定
+        // インスペクターまたはスクリプトで設定
         //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         RigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
         Physics.gravity = new Vector3(0, -45F, 0); // Gを倍にする
-
-        //プレイヤー生成時にワールドの状態（光/闇）を再適用
-        var lightDarkWorld = FindFirstObjectByType<LightDarkWorld>();
-        if (lightDarkWorld != null)
-        {
-            lightDarkWorld.ApplyCurrentState(this);
-        }
     }
 
 
