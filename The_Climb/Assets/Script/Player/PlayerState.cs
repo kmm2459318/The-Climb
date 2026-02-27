@@ -139,8 +139,24 @@ public class PlayerState : MonoBehaviour, IImpactable
         }
         else
         {
-            // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.right * 0.09f, groundCheck.position + Vector3.left * 0.09f, groundCheckRadius, groundLayerMask);
+            // Hovering（サスペンション）のための地面判定（Raycast + SphereCast）
+            Vector3 rayOrigin = groundCheck.position + (move.IsUpsideDown ? Vector3.down : Vector3.up) * 0.1f;
+            Vector3 rayDirection = move.IsUpsideDown ? Vector3.up : Vector3.down;
+            
+            // 目標浮遊高度 + 少しの遊び を接地状態とする
+            float groundedDistance = move.rideHeight + 0.2f; 
+            
+            // まずは足元の狭い範囲のRay（Edgeに立った時用）
+            // isGrounded = Physics.Raycast(rayOrigin, rayDirection, groundedDistance, groundLayerMask);
+            
+            // 安全のため、ある程度厚みを持たせたSphereCastで判定
+            isGrounded = Physics.SphereCast(rayOrigin, groundCheckRadius, rayDirection, out RaycastHit hit, groundedDistance, groundLayerMask);
+
+            // 念のため以前のカプセル判定もフォールバックとして残すが、今回のメインはSphereCast
+            if (!isGrounded)
+            {
+                isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.right * 0.08f, groundCheck.position + Vector3.left * 0.08f, groundCheckRadius, groundLayerMask);
+            }
 
             //空中時、isJumpOKを反応させない
             if (isAir)
