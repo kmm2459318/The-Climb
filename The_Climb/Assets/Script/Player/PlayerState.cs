@@ -106,19 +106,12 @@ public class PlayerState : MonoBehaviour, IImpactable
         whiteGround = (whiteIndex != -1) ? (1 << whiteIndex) : 0;
         blackGround = (blackIndex != -1) ? (1 << blackIndex) : 0;
 
-        //インスペクターまたはスクリプトで設定
+        // インスペクターまたはスクリプトで設定
         //RigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         RigidBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         RigidBody.interpolation = RigidbodyInterpolation.Interpolate;
 
         Physics.gravity = new Vector3(0, -45F, 0); // Gを倍にする
-
-        //プレイヤー生成時にワールドの状態（光/闇）を再適用
-        var lightDarkWorld = FindFirstObjectByType<LightDarkWorld>();
-        if (lightDarkWorld != null)
-        {
-            lightDarkWorld.ApplyCurrentState(this);
-        }
     }
 
 
@@ -146,8 +139,24 @@ public class PlayerState : MonoBehaviour, IImpactable
         }
         else
         {
-            // 地面判定（カプセル形）
-            isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.right * 0.08f, groundCheck.position + Vector3.left * 0.08f, groundCheckRadius, groundLayerMask);
+            // Hovering（サスペンション）のための地面判定（Raycast + SphereCast）
+            Vector3 rayOrigin = groundCheck.position + (move.IsUpsideDown ? Vector3.down : Vector3.up) * 0.1f;
+            Vector3 rayDirection = move.IsUpsideDown ? Vector3.up : Vector3.down;
+            
+            // 目標浮遊高度 + 少しの遊び を接地状態とする
+            float groundedDistance = move.rideHeight + 0.2f; 
+            
+            // まずは足元の狭い範囲のRay（Edgeに立った時用）
+            // isGrounded = Physics.Raycast(rayOrigin, rayDirection, groundedDistance, groundLayerMask);
+            
+            // 安全のため、ある程度厚みを持たせたSphereCastで判定
+            isGrounded = Physics.SphereCast(rayOrigin, groundCheckRadius, rayDirection, out RaycastHit hit, groundedDistance, groundLayerMask);
+
+            // 念のため以前のカプセル判定もフォールバックとして残すが、今回のメインはSphereCast
+            if (!isGrounded)
+            {
+                isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.right * 0.08f, groundCheck.position + Vector3.left * 0.08f, groundCheckRadius, groundLayerMask);
+            }
 
             //空中時、isJumpOKを反応させない
             if (isAir)
