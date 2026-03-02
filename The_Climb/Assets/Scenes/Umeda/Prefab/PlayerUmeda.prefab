@@ -176,6 +176,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  landingJumpNumber: 0
   isOnTrampoline: 0
   TrampolinePower: 1.5
   gravityPower: 20
@@ -197,12 +198,7 @@ MonoBehaviour:
   isFlipped: 0
   RigidBody: {fileID: 0}
   inputManager: {fileID: 0}
-  move: {fileID: 0}
-  jump: {fileID: 0}
-  special: {fileID: 0}
   PlayerAnimation: {fileID: 0}
-  hukidashi: {fileID: 0}
-  hukidashiText: {fileID: 0}
   playerDirectionRight: 1
   landing: 0
   landingJumpOn: 0
@@ -239,7 +235,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftMoveAction: {fileID: 563813258539055939, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   rightMoveAction: {fileID: 5456014942005721184, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  inpactBallController: {fileID: 0}
   reverseHorizontal: 0
   upsideDown: 0
   customGravity: 9.81
@@ -249,9 +244,6 @@ MonoBehaviour:
   slipping: 0
   slipVelocity: {x: 0, y: 0, z: 0}
   PlayerAnimation: {fileID: 0}
-  stuckCheckDelay: 0.5
-  stuckDetectionCollider: {fileID: 0}
-  collidersToDisableOnUnstuck: []
 --- !u!114 &6345709640852886783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,9 +295,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  maxHeightFromCheckpoint: 30
-  fallDistanceFromCheckpoint: 20
-  switchesToReset: []
 --- !u!114 &4085026964948075145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -330,7 +319,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f511187b3ca683b4fad27315c312b74b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  barrier: {fileID: 0}
   knockBacking: 0
   knockBackPower: 7
   coolTime: 0
@@ -347,7 +335,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buddyController: {fileID: 0}
-  buddyPos: {fileID: 0}
   nearBuddy: 0
 --- !u!114 &5736247289536860187
 MonoBehaviour:
@@ -796,7 +783,6 @@ Transform:
   - {fileID: 1783939547556574638}
   - {fileID: 5922359702555246722}
   - {fileID: 8531376405416639281}
-  - {fileID: 7222284811503154359}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5359149192519044455
@@ -1880,66 +1866,4 @@ MonoBehaviour:
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 10038fdbf93c4dd43af9ce774d03a956, type: 3}
   m_PrefabInstance: {fileID: 4017177534420638746}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &7326116498589980527
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 9030205953257870754}
-    m_Modifications:
-    - target: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.01557
-      objectReference: {fileID: 0}
-    - target: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.67204
-      objectReference: {fileID: 0}
-    - target: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6723755931087385078, guid: 566869a405675364182de8cc13b62b49, type: 3}
-      propertyPath: m_Name
-      value: CommandSystem
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 566869a405675364182de8cc13b62b49, type: 3}
---- !u!4 &7222284811503154359 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 112921933838656472, guid: 566869a405675364182de8cc13b62b49, type: 3}
-  m_PrefabInstance: {fileID: 7326116498589980527}
   m_PrefabAsset: {fileID: 0}

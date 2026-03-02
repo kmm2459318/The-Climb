@@ -8,10 +8,11 @@ public class PlayerKnockBack : MonoBehaviour
     private PlayerJump jump;
     private PlayerMind mind;
     private BuddyCarry buddyCarry;
-    public float knockBackPower = 7f;  //ノックバック中フラグ
+    [SerializeField] PlayerBarrier barrier;
+
     public bool knockBacking = false;  //ノックバック中フラグ
+    public float knockBackPower = 7f;  //ノックバック中フラグ
     public bool coolTime = false;  //ノックバックのクールタイムONOFF
-    [SerializeField] public PlayerBarrier barrier;
     private float coolDuration = 1.0f;  //ノックバックのクールタイム
     private float coolTimer = 0f;  //ノックバックのクールタイム計測
 
@@ -108,9 +109,9 @@ public class PlayerKnockBack : MonoBehaviour
             {
                 if (other.gameObject.tag == "BossStalker" && !knockBacking)
                 {
-                    if (barrier.TryBlockAttack())
+                    if (!barrier.unlocking && barrier.barrierActive)
                     {
-                        return;
+                        StartCoroutine(barrier.BarrierFinish());
                     }
                     else
                     {
