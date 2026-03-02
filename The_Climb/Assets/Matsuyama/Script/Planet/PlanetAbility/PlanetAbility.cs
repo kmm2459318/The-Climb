@@ -44,9 +44,11 @@ namespace TheClimb.Astral
             else
             {
                 Vector3 vectorToPlanet = planetTF.transform.position - playerTF.transform.position;
-                Vector3 blowForce = vectorToPlanet * abilityStats.RepulsiveFouce;
+                Vector3 direction = vectorToPlanet.normalized;
+                Debug.Log(direction);
+                Vector3 blowForce = direction * abilityStats.RepulsiveFouce;
                 Debug.Log(blowForce);
-                ServiceLocator.Resolve<PlayerAPIFacadeBase>().AddForce(vectorToPlanet, AddForceMode.Force);
+                ServiceLocator.Resolve<PlayerAPIFacadeBase>().AddForce(blowForce, AddForceMode.Impalse);
             }
             isChargeComplete = false;
         }

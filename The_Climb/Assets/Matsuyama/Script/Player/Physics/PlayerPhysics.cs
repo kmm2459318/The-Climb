@@ -10,7 +10,6 @@ namespace TheClimb.Core
 
         public override void AddForce(Vector3 force, AddForceMode mode)    //  プレイヤーを吹き飛ばす
         {
-
             if (mode == AddForceMode.Force)
             {
                 rigidbody.AddForce(force, ForceMode.Force);
