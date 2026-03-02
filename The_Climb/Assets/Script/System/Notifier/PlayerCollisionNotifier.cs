@@ -10,7 +10,14 @@ public class PlayerCollisionNotifier : CollisionNotifier<IBlowable>
             return;
         }
 
-        float Direction = Mathf.Sign(ObjectRegistry.Get("Player_Spine_c0c99d2d").transform.position.x - transform.position.x);    //  吹き飛ばし方向
+        var playerObj = ObjectRegistry.Get("Player_Spine_c0c99d2d");
+
+        if (playerObj == null)
+        {
+            return;
+        }
+
+        float Direction = Mathf.Sign(playerObj.transform.position.x - transform.position.x);    //  吹き飛ばし方向
         //  壁に当たった時の処理を実行
         NotifyIfTagMatches(collision, TagName.Player, h => h.Blow(collision.rigidbody, Direction));
     }

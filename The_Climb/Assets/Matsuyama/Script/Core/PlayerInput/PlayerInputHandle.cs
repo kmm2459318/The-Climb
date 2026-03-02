@@ -1,36 +1,37 @@
-﻿//namespace TheClimb.Core
-//{
-//    public class PlayerInputHandle : InputHandleBase    //  プレイヤーの入力を受けつけるクラス
-//    {
-//        private InputSystem_Actions inputSystem_Action;
+﻿using TheClimb.Astral;
 
-//        bool IsClearAstral = false;
+namespace TheClimb.Core
+{
+    public class PlayerInputHandle : InputHandleBase    //  プレイヤーの入力を受けつけるクラス
+    {
+        InputSystem_Actions inputSystem_Action;
+        PlanetAbilityBase planetAbility;    //  天体の能力関数が詰まってるクラス
 
-//        public PlayerInputHandle(InputSystem_Actions inputSystem)
-//        {
-//            inputSystem_Action = inputSystem;
+        public override void Initialize(InputSystem_Actions inputSystem, PlanetAbilityBase planetAbility)
+        {
+            inputSystem_Action = inputSystem;
+            this.planetAbility = planetAbility;
 
-//            SetReaction();
-//        }
+            SetReaction();
+        }
 
-//        void SetReaction()
-//        {
-//            inputSystem_Action.Player.Enable();
-//            inputSystem_Action.Player.GenerateImpactBall.started += GenerateImpactBall;
-//        }
+        void OnDestroy()
+        {
+            SetOffReaction();
+        }
 
-//        void SetOffReaction()
-//        {
-//            inputSystem_Action.Player.GenerateImpactBall.started -= GenerateImpactBall;
-//            inputSystem_Action.Player.Disable();
-//        }
-//    }
-//}
-////if(PlayerPrefs.GetInt("Matsuyama") == 1)
-////{
-////    IsClearAstral = true;
-////}
-////else
-////{
-////    IsClearAstral = false;
-////}
+        void SetReaction()
+        {
+            inputSystem_Action.Player.Enable();
+            inputSystem_Action.Player.AstralAbility.started += planetAbility.ChargeAbility;
+            inputSystem_Action.Player.AstralAbility.canceled += planetAbility.BurstChargeForce;
+        }
+
+        void SetOffReaction()
+        {
+            inputSystem_Action.Player.AstralAbility.performed -= planetAbility.ChargeAbility;
+            inputSystem_Action.Player.AstralAbility.canceled -= planetAbility.BurstChargeForce;
+            inputSystem_Action.Player.Disable();
+        }
+    }
+}
