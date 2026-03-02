@@ -6,9 +6,9 @@ public class EnemyPatrol : MonoBehaviour
     private enum State
     {
         Patrol,
-        Chase,
-        Attack,
-        Tackle
+        Charge,
+        Tackle,
+        Recovery
     }
 
     [Header("巡回ポイント")]
@@ -17,35 +17,37 @@ public class EnemyPatrol : MonoBehaviour
     [Header("設定")]
     [SerializeField] private float waitTime = 2f;
     [SerializeField] private float loseSightTime = 3f;
-    [Header("攻撃距離")]
-    [SerializeField] private float attackDistance = 2f;
 
-    [SerializeField] private float attackCooldown = 1.5f;
+    [Header("攻撃距離")]
+    [SerializeField] private float attackDistance = 3f;
+
     [Header("攻撃判定")]
     [SerializeField] private Collider attackCollider;
+
     [Header("タックル設定")]
-    [SerializeField] private float tackleSpeed = 12f;
-    [SerializeField] private float tackleDuration = 1.2f;
-    private bool isTackling = false;
-    private float tackleTimer;
-    private Vector3 tackleDirection;
-    private Animator animator;
-    private float attackTimer;
+    [SerializeField] private float tackleSpeed = 10f;
+    
+    [SerializeField] private float tackleLoseSightDelay = 0.3f;
+
+    private float loseSightTimer = 0f;
+  
+    private State currentState = State.Patrol;
 
     private NavMeshAgent agent;
+    private Animator animator;
     private EnemyDetection detection;
     private Transform player;
 
     private int currentIndex = 0;
     private float waitTimer;
-    private float loseTimer;
     private bool isWaiting = false;
-    private State currentState = State.Patrol;
+
+    private Vector3 lastSeenDirection;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
         detection = GetComponent<EnemyDetection>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
@@ -57,52 +59,48 @@ public class EnemyPatrol : MonoBehaviour
 
     void Update()
     {
-       // Debug.Log(agent.isOnNavMesh);
         switch (currentState)
         {
             case State.Patrol:
                 UpdatePatrol();
                 break;
 
-            case State.Chase:
-                UpdateChase();
+            case State.Charge:
+                UpdateCharge();
                 break;
-            case State.Attack:
-                UpdateAttack();
-                break;
+
             case State.Tackle:
                 UpdateTackle();
                 break;
+
+            case State.Recovery:
+                UpdateRecovery();
+                break;
         }
+
+        // Speed制御
         if (currentState == State.Tackle)
         {
             animator.SetFloat("Speed", tackleSpeed);
+        }
+        else if (currentState == State.Charge || currentState == State.Recovery)
+        {
+            animator.SetFloat("Speed", 0f);
         }
         else
         {
             animator.SetFloat("Speed", agent.velocity.magnitude);
         }
     }
-    public void EnableAttack()
-    {
-        Debug.Log("EnableAttack called");
 
-        if (attackCollider != null)
-            attackCollider.enabled = true;
-    }
-
-    public void DisableAttack()
-    {
-        Debug.Log("DisableAttack called");
-
-        if (attackCollider != null)
-            attackCollider.enabled = false;
-    }
+    // =========================
+    // Patrol
+    // =========================
     void UpdatePatrol()
     {
         if (detection.CanSeePlayer)
         {
-            currentState = State.Chase;
+            StartCharge();
             return;
         }
 
@@ -121,105 +119,10 @@ public class EnemyPatrol : MonoBehaviour
             waitTimer -= Time.deltaTime;
 
             if (waitTimer <= 0f)
-            {
                 MoveToNextPoint();
-            }
         }
     }
 
-    void UpdateChase()
-    {
-        agent.isStopped = false;
-        agent.SetDestination(player.position);
-
-        float distance = Vector3.Distance(transform.position, player.position);
-
-        if (distance <= attackDistance)
-        {
-            StartTackle();
-            return;
-        }
-
-        if (!detection.CanSeePlayer)
-        {
-            loseTimer -= Time.deltaTime;
-
-            if (loseTimer <= 0f)
-            {
-                currentState = State.Patrol;
-                MoveToNextPoint();
-            }
-        }
-        else
-        {
-            loseTimer = loseSightTime;
-        }
-    }
-    void StartTackle()
-    {
-        currentState = State.Tackle;
-
-        agent.velocity = Vector3.zero;
-        tackleTimer = tackleDuration;
-
-        agent.isStopped = true;
-        agent.updateRotation = false;
-
-        Vector3 dir = (player.position - transform.position).normalized;
-        dir.y = 0f;
-        transform.forward = dir;
-
-        animator.SetTrigger("Tackle"); // ←追加
-    }
-    void UpdateTackle()
-    {
-        agent.Move(transform.forward * tackleSpeed * Time.deltaTime);
-
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-        if (!stateInfo.IsName("Tackle"))
-        {
-            EndTackle();
-        }
-    }
-    void EndTackle()
-    {
-        isTackling = false;
-
-        agent.isStopped = false;
-        agent.updateRotation = true;
-
-        agent.ResetPath();
-
-        currentState = State.Chase; // ← 追加（重要）
-    }
-    void UpdateAttack()
-    {
-        agent.isStopped = true;
-        transform.LookAt(player);
-
-        float distance = Vector3.Distance(transform.position, player.position);
-
-        if (distance > attackDistance)
-        {
-            currentState = State.Chase;
-            return;
-        }
-
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-        // 攻撃アニメ中なら何もしない（最後まで再生させる）
-        if (stateInfo.IsName("Attack"))
-            return;
-
-        attackTimer -= Time.deltaTime;
-
-        if (attackTimer <= 0f)
-        {
-            animator.SetTrigger("Attack");
-            attackTimer = attackCooldown;
-        }
-    }
     void MoveToNextPoint()
     {
         if (patrolPoints.Length == 0) return;
@@ -228,7 +131,126 @@ public class EnemyPatrol : MonoBehaviour
         agent.SetDestination(patrolPoints[currentIndex].position);
 
         currentIndex = (currentIndex + 1) % patrolPoints.Length;
-
         isWaiting = false;
+    }
+
+    // =========================
+    // Charge（溜め）
+    // =========================
+    void StartCharge()
+    {
+        currentState = State.Charge;
+
+        agent.isStopped = true;
+        agent.ResetPath();              // ★追加
+        agent.velocity = Vector3.zero;  // ★追加
+
+        lastSeenDirection = (player.position - transform.position).normalized;
+        lastSeenDirection.y = 0f;
+
+        transform.forward = lastSeenDirection;
+
+        animator.SetFloat("Speed", 0f); // ★追加（念押し）
+        animator.SetTrigger("Charge");
+    }
+
+    void UpdateCharge()
+    {
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        // Chargeアニメが終わったらTackleへ
+        if (!stateInfo.IsName("Charge"))
+        {
+            StartTackle();
+        }
+    }
+
+    // =========================
+    // Tackle
+    // =========================
+    void StartTackle()
+    {
+        currentState = State.Tackle;
+
+        agent.velocity = Vector3.zero;
+        agent.updateRotation = false;
+
+        transform.forward = lastSeenDirection;
+
+        animator.SetTrigger("Tackle");
+
+        loseSightTimer = 0f;   // ★追加
+
+        EnableAttack();
+    }
+
+    void UpdateTackle()
+    {
+        // 前進
+        agent.Move(transform.forward * tackleSpeed * Time.deltaTime);
+
+        // 視界チェック
+        if (!detection.CanSeePlayer)
+        {
+            loseSightTimer += Time.deltaTime;
+        }
+        else
+        {
+            loseSightTimer = 0f;
+        }
+
+        // 見失ったら終了
+        if (loseSightTimer >= tackleLoseSightDelay)
+        {
+            DisableAttack();
+            StartRecovery();
+        }
+    }
+
+    // =========================
+    // Recovery（硬直）
+    // =========================
+    void StartRecovery()
+    {
+        currentState = State.Recovery;
+
+        agent.updateRotation = true;
+        agent.velocity = Vector3.zero;
+
+        animator.SetTrigger("Recovery");
+    }
+
+    void UpdateRecovery()
+    {
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        if (!stateInfo.IsName("Recovery"))
+        {
+            if (detection.CanSeePlayer)
+            {
+                StartCharge();
+            }
+            else
+            {
+                agent.isStopped = false;
+                currentState = State.Patrol;
+                MoveToNextPoint();
+            }
+        }
+    }
+
+    // =========================
+    // 攻撃判定
+    // =========================
+    void EnableAttack()
+    {
+        if (attackCollider != null)
+            attackCollider.enabled = true;
+    }
+
+    void DisableAttack()
+    {
+        if (attackCollider != null)
+            attackCollider.enabled = false;
     }
 }
