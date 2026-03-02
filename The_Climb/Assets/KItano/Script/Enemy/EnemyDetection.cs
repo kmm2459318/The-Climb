@@ -20,6 +20,7 @@ public class EnemyDetection : MonoBehaviour
     void Update()
     {
         DetectPlayer();
+
     }
 
     void DetectPlayer()

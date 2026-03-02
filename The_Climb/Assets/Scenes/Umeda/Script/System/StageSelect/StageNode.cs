@@ -63,6 +63,10 @@ public class StageNode : MonoBehaviour
         if (promptUI)
             promptUI.transform.position = transform.position + uiOffset;
 
+        // ロード中は以下の入力処理をスキップする
+        if (System.Loading.SceneLoader.IsLoading)
+            return;
+
         if (isInteractable && playerNearby && Input.GetKeyDown(KeyCode.Space))
         {
             if (stageSelectManager != null)

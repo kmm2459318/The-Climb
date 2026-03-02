@@ -17,6 +17,11 @@ namespace System.Loading
         [Header("Configuration")]
         [SerializeField] private float minLoadingTime = 1.0f; // Minimum time to show the loading screen
 
+        private bool _canProceed = false; // ボタンが押されたかどうかのフラグ
+
+        public static bool IsLoading => Instance != null && Instance._isLoading;
+        private bool _isLoading = false;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -53,6 +58,11 @@ namespace System.Loading
 
         private IEnumerator LoadSceneAsync(string sceneName, Sprite backgroundImage = null)
         {
+            _isLoading = true;
+            _canProceed = false; // フラグのリセット
+
+            Time.timeScale = 0;
+
             if (loadingScreenUI != null)
             {
                 loadingScreenUI.SetActive(true);
@@ -81,9 +91,9 @@ namespace System.Loading
 
             float timer = 0f;
 
-            while (!operation.isDone)
+            while (operation.progress < 0.9f || timer < minLoadingTime)
             {
-                timer += Time.deltaTime;
+                timer += Time.unscaledDeltaTime;
                 
                 // Fake progress calculation to ensure the slider moves smoothly
                 // operation.progress goes from 0 to 0.9 while loading
@@ -96,17 +106,33 @@ namespace System.Loading
                 {
                     loadingScreenUI.UpdateProgress(progress);
                 }
+                yield return null;    
+            }
 
-                // Check if loading is finished (at 0.9) and minimum time has passed
-                if (operation.progress >= 0.9f && timer >= minLoadingTime)
-                {
-                    if (loadingScreenUI != null)
-                    {
-                        loadingScreenUI.UpdateProgress(1f);
-                    }
-                    operation.allowSceneActivation = true;
-                }
+            // ロード完了後の待機フェーズ
+            if (loadingScreenUI != null)
+            {
+                loadingScreenUI.UpdateProgress(1f);
 
+                // ボタンを表示し、クリックされたら_canProceedをtrueにする
+                loadingScreenUI.ShowStartButton(() => { _canProceed = true; });
+            }
+
+            // ボタンが押されるまでここで無限ループして待機
+            while (!_canProceed)
+            {
+                yield return null;
+            }
+            
+            // シーンを有効化
+            operation.allowSceneActivation = true;
+
+            Time.timeScale = 1f;
+            _isLoading = false;
+
+            // シーンの完全な切り替わりを待つ
+            while (!operation.isDone)
+            {
                 yield return null;
             }
 
