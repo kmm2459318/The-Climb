@@ -14,7 +14,7 @@ public class Bomb_Generate : MonoBehaviour
 
     void Update()
     {
-
+        if (Time.timeScale == 0f) return;
         p_aim.UpdateDirection(p_move.MoveInput);
         //爆弾発射
         if (Input.GetMouseButtonDown(0))
@@ -29,15 +29,6 @@ public class Bomb_Generate : MonoBehaviour
                 currentBomb.ForceExplosion();
             }
         }
-    }
-
-    private void LateUpdate()
-    {
-        // ローカルX座標とローカルY座標を0に固定
-        Vector3 pos = transform.localPosition;
-        pos.x = 0;
-        pos.y = 0;
-        transform.localPosition = pos;
     }
 
     //爆弾の処理

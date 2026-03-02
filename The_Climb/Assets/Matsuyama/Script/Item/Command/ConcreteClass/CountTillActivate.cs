@@ -1,7 +1,7 @@
 ﻿using System.Collections;
+using UnityEngine;
 using TheClimb.Core;
 using TheClimb.Logging;
-using UnityEngine;
 
 namespace TheClimb.Item
 {

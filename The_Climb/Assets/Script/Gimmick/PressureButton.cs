@@ -29,19 +29,9 @@ public class PressureButton : MonoBehaviour
     public int pressCount = 0;  //現在押してる数
     private float posY = 0;  //ボタンのＹ座標
 
-    [Header("効果音")]
-    [SerializeField] private AudioClip pressSound;
-    [SerializeField] private AudioClip releaseSound;
-    private AudioSource audioSource;
-
     void Awake()
     {
         posY = transform.position.y;
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
     }
 
     void Start()
@@ -79,13 +69,6 @@ public class PressureButton : MonoBehaviour
     {
         buttonModel.transform.position = new Vector3(transform.position.x,  posY - 0.18f, 0);
 
-        if (pressSound != null && pressCount == 0)
-        {
-            audioSource.PlayOneShot(pressSound);
-        }
-
-        pressCount++;
-
         //ギミックの処理（種類を増やしたい場合はここに関数を追加）
         switch (type)
         {
@@ -101,11 +84,6 @@ public class PressureButton : MonoBehaviour
     private void PullSwitch()  //押されていないとき
     {
         buttonModel.transform.position = new Vector3(transform.position.x, posY, 0);
-
-        if (releaseSound != null)
-        {
-            audioSource.PlayOneShot(releaseSound);
-        }
 
         //ギミックの処理
         switch (type)
@@ -132,7 +110,6 @@ public class PressureButton : MonoBehaviour
             if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Buddy"))
             {
                 pressCount--;
-
                 if (pressCount == 0)
                     PullSwitch();
             }
@@ -143,6 +120,7 @@ public class PressureButton : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player") || (other.gameObject.CompareTag("Buddy") && !playerState.carryingBuddy))
         {
+            pressCount++;
             PressSwtich();
         }
     }

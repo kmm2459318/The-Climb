@@ -31,6 +31,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     public float moveInput = 0f;        //プレイヤーの移動方向
     private float airMoveForce = 20f;    //空中での移動速度
     public float airMaxSpeed = 7f;     //空中での速度制限
+    public float inversionFloat = 1f;    //反転するときに浮かせる高さ
     private Vector3 horizontalVelocity = Vector3.zero;
 
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
@@ -44,7 +45,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     public float MoveInput => moveInput; // ←読み取り専用プロパティ
     public PlayerAnimation PlayerAnimation;
     public PlayerState State => state;
-
     private bool OnBelt = false;                 //ベルトコンベアに乗っているか
     private Vector3 BeltVelocity = Vector3.zero; //ベルトコンベアの速度(未接触時はゼロ)
 
@@ -257,6 +257,15 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private IEnumerator DelayedVisualFlip(float delay)
     {
         yield return new WaitForSeconds(delay);
+        
+        Vector3 offset = Vector3.up * (upsideDown ? inversionFloat : -inversionFloat);
+
+        // 現在位置を基準に、少し上or下）へ移動
+        Rigidbody rb = GetComponent<Rigidbody>();
+        Vector3 targetPosition = rb.position + offset;
+
+        // Rigidbody経由で位置移動
+        rb.MovePosition(targetPosition);
 
         Vector3 scale = transform.localScale;
         scale.y = Mathf.Abs(scale.y) * (upsideDown ? -1 : 1);
