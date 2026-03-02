@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -305,6 +305,10 @@ public class StageSelectManager : MonoBehaviour
     // ===============================
     public void OnStageSelected(int stageId)
     {
+        // ロード中は何もしない
+        if (System.Loading.SceneLoader.IsLoading)
+            return;
+
         // 範囲チェック
         if (stageId < 0 || stageId >= stages.Length)
             return;
