@@ -7,7 +7,7 @@ namespace TheClimb.Astral
 {
     public class PlanetAbility : PlanetAbilityBase   //  天体の能力コマンド
     {
-        public PlanetAbility(PlanetAbilityStatsBase stats, Transform planetTF) : base(stats, planetTF)
+        public PlanetAbility(PlanetAbilityStatsBase stats, Transform planetTF, Transform playerTF) : base(stats, planetTF, playerTF)
         {
             isChargeComplete = false;
             chargeCoroutine = null;
@@ -29,7 +29,8 @@ namespace TheClimb.Astral
             while ((holdTime += Time.deltaTime) < abilityStats.SecondaryEffectSpawnTime)    //  二段階目のエフェクト生成まで待機
             { yield return null; }
             EffectAPIWindow.Play(new EffectKey(GameMode.Astral, EffectKind.ChargePower), planetTF);
-            
+            EffectAPIWindow.StopSudden(new EffectKey(GameMode.Astral, EffectKind.AwakePower));
+
             isChargeComplete = true;   
         }
 
@@ -42,7 +43,10 @@ namespace TheClimb.Astral
             }
             else
             {
-                Debug.Log("かめじゃめじゃ");
+                Vector3 vectorToPlanet = planetTF.transform.position - playerTF.transform.position;
+                Vector3 blowForce = vectorToPlanet * abilityStats.RepulsiveFouce;
+                Debug.Log(blowForce);
+                ServiceLocator.Resolve<PlayerAPIFacadeBase>().AddForce(vectorToPlanet, AddForceMode.Force);
             }
             isChargeComplete = false;
         }
