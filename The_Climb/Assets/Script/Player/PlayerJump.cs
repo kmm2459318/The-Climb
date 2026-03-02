@@ -19,12 +19,11 @@ public class PlayerJump : MonoBehaviour
     private float jumpQueueTime = 0.2f;　//ジャンプ選考入力猶予時間
     private float jumpQueueCounter = 0f;　//ジャンプ選考入力カウンター
     private float jumpTime;　　　　　　　//ジャンプ入力時間　
-    private float jumpTimeMax = 0.2f;　//最大ジャンプ入力時間
-    private float jumpTimeMaxSaving = 0.2f;　//最大図アンプ入力時間を保持
+    private float jumpTimeMax;　         //最大ジャンプ入力時間
+    private float jumpTimeMaxSaving = 0.22f;　//最大図アンプ入力時間を保持
     private float groundJumpPower = 13f;　//ジャンプでプレイヤーにかかる上方向の力
     private float maxJumpSpeed = 12f;　//空中での速度制限
     [SerializeField] AnimationCurve jumpCurve = new();　//ジャンプの速度カーブ
-
 
     [Header("トランポリン")]
     public bool isOnTrampoline = false;　//トランポリンに乗ってるかの判定
@@ -44,13 +43,16 @@ public class PlayerJump : MonoBehaviour
         move = GetComponent<PlayerMove>();
         special = GetComponent<PlayerSpecialAction>();
         knock = GetComponent<PlayerKnockBack>();
+        jumpTimeMax = jumpTimeMaxSaving;
     }
 
     void Update()
     {
+        //ジャンプ入力受付
         if (!knock.knockBacking)
             JumpOperation();
 
+        //ジャンプのクールタイム
         if (jumpCoolActive)
         {
             jumpCoolCounter += Time.deltaTime;
@@ -81,7 +83,7 @@ public class PlayerJump : MonoBehaviour
             RigidBody.useGravity = true;
         }
 
-        // ジャンプ
+        //ジャンプ
         if (jumping)
         {
             jumpTime += Time.fixedDeltaTime;
@@ -98,6 +100,7 @@ public class PlayerJump : MonoBehaviour
             Jump(JumpPower);
         }
 
+        //トランポリンの効果
         if (TrampolineJumping)
         {
             TrampolineTimer -= Time.fixedDeltaTime;
@@ -106,18 +109,22 @@ public class PlayerJump : MonoBehaviour
         }
     }
 
+    // ジャンプの入力処理
     private void JumpOperation()
     {
+        //ジャンプ入力の受付
         if (state.inputManager.jumpDown && !special.meteorHighJumpOK && !isJumpQueued)
         {
             isJumpQueued = true;
             jumpQueueCounter = 0f;
         }
 
+        //ジャンプ可能かの判定
         if (((coyoteCounter <= coyoteTime || state.isJumpMoveOK) || (move.IsUpsideDown && state.isGrounded))
              && !jumpCoolActive
              && special.highJumpChargeCounter < special.highJumpChargeTime)
         {
+            //ジャンプ開始
             if (isJumpQueued)
             {
                 jumping = true;
@@ -126,13 +133,15 @@ public class PlayerJump : MonoBehaviour
                 jumpTimeMax = jumpTimeMaxSaving;
                 isJumpQueued = false;
 
+                //着地ジャンプ
                 if (state.landingJumpOn)
                 {
                     state.LandingJumpReset();
                 }
             }
-            else if (state.inputManager.jumpHeld && special.meteorHighJumpOK && state.landingJumpOn)
+            else if (state.inputManager.jumpHeld && special.meteorHighJumpOK && state.landingJumpOn)  //メテオジャンプ（今は使われてない）
             {
+                //メテオハイジャンプ
                 if (special.meteorDropCounter >= special.meteorDropTime)
                 {
                     jumpCoolActive = true;
@@ -144,13 +153,37 @@ public class PlayerJump : MonoBehaviour
             }
         }
 
-        if (jumping && state.inputManager.jumpUp && jumpTime <= jumpTimeMaxSaving * 0.5f)
+        //ジャンプ入力やめ
+        if (jumping && !state.inputManager.jumpHeld)
         {
-            jumpTimeMax = jumpTimeMaxSaving * 0.5f;
+            //最低ジャンプ時間
+            float minJumpTime = jumpTimeMaxSaving * 0.3f;
+
+            if (jumpTime < minJumpTime)
+            {
+                //最低時間まではジャンプが続くように上限時間を上書き
+                jumpTimeMax = minJumpTime;
+            }
+            else
+            {
+                jumping = false;
+
+                //離した瞬間の勢い殺すぞ禿
+                //if (!move.IsUpsideDown && RigidBody.linearVelocity.y > 0f)
+                //{
+                //    RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, RigidBody.linearVelocity.y * 0.5f, RigidBody.linearVelocity.z);
+                //}
+                //else if (move.IsUpsideDown && RigidBody.linearVelocity.y < 0f)  //天井反転時の上昇を殺す
+                //{
+                //    RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, RigidBody.linearVelocity.y * 0.5f, RigidBody.linearVelocity.z);
+                //}
+            }
         }
 
+        //ジャンプ先行入力
         if (isJumpQueued)
         {
+            Debug.Log("ジャンプ先行入力中");
             jumpQueueCounter += Time.deltaTime;
             if (jumpQueueCounter > jumpQueueTime)
                 isJumpQueued = false;
@@ -159,7 +192,7 @@ public class PlayerJump : MonoBehaviour
 
     public void Jump(float jumpPower)
     {
-        // Y方向速度をリセット
+        //Y方向速度をリセット
         Vector3 vel = RigidBody.linearVelocity;
         vel.y = 0f;
         RigidBody.linearVelocity = vel;
@@ -178,7 +211,7 @@ public class PlayerJump : MonoBehaviour
 
         RigidBody.AddForce(power * jumpDirection, ForceMode.Impulse);
 
-        // 横速度制限
+        //横速度制限
         Vector3 horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, RigidBody.linearVelocity.z);
         if (horizontalVelocity.magnitude > maxJumpSpeed)
             RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * maxJumpSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
