@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TheClimb.Core
 {
@@ -17,7 +18,7 @@ namespace TheClimb.Core
 
         private void OnDestroy()
         {
-            //ServiceLocator.Unregister<IEffectSystem>();    // シーン破棄時に解除（任意だが安全）
+            ServiceLocator.Unregister<IEffectSystem>(this);
         }
 
         //  --  Public API
@@ -39,7 +40,37 @@ namespace TheClimb.Core
             playingEffects[key] = instance;
         }
 
-        public void Stop(EffectKey key)    //  エフェクト停止
+        public void Play(EffectKey key, Transform parent)    //  エフェクト再生(親追従)
+        {
+            // 定義解決
+            var definition = catalog.Get(key);
+            if (definition == null)
+            {
+                Debug.LogWarning($"EffectDefinition not found : {key}");
+                return;
+            }
+
+            Stop(key);    //  エフェクトを一回再生終了する
+
+            var instance = Instantiate(definition.prefab, parent);
+
+            playingEffects[key] = instance;
+        }
+
+        public async void Stop(EffectKey key)    //  エフェクト停止
+        {
+            if (!playingEffects.TryGetValue(key, out var instance))
+                return;
+
+            var ps = instance.GetComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+
+            await WaitUntillDead(ps);
+
+            Destroy(instance);
+            playingEffects.Remove(key);
+        }
+        public void StopSudden(EffectKey key)    //  エフェクト停止
         {
             if (!playingEffects.TryGetValue(key, out var instance))
                 return;
@@ -55,6 +86,16 @@ namespace TheClimb.Core
                 effectRoot.SetActive(true);
             }
             playingEffects[key] = effectRoot;
+        }
+
+        //  --  Private method
+
+        async Task WaitUntillDead(ParticleSystem ps)    //  エフェクトが再生終了するまで待つ
+        {
+            while (ps != null && ps.IsAlive(true))
+            {
+                await Task.Yield();
+            }
         }
     }
 }
