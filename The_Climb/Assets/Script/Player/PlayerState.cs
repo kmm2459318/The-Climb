@@ -45,6 +45,7 @@ public class PlayerState : MonoBehaviour, IImpactable
     public bool isAir = false;           //空中判定
 
     private float playerFallSpeed = -19f;  //プレイヤーの落下速度
+    private float playerMaxMoveSpeed = 20f;    //プレイヤーの最大移動速度
 
     public float erosionLevel = 0;       //プレイヤーの侵蝕度
     public int sanityLevel = 100;        //プレイヤーの正気度
@@ -139,20 +140,20 @@ public class PlayerState : MonoBehaviour, IImpactable
         }
         else
         {
-            // Hovering（サスペンション）のための地面判定（Raycast + SphereCast）
+            //Rayの始点と方向を設定
             Vector3 rayOrigin = groundCheck.position + (move.IsUpsideDown ? Vector3.down : Vector3.up) * 0.1f;
             Vector3 rayDirection = move.IsUpsideDown ? Vector3.up : Vector3.down;
-            
-            // 目標浮遊高度 + 少しの遊び を接地状態とする
+
+            //地面との距離は、プレイヤーの乗り高さに少し余裕を持たせる
             float groundedDistance = move.rideHeight + 0.2f; 
             
-            // まずは足元の狭い範囲のRay（Edgeに立った時用）
-            // isGrounded = Physics.Raycast(rayOrigin, rayDirection, groundedDistance, groundLayerMask);
+            //まずは足元の狭い範囲のRay（Edgeに立った時用）
+            //isGrounded = Physics.Raycast(rayOrigin, rayDirection, groundedDistance, groundLayerMask);
             
-            // 安全のため、ある程度厚みを持たせたSphereCastで判定
+            //安全のため、ある程度厚みを持たせたSphereCastで判定
             isGrounded = Physics.SphereCast(rayOrigin, groundCheckRadius, rayDirection, out RaycastHit hit, groundedDistance, groundLayerMask);
 
-            // 念のため以前のカプセル判定もフォールバックとして残すが、今回のメインはSphereCast
+            //念のため以前のカプセル判定も残す
             if (!isGrounded)
             {
                 isGrounded = Physics.CheckCapsule(groundCheck.position + Vector3.right * 0.08f, groundCheck.position + Vector3.left * 0.08f, groundCheckRadius, groundLayerMask);
@@ -190,8 +191,13 @@ public class PlayerState : MonoBehaviour, IImpactable
             {
                 RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerFallSpeed, 0);
             }
+            //横移動速度制限
+            if (Mathf.Abs(RigidBody.linearVelocity.x) > playerMaxMoveSpeed)
+            {
+                RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * playerMaxMoveSpeed, RigidBody.linearVelocity.y, 0);
+            }
 
-            //正気度０もしくは侵蝕度１００で死
+            //正気度０で死
             if (sanityLevel <= 0)
             {
                 PlayerDead();
