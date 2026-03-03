@@ -44,11 +44,15 @@ public class BuddyCarry : MonoBehaviour
 
                 if (state.playerDirectionRight)
                 {
-                    buddyPos.translationOffset = new Vector3(-0.4f, offsetY, 0f);
+                    buddyPos.translationOffset = new Vector3(-0.3f, offsetY, 0f);
+                    if (state.carryingBuddy)
+                        buddy.transform.localScale = new Vector3(0.58f, 0.58f, 0.58f);
                 }
                 else
                 {
-                    buddyPos.translationOffset = new Vector3(0.4f, offsetY, 0f);
+                    buddyPos.translationOffset = new Vector3(0.3f, offsetY, 0f);
+                    if (state.carryingBuddy)
+                        buddy.transform.localScale = new Vector3(-0.58f, 0.58f, 0.58f);
                 }
             }
             else
@@ -75,6 +79,14 @@ public class BuddyCarry : MonoBehaviour
                 else if (!state.carryingBuddy && nearCallBell)  //ベルを鳴らしてバディを誘導
                 {
                     buddyController.GuideTo(callBellPosX);
+                    if (callBellPosX - buddy.transform.position.x > 0)
+                    {
+                        buddy.transform.localScale = new Vector3(0.58f, 0.58f, 0.58f);
+                    }
+                    else if (callBellPosX - buddy.transform.position.x < 0)
+                    {
+                        buddy.transform.localScale = new Vector3(-0.58f, 0.58f, 0.58f);
+                    }
                 }
             }
         }
