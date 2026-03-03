@@ -13,6 +13,7 @@ namespace TheClimb.Core
         {
             if (services.ContainsKey(typeof(T)))
             {
+                return;
             }
 
             services[typeof(T)] = service;

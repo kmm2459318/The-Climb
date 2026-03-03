@@ -15,6 +15,11 @@ namespace TheClimb.Core
             SetReaction();
         }
 
+        private void Awake()
+        {
+            DontDestroyOnLoad(this);
+        }
+
         void OnDestroy()
         {
             SetOffReaction();
@@ -29,7 +34,7 @@ namespace TheClimb.Core
 
         void SetOffReaction()
         {
-            inputSystem_Action.Player.AstralAbility.performed -= planetAbility.ChargeAbility;
+            inputSystem_Action.Player.AstralAbility.started -= planetAbility.ChargeAbility;
             inputSystem_Action.Player.AstralAbility.canceled -= planetAbility.BurstChargeForce;
             inputSystem_Action.Player.Disable();
         }

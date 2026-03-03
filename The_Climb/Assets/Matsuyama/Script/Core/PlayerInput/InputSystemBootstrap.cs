@@ -13,12 +13,18 @@ namespace TheClimb.Core
         [Tooltip("天体の能力処理に必要なScriptableObject")]
         [SerializeField] PlanetAbilityStatsBase abilityStats;
         [SerializeField] Transform planetTF;
+        [SerializeField] Transform playerTF;
+
         PlanetAbilityBase planetAbilityBase;
+
+        [SerializeField] AudioSource audioSource;
+        
+        //  --  Unity life Cycle
 
         void Awake()
         {
             inputAction_System = new InputSystem_Actions();
-            planetAbilityBase = new PlanetAbility(abilityStats, planetTF) as PlanetAbilityBase;
+            planetAbilityBase = new PlanetAbility(abilityStats, planetTF, playerTF, audioSource) as PlanetAbilityBase;
         }
         void Start()
         {
