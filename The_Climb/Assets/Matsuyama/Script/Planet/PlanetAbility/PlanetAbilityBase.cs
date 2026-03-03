@@ -12,11 +12,15 @@ namespace TheClimb.Astral
         protected Coroutine chargeCoroutine;
         protected bool isChargeComplete;
         protected Transform planetTF;
+        protected Transform playerTF;
 
-        protected PlanetAbilityBase(PlanetAbilityStatsBase Stats, Transform planetTF)
+        protected Vector3 vectorToPlanet;
+
+        protected PlanetAbilityBase(PlanetAbilityStatsBase Stats, Transform planetTF, Transform playerTF)
         {
             abilityStats = Stats;
-            this.planetTF = planetTF; 
+            this.planetTF = planetTF;
+            this.playerTF = playerTF;
         }
 
         public abstract void ChargeAbility(InputAction.CallbackContext context);

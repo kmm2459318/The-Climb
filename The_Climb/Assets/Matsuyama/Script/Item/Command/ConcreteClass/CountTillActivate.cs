@@ -38,7 +38,6 @@ namespace TheClimb.Item
 
         IEnumerator CountTillExplosion()    //  爆発するまでカウントするコルーチン
         {
-            Debug.Log(_runtimeData._RemainingExplosionTime);
             while ((_runtimeData._RemainingFuseTime -= Time.deltaTime) > 0)
             {
                 yield return null;
