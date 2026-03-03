@@ -44,8 +44,9 @@ public class PlayerState : MonoBehaviour, IImpactable
     private float groundCheckRadius = 0.1f;  //地面判定の半径
     public bool isAir = false;           //空中判定
 
-    private float playerFallSpeed = -19f;  //プレイヤーの落下速度
-    private float playerMaxMoveSpeed = 20f;    //プレイヤーの最大移動速度
+    private float playerFallSpeed = -30f;  //プレイヤーの落下速度
+    private float playerMaxUpSpeed = 30f;  //プレイヤーの最大上昇速度
+    private float playerMaxMoveSpeed = 30f;    //プレイヤーの最大移動速度
 
     public float erosionLevel = 0;       //プレイヤーの侵蝕度
     public int sanityLevel = 100;        //プレイヤーの正気度
@@ -190,6 +191,11 @@ public class PlayerState : MonoBehaviour, IImpactable
             if (RigidBody.linearVelocity.y < playerFallSpeed && !isGrounded && !jump.jumping && !landing)
             {
                 RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerFallSpeed, 0);
+            }
+            //上昇速度制限
+            if (RigidBody.linearVelocity.y > playerMaxUpSpeed)
+            {
+                RigidBody.linearVelocity = new Vector3(RigidBody.linearVelocity.x, playerMaxUpSpeed, 0);
             }
             //横移動速度制限
             if (Mathf.Abs(RigidBody.linearVelocity.x) > playerMaxMoveSpeed)
