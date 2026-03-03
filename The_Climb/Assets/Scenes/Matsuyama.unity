@@ -6096,6 +6096,7 @@ MonoBehaviour:
   abilityStats: {fileID: 11400000, guid: c33d7f7e4b4adde409e079aa59c6c2f9, type: 2}
   planetTF: {fileID: 6560326514134229185}
   playerTF: {fileID: 497799713}
+  audioSource: {fileID: 167233121634783334}
 --- !u!4 &1521878607 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4867739146834661283, guid: 8ae163b5ddac9c44e9e6e154fe4c9de8, type: 3}
@@ -8046,6 +8047,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3806499970219516277, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: d205794363814d144903ae8a158b4521, type: 3}
+    - target: {fileID: 3806499970219516277, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7696350481813631864, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -8087,10 +8096,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8982563349455758455, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
+--- !u!82 &167233121634783334 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 3806499970219516277, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
+  m_PrefabInstance: {fileID: 167233121634783333}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &207559567764806899
 PrefabInstance:
   m_ObjectHideFlags: 0

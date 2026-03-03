@@ -14,12 +14,17 @@ namespace TheClimb.Core
         [SerializeField] PlanetAbilityStatsBase abilityStats;
         [SerializeField] Transform planetTF;
         [SerializeField] Transform playerTF;
+
         PlanetAbilityBase planetAbilityBase;
+
+        [SerializeField] AudioSource audioSource;
+        
+        //  --  Unity life Cycle
 
         void Awake()
         {
             inputAction_System = new InputSystem_Actions();
-            planetAbilityBase = new PlanetAbility(abilityStats, planetTF, playerTF) as PlanetAbilityBase;
+            planetAbilityBase = new PlanetAbility(abilityStats, planetTF, playerTF, audioSource) as PlanetAbilityBase;
         }
         void Start()
         {
