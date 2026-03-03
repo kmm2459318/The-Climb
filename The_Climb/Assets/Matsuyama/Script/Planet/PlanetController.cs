@@ -15,7 +15,6 @@ namespace TheClimb.Astral
         PlanetStateFactory planetStateFactory;                //  天体ステートファクトリー
         PlanetCommandProvider planetCommandProvider;          //  天体関数提供クラス
         OrbitalContext orbitalContext;                        //  天体円軌道コンテキスト
-        VectorToPlanetCalculator planetToPlanetCalculator;    //  天体へのベクトル計算クラス
 
         void Awake()
         {
