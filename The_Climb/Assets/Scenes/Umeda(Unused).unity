@@ -303,6 +303,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c50b0624e2669f4397b7cc595038397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSource: {fileID: 0}
+  shortStretchSound: {fileID: 0}
+  longStretchSound_1: {fileID: 0}
+  longStretchSound_2: {fileID: 0}
+  collisionSound: {fileID: 0}
+  shrinkSound_1: {fileID: 0}
+  shrinkSound_2: {fileID: 0}
+  resetSound: {fileID: 0}
   initialCooldown: 1
   cooldown1: 1
   shortStretchDuration: 0.2
@@ -556,9 +564,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 1524415529}
-  followX: 1
-  followY: 1
-  followZ: 0
+  followMode: 0
+  offset: {x: 0, y: 3, z: -5}
+  smoothSpeed: 2
+  zoomOutDistance: 0
+  zoomSpeed: 2
+  heightFollowSpeed: 10
+  moveThreshold: 0.05
 --- !u!1001 &198542198
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -654,9 +666,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 1624145988}
-  followX: 1
-  followY: 1
-  followZ: 0
+  followMode: 0
+  offset: {x: 0, y: 3, z: -5}
+  smoothSpeed: 2
+  zoomOutDistance: 0
+  zoomSpeed: 2
+  heightFollowSpeed: 10
+  moveThreshold: 0.05
 --- !u!1001 &328028310
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1765,9 +1781,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 328028312}
-  followX: 0
-  followY: 1
-  followZ: 0
+  followMode: 0
+  offset: {x: 0, y: 3, z: -5}
+  smoothSpeed: 2
+  zoomOutDistance: 0
+  zoomSpeed: 2
+  heightFollowSpeed: 10
+  moveThreshold: 0.05
 --- !u!1 &746371651
 GameObject:
   m_ObjectHideFlags: 0
@@ -3603,9 +3623,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 1925826724}
-  followX: 1
-  followY: 1
-  followZ: 0
+  followMode: 0
+  offset: {x: 0, y: 3, z: -5}
+  smoothSpeed: 2
+  zoomOutDistance: 0
+  zoomSpeed: 2
+  heightFollowSpeed: 10
+  moveThreshold: 0.05
 --- !u!1001 &1725516524
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4335,6 +4359,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c50b0624e2669f4397b7cc595038397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSource: {fileID: 0}
+  shortStretchSound: {fileID: 0}
+  longStretchSound_1: {fileID: 0}
+  longStretchSound_2: {fileID: 0}
+  collisionSound: {fileID: 0}
+  shrinkSound_1: {fileID: 0}
+  shrinkSound_2: {fileID: 0}
+  resetSound: {fileID: 0}
   initialCooldown: 1
   cooldown1: 1
   shortStretchDuration: 0.2
