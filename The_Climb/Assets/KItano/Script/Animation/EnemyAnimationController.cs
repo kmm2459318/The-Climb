@@ -15,7 +15,7 @@ public class EnemyAnimationController : MonoBehaviour
     void Update()
     {
         float speed = agent.velocity.magnitude;
-        Debug.Log(speed);
+       // Debug.Log(speed);
 
         animator.SetFloat("Speed", speed);
         animator.SetBool("IsMoving", speed > 0.1f);
