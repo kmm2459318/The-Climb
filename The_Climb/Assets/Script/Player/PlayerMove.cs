@@ -23,31 +23,32 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     [SerializeField] private bool upsideDown = false; // 天井歩行モード
     [SerializeField] private float customGravity = 9.81f; // 通常重力に近い値
 
-    [Header("Hovering Settings")]
-    [SerializeField] public float rideHeight = 0.5f; // 目標の浮遊高度
-    [SerializeField] public float rideSpringStrength = 500f; // バネの強さ
-    [SerializeField] public float rideSpringDamper = 50f; // バネの減衰力
-    [SerializeField] public float hoverRayCastLength = 1.0f; // 地面検知のレイの長さ
-
     IPlayerDataProvider PlayerDataProvider;    //  プレイヤーのデータプロバイダ
     IPlanetDataProvider PlanetDataProvider;    //  天体のデータプロバイダ
 
     private float groundMoveForce = 50f;     //プレイヤーの地上移動速度
-    public float groundMaxSpeed = 7f;   //プレイヤーの地上最高速度記憶
+    public float groundMaxSpeed = 6.5f;   //プレイヤーの地上最高速度記憶
     public float moveInput = 0f;        //プレイヤーの移動方向
-    private float airMoveForce = 20f;    //空中での移動速度
-    public float airMaxSpeed = 9f;     //空中での速度制限
+    private float airMoveForce = 25f;    //空中での移動速度
+    public float airMaxSpeed = 7f;     //空中での速度制限
     public float inversionFloat = 1f;    //反転するときに浮かせる高さ
     private Vector3 horizontalVelocity = Vector3.zero;
 
     public bool slipping = false;        //着地後勢い止めず滑ってる判定
     public Vector3 slipVelocity;                //滑り時のVelocity
 
+    [SerializeField] public float rideHeight = 0.05f;  //目標の浮遊高度
+    [SerializeField] public float rideSpringStrength = 1000f;  //バネの強さ
+    [SerializeField] public float rideSpringDamper = 100f;  //バネの減衰力
+    [SerializeField] public float hoverRayCastLength = 0.2f;  //地面検知のレイの長さ
+
     public float MoveInput => moveInput; // ←読み取り専用プロパティ
     public PlayerAnimation PlayerAnimation;
     public PlayerState State => state;
     private bool OnBelt = false;                 //ベルトコンベアに乗っているか
     private Vector3 BeltVelocity = Vector3.zero; //ベルトコンベアの速度(未接触時はゼロ)
+
+    private Vector3 platformVelocityOffset = Vector3.zero; // 動く足場に乗っているときの速度オフセット
 
     public bool IsUpsideDown => upsideDown;
 
@@ -355,6 +356,34 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             // 力を加える（rayの当たる方向の逆＝上向きに力を加える）
             // springForceがマイナスのとき（沈み込みすぎたとき）、rayDirection(下) * マイナス = 上向きの力
             RigidBody.AddForce(rayDirection * springForce);
+
+            // --- 動く足場用の処理（Velocity Inheritance） ---
+            if (hit.rigidbody != null)
+            {
+                // 足場の速度を取得し、Y軸は無視する（高さはホバーで管理するため）
+                Vector3 platformVelocity = hit.rigidbody.linearVelocity;
+                platformVelocity.y = 0f;
+                
+                // 動く足場に乗っている時は、その速度を記録しておく（MaxSpeedの計算に使う）
+                platformVelocityOffset = platformVelocity;
+
+                if (platformVelocity.magnitude > 0.1f && moveInput == 0f)
+                {
+                    // 移動入力が無いときは、足場に完全に追従させる強い摩擦力をかける
+                    Vector3 currentHorizontalVel = new Vector3(RigidBody.linearVelocity.x, 0f, RigidBody.linearVelocity.z);
+                    Vector3 velocityDifference = platformVelocity - currentHorizontalVel;
+                    RigidBody.AddForce(velocityDifference * 60f, ForceMode.Acceleration);
+                }
+            }
+            else
+            {
+                platformVelocityOffset = Vector3.zero;
+            }
+            // ------------------------------------------
+        }
+        else
+        {
+            platformVelocityOffset = Vector3.zero;
         }
     }
 
@@ -405,27 +434,36 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             // 地上：慣性なし、即応する左右移動
             Vector3 force = new Vector3(moveInput, 0f, 0f) * groundMoveForce;
             RigidBody.AddForce(force, ForceMode.Acceleration);
-            horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
-            if (horizontalVelocity.magnitude > groundMaxSpeed)
+            
+            // 動く足場の速度を考慮した最高速度の計算
+            horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, RigidBody.linearVelocity.z);
+            
+            // プレイヤー自身が本来出したい最高速度ベクトル
+            Vector3 targetMaxVel = new Vector3(Mathf.Sign(moveInput) * groundMaxSpeed, 0f, 0f);
+            
+            // 最終的に許される最高速度 = プレイヤーの最高速度 + 足場の速度
+            Vector3 allowedMaxVel = targetMaxVel + platformVelocityOffset;
+
+            // X軸方向のクランプ（移動方向に応じて上限・下限を制限する）
+            float clampedX = RigidBody.linearVelocity.x;
+            if (moveInput > 0 && clampedX > allowedMaxVel.x)
             {
-                RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * groundMaxSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
+                clampedX = allowedMaxVel.x;
             }
-            //RigidBody.linearVelocity = new Vector3(force.x * Time.deltaTime * 1000.0f, RigidBody.linearVelocity.y, 0f);
+            else if (moveInput < 0 && clampedX < allowedMaxVel.x)
+            {
+                clampedX = allowedMaxVel.x;
+            }
+
+            RigidBody.linearVelocity = new Vector3(clampedX, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
         }
-        else if (!special.meteorHighJump && !jump.jumpCoolActive && RigidBody.linearVelocity.x != 0f)  //ぴたっと止まる
+        else if (!special.meteorHighJump && !jump.jumpCoolActive && Mathf.Abs(RigidBody.linearVelocity.x - platformVelocityOffset.x) > 0.1f)  //ぴたっと止まる
         {
-            //ぴたっと止まる
-            //if (moveInput == 0f)
-            //{
-            //    RigidBody.linearVelocity = new Vector3(0f, RigidBody.linearVelocity.y, 0f);
-            //}
-            //else  //慣性で止まる
-            //{
-                Debug.Log("慣性で止まるよ");
-                Vector3 vel = RigidBody.linearVelocity;
-                vel.x = Mathf.MoveTowards(vel.x, 0f, groundMoveForce * Time.fixedDeltaTime);
-                RigidBody.linearVelocity = vel;
-            //}
+            // 慣性で止まるよ (動く足場の上では足場の速度を目標にして減速する)
+            Debug.Log("慣性で止まるよ");
+            Vector3 vel = RigidBody.linearVelocity;
+            vel.x = Mathf.MoveTowards(vel.x, platformVelocityOffset.x, groundMoveForce * Time.fixedDeltaTime);
+            RigidBody.linearVelocity = vel;
         }
     }
 
