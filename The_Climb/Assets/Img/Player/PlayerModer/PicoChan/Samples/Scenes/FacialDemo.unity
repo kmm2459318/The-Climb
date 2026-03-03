@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 10
   m_Fog: 1
   m_FogColor: {r: 0.65080994, g: 0.666729, b: 0.7075472, a: 1}
   m_FogMode: 3
@@ -38,13 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2138677392}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
-  m_GIWorkflowMode: 0
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -67,9 +66,6 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 0
     m_TextureCompression: 1
-    m_FinalGather: 0
-    m_FinalGatherFiltering: 1
-    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 1
     m_BakeBackend: 1
@@ -104,7 +100,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 2
+    serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -117,7 +113,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    buildHeightMesh: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
@@ -128,6 +124,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1327674205686831306, guid: 83628a2e699576147adabb30587f44d4, type: 3}
@@ -183,32 +180,36 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[1]
+      propertyPath: 'm_BlendShapeWeights.Array.data[1]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[4]
+      propertyPath: 'm_BlendShapeWeights.Array.data[4]'
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[6]
+      propertyPath: 'm_BlendShapeWeights.Array.data[6]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[8]
+      propertyPath: 'm_BlendShapeWeights.Array.data[8]'
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[9]
+      propertyPath: 'm_BlendShapeWeights.Array.data[9]'
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83628a2e699576147adabb30587f44d4, type: 3}
 --- !u!1001 &825280258
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1327674205686831306, guid: 83628a2e699576147adabb30587f44d4, type: 3}
@@ -264,32 +265,36 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[1]
+      propertyPath: 'm_BlendShapeWeights.Array.data[1]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[2]
+      propertyPath: 'm_BlendShapeWeights.Array.data[2]'
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[6]
+      propertyPath: 'm_BlendShapeWeights.Array.data[6]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[7]
+      propertyPath: 'm_BlendShapeWeights.Array.data[7]'
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[9]
+      propertyPath: 'm_BlendShapeWeights.Array.data[9]'
       value: 66.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83628a2e699576147adabb30587f44d4, type: 3}
 --- !u!1001 &1166708828
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1327674205686831306, guid: 83628a2e699576147adabb30587f44d4, type: 3}
@@ -345,28 +350,32 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[1]
+      propertyPath: 'm_BlendShapeWeights.Array.data[1]'
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[3]
+      propertyPath: 'm_BlendShapeWeights.Array.data[3]'
       value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[6]
+      propertyPath: 'm_BlendShapeWeights.Array.data[6]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[9]
+      propertyPath: 'm_BlendShapeWeights.Array.data[9]'
       value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83628a2e699576147adabb30587f44d4, type: 3}
 --- !u!1001 &1564747931
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1327674205686831306, guid: 83628a2e699576147adabb30587f44d4, type: 3}
@@ -422,18 +431,21 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[1]
+      propertyPath: 'm_BlendShapeWeights.Array.data[1]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[6]
+      propertyPath: 'm_BlendShapeWeights.Array.data[6]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[9]
+      propertyPath: 'm_BlendShapeWeights.Array.data[9]'
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83628a2e699576147adabb30587f44d4, type: 3}
 --- !u!1 &1687258581
 GameObject:
@@ -475,9 +487,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -511,18 +531,20 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.75, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1796499048
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1327674205686831306, guid: 83628a2e699576147adabb30587f44d4, type: 3}
@@ -578,32 +600,36 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[0]
+      propertyPath: 'm_BlendShapeWeights.Array.data[0]'
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[1]
+      propertyPath: 'm_BlendShapeWeights.Array.data[1]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[3]
+      propertyPath: 'm_BlendShapeWeights.Array.data[3]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[6]
+      propertyPath: 'm_BlendShapeWeights.Array.data[6]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[9]
+      propertyPath: 'm_BlendShapeWeights.Array.data[9]'
       value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83628a2e699576147adabb30587f44d4, type: 3}
 --- !u!1001 &2114212344
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1327674205686831306, guid: 83628a2e699576147adabb30587f44d4, type: 3}
@@ -659,18 +685,21 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[1]
+      propertyPath: 'm_BlendShapeWeights.Array.data[1]'
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[6]
+      propertyPath: 'm_BlendShapeWeights.Array.data[6]'
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3424627960780230218, guid: 83628a2e699576147adabb30587f44d4, type: 3}
-      propertyPath: m_BlendShapeWeights.Array.data[9]
+      propertyPath: 'm_BlendShapeWeights.Array.data[9]'
       value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83628a2e699576147adabb30587f44d4, type: 3}
 --- !u!1 &2138677391
 GameObject:
@@ -697,9 +726,8 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138677391}
   m_Enabled: 1
-  serializedVersion: 10
+  serializedVersion: 11
   m_Type: 1
-  m_Shape: 0
   m_Color: {r: 1, g: 0.9735329, b: 0.9490196, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -749,8 +777,12 @@ Light:
   m_BoundingSphereOverride: {x: 4.5904e-41, y: -9693.328, z: 4.5904e-41, w: 9.403955e-38}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!4 &2138677393
 Transform:
   m_ObjectHideFlags: 0
@@ -758,10 +790,23 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138677391}
+  serializedVersion: 2
   m_LocalRotation: {x: 0.27059805, y: -0.27059805, z: 0.6532815, w: 0.6532815}
   m_LocalPosition: {x: 0.24, y: 3, z: 4.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 90}
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 1687258585}
+  - {fileID: 2138677393}
+  - {fileID: 1564747931}
+  - {fileID: 2114212344}
+  - {fileID: 825280258}
+  - {fileID: 1796499048}
+  - {fileID: 711806912}
+  - {fileID: 1166708828}
