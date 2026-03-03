@@ -5,6 +5,7 @@ public class EnemyPatrol : MonoBehaviour
 {
     private enum State
     {
+        Idle,
         Patrol,
         Charge,
         Tackle,
@@ -26,11 +27,7 @@ public class EnemyPatrol : MonoBehaviour
 
     [Header("タックル設定")]
     [SerializeField] private float tackleSpeed = 10f;
-    
-    [SerializeField] private float tackleLoseSightDelay = 0.3f;
 
-    private float loseSightTimer = 0f;
-  
     private State currentState = State.Patrol;
 
     private NavMeshAgent agent;
@@ -61,41 +58,56 @@ public class EnemyPatrol : MonoBehaviour
     {
         switch (currentState)
         {
+            case State.Idle:
+                UpdateIdle();
+                break;
             case State.Patrol:
                 UpdatePatrol();
                 break;
-
             case State.Charge:
                 UpdateCharge();
                 break;
-
             case State.Tackle:
                 UpdateTackle();
                 break;
-
             case State.Recovery:
                 UpdateRecovery();
                 break;
         }
 
-        // Speed制御
-        if (currentState == State.Tackle)
-        {
-            animator.SetFloat("Speed", tackleSpeed);
-        }
-        else if (currentState == State.Charge || currentState == State.Recovery)
-        {
-            animator.SetFloat("Speed", 0f);
-        }
-        else
+        // Speed制御修正版
+        if (currentState == State.Patrol)
         {
             animator.SetFloat("Speed", agent.velocity.magnitude);
         }
+        else if (currentState == State.Tackle)
+        {
+            animator.SetFloat("Speed", tackleSpeed);
+        }
+        else
+        {
+            animator.SetFloat("Speed", 0f);
+        }
     }
+    void StartIdle()
+    {
+        currentState = State.Idle;
 
-    // =========================
-    // Patrol
-    // =========================
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+        waitTimer = waitTime;
+        animator.SetFloat("Speed", 0f);
+    }
+    void UpdateIdle()
+{
+    waitTimer -= Time.deltaTime;
+
+    if (waitTimer <= 0f)
+    {
+        MoveToNextPoint();
+        currentState = State.Patrol;
+    }
+}
     void UpdatePatrol()
     {
         if (detection.CanSeePlayer)
@@ -104,14 +116,11 @@ public class EnemyPatrol : MonoBehaviour
             return;
         }
 
-        if (!agent.pathPending && agent.remainingDistance < 0.2f)
+        if (!agent.pathPending &&
+            agent.remainingDistance <= agent.stoppingDistance &&
+            agent.velocity.sqrMagnitude < 0.05f)
         {
-            if (!isWaiting)
-            {
-                isWaiting = true;
-                waitTimer = waitTime;
-                agent.isStopped = true;
-            }
+            StartIdle();
         }
 
         if (isWaiting)
@@ -128,29 +137,28 @@ public class EnemyPatrol : MonoBehaviour
         if (patrolPoints.Length == 0) return;
 
         agent.isStopped = false;
+        agent.updatePosition = true;
         agent.SetDestination(patrolPoints[currentIndex].position);
 
         currentIndex = (currentIndex + 1) % patrolPoints.Length;
         isWaiting = false;
     }
 
-    // =========================
-    // Charge（溜め）
-    // =========================
     void StartCharge()
     {
         currentState = State.Charge;
 
         agent.isStopped = true;
-        agent.ResetPath();              // ★追加
-        agent.velocity = Vector3.zero;  // ★追加
+        agent.ResetPath();
+        agent.velocity = Vector3.zero;
+        agent.updatePosition = false;   // ★完全停止
 
         lastSeenDirection = (player.position - transform.position).normalized;
         lastSeenDirection.y = 0f;
 
         transform.forward = lastSeenDirection;
 
-        animator.SetFloat("Speed", 0f); // ★追加（念押し）
+        animator.SetFloat("Speed", 0f);
         animator.SetTrigger("Charge");
     }
 
@@ -158,20 +166,17 @@ public class EnemyPatrol : MonoBehaviour
     {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-        // Chargeアニメが終わったらTackleへ
         if (!stateInfo.IsName("Charge"))
         {
             StartTackle();
         }
     }
 
-    // =========================
-    // Tackle
-    // =========================
     void StartTackle()
     {
         currentState = State.Tackle;
 
+        agent.updatePosition = true;
         agent.velocity = Vector3.zero;
         agent.updateRotation = false;
 
@@ -179,37 +184,22 @@ public class EnemyPatrol : MonoBehaviour
 
         animator.SetTrigger("Tackle");
 
-        loseSightTimer = 0f;   // ★追加
-
         EnableAttack();
     }
 
     void UpdateTackle()
     {
-        // 前進
         agent.Move(transform.forward * tackleSpeed * Time.deltaTime);
 
-        // 視界チェック
-        if (!detection.CanSeePlayer)
-        {
-            loseSightTimer += Time.deltaTime;
-        }
-        else
-        {
-            loseSightTimer = 0f;
-        }
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-        // 見失ったら終了
-        if (loseSightTimer >= tackleLoseSightDelay)
+        if (!stateInfo.IsName("Tackle"))
         {
             DisableAttack();
             StartRecovery();
         }
     }
 
-    // =========================
-    // Recovery（硬直）
-    // =========================
     void StartRecovery()
     {
         currentState = State.Recovery;
@@ -239,9 +229,6 @@ public class EnemyPatrol : MonoBehaviour
         }
     }
 
-    // =========================
-    // 攻撃判定
-    // =========================
     void EnableAttack()
     {
         if (attackCollider != null)
