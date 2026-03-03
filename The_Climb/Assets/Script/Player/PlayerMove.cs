@@ -470,15 +470,24 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     private void AirPlayerMove()
     {
         // 空中：左右に力を加える
-        Vector3 force = new Vector3(moveInput, 0f, 0f) * airMoveForce;
-       
-        RigidBody.AddForce(force, ForceMode.Acceleration);
-
-        horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f);
-        if (horizontalVelocity.magnitude > airMaxSpeed)
+        // 現在の速度が最高速度未満の場合、または入力が現在の移動方向と逆の場合のみ加速を許可
+        bool canAccelerate = false;
+        if (moveInput > 0)
         {
-            RigidBody.linearVelocity = new Vector3(Mathf.Sign(RigidBody.linearVelocity.x) * airMaxSpeed, RigidBody.linearVelocity.y, RigidBody.linearVelocity.z);
+            if (RigidBody.linearVelocity.x < airMaxSpeed) canAccelerate = true;
         }
+        else if (moveInput < 0)
+        {
+            if (RigidBody.linearVelocity.x > -airMaxSpeed) canAccelerate = true;
+        }
+
+        if (canAccelerate)
+        {
+            Vector3 force = new Vector3(moveInput, 0f, 0f) * airMoveForce; // プレイヤーの入力による移動力を計算
+            RigidBody.AddForce(force, ForceMode.Acceleration); // 力を加える
+        }
+
+        horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f); // 現在の水平速度を更新
 
         //ハイジャンプ後徐々に早くするよ
         if (special.highJumpUsed)
