@@ -10,6 +10,7 @@ public class Start_Button : MonoBehaviour
     {
         button.onClickCallBack = () =>
         {
+            Time.timeScale = 1f;
             SceneManager.LoadScene("Title");
         };
     }
