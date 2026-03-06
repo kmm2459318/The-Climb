@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
@@ -93,7 +93,7 @@ public class StageNode : MonoBehaviour
 
     public void SetCleared()
     {
-        isInteractable = false;
+        isInteractable = true; // クリア後も再度入れるように変更
         if (nodeRenderer && clearedMat)
             nodeRenderer.material = clearedMat;
     }

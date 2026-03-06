@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 [System.Serializable]
@@ -47,31 +47,33 @@ public class StageRandomizer : MonoBehaviour
 
     private void Shuffle()
     {
+        // ランダム化用のインデックスリストを作成
         List<int> pool = new List<int>();
         for (int i = 0; i < NormalStagePool.Count; i++)
-            pool.Add(i);
+            pool.Add(i); // 通常ステージのインデックスを追加
 
+        // フィッシャー・イェーツのシャッフル
         for (int i = 0; i < pool.Count; i++)
         {
             int r = Random.Range(i, pool.Count);
-            (pool[i], pool[r]) = (pool[r], pool[i]);
+            (pool[i], pool[r]) = (pool[r], pool[i]); // 要素を入れ替え
         }
 
         int[] result = new int[8];
 
-        int[] normalSlots = { 0, 1, 2, 4, 5, 6 };
+        // スロット0〜6 (List 1〜7) に重複なしで割り当て
+        // 以前はスロット3を別途ランダムにしていたが、一括で順番に割り当てるように変更
+        int[] normalSlots = { 0, 1, 2, 3, 4, 5, 6 };
         for (int i = 0; i < normalSlots.Length && i < pool.Count; i++)
-            result[normalSlots[i]] = pool[i];
+            result[normalSlots[i]] = pool[i]; // シャッフルされたインデックスをスロットに設定
 
-        if (NormalStagePool.Count > 0)
-            result[3] = Random.Range(0, NormalStagePool.Count);
-
+        // ボスステージの設定 (スロット7)
         if (BossStagePool.Count > 0)
-            result[7] = Random.Range(0, BossStagePool.Count) + 1000;
+            result[7] = Random.Range(0, BossStagePool.Count) + 1000; // ボスは1000以上の値で管理
 
-        _currentSlotIndices = result;
-        Apply();
-        PlayerPrefs.SetString("StageIndexOrder", string.Join(",", _currentSlotIndices));
+        _currentSlotIndices = result; // 結果を保存
+        Apply(); // 各配列にデータを適用
+        PlayerPrefs.SetString("StageIndexOrder", string.Join(",", _currentSlotIndices)); // 保存
     }
 
     private void Load()
