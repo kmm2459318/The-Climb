@@ -38,8 +38,9 @@ namespace TheClimb.Astral
 
             //ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(PlayTrimmed(0f, 0.7f));
             
-
             isChargeComplete = true;   
+
+            EffectAPIWindow.Play(new EffectKey(GameMode.Astral, EffectKind.HoldPower), planetTF);
         }
 
         public override void BurstChargeForce(InputAction.CallbackContext context)
@@ -58,6 +59,9 @@ namespace TheClimb.Astral
                 Debug.Log(blowForce);
                 ServiceLocator.Resolve<PlayerAPIFacadeBase>().AddForce(blowForce, AddForceMode.VelocityChagne);
             }
+            
+            EffectAPIWindow.Stop(new EffectKey(GameMode.Astral, EffectKind.HoldPower));
+
             isChargeComplete = false;
         }
 
