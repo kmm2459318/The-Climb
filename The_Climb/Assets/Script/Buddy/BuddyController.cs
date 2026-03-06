@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UIElements;
@@ -69,8 +69,20 @@ public class BuddyController : MonoBehaviour
         }
         else
         {
-            RigidBody.useGravity = true;
-            RigidBody.isKinematic = false;
+            // プレイヤーが反転している場合はBuddyの重力も反転させる
+            PlayerMove playerMove = state.move; // プレイヤーの移動スクリプトを取得
+            if (playerMove != null && playerMove.IsUpsideDown)
+            {
+                RigidBody.useGravity = false; // 標準の重力はオフ
+                RigidBody.isKinematic = false;
+                // 上向きの力を加える（カスタム重力）
+                RigidBody.AddForce(Vector3.up * 9.81f * 5f, ForceMode.Acceleration); // 重力加速度をシミュレート
+            }
+            else
+            {
+                RigidBody.useGravity = true;
+                RigidBody.isKinematic = false;
+            }
         }
 
         //誘導により動く

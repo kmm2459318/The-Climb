@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Animations;
 using TMPro;
 
@@ -85,12 +85,14 @@ public class BuddyCarry : MonoBehaviour
                 {
                     buddyPos.constraintActive = false;
                     buddy.transform.position = transform.position + Vector3.up * 0.5f;
+                    buddy.transform.SetParent(null); // おんぶを解除したので親子関係を解消する
                     state.carryingBuddy = false;
                 }
                 else if (nearBuddy && !state.carryingBuddy)  //おんぶしてない場合、バディをおんぶする
                 {
                     buddyPos.constraintActive = true;
                     buddyController.moving = false;
+                    buddy.transform.SetParent(transform); // おんぶを開始するのでプレイヤーの子オブジェクトにする
                     state.carryingBuddy = true;
                 }
                 else if (!state.carryingBuddy && nearCallBell && callCooldown <= callCooldownTimer)  //ベルを鳴らしてバディを誘導
