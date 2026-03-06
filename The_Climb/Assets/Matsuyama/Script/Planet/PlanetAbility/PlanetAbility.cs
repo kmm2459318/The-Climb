@@ -7,10 +7,14 @@ namespace TheClimb.Astral
 {
     public class PlanetAbility : PlanetAbilityBase   //  天体の能力コマンド
     {
-        public PlanetAbility(PlanetAbilityStatsBase stats, Transform planetTF) : base(stats, planetTF)
+        AudioSource audioSource;
+        AudioClip clip;
+
+        public PlanetAbility(PlanetAbilityStatsBase stats, Transform planetTF, Transform playerTF, AudioSource audioSource) : base(stats, planetTF, playerTF)
         {
             isChargeComplete = false;
             chargeCoroutine = null;
+            this.audioSource = audioSource;
         }
 
         public override void ChargeAbility(InputAction.CallbackContext context)    //  能力チャージコルーチンを作動させる受け子関数
@@ -28,8 +32,13 @@ namespace TheClimb.Astral
 
             while ((holdTime += Time.deltaTime) < abilityStats.SecondaryEffectSpawnTime)    //  二段階目のエフェクト生成まで待機
             { yield return null; }
-            EffectAPIWindow.Play(new EffectKey(GameMode.Astral, EffectKind.ChargePower), planetTF);
             
+            EffectAPIWindow.Play(new EffectKey(GameMode.Astral, EffectKind.ChargePower), planetTF);
+            EffectAPIWindow.StopSudden(new EffectKey(GameMode.Astral, EffectKind.AwakePower));
+
+            //ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(PlayTrimmed(0f, 0.7f));
+            
+
             isChargeComplete = true;   
         }
 
@@ -42,10 +51,27 @@ namespace TheClimb.Astral
             }
             else
             {
-                Debug.Log("かめじゃめじゃ");
+                Vector3 vectorToPlanet = playerTF.transform.position - planetTF.transform.position;
+                Vector3 direction = vectorToPlanet.normalized;
+                Debug.Log(direction);
+                Vector3 blowForce = direction * abilityStats.RepulsiveFouce;
+                Debug.Log(blowForce);
+                ServiceLocator.Resolve<PlayerAPIFacadeBase>().AddForce(blowForce, AddForceMode.VelocityChagne);
             }
             isChargeComplete = false;
         }
 
+        //IEnumerator PlayTrimmed(float startTime, float endTime)
+        //{
+        //    audioSource.Play();
+            
+        //    while ((startTime += Time.deltaTime) < endTime)
+        //    {
+        //        source.volume = Mathf.Lerp(sta, 0f, time / duration);
+        //        yield return null;
+        //    }
+
+        //    audioSource.Stop();
+        //}
     }
 }
