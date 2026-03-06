@@ -15,6 +15,12 @@ public class BuddyCarry : MonoBehaviour
     public bool nearBuddy = false;       //Buddyが近くにいるか判定
     private bool nearCallBell = false;    //CallBellが近くにあるか判定
     private float callBellPosX = 0;       //CallBellのX座標
+    private float callCooldown = 1.0f;    //CallBellのクールダウン時間
+    private float callCooldownTimer = 0f; //CallBellのクールダウンタイマー
+
+    [Header("コールベルの音")]
+    [SerializeField] private AudioClip callBellSound;
+    private AudioSource audioSource;
 
     void Start()
     {
@@ -22,6 +28,11 @@ public class BuddyCarry : MonoBehaviour
         playerMove = state.move;
         hukidashi = state.hukidashi;
         hukidashiText = state.hukidashiText;
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
 
         if (GameObject.Find("Buddy") != null)
         {
@@ -34,6 +45,12 @@ public class BuddyCarry : MonoBehaviour
 
     void Update()
     {
+        //コールベルのクールダウン処理
+        if (callCooldown > callCooldownTimer)
+        {
+            callCooldownTimer += Time.deltaTime;
+        }
+
         if (buddy != null)
         {
             //向いてる方向によっておんぶしてるバディの場所を調整
@@ -44,11 +61,15 @@ public class BuddyCarry : MonoBehaviour
 
                 if (state.playerDirectionRight)
                 {
-                    buddyPos.translationOffset = new Vector3(-0.4f, offsetY, 0f);
+                    buddyPos.translationOffset = new Vector3(-0.3f, offsetY, 0f);
+                    if (state.carryingBuddy)
+                        buddy.transform.localScale = new Vector3(0.58f, 0.58f, 0.58f);
                 }
                 else
                 {
-                    buddyPos.translationOffset = new Vector3(0.4f, offsetY, 0f);
+                    buddyPos.translationOffset = new Vector3(0.3f, offsetY, 0f);
+                    if (state.carryingBuddy)
+                        buddy.transform.localScale = new Vector3(-0.58f, 0.58f, 0.58f);
                 }
             }
             else
@@ -72,9 +93,24 @@ public class BuddyCarry : MonoBehaviour
                     buddyController.moving = false;
                     state.carryingBuddy = true;
                 }
-                else if (!state.carryingBuddy && nearCallBell)  //ベルを鳴らしてバディを誘導
+                else if (!state.carryingBuddy && nearCallBell && callCooldown <= callCooldownTimer)  //ベルを鳴らしてバディを誘導
                 {
+                    if (callBellSound != null && audioSource != null)
+                    {
+                        audioSource.PlayOneShot(callBellSound);
+                    }
+
                     buddyController.GuideTo(callBellPosX);
+
+                    if (callBellPosX - buddy.transform.position.x > 0)
+                    {
+                        buddy.transform.localScale = new Vector3(0.58f, 0.58f, 0.58f);
+                    }
+                    else if (callBellPosX - buddy.transform.position.x < 0)
+                    {
+                        buddy.transform.localScale = new Vector3(-0.58f, 0.58f, 0.58f);
+                    }
+                    callCooldownTimer = 0f;  //クールダウンリセット
                 }
             }
         }
