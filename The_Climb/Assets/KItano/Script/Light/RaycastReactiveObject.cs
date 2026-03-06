@@ -37,7 +37,7 @@ public class RaycastReactiveObject : MonoBehaviour
 
         ApplyState(currentAlpha);
 
-        Debug.Log($"[{name}] 初期状態 : {(isVisible ? "表示" : "透明")}");
+      //  Debug.Log($"[{name}] 初期状態 : {(isVisible ? "表示" : "透明")}");
     }
 
     void Update()
@@ -50,13 +50,13 @@ public class RaycastReactiveObject : MonoBehaviour
 
             if (isVisible)
             {
-                Debug.Log($"[{name}] Raycast検知 → 透明化ループ開始");
+               // Debug.Log($"[{name}] Raycast検知 → 透明化ループ開始");
                 isBusy = true;
                 StartCoroutine(VisibleStartRoutine());
             }
             else
             {
-                Debug.Log($"[{name}] Raycast検知 → 出現ループ開始");
+              //  Debug.Log($"[{name}] Raycast検知 → 出現ループ開始");
                 isBusy = true;
                 StartCoroutine(InvisibleStartRoutine());
             }
@@ -68,31 +68,31 @@ public class RaycastReactiveObject : MonoBehaviour
     {
         if (isBusy) return;
 
-        Debug.Log($"[{name}] Raycastが命中しました");
+       // Debug.Log($"[{name}] Raycastが命中しました");
         rayHit = true;
     }
 
     // ===== 透明スタート専用 =====
     IEnumerator InvisibleStartRoutine()
     {
-        Debug.Log($"[{name}] フェードイン開始");
+      //  Debug.Log($"[{name}] フェードイン開始");
 
         yield return FadeTo(1f);
         isVisible = true;
 
-        Debug.Log($"[{name}] 完全表示");
+       // Debug.Log($"[{name}] 完全表示");
 
         yield return new WaitForSeconds(stayTime);
 
-        Debug.Log($"[{name}] 点滅開始");
+      //  Debug.Log($"[{name}] 点滅開始");
         yield return Blink();
 
-        Debug.Log($"[{name}] 点滅終了 → 透明化へ");
+     //   Debug.Log($"[{name}] 点滅終了 → 透明化へ");
 
         yield return FadeTo(0f);
         isVisible = false;
 
-        Debug.Log($"[{name}] 完全透明 → 次のRaycast待ち");
+      //  Debug.Log($"[{name}] 完全透明 → 次のRaycast待ち");
 
         isBusy = false;
     }
@@ -100,21 +100,21 @@ public class RaycastReactiveObject : MonoBehaviour
     // ===== 出現スタート専用 =====
     IEnumerator VisibleStartRoutine()
     {
-        Debug.Log($"[{name}] フェードアウト開始");
+      //  Debug.Log($"[{name}] フェードアウト開始");
 
         yield return FadeTo(0f);
         isVisible = false;
 
-        Debug.Log($"[{name}] 完全透明");
+       // Debug.Log($"[{name}] 完全透明");
 
         yield return new WaitForSeconds(stayTime);
 
-        Debug.Log($"[{name}] 自動フェードイン（Raycast不要）");
+      //  Debug.Log($"[{name}] 自動フェードイン（Raycast不要）");
 
         yield return FadeTo(1f);
         isVisible = true;
 
-        Debug.Log($"[{name}] 完全表示 → 次のRaycast待ち");
+       // Debug.Log($"[{name}] 完全表示 → 次のRaycast待ち");
 
         isBusy = false;
     }

@@ -126,13 +126,14 @@ public class LightDarkWorld : MonoBehaviour
     {
         int player = LayerMask.NameToLayer("Player");
         int buddy = LayerMask.NameToLayer("Buddy");
+        int bomb = LayerMask.NameToLayer("Bomb");
         int ground = LayerMask.NameToLayer("Ground");
         int whiteGround = LayerMask.NameToLayer("WhiteGround");
         int blackGround = LayerMask.NameToLayer("BlackGround");
         int whiteOther = LayerMask.NameToLayer("WhiteOther");
         int blackOther = LayerMask.NameToLayer("BlackOther");
 
-        int[] target = { player, buddy };  //動く側のレイヤー
+        int[] target = { player, buddy, bomb };  //動く側のレイヤー
         (int layer, bool whatBrightness)[] obj = {
             (whiteGround, true),
             (blackGround, false),

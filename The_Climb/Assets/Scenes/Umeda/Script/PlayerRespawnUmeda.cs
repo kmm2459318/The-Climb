@@ -47,6 +47,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
     // ---------------------------------------------------------
     private static int lastCheckpointIndex = -1;
     private static List<string> persistentButtonIDs = new List<string>();
+    private static int kitanoSkillUseCount = -1; // Kitanoスキルの使用回数保持用
 
     void Start()
     {
@@ -114,6 +115,16 @@ public class PlayerRespawnUmeda : MonoBehaviour
                 }
             }
         }
+
+        // Kitanoスキルの使用回数復帰
+        if (kitanoSkillUseCount >= 0)
+        {
+            TempDisableColliders kitanoSkill = FindAnyObjectByType<TempDisableColliders>();
+            if (kitanoSkill != null)
+            {
+                kitanoSkill.CurrentUseCount = kitanoSkillUseCount;
+            }
+        }
     }
 
     void Update()
@@ -149,7 +160,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
     public void Respawn()
     {
         // Nakamuraシーンの場合のみ、シーンリロードによる初期化を行う
-        if (buddyStage)
+        if (SceneManager.GetActiveScene().name == "Nakamura")
         {
             // 1. 維持したいPressureButtonの状態を保存
             persistentButtonIDs.Clear();
@@ -168,6 +179,13 @@ public class PlayerRespawnUmeda : MonoBehaviour
                         Debug.LogWarning($"⚠️ PressureButton '{btn.name}' は keepStateAfterRespawn=true ですが、buttonID が空です。状態は保存されません。");
                     }
                 }
+            }
+
+            // Kitanoスキルの使用回数を保存
+            TempDisableColliders kitanoSkill = FindAnyObjectByType<TempDisableColliders>();
+            if (kitanoSkill != null)
+            {
+                kitanoSkillUseCount = kitanoSkill.CurrentUseCount;
             }
 
             // 2. 現在のチェックポイントIndexを保存

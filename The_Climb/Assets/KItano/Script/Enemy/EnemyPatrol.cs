@@ -27,7 +27,7 @@ public class EnemyPatrol : MonoBehaviour
 
     [Header("タックル設定")]
     [SerializeField] private float tackleSpeed = 10f;
-
+    [SerializeField] private EnemyTackleBreaker breaker;
     private State currentState = State.Patrol;
 
     private NavMeshAgent agent;
@@ -88,6 +88,10 @@ public class EnemyPatrol : MonoBehaviour
         {
             animator.SetFloat("Speed", 0f);
         }
+    }
+    private bool IsTackling()
+    {
+        return currentState == State.Tackle;
     }
     void StartIdle()
     {
@@ -174,6 +178,7 @@ public class EnemyPatrol : MonoBehaviour
 
     void StartTackle()
     {
+        breaker.StartTackleBreak();
         currentState = State.Tackle;
 
         agent.updatePosition = true;
@@ -196,10 +201,24 @@ public class EnemyPatrol : MonoBehaviour
         if (!stateInfo.IsName("Tackle"))
         {
             DisableAttack();
+            breaker.StopTackleBreak();
             StartRecovery();
         }
     }
+    private void OnCollisionEnter(Collision collision)
+    {
+        // タックル中でなければ何もしない
+        if (!IsTackling()) return;
 
+        if (collision.gameObject.CompareTag("BreakingWall"))
+        {
+            var block = collision.gameObject.GetComponent<DestructibleBlock>();
+            if (block != null)
+            {
+                block.BreakBlock();
+            }
+        }
+    }
     void StartRecovery()
     {
         currentState = State.Recovery;
