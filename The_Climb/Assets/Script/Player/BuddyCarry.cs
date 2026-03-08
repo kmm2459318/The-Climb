@@ -39,6 +39,7 @@ public class BuddyCarry : MonoBehaviour
             buddy = GameObject.Find("Buddy");
             buddyController = buddy.GetComponent<BuddyController>();
             buddyPos = buddy.GetComponent<PositionConstraint>();
+            buddy.transform.SetParent(transform); // おんぶ状態開始時に親子関係を設定
             state.carryingBuddy = true;
         }
     }
@@ -86,13 +87,15 @@ public class BuddyCarry : MonoBehaviour
                     buddyPos.constraintActive = false;
                     buddy.transform.position = transform.position + Vector3.up * 0.5f;
                     buddy.transform.SetParent(null); // おんぶを解除したので親子関係を解消する
+                    buddy.transform.localScale = new Vector3(buddy.transform.localScale.x, 0.58f, 0.58f); // 見た目の反転をリセット
+                    buddy.transform.rotation = Quaternion.identity; // 回転もリセット
                     state.carryingBuddy = false;
                 }
                 else if (nearBuddy && !state.carryingBuddy)  //おんぶしてない場合、バディをおんぶする
                 {
                     buddyPos.constraintActive = true;
                     buddyController.moving = false;
-                    buddy.transform.SetParent(transform); // おんぶを開始するのでプレイヤーの子オブジェクトにする
+                    buddy.transform.SetParent(transform); // 反転設定などを継承させるため一時的に子オブジェクトにする
                     state.carryingBuddy = true;
                 }
                 else if (!state.carryingBuddy && nearCallBell && callCooldown <= callCooldownTimer)  //ベルを鳴らしてバディを誘導
