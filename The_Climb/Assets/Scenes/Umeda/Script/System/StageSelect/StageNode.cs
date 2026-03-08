@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
@@ -39,8 +39,12 @@ public class StageNode : MonoBehaviour
     public StageRandomizer stageRandomizer;
     public StageSelectManager stageSelectManager;
 
+    [Header("Detection")]
+    public float detectionRange = 5f; // プレイヤーを検知する距離（インスペクターで編集可能）
+
     private bool playerNearby;
     public bool isInteractable;
+    private Transform playerTransform; // プレイヤーのTransformをキャッシュ
 
     // ===============================
     // Unity
@@ -63,14 +67,42 @@ public class StageNode : MonoBehaviour
         if (promptUI)
             promptUI.transform.position = transform.position + uiOffset;
 
-        // ロード中は以下の入力処理をスキップする
+        // ロード中は以下の処理をスキップする
         if (System.Loading.SceneLoader.IsLoading)
             return;
+
+        // 距離ベースのプレイヤー検知
+        CheckPlayerDistance();
 
         if (isInteractable && playerNearby && Input.GetKeyDown(KeyCode.Space))
         {
             if (stageSelectManager != null)
                 stageSelectManager.OnStageSelected(stageId);
+        }
+    }
+
+    // プレイヤーとの距離をチェックしてUIの状態を更新する
+    private void CheckPlayerDistance()
+    {
+        // プレイヤーのTransformを探す（一度だけ）
+        if (playerTransform == null)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null) playerTransform = player.transform;
+        }
+
+        if (playerTransform == null) return;
+
+        float dist = Vector3.Distance(transform.position, playerTransform.position);
+        bool isInside = dist <= detectionRange;
+
+        if (isInside && !playerNearby)
+        {
+            OnPlayerEnter();
+        }
+        else if (!isInside && playerNearby)
+        {
+            OnPlayerExit();
         }
     }
 
@@ -93,7 +125,7 @@ public class StageNode : MonoBehaviour
 
     public void SetCleared()
     {
-        isInteractable = false;
+        isInteractable = true; // クリア後も再度入れるように変更
         if (nodeRenderer && clearedMat)
             nodeRenderer.material = clearedMat;
     }
@@ -101,10 +133,11 @@ public class StageNode : MonoBehaviour
     // ===============================
     // Trigger
     // ===============================
-    private void OnTriggerEnter(Collider other)
+    // ===============================
+    // Proximity Events (Internal)
+    // ===============================
+    private void OnPlayerEnter()
     {
-        if (!other.CompareTag("Player")) return;
-
         playerNearby = true;
 
         if (promptUI)
@@ -121,10 +154,8 @@ public class StageNode : MonoBehaviour
         ShowImage();
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnPlayerExit()
     {
-        if (!other.CompareTag("Player")) return;
-
         playerNearby = false;
 
         if (promptUI)
@@ -178,7 +209,7 @@ public class StageNode : MonoBehaviour
 
 #if UNITY_EDITOR
     // ===============================
-    // Editor補助（★エラー対策で復活）
+    // Editor補助
     // ===============================
     public void RefreshSceneName()
     {
@@ -186,6 +217,13 @@ public class StageNode : MonoBehaviour
         {
             string _ = sceneAsset.name;
         }
+    }
+
+    // エディタ上で検知範囲を視覚化
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
 #endif
 }
