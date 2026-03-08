@@ -59,10 +59,11 @@ public class StageRandomizer : MonoBehaviour
             (pool[i], pool[r]) = (pool[r], pool[i]); // 要素を入れ替え
         }
 
+        // 全スロットを -1 (未割り当て) で初期化
         int[] result = new int[8];
+        for (int i = 0; i < result.Length; i++) result[i] = -1;
 
         // スロット0〜6 (List 1〜7) に重複なしで割り当て
-        // 以前はスロット3を別途ランダムにしていたが、一括で順番に割り当てるように変更
         int[] normalSlots = { 0, 1, 2, 3, 4, 5, 6 };
         for (int i = 0; i < normalSlots.Length && i < pool.Count; i++)
             result[normalSlots[i]] = pool[i]; // シャッフルされたインデックスをスロットに設定
@@ -87,25 +88,44 @@ public class StageRandomizer : MonoBehaviour
 
     private void Apply()
     {
-        for (int i = 0; i < 8; i++)
+        // 各スロット（最大8）をループ。配列のサイズ不足にも対応
+        int count = Mathf.Min(8, _currentSlotIndices.Length);
+
+        for (int i = 0; i < count; i++)
         {
             int idx = _currentSlotIndices[i];
+            if (idx == -1) continue; // 未割り当てのスロット
 
+            StagePoolData d = null;
             if (idx >= 1000)
             {
-                var d = BossStagePool[idx - 1000];
-                SceneName[i] = d.sceneName;
-                StageName[i] = d.stageName;
-                LoadingImage[i] = d.loadingImage;
+                int bIdx = idx - 1000;
+                if (bIdx >= 0 && bIdx < BossStagePool.Count)
+                    d = BossStagePool[bIdx];
             }
             else
             {
-                var d = NormalStagePool[idx];
-                SceneName[i] = d.sceneName;
-                StageName[i] = d.stageName;
-                LoadingImage[i] = d.loadingImage;
+                if (idx >= 0 && idx < NormalStagePool.Count)
+                    d = NormalStagePool[idx];
+            }
+
+            if (d != null)
+            {
+                // インスペクターで配列サイズが変更されている可能性があるため、個別にチェック
+                if (i < SceneName.Length) SceneName[i] = d.sceneName;
+                if (i < StageName.Length) StageName[i] = d.stageName;
+                if (i < LoadingImage.Length) LoadingImage[i] = d.loadingImage;
             }
         }
+
+        // ステージの順番をログに表示
+        Debug.Log("--- ステージルート順序 ---");
+        for (int i = 0; i < StageName.Length; i++)
+        {
+            if (string.IsNullOrEmpty(StageName[i])) continue;
+            Debug.Log($"List {i + 1}: {StageName[i]} ({(i < SceneName.Length ? SceneName[i] : "None")})");
+        }
+        Debug.Log("--------------------------");
     }
 
     public Sprite GetStagePreviewSprite(int stageId)
