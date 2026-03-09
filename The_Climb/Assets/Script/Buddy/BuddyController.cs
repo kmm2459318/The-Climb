@@ -12,6 +12,7 @@ public class BuddyController : MonoBehaviour
     private BuddyCarry buddyCarry;
     private PositionConstraint positionConstraint;
     private ConstraintSource currentSource;
+    [SerializeField] private Animator animator;
 
     private bool buddyDirectionRight;  //バディが右向いてるか判定、falseなら左向き
     public bool moving = false;        //Buddyが動いてるか判定
@@ -50,6 +51,11 @@ public class BuddyController : MonoBehaviour
         positionConstraint = GetComponent<PositionConstraint>();
         groundLayer = GameLayer.ToMask(GameLayers.GROUND);
         RigidBody = gameObject.GetComponent<Rigidbody>();
+
+        if (animator == null)
+        {
+            Debug.LogError("BuddyのAnimatorアタッチされてない");
+        }
     }
 
     void Update()
@@ -73,10 +79,18 @@ public class BuddyController : MonoBehaviour
             RigidBody.isKinematic = false;
         }
 
+        //アニメーションの更新
+        animator.SetBool(Const.Moving, moving);
+
         //誘導により動く
         if (moving)
         {
+            animator.SetFloat(Const.Speed, 1f);
             BuddyMove();
+        }
+        else
+        {
+            animator.SetFloat(Const.Speed, 0f);
         }
 
         //落下速度調整

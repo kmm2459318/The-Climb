@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -135,22 +135,20 @@ public class StageSelectManager : MonoBehaviour
     // ===============================
     private void ApplyAllRules()
     {
-        bool changed;
-        do
-        {
-            changed = false;
-            changed |= ApplyStageRequirements();
-            changed |= ApplyBranchExclusionToClearedStages();
-
-            if (!clearedStages[startStageId])
-            {
-                clearedStages[startStageId] = true;
-                changed = true;
-            }
-        }
-        while (changed);
-
+        // 以前の複雑なルール（分岐・依存関係）は無視し、クリアデータの保存のみ行う
         SaveClearedToPrefs();
+    }
+
+    // クリア回数（スタートステージ以外）を取得
+    private int GetClearCount()
+    {
+        int count = 0;
+        for (int i = 0; i < clearedStages.Length; i++)
+        {
+            if (i == startStageId) continue;
+            if (clearedStages[i]) count++;
+        }
+        return count;
     }
 
     // ===============================
@@ -221,39 +219,46 @@ public class StageSelectManager : MonoBehaviour
     // ===============================
     private void Refresh()
     {
-        HashSet<StagePath> blockedPaths = CalculateBlockedPaths();
+        int clearCount = GetClearCount();
+        Debug.Log($"Current Clear Count: {clearCount}");
 
+        // 3回クリア（Stage 1/2, 3/4, 5/6 から各1つずつ計3つ）でゲームクリア
+        if (clearCount >= 3)
+        {
+            Debug.Log("Game Clear! Transitioning to GameClearScene...");
+            System.Loading.SceneLoader.Instance.LoadScene("GameClearScene", null);
+            return;
+        }
+
+        // 全ノードとパスを一旦非表示にする
         foreach (var s in stages)
-        {
-            s.gameObject.SetActive(true);
-            s.SetLocked();
-        }
-
+            if (s != null) s.gameObject.SetActive(false);
         foreach (var p in paths)
-            p.SetState(StagePath.PathState.Locked);
+            if (p != null) p.gameObject.SetActive(false);
 
-        stages[startStageId].SetAvailable();
-        stages[startStageId].SetCleared();
+        // クリア回数に応じて表示するステージ ID を決定
+        // 0回: 1, 2 / 1回: 3, 4 / 2回: 5, 6
+        int idA = -1;
+        int idB = -1;
 
-        for (int i = 0; i < clearedStages.Length; i++)
-            if (clearedStages[i])
-                stages[i].SetCleared();
+        if (clearCount == 0) { idA = 1; idB = 2; }
+        else if (clearCount == 1) { idA = 3; idB = 4; }
+        else if (clearCount == 2) { idA = 5; idB = 6; }
 
-        foreach (var path in paths)
-        {
-            if (blockedPaths.Contains(path)) continue;
-            if (!clearedStages[path.fromStage]) continue;
+        // 対象のステージを表示し、選択可能にする
+        ActivateStageNode(idA);
+        ActivateStageNode(idB);
+    }
 
-            if (clearedStages[path.toStage])
-            {
-                path.SetState(StagePath.PathState.Passed);
-            }
-            else
-            {
-                path.SetState(StagePath.PathState.Available);
-                stages[path.toStage].SetAvailable();
-            }
-        }
+    private void ActivateStageNode(int stageId)
+    {
+        if (stageId < 0 || stageId >= stages.Length) return;
+        
+        var node = stages[stageId];
+        if (node == null) return;
+
+        node.gameObject.SetActive(true);
+        node.SetAvailable();
     }
 
     // ===============================
