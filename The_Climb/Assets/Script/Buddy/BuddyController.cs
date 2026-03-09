@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UIElements;
@@ -59,14 +59,18 @@ public class BuddyController : MonoBehaviour
         //右壁判定（カプセル形）
         isRightWall = Physics.CheckCapsule(transform.position + Vector3.right * 0.3f + Vector3.up * 0.49f, transform.position + Vector3.right * 0.3f + Vector3.down * 0.49f, 0.001f, groundLayer);
 
-        //おんぶされてるとき重力働かないように
+        //おんぶされてるとき重力働かないように & 物理演算の影響を受けないように
         if (state.carryingBuddy)
         {
             RigidBody.useGravity = false;
+            RigidBody.isKinematic = true;
+            RigidBody.linearVelocity = Vector3.zero;
+            RigidBody.angularVelocity = Vector3.zero;
         }
         else
         {
             RigidBody.useGravity = true;
+            RigidBody.isKinematic = false;
         }
 
         //誘導により動く

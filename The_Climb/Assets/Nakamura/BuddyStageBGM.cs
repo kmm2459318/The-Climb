@@ -1,83 +1,78 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class BgmYSwitchFade : MonoBehaviour
+// ステージの進行状況(X座標)に応じてBGMのクリップを直接切り替えするスクリプト
+public class BuddyStageBGM : MonoBehaviour
 {
-    [SerializeField] Transform target;
-    [SerializeField] float thresholdX = 620f;
-    [SerializeField] AudioClip StageClip;
-    [SerializeField] AudioClip BossClip;
-    [SerializeField] float fadeDuration = 1.5f;
-    [SerializeField] float maxVolume = 1f;
+    [SerializeField] Transform target; // 追跡対象のトランスフォーム
+    [SerializeField] float thresholdX = 620f; // BGMを切り替えるX座標のしきい値
+    [SerializeField] AudioClip StageClip; // ステージ前半用のBGMクリップ
+    [SerializeField] AudioClip BossClip; // ボス（ステージ後半）用のBGMクリップ
 
-    AudioSource srcA;
-    AudioSource srcB;
-    AudioSource active;
-    bool isHigh = false;
-    Coroutine fadeRoutine;
+    [SerializeField] AudioSource audioSource; // BGM再生用の単一オーディオソース
+    bool isHigh = false; // しきい値を超えているかどうかのフラグ
 
+    // コンポーネント起動時に呼び出される初期化処理
     void Awake()
     {
-        srcA = gameObject.AddComponent<AudioSource>();
-        srcB = gameObject.AddComponent<AudioSource>();
-        srcA.loop = srcB.loop = true;
-        srcA.playOnAwake = srcB.playOnAwake = false;
-        active = srcA;
+        // オーディオソースの初期設定を行うために呼び出す
+        InitializeAudioSource();
     }
 
+    // オーディオソースの初期設定を行う関数
+    void InitializeAudioSource()
+    {
+        // インスペクターで設定されていない場合は動的に追加するために呼び出す
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        
+        audioSource.loop = true; // ループ再生を有効化
+        audioSource.playOnAwake = false; // 自動再生を無効化
+    }
+
+    // 更新の最初に呼び出される初期設定処理
     void Start()
     {
-        if (target == null) Debug.LogWarning("BgmYSwitchFade: target が設定されていません。");
-        // 初期クリップをセット（x によって決定）
+        // ターゲットが設定されていない場合の警告を表示するために呼び出す
+        if (target == null) Debug.LogWarning("BuddyStageBGM: target が設定されていません。");
+
+        // 初期状態の判定を行うために呼び出す
         isHigh = (target != null && target.position.x >= thresholdX);
-        AudioSource inactive = (active == srcA) ? srcB : srcA;
-        active.clip = isHigh ? BossClip : StageClip;
-        inactive.clip = isHigh ? StageClip : BossClip;
-        active.volume = maxVolume;
-        inactive.volume = 0f;
-        if (active.clip != null) active.Play();
+        
+        // クリップを設定して再生を開始するために呼び出す
+        audioSource.clip = isHigh ? BossClip : StageClip;
+        if (audioSource.clip != null) audioSource.Play();
     }
 
+    // 毎フレーム呼び出される更新処理
     void Update()
     {
+        // ターゲットがいない場合は何もしないために呼び出す
         if (target == null) return;
+
+        // 現在の座標がしきい値を超えているか判定するために呼び出す
         bool nowHigh = target.position.x >= thresholdX;
+        
+        // 状態が変化した場合にクリップを切り替えるために呼び出す
         if (nowHigh != isHigh)
         {
-            isHigh = nowHigh;
-            StartFade(isHigh ? BossClip : StageClip);
+            isHigh = nowHigh; // 状態を更新
+            SwitchClip(isHigh ? BossClip : StageClip); // クリップの切り替え処理を呼び出すために呼び出す
         }
     }
 
-    void StartFade(AudioClip nextClip)
+    // クリップを切り替えて再生し直す関数
+    void SwitchClip(AudioClip nextClip)
     {
-        if (fadeRoutine != null) StopCoroutine(fadeRoutine);
-        fadeRoutine = StartCoroutine(CrossFadeTo(nextClip));
-    }
+        // 現在再生中のクリップと異なる場合のみ処理を行うために呼び出す
+        if (audioSource.clip == nextClip) return;
 
-    IEnumerator CrossFadeTo(AudioClip nextClip)
-    {
-        AudioSource next = (active == srcA) ? srcB : srcA;
-        // 次のソースにクリップをセットして再生（音量 0 から）
-        next.clip = nextClip;
-        next.volume = 0f;
-        if (next.clip != null && !next.isPlaying) next.Play();
-
-        float t = 0f;
-        while (t < fadeDuration)
+        audioSource.Stop(); // 一旦停止するために呼び出す
+        audioSource.clip = nextClip; // 新しいクリップをセット
+        
+        // クリップが設定されているなら再生するために呼び出す
+        if (audioSource.clip != null)
         {
-            t += Time.deltaTime;
-            float p = Mathf.Clamp01(t / fadeDuration);
-            active.volume = Mathf.Lerp(maxVolume, 0f, p);
-            next.volume = Mathf.Lerp(0f, maxVolume, p);
-            yield return null;
+            audioSource.Play();
         }
-
-        // 切替完了
-        active.volume = 0f;
-        next.volume = maxVolume;
-        if (active.isPlaying) active.Stop();
-        active = next;
-        fadeRoutine = null;
     }
 }
