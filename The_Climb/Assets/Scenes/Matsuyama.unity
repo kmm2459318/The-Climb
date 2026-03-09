@@ -1101,7 +1101,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1565183607}
-  - {fileID: 756601358}
   - {fileID: 872608085}
   - {fileID: 1163834007}
   m_Father: {fileID: 0}
@@ -2525,12 +2524,12 @@ Transform:
   m_GameObject: {fileID: 756601357}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.00028, y: 0.001, z: -0.00868}
+  m_LocalPosition: {x: -213.47777, y: 0, z: -11.76538}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1496823702}
-  m_Father: {fileID: 321087143}
+  m_Father: {fileID: 1538361905}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &757359826
 GameObject:
@@ -2652,6 +2651,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 171316899582419656, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
+      propertyPath: stageClear
+      value: 
+      objectReference: {fileID: 1701589105}
     - target: {fileID: 523186103618612158, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: reverseHorizontal
       value: 0
@@ -2666,7 +2669,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1175180237484769826, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1494689640004218747, guid: cff7c5216391b384a8a88e0fb7c310e3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6387,6 +6390,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1538361903
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1538361905}
+  - component: {fileID: 1538361904}
+  m_Layer: 0
+  m_Name: System_DontDestroy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1538361904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538361903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1d7d1877c17a2047bb23995c5a46333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DontDestroyOnLoad
+--- !u!4 &1538361905
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538361903}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 756601358}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1549408913 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7948021405090483736, guid: af2bff53752e11c41b5f3c3e3d549a77, type: 3}
@@ -7026,11 +7074,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: LowGoal
       objectReference: {fileID: 0}
+    - target: {fileID: 6743842158833585963, guid: 5151591354fd80f448e91914496d97d1, type: 3}
+      propertyPath: planetController
+      value: 
+      objectReference: {fileID: 167233121634783335}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5151591354fd80f448e91914496d97d1, type: 3}
+--- !u!114 &1701589105 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6743842158833585963, guid: 5151591354fd80f448e91914496d97d1, type: 3}
+  m_PrefabInstance: {fileID: 1701589104}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58f72696b2727a94fb882aaf85828d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageClear
 --- !u!1 &1712500857
 GameObject:
   m_ObjectHideFlags: 0
@@ -8165,6 +8228,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Planet
       objectReference: {fileID: 0}
+    - target: {fileID: 1541189316154393670, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2533264112245857565, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
+      propertyPath: stageClear
+      value: 
+      objectReference: {fileID: 1701589105}
     - target: {fileID: 2533264112245857565, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
       propertyPath: playerRigidBody
       value: 
@@ -8195,7 +8266,7 @@ PrefabInstance:
       objectReference: {fileID: 2016601935}
     - target: {fileID: 7696350481813631864, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 3.84
       objectReference: {fileID: 0}
     - target: {fileID: 7696350481813631864, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -8252,6 +8323,17 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 3806499970219516277, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
   m_PrefabInstance: {fileID: 167233121634783333}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &167233121634783335 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5731303559006045362, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
+  m_PrefabInstance: {fileID: 167233121634783333}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08b3b2a2490e01843b98605d0cfd4354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &207559567764806899
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18366,3 +18448,4 @@ SceneRoots:
   - {fileID: 1831122797}
   - {fileID: 321087143}
   - {fileID: 514287307}
+  - {fileID: 1538361905}

@@ -6,6 +6,8 @@ public class StageClear : MonoBehaviour
     private bool isClearing = false;
     private bool canClear = false;
 
+    public bool IsClearing { get { return isClearing; } }    //  他クラスからステージclearを判断するために追記(松山)
+
     [Header("安全用ディレイ")]
     public float enableDelay = 0.5f; // シーン開始後◯秒は無効
 
@@ -27,6 +29,7 @@ public class StageClear : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         isClearing = true;
+
 
         int currentStageId = PlayerPrefs.GetInt("CurrentStageId", 0);
         int lastClearedStage = PlayerPrefs.GetInt("LastClearedStage", 0);
