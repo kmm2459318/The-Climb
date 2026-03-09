@@ -9,7 +9,6 @@ namespace TheClimb.Core
         public void StopCoroutine(Coroutine coroutine) => base.StopCoroutine(coroutine);         //  コルーチン停止
         void Awake()
         {
-            DontDestroyOnLoad(this.gameObject);
         }
     }
 }

@@ -51,6 +51,7 @@ namespace TheClimb.Astral
                 while (elapsed < duration)
                 {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    Debug.Log(Camera.main, Camera.main);
                     if (plane.Raycast(ray, out float distance))
                     {
                         Vector3 mousePos = ray.GetPoint(distance);
