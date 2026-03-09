@@ -12,6 +12,7 @@ public class TempDisableColliders : MonoBehaviour
     [Header("スキル使用回数制限")]
     [SerializeField] private int maxUseCount = 3;   // ← 後から自由に変更可能
     private int currentUseCount = 0;                 // ← 今まで使った回数
+
     public int CurrentUseCount
     {
         get { return currentUseCount; }
@@ -19,7 +20,7 @@ public class TempDisableColliders : MonoBehaviour
     }
 
     private float currentCooldownTimer = 0f;
-    private bool isRunning = false;
+    public bool isRunning = false;
 
     void Update()
     {
