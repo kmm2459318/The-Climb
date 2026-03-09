@@ -50,7 +50,12 @@ public class Player_Bomb : MonoBehaviour
         ApplyExplosionForce();
         // コールバック(プレイヤー側に爆発したことを知らせる)
         onExploded?.Invoke();
-        CameraShake.Instance.Shake(0.15f,0.11f);
+
+        if (CameraShake.Instance != null)
+        {
+            CameraShake.Instance.Shake(0.15f, 0.11f);
+        }
+
         Destroy(gameObject); //爆弾を削除
     }
 
