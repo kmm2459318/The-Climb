@@ -8,6 +8,7 @@ namespace TheClimb.Astral
     public class PlanetBootstrap : MonoBehaviour    //  後に改善予定
     {
         [SerializeField] PlanetController controller;
+        [SerializeField] StageClear stageClear;
 
         PlayerDataProvider playerDataProvider;
         [SerializeField] Transform playerTransform;
@@ -37,7 +38,7 @@ namespace TheClimb.Astral
         
         private void Start()
         {
-            controller.Initialize(playerDataProvider);
+            controller.Initialize(playerDataProvider, stageClear);
         }
     }
 }
