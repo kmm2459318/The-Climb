@@ -51,7 +51,7 @@ namespace TheClimb.Astral
 
             if (obj != null && centerTF != null)
             {
-                while (elapsed < duration)
+                while (elapsed < duration && !stageClear.IsClearing)
                 {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     Debug.Log(centerTF);

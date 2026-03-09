@@ -25,7 +25,6 @@ namespace TheClimb.Astral
 
         private void Start()
         {
-            planetStateMachine.ChangeState(planetStateFactory.CreateIdleState());
         }
         public void Initialize(IPlayerDataProvider playerDataProvider, StageClear stageClear)    //  初期化
         {
@@ -34,6 +33,8 @@ namespace TheClimb.Astral
             planetCommandProvider = new PlanetCommandProvider(this.transform, playerDataProvider.TransformProperty, currentGravitationStat, currentOrbitalStat, orbitalContext);
             planetStateFactory = new PlanetStateFactory(this, planetStateMachine, planetCommandProvider);
             PlanetEventBus.ActivePlanet(playerDataProvider.TransformProperty, currentOrbitalStat.OrbitRadius, currentOrbitalStat.OrbitalSamples);    //  半円を表示
+
+            planetStateMachine.ChangeState(planetStateFactory.CreateIdleState());
         }
 
         void Update()
