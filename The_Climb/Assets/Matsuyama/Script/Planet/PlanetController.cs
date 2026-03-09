@@ -31,6 +31,8 @@ namespace TheClimb.Astral
         {
             planetStateMachine = new PlanetStateMachine();
             orbitalContext = new OrbitalContext(this.transform, currentOrbitalStat, playerDataProvider.TransformProperty);
+            Debug.Log(currentOrbitalStat);
+            Debug.Log(playerDataProvider.TransformProperty);
             planetCommandProvider = new PlanetCommandProvider(this.transform, playerDataProvider.TransformProperty, currentGravitationStat, currentOrbitalStat, orbitalContext);
             planetStateFactory = new PlanetStateFactory(this, planetStateMachine, planetCommandProvider);
             PlanetEventBus.ActivePlanet(playerDataProvider.TransformProperty, currentOrbitalStat.OrbitRadius, currentOrbitalStat.OrbitalSamples);    //  半円を表示
