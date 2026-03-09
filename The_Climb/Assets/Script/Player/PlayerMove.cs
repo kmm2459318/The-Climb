@@ -12,6 +12,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
     PlayerJump jump;
     PlayerSpecialAction special;
     PlayerKnockBack knock;
+    TempDisableColliders tempDisableCollider;
     VectorToPlanetCalculator vectorToPlanetCaluculator;    //  天体までのベクトルを計算するクラス
 
     [SerializeField] private InputActionReference leftMoveAction;
@@ -79,6 +80,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         jump = gameObject.GetComponent<PlayerJump>();
         special = gameObject.GetComponent<PlayerSpecialAction>();
         knock = gameObject.GetComponent<PlayerKnockBack>();
+        tempDisableCollider = gameObject.GetComponent<TempDisableColliders>();
 
         PlayerAnimation = GameObject.Find("pico_chan_chr_pico_00").GetComponent<PlayerAnimation>();
 
@@ -330,11 +332,15 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     private void ApplyHoveringForce()
     {
-        // 落下中または上昇中はジャンプの挙動を優先する場合の考慮
-        // if (jump.jumping) return; // ジャンプ中はホバーを切るか弱めるか検討（状況による）
+        //すり抜け発動中はホバーを切る
+        if (tempDisableCollider != null && tempDisableCollider.isRunning)
+        {
+            platformVelocityOffset = Vector3.zero;
+            return;
+        }
 
-        // 地面へのRaycast
-        Vector3 rayOrigin = transform.position + (upsideDown ? Vector3.down : Vector3.up) * 0.1f; // コライダー内から発射すると当たらないことがあるので少しオフセット
+        //地面へのRaycast
+        Vector3 rayOrigin = transform.position + (upsideDown ? Vector3.down : Vector3.up) * 0.1f;
         Vector3 rayDirection = upsideDown ? Vector3.up : Vector3.down;
 
         if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, hoverRayCastLength, state.groundLayerMask))
@@ -345,31 +351,29 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
             float rayDirVelocity = Vector3.Dot(rayDir, vel);
 
-            // 理想の高さとの差分（変位）を計算
-            // オフセット0.1fを足した位置からRayを撃っているので、rideHeight＋0.1fが目標距離
+            //理想の高さとの差分（変位）を計算
             float targetDistance = rideHeight + 0.1f;
             float x = hit.distance - targetDistance;
 
-            // バネの計算：フックの法則 (F = -kx - cv)
+            //バネの計算
             float springForce = (x * rideSpringStrength) - (rayDirVelocity * rideSpringDamper);
 
-            // 力を加える（rayの当たる方向の逆＝上向きに力を加える）
-            // springForceがマイナスのとき（沈み込みすぎたとき）、rayDirection(下) * マイナス = 上向きの力
+            //力を加える
             RigidBody.AddForce(rayDirection * springForce);
 
-            // --- 動く足場用の処理（Velocity Inheritance） ---
+            //動く足場用の処理
             if (hit.rigidbody != null)
             {
-                // 足場の速度を取得し、Y軸は無視する（高さはホバーで管理するため）
+                //足場の速度を取得
                 Vector3 platformVelocity = hit.rigidbody.linearVelocity;
                 platformVelocity.y = 0f;
                 
-                // 動く足場に乗っている時は、その速度を記録しておく（MaxSpeedの計算に使う）
+                //動く足場に乗っている時はその速度を記録しておく
                 platformVelocityOffset = platformVelocity;
 
                 if (platformVelocity.magnitude > 0.1f && moveInput == 0f)
                 {
-                    // 移動入力が無いときは、足場に完全に追従させる強い摩擦力をかける
+                    //移動入力が無いときは、足場に完全に追従させる強い摩擦力をかける
                     Vector3 currentHorizontalVel = new Vector3(RigidBody.linearVelocity.x, 0f, RigidBody.linearVelocity.z);
                     Vector3 velocityDifference = platformVelocity - currentHorizontalVel;
                     RigidBody.AddForce(velocityDifference * 60f, ForceMode.Acceleration);
@@ -379,7 +383,6 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
             {
                 platformVelocityOffset = Vector3.zero;
             }
-            // ------------------------------------------
         }
         else
         {
@@ -431,20 +434,20 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         }
         else if (moveInput != 0f)
         {
-            // 地上：慣性なし、即応する左右移動
+            //地上：慣性なし、即応する左右移動
             Vector3 force = new Vector3(moveInput, 0f, 0f) * groundMoveForce;
             RigidBody.AddForce(force, ForceMode.Acceleration);
             
-            // 動く足場の速度を考慮した最高速度の計算
+            //動く足場の速度を考慮した最高速度の計算
             horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, RigidBody.linearVelocity.z);
             
-            // プレイヤー自身が本来出したい最高速度ベクトル
+            //プレイヤー自身が本来出したい最高速度ベクトル
             Vector3 targetMaxVel = new Vector3(Mathf.Sign(moveInput) * groundMaxSpeed, 0f, 0f);
             
-            // 最終的に許される最高速度 = プレイヤーの最高速度 + 足場の速度
+            //最終的に許される最高速度 = プレイヤーの最高速度 + 足場の速度
             Vector3 allowedMaxVel = targetMaxVel + platformVelocityOffset;
 
-            // X軸方向のクランプ（移動方向に応じて上限・下限を制限する）
+            //X軸方向のクランプ
             float clampedX = RigidBody.linearVelocity.x;
             if (moveInput > 0 && clampedX > allowedMaxVel.x)
             {
@@ -459,7 +462,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         }
         else if (!special.meteorHighJump && !jump.jumpCoolActive && Mathf.Abs(RigidBody.linearVelocity.x - platformVelocityOffset.x) > 0.1f)  //ぴたっと止まる
         {
-            // 慣性で止まるよ (動く足場の上では足場の速度を目標にして減速する)
+            //慣性で止まるよ (動く足場の上では足場の速度を目標にして減速する)
             Debug.Log("慣性で止まるよ");
             Vector3 vel = RigidBody.linearVelocity;
             vel.x = Mathf.MoveTowards(vel.x, platformVelocityOffset.x, groundMoveForce * Time.fixedDeltaTime);
@@ -469,8 +472,7 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
     private void AirPlayerMove()
     {
-        // 空中：左右に力を加える
-        // 現在の速度が最高速度未満の場合、または入力が現在の移動方向と逆の場合のみ加速を許可
+        //空中：左右に力を加える
         bool canAccelerate = false;
         if (moveInput > 0)
         {
@@ -483,11 +485,11 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
 
         if (canAccelerate)
         {
-            Vector3 force = new Vector3(moveInput, 0f, 0f) * airMoveForce; // プレイヤーの入力による移動力を計算
-            RigidBody.AddForce(force, ForceMode.Acceleration); // 力を加える
+            Vector3 force = new Vector3(moveInput, 0f, 0f) * airMoveForce; //プレイヤーの入力による移動力を計算
+            RigidBody.AddForce(force, ForceMode.Acceleration); //力を加える
         }
 
-        horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f); // 現在の水平速度を更新
+        horizontalVelocity = new Vector3(RigidBody.linearVelocity.x, 0f, 0f); //現在の水平速度を更新
 
         //ハイジャンプ後徐々に早くするよ
         if (special.highJumpUsed)
