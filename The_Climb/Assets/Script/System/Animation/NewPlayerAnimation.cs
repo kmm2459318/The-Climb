@@ -4,13 +4,15 @@ public class NewPlayerAnimation : MonoBehaviour
 {
     [Header("参照設定")]
     [SerializeField] private Animator _animator;
+    [Tooltip("キャラクターの最高速度（MotionSpeedを1にする基準値）")]
+    [SerializeField] private float _maxMoveSpeed = 5.0f; // 環境に合わせて調整してください
 
     private PlayerMove _playerMove;
     private PlayerState _playerState;
     private Rigidbody _rb;
 
-    // Animator パラメータ ID
     private int _animIDSpeed;
+    private int _animIDMotionSpeed;
     private int _animIDGrounded;
     private int _animIDJump;
 
@@ -20,7 +22,6 @@ public class NewPlayerAnimation : MonoBehaviour
     {
         if (_animator == null) _animator = GetComponent<Animator>();
 
-        // 親オブジェクト (PlayerModel) からコンポーネントを取得
         _playerMove = GetComponentInParent<PlayerMove>();
         _playerState = GetComponentInParent<PlayerState>();
         _rb = GetComponentInParent<Rigidbody>();
@@ -32,13 +33,13 @@ public class NewPlayerAnimation : MonoBehaviour
 
         AssignAnimationIDs();
 
-        // 初期の接地状態を記録
         if (_playerState != null) _wasGrounded = _playerState.isGrounded;
     }
 
     private void AssignAnimationIDs()
     {
         _animIDSpeed = Animator.StringToHash("Speed");
+        _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
         _animIDGrounded = Animator.StringToHash("Grounded");
         _animIDJump = Animator.StringToHash("Jump");
     }
@@ -53,15 +54,20 @@ public class NewPlayerAnimation : MonoBehaviour
 
     private void UpdateMoveAnimation()
     {
-        // 1. 移動速度の即時反映
-        // 入力値（MoveInput）と物理速度の大きい方を採用すると、動き出しのレスポンスが良くなります
+        // 1. 現在の速度（絶対値）を取得
         float inputSpeed = Mathf.Abs(_playerMove.MoveInput);
         float physicalSpeed = Mathf.Abs(_rb.linearVelocity.x);
-        float targetSpeed = Mathf.Max(inputSpeed, physicalSpeed);
+        float currentSpeed = Mathf.Max(inputSpeed, physicalSpeed);
 
-        _animator.SetFloat(_animIDSpeed, targetSpeed);
+        // 2. MotionSpeed 用に 0〜1 に正規化
+        // currentSpeed / _maxMoveSpeed が 1 を超えないように Clamp します
+        float normalizedMotionSpeed = Mathf.Clamp01(currentSpeed / _maxMoveSpeed);
 
-        // 2. 向きの制御 (即時回転)
+        // Animator への反映
+        _animator.SetFloat(_animIDSpeed, currentSpeed); // Speed は元の値（BlendTreeの切り替え用）
+        _animator.SetFloat(_animIDMotionSpeed, normalizedMotionSpeed); // 0〜1（再生速度用）
+
+        // 3. 向きの制御
         if (_playerState.playerDirectionRight)
             transform.localRotation = Quaternion.Euler(0, 90, 0);
         else
@@ -71,29 +77,20 @@ public class NewPlayerAnimation : MonoBehaviour
     private void UpdateGroundingAndJumpAnimation()
     {
         bool isGrounded = _playerState.isGrounded;
-
-        // 接地状態を常に同期
         _animator.SetBool(_animIDGrounded, isGrounded);
 
-        // --- 状態が切り替わった瞬間の即時処理 ---
-
-        // A. 地面を離れた瞬間 (ジャンプまたは落下開始)
         if (!isGrounded && _wasGrounded)
         {
             if (_rb.linearVelocity.y > 0.1f)
             {
-                // ジャンプ開始
                 _animator.SetBool(_animIDJump, true);
-                // 必要であればここで直接ステートを叩くことで遷移の遅延をゼロにします
-                _animator.CrossFadeInFixedTime("Jump", 0.05f);
+                _animator.CrossFadeInFixedTime("JumpStart", 0.15f);
             }
         }
 
-        // B. 地面に着いた瞬間
         if (isGrounded && !_wasGrounded)
         {
             _animator.SetBool(_animIDJump, false);
-            // 着地した瞬間に即座に Idle/Move 系のブレンドツリーへ戻す
             _animator.CrossFadeInFixedTime("Grounded", 0.05f);
         }
 
