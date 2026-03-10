@@ -1,4 +1,4 @@
-
+﻿
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,12 +13,16 @@ public class SkillUIManager : MonoBehaviour
     [SerializeField] private Image skillIconImage; // 現在のスキルアイコンを表示する画像
     [SerializeField] private Sprite umedaSkillSprite; // Umedaスキル用の画像
     [SerializeField] private Sprite kitanoSkillSprite; // Kitanoスキル用の画像
+    [SerializeField] private GameObject Skillstook; // Kitanoスキル回数画像
     [SerializeField] private Sprite nisiyamaSkillSprite; // Nisiyamaスキル用の画像
 
     [Header("クールタイムゲージ(上から下に減少)")]
     [SerializeField] private Image umedaCooldownGauge; // Umedaスキルのクールタイムゲージ
     [SerializeField] private Image kitanoCooldownGauge; // Kitanoスキルのクールタイムゲージ
     [SerializeField] private Image nisiyamaCooldownGauge; // Nisiyamaスキルのクールタイムゲージ
+
+    [Header("次回のスキル画像")]
+    [SerializeField] private Image nextSkillIconImage; // 次に使えるスキルアイコンを表示する画像
 
     [Header("参照")]
     [SerializeField] private PlayerAbilityManager abilityManager; // スキル管理マネージャー
@@ -78,20 +82,27 @@ public class SkillUIManager : MonoBehaviour
 
     /// <summary>
     /// 現在アクティブなスキルに応じてアイコン画像を切り替える
+    /// 次のスキルパネルも更新する
     /// </summary>
     private void UpdateSkillIcon()
     {
         if (skillIconImage == null || abilityManager == null) return;
 
         // 全てのアビリティがOFFかチェック
-        bool isUmedaActive = PlayerPrefs.GetInt("UmedaAbi") == 1;
-        bool isKitanoActive = PlayerPrefs.GetInt("KitanoAbi") == 1;
-        bool isNisiyamaActive = PlayerPrefs.GetInt("NisiyamaAbi") == 1;
+        bool isUmedaActive = PlayerPrefs.GetInt("Umeda") == 1; // Umedaスキルが有効かどうか
+        bool isKitanoActive = PlayerPrefs.GetInt("Kitano") == 1; // Kitanoスキルが有効かどうか
+        bool isNisiyamaActive = PlayerPrefs.GetInt("Nisiyama") == 1; // Nisiyamaスキルが有効かどうか
 
-        if (!isUmedaActive && !isKitanoActive && !isNisiyamaActive)
+        int activeCount = 0; // 有効なスキルの数
+        if (isUmedaActive) activeCount++;
+        if (isKitanoActive) activeCount++;
+        if (isNisiyamaActive) activeCount++;
+
+        if (activeCount == 0)
         {
             // 全てOFFなら非表示
             skillIconImage.gameObject.SetActive(false);
+            if (nextSkillIconImage != null) nextSkillIconImage.gameObject.SetActive(false);
             SetGaugeActive(umedaCooldownGauge, false);
             SetGaugeActive(kitanoCooldownGauge, false);
             SetGaugeActive(nisiyamaCooldownGauge, false);
@@ -103,6 +114,7 @@ public class SkillUIManager : MonoBehaviour
 
         int currentSkill = abilityManager.CurrentSkillNumber;
 
+        // 現在のスキルのアイコンとゲージ設定
         switch (currentSkill)
         {
             case 1: // Umedaスキル
@@ -113,6 +125,7 @@ public class SkillUIManager : MonoBehaviour
                 break;
             case 2: // Kitanoスキル
                 if (kitanoSkillSprite != null) skillIconImage.sprite = kitanoSkillSprite;
+                Skillstook.SetActive(true);
                 SetGaugeActive(umedaCooldownGauge, false);
                 SetGaugeActive(kitanoCooldownGauge, true);
                 SetGaugeActive(nisiyamaCooldownGauge, false);
@@ -124,6 +137,52 @@ public class SkillUIManager : MonoBehaviour
                 SetGaugeActive(nisiyamaCooldownGauge, true);
                 break;
         }
+
+        // 次のスキルパネルの更新
+        if (nextSkillIconImage != null)
+        {
+            if (activeCount >= 2)
+            {
+                nextSkillIconImage.gameObject.SetActive(true);
+                
+                // 次のスキルを特定するロジック (PlayerAbilityManager.AbilityChangeの挙動に合わせる)
+                int nextSkillNo = GetNextActiveSkill(currentSkill, isUmedaActive, isKitanoActive, isNisiyamaActive);
+                
+                switch (nextSkillNo)
+                {
+                    case 1: // Umeda
+                        nextSkillIconImage.sprite = umedaSkillSprite;
+                        break;
+                    case 2: // Kitano
+                        nextSkillIconImage.sprite = kitanoSkillSprite;
+                        break;
+                    case 0: // Nisiyama
+                        nextSkillIconImage.sprite = nisiyamaSkillSprite;
+                        break;
+                }
+            }
+            else
+            {
+                // 有効なスキルが1つ以下の場合は非表示
+                nextSkillIconImage.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 次に切り替わる有効なスキル番号を取得する
+    /// </summary>
+    private int GetNextActiveSkill(int current, bool umeda, bool kitano, bool nisiyama)
+    {
+        int next = current; // 次のスキル番号
+        for (int i = 0; i < 3; i++)
+        {
+            next = (next + 1) % 3; // スキル番号を順繰りに進める
+            if (next == 1 && umeda) return 1;
+            if (next == 2 && kitano) return 2;
+            if (next == 0 && nisiyama) return 0;
+        }
+        return current;
     }
 
     private void SetGaugeActive(Image gauge, bool isActive)
@@ -142,14 +201,14 @@ public class SkillUIManager : MonoBehaviour
         // Umedaスキルのクールタイムゲージ更新
         if (umedaCooldownGauge != null && skillPlatformSpawner != null)
         {
-            float progress = skillPlatformSpawner.GetCooldownProgress();
+            float progress = skillPlatformSpawner.GetCooldownProgress(); // クールタイムの進捗を取得
             umedaCooldownGauge.fillAmount = progress;
         }
 
         // Kitanoスキルのクールタイムゲージ更新
         if (kitanoCooldownGauge != null && tempDisableColliders != null)
         {
-            float progress = tempDisableColliders.GetCooldownProgress();
+            float progress = tempDisableColliders.GetCooldownProgress(); // クールタイムの進捗を取得
             kitanoCooldownGauge.fillAmount = progress;
         }
 
@@ -157,7 +216,7 @@ public class SkillUIManager : MonoBehaviour
         if (nisiyamaCooldownGauge != null && gravityFlipManager != null)
         {
             // GravityFlipManagerから直接クールタイム情報を取得
-            float progress = gravityFlipManager.GetCooldownProgress();
+            float progress = gravityFlipManager.GetCooldownProgress(); // クールタイムの進捗を取得
             nisiyamaCooldownGauge.fillAmount = progress;
         }
     }
