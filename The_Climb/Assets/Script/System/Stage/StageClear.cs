@@ -50,6 +50,13 @@ public class StageClear : MonoBehaviour
 
         PlayerPrefs.Save();
 
+        if (PlayerPrefs.GetInt($"{SceneManager.GetActiveScene().name}Clear", 0) == 0)
+        {
+            PlayerPrefs.SetInt($"{SceneManager.GetActiveScene().name}Clear", 1);
+            int x = PlayerPrefs.GetInt("ClearStagecount", 0);
+            PlayerPrefs.SetInt("ClearStagecount", x + 1);
+        }
+
         // ステージセレクトへ
         System.Loading.SceneLoader.Instance.LoadScene("StageSelect");
     }
