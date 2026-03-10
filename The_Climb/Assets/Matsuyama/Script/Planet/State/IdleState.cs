@@ -22,7 +22,7 @@
 
         public void Exit()
         {
-
+            commandProvider.followOrbital.Stop();
         }
     }
 }

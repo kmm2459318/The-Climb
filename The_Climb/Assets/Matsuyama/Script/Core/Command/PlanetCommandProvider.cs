@@ -1,5 +1,4 @@
-﻿using TheClimb.Core;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TheClimb.Astral
 {

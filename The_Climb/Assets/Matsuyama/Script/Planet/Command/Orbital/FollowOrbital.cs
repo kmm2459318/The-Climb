@@ -11,24 +11,27 @@ namespace TheClimb.Astral
         
         Coroutine orbitalFollowLoop;    //  天体が軌道上を動く
 
+        StageClear stageClear;
+
         bool IsRunning;      //  Followコルーチンが走っているかどうか
 
         public FollowOrbital(OrbitalContext orbitalCtx)    //  PlanetCommandProviderから呼ばれる
         {
             _context = orbitalCtx;
+            stageClear = orbitalCtx.StageClear;
         }
 
         public override void Execute()    //  軌道追従開始
         {
             if (IsRunning) { return; }
-            ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(OrbitalFollowLoop());
+            orbitalFollowLoop = ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(OrbitalFollowLoop());
             //orbitalFollowLoop = _CoroutineRunner.StartCoroutine(OrbitalFollowLoop());    //  マウス追従ループ開始
         }
 
         IEnumerator OrbitalFollowLoop()    //  マウス位置に応じて円軌道を追従させるコルーチンループ
         {
             LogUtility.Log(LogPrefix.orbitalFollower, "天体円軌道追従開始", LogLevel.Debug);
-            while (true)
+            while (true && !stageClear.IsClearing)
             {
                 yield return MoveAlongCircleByAngle(
                     _context.planetTransform,
@@ -48,9 +51,10 @@ namespace TheClimb.Astral
 
             if (obj != null && centerTF != null)
             {
-                while (elapsed < duration)
+                while (elapsed < duration && !stageClear.IsClearing)
                 {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    Debug.Log(centerTF);
                     if (plane.Raycast(ray, out float distance))
                     {
                         Vector3 mousePos = ray.GetPoint(distance);
@@ -76,6 +80,7 @@ namespace TheClimb.Astral
         {
             if (orbitalFollowLoop != null)
             {
+                LogUtility.Log(LogPrefix.orbitalFollower, "天体円軌道追従開始", LogLevel.Debug);
                 ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(OrbitalFollowLoop());
                 orbitalFollowLoop = null;
             }

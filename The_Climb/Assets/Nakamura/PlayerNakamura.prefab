@@ -1124,7 +1124,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7900053413377813681}
   - component: {fileID: 6652043380875015280}
-  - component: {fileID: 2155115064638306828}
   - component: {fileID: 720856421252685816}
   m_Layer: 0
   m_Name: Miyamoto&Yuoka
@@ -1166,18 +1165,6 @@ MonoBehaviour:
   p_move: {fileID: 523186103618612158}
   p_aim: {fileID: 720856421252685816}
   shoot_power: 1000
---- !u!114 &2155115064638306828
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2823422040379671111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 521727ba905894644896ba78872e5884, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraShake
 --- !u!114 &720856421252685816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2968,7 +2955,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 10038fdbf93c4dd43af9ce774d03a956, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 5cccc43eb34de35478c9d36f7177bdaf, type: 2}
+      objectReference: {fileID: 9100000, guid: 14c81519f0fbe204eb7aaf42cc3e32c1, type: 2}
     - target: {fileID: 5866666021909216657, guid: 10038fdbf93c4dd43af9ce774d03a956, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
@@ -3436,6 +3423,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlanetRoot_New
       objectReference: {fileID: 0}
+    - target: {fileID: 2533264112245857565, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
+      propertyPath: playerRigidBody
+      value: 
+      objectReference: {fileID: 7246862423334343013}
+    - target: {fileID: 2533264112245857565, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
+      propertyPath: playerTransform
+      value: 
+      objectReference: {fileID: 1494689640004218747}
     - target: {fileID: 7557280569745194766, guid: 8f25814450ca49e43bf9d94098d1203b, type: 3}
       propertyPath: playerRigidBody
       value: 
