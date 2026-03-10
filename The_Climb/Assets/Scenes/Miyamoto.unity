@@ -6605,6 +6605,7 @@ GameObject:
   - component: {fileID: 96534954}
   - component: {fileID: 96534955}
   - component: {fileID: 96534956}
+  - component: {fileID: 96534957}
   m_Layer: 0
   m_Name: option_system
   m_TagString: Untagged
@@ -6684,6 +6685,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Back_Button
   UI: {fileID: 548267401}
   button: {fileID: 1887905219}
+--- !u!114 &96534957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 96534951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75f6efa386f1f4e439fdb3ba1c986474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoudSetting
+  audioMixer: {fileID: 24100000, guid: acd11f576c88dd648a5ebed30b281dc6, type: 2}
+  bgmSlider: {fileID: 319036959}
+  seSlider: {fileID: 195321162}
 --- !u!1 &97447916
 GameObject:
   m_ObjectHideFlags: 0
@@ -15551,7 +15567,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 548267405}
+      - m_Target: {fileID: 96534957}
         m_TargetAssemblyTypeName: SoudSetting, Assembly-CSharp
         m_MethodName: SetSEVolume
         m_Mode: 4
@@ -24248,7 +24264,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 548267405}
+      - m_Target: {fileID: 96534957}
         m_TargetAssemblyTypeName: SoudSetting, Assembly-CSharp
         m_MethodName: SetBGMVolume
         m_Mode: 4
@@ -45123,7 +45139,6 @@ GameObject:
   - component: {fileID: 548267402}
   - component: {fileID: 548267404}
   - component: {fileID: 548267403}
-  - component: {fileID: 548267405}
   m_Layer: 5
   m_Name: BGM_UI
   m_TagString: Untagged
@@ -45191,21 +45206,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 548267401}
   m_CullTransparentMesh: 1
---- !u!114 &548267405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 548267401}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75f6efa386f1f4e439fdb3ba1c986474, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SoudSetting
-  audioMixer: {fileID: 24100000, guid: acd11f576c88dd648a5ebed30b281dc6, type: 2}
-  bgmSlider: {fileID: 319036959}
-  seSlider: {fileID: 195321162}
 --- !u!1 &549133450
 GameObject:
   m_ObjectHideFlags: 0
@@ -54729,10 +54729,12 @@ MonoBehaviour:
   MapPrefabs:
   - {fileID: 6503850315144897215, guid: b50730108006d704eb454de1374bac43, type: 3}
   - {fileID: 6503850315144897215, guid: baa58f6cc0ce2b548b07d8e7e5d66433, type: 3}
+  MapInstance: []
   Player: {fileID: 1242387152}
   fader: {fileID: 1777310150}
   switchCooldown: 2
   KeyBind: {fileID: 1351585987}
+  CurrentActiveIndex: 0
 --- !u!4 &640437436
 Transform:
   m_ObjectHideFlags: 0
