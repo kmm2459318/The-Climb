@@ -64,6 +64,8 @@ public class StageClear : MonoBehaviour
         if (clearCount >= 3)
         {
             Debug.Log("3ステージクリア達成！直接 GameClearScene へ遷移します。");
+            PlayerPrefs.SetInt("GameCleared", 1); // ゲームクリアフラグをセット
+            PlayerPrefs.Save();
             System.Loading.SceneLoader.Instance.LoadScene("GameClearScene");
         }
         else
