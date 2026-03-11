@@ -64,6 +64,7 @@ namespace TheClimb.Core
 
             var ps = instance.GetComponent<ParticleSystem>();
             ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            
 
             await WaitUntillDead(ps);
 
@@ -74,6 +75,13 @@ namespace TheClimb.Core
         {
             if (!playingEffects.TryGetValue(key, out var instance))
                 return;
+
+            var trails = instance.GetComponents<TrailRenderer>();
+
+            for (int i = 0; i < trails.Length; i++)
+            {
+                trails[i].emitting = false;
+            }
 
             Destroy(instance);
             playingEffects.Remove(key);

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -262,6 +262,13 @@ public class PlayerRespawnUmeda : MonoBehaviour
         {
             if (sw != null)
                 sw.ForceReset();
+        }
+
+        // 白黒床の判定などをDark状態（リスポーン初期状態）にリセット
+        var lightDarkWorld = FindAnyObjectByType<LightDarkWorld>();
+        if (lightDarkWorld != null)
+        {
+            lightDarkWorld.ResetToDarkState();
         }
     }
 

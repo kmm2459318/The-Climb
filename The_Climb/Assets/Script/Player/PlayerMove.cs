@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using TheClimb.Item;
 using TheClimb.Player;
@@ -243,11 +243,11 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         if (upsideDown)
         {
             upsideDown = false;
-
+            Rigidbody rb = GetComponent<Rigidbody>();
             // 見た目を元に戻す
-            Vector3 scale = transform.localScale;
-            scale.y = Mathf.Abs(scale.y); // 正の値にする
-            transform.localScale = scale;
+            // 回転リセット
+            Quaternion targetRot = Quaternion.Euler(0f, 0f, 0f);
+            rb.MoveRotation(targetRot);
 
             // 重力設定を戻す（ApplyCustomGravityで処理されるが、念のため）
             RigidBody.useGravity = true;
@@ -269,9 +269,11 @@ public class PlayerMove : MonoBehaviour, IConveyorReceiver
         // Rigidbody経由で位置移動
         rb.MovePosition(targetPosition);
 
-        Vector3 scale = transform.localScale;
-        scale.y = Mathf.Abs(scale.y) * (upsideDown ? -1 : 1);
-        transform.localScale = scale;
+        Quaternion targetRot = upsideDown
+         ? Quaternion.Euler(180f, 0f, 0f)
+         : Quaternion.Euler(0f, 0f, 0f);
+
+        rb.MoveRotation(targetRot);
     }
 
     private void Update()
