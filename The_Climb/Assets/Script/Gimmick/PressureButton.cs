@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Audio;
+using static Unity.VisualScripting.Member;
 
 public class PressureButton : MonoBehaviour
 {
@@ -33,6 +35,7 @@ public class PressureButton : MonoBehaviour
     [SerializeField] private AudioClip pressSound;
     [SerializeField] private AudioClip releaseSound;
     private AudioSource audioSource;
+    [SerializeField] AudioMixerGroup seMixerGroup;
 
     void Awake()
     {
@@ -42,6 +45,7 @@ public class PressureButton : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+        audioSource.outputAudioMixerGroup = seMixerGroup;
     }
 
     void Start()
