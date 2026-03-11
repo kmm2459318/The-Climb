@@ -2,24 +2,37 @@
 
 public class Bomb_Aim : MonoBehaviour
 {
-    [SerializeField] private Camera aimCamera; 
+    [SerializeField] private Camera aimCamera;
     [SerializeField] private Transform player;
     [SerializeField] private Transform p_leftPos;
     [SerializeField] private Transform p_rightPos;
+    [SerializeField] private Transform p_DownPos;
+    [SerializeField] private Transform p_UpPos;
     [SerializeField] private float last_Direction = 0;
-
-    public  void UpdateDirection(float moveInput)
-    {    //プレイヤーがどっちを向いたか
-         if (moveInput < 0) last_Direction = -1;
-         else if (moveInput > 0) last_Direction = 1;
-    }
-
+    [SerializeField] PlayerState playerState;
     public Transform GetSpawnPos()
     {
-        return (last_Direction < 0 ? p_leftPos : p_rightPos);
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = aimCamera.WorldToScreenPoint(player.position).z;
+        Vector3 worldMousePos = aimCamera.ScreenToWorldPoint(mousePos);
+
+        Vector3 diff = worldMousePos - player.position;
+
+        if (!playerState.isGrounded && diff.y < 0)
+            return p_DownPos;
+
+        // 左右判定
+        if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
+            return (diff.x < 0 ? p_leftPos : p_rightPos);
+        // 上方向だけ判定
+        if (diff.y > 0)
+            return p_UpPos;
+
+        return p_UpPos;
     }
 
-    public Vector3 GetShootDirection()
+
+        public Vector3 GetShootDirection()
     {
         Transform pos = GetSpawnPos();
 
@@ -28,10 +41,8 @@ public class Bomb_Aim : MonoBehaviour
         Vector3 worldPos = aimCamera.ScreenToWorldPoint(mousePos);
         Vector3 dir = (worldPos - player.position).normalized;
 
-        float angle = Mathf.Atan2(dir.y ,dir.x) * Mathf.Rad2Deg;
-        pos.rotation = Quaternion.LookRotation(dir); 
-        
-        return dir;
+        pos.rotation = Quaternion.LookRotation(dir);
 
+        return dir;
     }
 }
