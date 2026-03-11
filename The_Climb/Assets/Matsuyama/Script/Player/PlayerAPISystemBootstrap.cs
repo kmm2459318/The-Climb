@@ -23,5 +23,9 @@ namespace TheClimb.Core
         {
             ServiceLocator.Register<PlayerAPIFacadeBase>(apiFacade);
         }
+        private void OnDestroy()
+        {
+            ServiceLocator.Unregister<PlayerAPIFacadeBase>(apiFacade);
+        }
     }
 }

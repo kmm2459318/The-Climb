@@ -17,7 +17,6 @@ namespace TheClimb.Core
 
         private void Awake()
         {
-            DontDestroyOnLoad(this);
         }
 
         void OnDestroy()

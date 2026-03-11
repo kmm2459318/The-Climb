@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Audio;
 
 public class LuminaLightBall : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class LuminaLightBall : MonoBehaviour
     public AudioClip bounceSound;
     [Range(0f, 1f)]
     public float volume = 50f;
+    [SerializeField] AudioMixerGroup seMixerGroup;
 
     [Tooltip("音を鳴らす対象レイヤー（複数選択可）")]
     public LayerMask soundLayers;
@@ -65,6 +67,7 @@ public class LuminaLightBall : MonoBehaviour
         behaviour.minDistance = minDistance;
         behaviour.maxDistance = maxDistance;
         behaviour.rolloffMode = rolloffMode;
+        behaviour.seMixerGroup = seMixerGroup;
     }
 
     // ------------------------------
@@ -76,6 +79,7 @@ public class LuminaLightBall : MonoBehaviour
         public float lifeTime;
 
         public AudioClip bounceSound;
+        public AudioMixerGroup seMixerGroup;
         public float volume;
         public LayerMask soundLayers;
 
@@ -118,6 +122,7 @@ public class LuminaLightBall : MonoBehaviour
             AudioSource source = audioObj.AddComponent<AudioSource>();
             source.clip = bounceSound;
             source.volume = volume;
+            source.outputAudioMixerGroup = seMixerGroup;
             source.spatialBlend = 1f; // 3D化
             source.minDistance = minDistance;
             source.maxDistance = maxDistance;
