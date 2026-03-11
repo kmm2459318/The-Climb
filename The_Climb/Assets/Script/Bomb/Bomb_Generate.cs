@@ -4,8 +4,7 @@ using UnityEngine.UIElements;
 
 public class Bomb_Generate : MonoBehaviour
 {
-    [SerializeField] GameObject bombPrefab; 
-    [SerializeField] private PlayerMove p_move; 
+     [SerializeField] GameObject bombPrefab; 
     [SerializeField] private Bomb_Aim p_aim; 
     public int shoot_power = 10000;
 
@@ -15,7 +14,7 @@ public class Bomb_Generate : MonoBehaviour
     void Update()
     {
         if (Time.timeScale == 0f) return;
-        p_aim.UpdateDirection(p_move.MoveInput);
+
         //爆弾発射
         if (Input.GetMouseButtonDown(0))
         {
@@ -34,7 +33,7 @@ public class Bomb_Generate : MonoBehaviour
     //爆弾の処理
     private void ShootBomb()
     {
-        Transform spawnPos = p_aim.GetSpawnPos();
+        Transform spawnPos = p_aim.GetSpawnPos();     // マウス位置で左右上下決定
         Vector3 shootDir = p_aim.GetShootDirection();
 
         GameObject bombObj = Instantiate(bombPrefab, spawnPos.position, Quaternion.identity);
