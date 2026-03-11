@@ -61,7 +61,7 @@ public class BuddyCarry : MonoBehaviour
             if (!buddyController.beingKidnapped)
             {
                 bool isUpsideDown = playerMove != null && playerMove.IsUpsideDown;
-                float offsetY = isUpsideDown ? -1f : 1f;
+                float offsetY = isUpsideDown ? -0.575f : 0.575f;
 
                 if (state.playerDirectionRight)
                 {
