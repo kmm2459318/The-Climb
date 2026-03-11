@@ -1,10 +1,9 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using NUnit.Framework;
 #endif
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Rendering.Universal;
 using UnityEngine;
 using UnityEngine.UI;
 
