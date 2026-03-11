@@ -502,11 +502,11 @@ GameObject:
   - component: {fileID: 682831879393390009}
   - component: {fileID: 7246862423334343013}
   - component: {fileID: 7755821025150218377}
+  - component: {fileID: 8326955060575073608}
   - component: {fileID: 6990288773779159728}
   - component: {fileID: 2701704259112919487}
   - component: {fileID: 3795983342216181676}
   - component: {fileID: 7424387911693393458}
-  - component: {fileID: 8326955060575073608}
   - component: {fileID: 5500657178859689209}
   - component: {fileID: 6531446243781033709}
   m_Layer: 6
@@ -953,6 +953,28 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.54, y: 1.5, z: 0.5}
   m_Center: {x: 0, y: 0.68, z: 0}
+--- !u!114 &8326955060575073608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2205381300897396991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06cdbe514a91d6b4d9d57fe12a11a519, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TempDisableColliders
+  colliders:
+  - {fileID: 2793059512546646977}
+  - {fileID: 3218909003156477711}
+  - {fileID: 248480542058028626}
+  - {fileID: 682831879393390009}
+  - {fileID: 7755821025150218377}
+  duration: 0.5
+  cooldownTime: 3
+  maxUseCount: 3
+  isRunning: 0
 --- !u!114 &6990288773779159728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1040,24 +1062,6 @@ MonoBehaviour:
   - {fileID: 3218909003156477711}
   - {fileID: 5500657178859689209}
   transparentDuration: 0.5
---- !u!114 &8326955060575073608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2205381300897396991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06cdbe514a91d6b4d9d57fe12a11a519, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TempDisableColliders
-  colliders:
-  - {fileID: 248480542058028626}
-  duration: 0.5
-  cooldownTime: 3
-  maxUseCount: 3
-  isRunning: 0
 --- !u!135 &5500657178859689209
 SphereCollider:
   m_ObjectHideFlags: 0
