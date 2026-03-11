@@ -8,6 +8,7 @@ namespace TheClimb.Astral
     {
         public override float PrimaryEffectSpawnTime => primaryEffectSpawnTime;
         public override float SecondaryEffectSpawnTime => secondaryEffectSpawnTime;
+        public override float ChargeEffectDelay => chargeEffectDelay;
         public override float ChargeCompleteTime => chargeCompleteTime;
         public override float RepulsiveFouce => repulsiveFouce;
 
@@ -16,6 +17,8 @@ namespace TheClimb.Astral
         public float primaryEffectSpawnTime;
         [Tooltip("入力から二段階目のエフェクトが出るまでの時間")]
         public float secondaryEffectSpawnTime;
+        [Tooltip("SecondaryEffectからチャージ完了エフェクトが出るまでのDelay")]
+        public float chargeEffectDelay;
         [Tooltip("入力からチャージ完了するまでの時間")]
         public float chargeCompleteTime;
         [Tooltip("反発力(吹き飛ばし力)")]
