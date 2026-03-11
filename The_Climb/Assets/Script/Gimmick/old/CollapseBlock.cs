@@ -12,13 +12,13 @@ public class CollapseBlock : MonoBehaviour
     private float RespawnTimer;        //リスポーンまでのタイマー
 
  
-    private Collider HitBoxCollider;   //当たり判定用コライダー
+    [SerializeField] private Collider BlockCollider;   //ブロックのコライダー
+    [SerializeField] private Collider TriggerCollider; //当たり判定用コライダー
 
     [SerializeField] private MeshDemolisherExample demolisher; //足場を壊す演出
 
     void Start()
     {
-        HitBoxCollider = GetComponent<Collider>();     //自身のコライダーを取得
         CollapseTimer = CollapseDelay;                 //タイマーを初期化
     }
 
@@ -48,29 +48,27 @@ public class CollapseBlock : MonoBehaviour
     }
 
     //プレイヤーが上に乗った時に崩れる処理を進行
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
-        if(collision.gameObject.CompareTag("Player") && !IsCollapsing)
+        if (!other.CompareTag("Player") || IsCollapsing) return;
+
+        if (other.transform.position.y > transform.position.y - 0.4f)
         {
-            foreach(ContactPoint contact in collision.contacts)
-            {
-                if(Vector3.Dot(-contact.normal,Vector3.up) > 0.8f)
-                {
-                    IsCollapsing = true;
-                    break;
-                }
-            }
+            IsCollapsing = true;
         }
     }
 
     //足場を崩す処理
     void Collapse()
     {
-
         //コライダーを無効化
-        if (HitBoxCollider != null)
+        if (BlockCollider != null)
         {
-            HitBoxCollider.enabled = false;
+            BlockCollider.enabled = false;
+        }
+        if (TriggerCollider != null)
+        {
+            TriggerCollider.enabled = false;
         }
 
         //破壊を開始する
@@ -87,9 +85,13 @@ public class CollapseBlock : MonoBehaviour
     //足場を元に戻す処理
     void Respawn()
     {
-        if (HitBoxCollider != null)
+        if (BlockCollider != null)
         {
-            HitBoxCollider.enabled = true;
+            BlockCollider.enabled = true;
+        }
+        if (TriggerCollider != null)
+        {
+            TriggerCollider.enabled = true;
         }
 
         //壊れるブロックの生成
