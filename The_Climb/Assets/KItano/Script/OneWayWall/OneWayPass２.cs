@@ -24,12 +24,14 @@ public class OneWayPass2 : MonoBehaviour
         // 上→下通過を許可: dot > directionThreshold のとき通過OK
         if (dot > directionThreshold)
         {
-            Debug.Log("通行許可");
-            Physics.IgnoreCollision(other, wallCollider, true);
+            //Debug.Log("通行許可");
+            wallCollider.enabled = false;
+            //Physics.IgnoreCollision(other, wallCollider, true);
         }
         else if (dot < -directionThreshold)
         {
-            Physics.IgnoreCollision(other, wallCollider, false);
+            wallCollider.enabled = true;
+            //Physics.IgnoreCollision(other, wallCollider, false);
         }
         // dotがしきい値内（-0.2〜0.2）は何もしない＝状態を維持
     }
@@ -38,7 +40,8 @@ public class OneWayPass2 : MonoBehaviour
     {
         if (other.CompareTag(playerTag))
         {
-            Physics.IgnoreCollision(other, wallCollider, false);
+            wallCollider.enabled = true;
+            //Physics.IgnoreCollision(other, wallCollider, false);
         }
     }
 }
