@@ -52,11 +52,12 @@ namespace TheClimb.Astral
             }
             else
             {
-                Vector3 vectorToPlanet = playerTF.transform.position - planetTF.transform.position;
-                //Vector3 vectorToPlanet = planetTF.transform.position - playerTF.transform.position;
+                //Vector3 vectorToPlanet = playerTF.transform.position - planetTF.transform.position;
+                Vector3 vectorToPlanet = planetTF.transform.position - playerTF.transform.position;
                 Vector3 direction = vectorToPlanet.normalized;
                 Vector3 blowForce = direction * abilityStats.RepulsiveFouce;
                 ServiceLocator.Resolve<PlayerAPIFacadeBase>().AddForce(blowForce, AddForceMode.VelocityChagne);
+                EffectAPIWindow.Play(new EffectKey(GameMode.Astral, EffectKind.BurstPower), planetTF);
             }
             
             EffectAPIWindow.Stop(new EffectKey(GameMode.Astral, EffectKind.HoldPower));
