@@ -226,6 +226,8 @@ public class StageSelectManager : MonoBehaviour
         if (clearCount >= 3)
         {
             Debug.Log("Game Clear! Transitioning to GameClearScene...");
+            PlayerPrefs.SetInt("GameCleared", 1); // ゲームクリアフラグをセット
+            PlayerPrefs.Save();
             System.Loading.SceneLoader.Instance.LoadScene("GameClearScene", null);
             return;
         }
