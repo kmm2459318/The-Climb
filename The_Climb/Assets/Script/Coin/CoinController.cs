@@ -21,6 +21,9 @@ public class CoinController : MonoBehaviour
     [Header("距離判定")]
     public float pickupRadius = 1.5f;
 
+    [Header("アンロック")]
+    public LockObject lockObject;
+
     private static int totalCoins = 0;
 
     private AudioSource audioSource;
@@ -67,6 +70,10 @@ public class CoinController : MonoBehaviour
 
         totalCoins++;
         Debug.Log("コイン獲得！合計: " + totalCoins);
+        if(totalCoins == 5)
+        {
+            lockObject.Unlock();
+        }
         UpdateUIText();
 
         foreach (var r in myRenderers)
