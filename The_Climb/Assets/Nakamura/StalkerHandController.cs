@@ -84,11 +84,6 @@ public class StalkerHandController : MonoBehaviour
         {
             stalkers[i].localPosition = Vector3.zero;
         }
-
-        if (buddy != null)
-        {
-             // ターゲット再設定などがもし必要なら
-        }
     }
 
     void OnDisable()
@@ -108,18 +103,18 @@ public class StalkerHandController : MonoBehaviour
         {
             mainStalker.transform.LookAt(home);
             
-            // Homeとの距離を確認
+            //Homeとの距離を確認
             float distanceToHome = Vector3.Distance(mainStalker.transform.position, home);
             
             if (distanceToHome > 0.1f)
             {
-                // 移動
+                //移動
                 transform.Translate(mainStalker.transform.forward * (speed / 2) * Time.deltaTime, Space.World);
                 sanityDrainTimer = 0f;
             }
             else
             {
-                // 到着したら移動停止 & 正気度減少
+                //到着したら移動停止 & 正気度減少
                 sanityDrainTimer += Time.deltaTime;
                 if (sanityDrainTimer >= 1.0f)
                 {

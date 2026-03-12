@@ -1314,6 +1314,7 @@ GameObject:
   - component: {fileID: 5779528742295818875}
   - component: {fileID: 8006296626151862032}
   - component: {fileID: 4065553066156393349}
+  - component: {fileID: 605167926508825017}
   m_Layer: 3
   m_Name: Crumbling_Platform
   m_TagString: Untagged
@@ -1375,7 +1376,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollapseBlock
   CollapseDelay: 1
   RespawnDelay: 3
+  BlockCollider: {fileID: 8006296626151862032}
+  TriggerCollider: {fileID: 605167926508825017}
   demolisher: {fileID: 5685785593386641661}
+--- !u!65 &605167926508825017
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3627950219778319770}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.76, y: 0.13, z: 1}
+  m_Center: {x: 0, y: 0.51, z: 0}
 --- !u!1 &4391519079836205044
 GameObject:
   m_ObjectHideFlags: 0

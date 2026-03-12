@@ -4,10 +4,10 @@ using UnityEngine.Audio;
 public class LuminaLightBall : MonoBehaviour
 {
     [Header("発射設定")]
-    public GameObject lightBallPrefab;   // 弾のPrefab
-    public Transform shootPoint;         // 発射位置
-    public Vector3 shootDirection = new Vector3(1.015f, 1f, 0f);
-    public float shootSpeed = 9.9f;
+    public GameObject lightBallPrefab;
+    public Transform shootPoint;
+    public Vector3 shootDirection = new Vector3(-1f, 1f, 0f);
+    public float shootSpeed = 9.5f;
 
     [Header("バウンド設定")]
     public int maxBounces = 100;
@@ -15,11 +15,13 @@ public class LuminaLightBall : MonoBehaviour
 
     [Header("再生成設定")]
     public float respawnTime = 3.25f;
+    // ★ 追加：最初だけのクールタイム
+    public float startupDelay = 0f;
 
     [Header("サウンド設定")]
     public AudioClip bounceSound;
     [Range(0f, 1f)]
-    public float volume = 50f;
+    public float volume = 0.5f; // インスペクターでのRangeに合わせて修正（元は50fになっていました）
     [SerializeField] AudioMixerGroup seMixerGroup;
 
     [Tooltip("音を鳴らす対象レイヤー（複数選択可）")]
@@ -31,11 +33,27 @@ public class LuminaLightBall : MonoBehaviour
     public AudioRolloffMode rolloffMode = AudioRolloffMode.Linear;
 
     private float timer;
+    private float startupTimer = 0f;
+    private bool isStarted = false;
 
     void Update()
     {
         if (lightBallPrefab == null || shootPoint == null) return;
 
+        // ★ 最初だけの待機処理
+        if (!isStarted)
+        {
+            startupTimer += Time.deltaTime;
+            if (startupTimer >= startupDelay)
+            {
+                isStarted = true;
+                SpawnBall(); // 待機明けに1発目を撃つ
+                timer = 0f;
+            }
+            return; // 待機中はこれ以降の処理をしない
+        }
+
+        // 通常のループ処理
         timer += Time.deltaTime;
         if (timer >= respawnTime)
         {
@@ -57,7 +75,6 @@ public class LuminaLightBall : MonoBehaviour
 #endif
         }
 
-        // 弾挙動管理
         BallBehaviour behaviour = ball.AddComponent<BallBehaviour>();
         behaviour.maxBounces = maxBounces;
         behaviour.lifeTime = lifeTime;
@@ -70,19 +87,14 @@ public class LuminaLightBall : MonoBehaviour
         behaviour.seMixerGroup = seMixerGroup;
     }
 
-    // ------------------------------
-    // 内部クラス: 弾の挙動管理
-    // ------------------------------
     private class BallBehaviour : MonoBehaviour
     {
         public int maxBounces;
         public float lifeTime;
-
         public AudioClip bounceSound;
         public AudioMixerGroup seMixerGroup;
         public float volume;
         public LayerMask soundLayers;
-
         public float minDistance;
         public float maxDistance;
         public AudioRolloffMode rolloffMode;
@@ -98,7 +110,6 @@ public class LuminaLightBall : MonoBehaviour
 
         void OnCollisionEnter(Collision collision)
         {
-            // LayerMask で判定
             if (((1 << collision.gameObject.layer) & soundLayers) != 0)
             {
                 PlayBounceSound();
@@ -115,7 +126,6 @@ public class LuminaLightBall : MonoBehaviour
         {
             if (bounceSound == null) return;
 
-            // AudioSource を生成して 3D設定 → 自動削除
             GameObject audioObj = new GameObject("LightBallSound");
             audioObj.transform.position = transform.position;
 
@@ -123,7 +133,7 @@ public class LuminaLightBall : MonoBehaviour
             source.clip = bounceSound;
             source.volume = volume;
             source.outputAudioMixerGroup = seMixerGroup;
-            source.spatialBlend = 1f; // 3D化
+            source.spatialBlend = 1f;
             source.minDistance = minDistance;
             source.maxDistance = maxDistance;
             source.rolloffMode = rolloffMode;

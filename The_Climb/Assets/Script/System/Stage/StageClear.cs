@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class StageClear : MonoBehaviour
@@ -57,7 +57,21 @@ public class StageClear : MonoBehaviour
             PlayerPrefs.SetInt("ClearStagecount", x + 1);
         }
 
-        // ステージセレクトへ
-        System.Loading.SceneLoader.Instance.LoadScene("StageSelect");
+        // クリア回数の確認
+        int clearCount = PlayerPrefs.GetInt("ClearStagecount", 0);
+
+        // 3回クリアした場合は直接ゲームクリア画面へ
+        if (clearCount >= 3)
+        {
+            Debug.Log("3ステージクリア達成！直接 GameClearScene へ遷移します。");
+            PlayerPrefs.SetInt("GameCleared", 1); // ゲームクリアフラグをセット
+            PlayerPrefs.Save();
+            System.Loading.SceneLoader.Instance.LoadScene("GameClearScene");
+        }
+        else
+        {
+            // それ以外は通常通りステージセレクトへ
+            System.Loading.SceneLoader.Instance.LoadScene("StageSelect");
+        }
     }
 }

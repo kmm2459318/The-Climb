@@ -37,10 +37,18 @@ namespace TheClimb.Astral
             EffectAPIWindow.StopSudden(new EffectKey(GameMode.Astral, EffectKind.AwakePower));
 
             //ServiceLocator.Resolve<ICoroutineRunnerFacade>().StartCoroutine(PlayTrimmed(0f, 0.7f));
+            while ((holdTime += Time.deltaTime) < abilityStats.ChargeCompleteTime)    //  二段階目のエフェクト生成まで待機
+            { yield return null; }
             
-            isChargeComplete = true;   
+            EffectAPIWindow.Stop(new EffectKey(GameMode.Astral, EffectKind.ChargePower));
+
+            while ((holdTime += Time.deltaTime) < abilityStats.ChargeCompleteTime + abilityStats.ChargeEffectDelay)    //  二段階目のエフェクト生成まで待機
+            { yield return null; }
+
+            isChargeComplete = true;
 
             EffectAPIWindow.Play(new EffectKey(GameMode.Astral, EffectKind.HoldPower), planetTF);
+
         }
 
         public override void BurstChargeForce(InputAction.CallbackContext context)
@@ -59,7 +67,8 @@ namespace TheClimb.Astral
                 ServiceLocator.Resolve<PlayerAPIFacadeBase>().AddForce(blowForce, AddForceMode.VelocityChagne);
                 EffectAPIWindow.Play(new EffectKey(GameMode.Astral, EffectKind.BurstPower), planetTF);
             }
-            
+
+            EffectAPIWindow.Stop(new EffectKey(GameMode.Astral, EffectKind.ChargePower));
             EffectAPIWindow.Stop(new EffectKey(GameMode.Astral, EffectKind.HoldPower));
 
             isChargeComplete = false;

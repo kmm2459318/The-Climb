@@ -28,6 +28,8 @@ public class PressureButton : MonoBehaviour
     private GameObject buttonModel;  //ボタンのモデル
     [SerializeField] private Vector3 movePoint;  //ギミックの：moveの向かう地点
 
+    private bool pressPlayer = false;  //プレイヤーが押してるか
+    private bool pressBuddy = true;  //バディが押してるか
     public int pressCount = 0;  //現在押してる数
     private float posY = 0;  //ボタンのＹ座標
 
@@ -77,6 +79,7 @@ public class PressureButton : MonoBehaviour
         //{
         //    PullSwitch();
         //}
+        Debug.Log(", PressCount: " + pressCount);
     }
 
     private void PressSwtich()  //押されているとき
@@ -104,22 +107,28 @@ public class PressureButton : MonoBehaviour
 
     private void PullSwitch()  //押されていないとき
     {
-        buttonModel.transform.position = new Vector3(transform.position.x, posY, 0);
+        pressCount--;
 
-        if (releaseSound != null)
+        if (pressCount <= 0 && !pressBuddy && !pressPlayer)
         {
-            audioSource.PlayOneShot(releaseSound);
-        }
+            pressCount = 0;
+            buttonModel.transform.position = new Vector3(transform.position.x, posY, 0);
 
-        //ギミックの処理
-        switch (type)
-        {
-            case GimmickType.appear:
-                AppearGimmick(false);
-                break;
-            case GimmickType.destroy:
-                AppearGimmick(true);
-                break;
+            if (releaseSound != null)
+            {
+                audioSource.PlayOneShot(releaseSound);
+            }
+
+            //ギミックの処理
+            switch (type)
+            {
+                case GimmickType.appear:
+                    AppearGimmick(false);
+                    break;
+                case GimmickType.destroy:
+                    AppearGimmick(true);
+                    break;
+            }
         }
     }
 
@@ -133,20 +142,29 @@ public class PressureButton : MonoBehaviour
     {
         if (!continuously)  //継続的ボタンか否か
         {
-            if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Buddy"))
+            if (other.gameObject.CompareTag("Player"))
             {
-                pressCount--;
-
-                if (pressCount == 0)
-                    PullSwitch();
+                pressPlayer = false;
+                PullSwitch();
+            }
+            else if (other.gameObject.CompareTag("Buddy"))
+            {
+                pressBuddy = false;
+                PullSwitch();
             }
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") || (other.gameObject.CompareTag("Buddy") && !playerState.carryingBuddy))
+        if (other.gameObject.CompareTag("Player"))
         {
+            pressPlayer = true;
+            PressSwtich();
+        }
+        else if (other.gameObject.CompareTag("Buddy") && !playerState.carryingBuddy)
+        {
+            pressBuddy = true;
             PressSwtich();
         }
     }

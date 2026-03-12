@@ -33,7 +33,7 @@ public class RaycastReactiveObject : MonoBehaviour
         mat = rend.material;
 
         isVisible = startVisible;
-        currentAlpha = isVisible ? 1f : 0f;
+        currentAlpha = isVisible ? 1f : 0.5f;
 
         ApplyState(currentAlpha);
 
@@ -77,7 +77,7 @@ public class RaycastReactiveObject : MonoBehaviour
     {
       //  Debug.Log($"[{name}] フェードイン開始");
 
-        yield return FadeTo(1f);
+        yield return FadeTo(0.8f);
         isVisible = true;
 
        // Debug.Log($"[{name}] 完全表示");
@@ -89,7 +89,7 @@ public class RaycastReactiveObject : MonoBehaviour
 
      //   Debug.Log($"[{name}] 点滅終了 → 透明化へ");
 
-        yield return FadeTo(0f);
+        yield return FadeTo(0.2f);
         isVisible = false;
 
       //  Debug.Log($"[{name}] 完全透明 → 次のRaycast待ち");
@@ -154,6 +154,6 @@ public class RaycastReactiveObject : MonoBehaviour
         c.a = alpha;
         mat.color = c;
 
-        solidCollider.enabled = alpha >= 0.95f;
+        solidCollider.enabled = alpha >= 0.75f;
     }
 }

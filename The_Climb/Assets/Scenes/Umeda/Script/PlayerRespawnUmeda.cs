@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -151,7 +151,7 @@ public class PlayerRespawnUmeda : MonoBehaviour
 
         // デバッグ用：Rキーでリスポーン
         // playerStateがnullの場合のエラー回避
-        if (playerState != null && (Input.GetKeyDown(KeyCode.R) || playerState.erosionLevel >= 100 || playerState.sanityLevel <= 0))
+        if (playerState != null && (Input.GetKeyDown(KeyCode.P) || playerState.sanityLevel <= 0))
         {
             Respawn();
         }
