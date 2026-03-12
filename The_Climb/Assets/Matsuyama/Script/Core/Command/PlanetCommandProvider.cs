@@ -7,9 +7,16 @@ namespace TheClimb.Astral
         public FollowOrbital followOrbital { get;}
         public RotationPlanet rotationPlanet{ get;}
 
-        public PlanetCommandProvider(Transform PlanetTF, Transform PlayerTF, GravitationStatusBlock gravitationStat, OrbitalStatusBlock orbitalStat, OrbitalContext orbitalCtx)
+        public PlanetCommandProvider(Transform PlanetTF, Transform PlayerTF, GravitationStatusBlock gravitationStat, OrbitalStatusBlock orbitalStat, OrbitalContext orbitalCtx, Camera camera = null)
         {
-            followOrbital = new FollowOrbital(orbitalCtx);
+            if (camera != null)
+            {
+                followOrbital = new FollowOrbital(orbitalCtx, camera);
+            }
+            else
+            {
+                followOrbital = new FollowOrbital(orbitalCtx);
+            }
             rotationPlanet = new RotationPlanet(PlanetTF, gravitationStat);
         }
     }

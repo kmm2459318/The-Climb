@@ -12,13 +12,19 @@ namespace TheClimb.Astral
         Coroutine orbitalFollowLoop;    //  天体が軌道上を動く
 
         StageClear stageClear;
+        Camera camera;
 
         bool IsRunning;      //  Followコルーチンが走っているかどうか
 
-        public FollowOrbital(OrbitalContext orbitalCtx)    //  PlanetCommandProviderから呼ばれる
+        public FollowOrbital(OrbitalContext orbitalCtx, Camera camera = null)    //  PlanetCommandProviderから呼ばれる
         {
             _context = orbitalCtx;
             stageClear = orbitalCtx.StageClear;
+
+            if(camera != null)
+            {
+                this.camera = camera;
+            }
         }
 
         public override void Execute()    //  軌道追従開始
@@ -53,7 +59,15 @@ namespace TheClimb.Astral
             {
                 while (elapsed < duration && !stageClear.IsClearing)
                 {
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    Ray ray;
+                    if (camera != null)
+                    {
+                        ray = camera.ScreenPointToRay(Input.mousePosition);
+                    }
+                    else
+                    {
+                        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    }
                     Debug.Log(centerTF);
                     if (plane.Raycast(ray, out float distance))
                     {
