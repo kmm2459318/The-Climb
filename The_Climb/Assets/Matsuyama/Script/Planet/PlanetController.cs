@@ -9,6 +9,7 @@ namespace TheClimb.Astral
     public class PlanetController : MonoBehaviour    //  天体を包括的にコントロールする
     {
         [SerializeField] PlanetStatus planetStatus;           //  天体のステータス
+        [SerializeField] Camera camera;
         GravitationStatusBlock currentGravitationStat;        //  天体の万有引力ステータスブロック
         OrbitalStatusBlock currentOrbitalStat;                //  天体の円軌道追従ステータスブロック
         PlanetStateMachine planetStateMachine;                //  天体のステートマシーン
@@ -30,8 +31,15 @@ namespace TheClimb.Astral
         {
             planetStateMachine = new PlanetStateMachine();
             orbitalContext = new OrbitalContext(this.transform, currentOrbitalStat, playerDataProvider.TransformProperty, stageClear);
-            planetCommandProvider = new PlanetCommandProvider(this.transform, playerDataProvider.TransformProperty, currentGravitationStat, currentOrbitalStat, orbitalContext);
-            planetStateFactory = new PlanetStateFactory(this, planetStateMachine, planetCommandProvider);
+            if (camera == null)
+            {
+                planetCommandProvider = new PlanetCommandProvider(this.transform, playerDataProvider.TransformProperty, currentGravitationStat, currentOrbitalStat, orbitalContext);
+            }
+            else
+            {
+                planetCommandProvider = new PlanetCommandProvider(this.transform, playerDataProvider.TransformProperty, currentGravitationStat, currentOrbitalStat, orbitalContext, camera);
+            }
+                planetStateFactory = new PlanetStateFactory(this, planetStateMachine, planetCommandProvider);
             PlanetEventBus.ActivePlanet(playerDataProvider.TransformProperty, currentOrbitalStat.OrbitRadius, currentOrbitalStat.OrbitalSamples);    //  半円を表示
 
             planetStateMachine.ChangeState(planetStateFactory.CreateIdleState());
