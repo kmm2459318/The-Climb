@@ -29,7 +29,7 @@ public class PressureButton : MonoBehaviour
     [SerializeField] private Vector3 movePoint;  //ギミックの：moveの向かう地点
 
     private bool pressPlayer = false;  //プレイヤーが押してるか
-    private bool pressBuddy = true;  //バディが押してるか
+    private bool pressBuddy = false;  //バディが押してるか
     public int pressCount = 0;  //現在押してる数
     private float posY = 0;  //ボタンのＹ座標
 
@@ -80,11 +80,29 @@ public class PressureButton : MonoBehaviour
         //    PullSwitch();
         //}
         Debug.Log(", PressCount: " + pressCount);
+
+        //Buddyをボタンに置く
+        if (pressPlayer && Input.GetKeyDown(KeyCode.E))
+        {
+            pressBuddy = !pressBuddy;  //バディの状態を切り替える
+            if (pressBuddy)
+            {
+                Debug.Log("Buddy Enter");
+                pressCount++;  //Buddyが置かれたときは押してる数を増やす
+                pressBuddy = true;
+            }
+            else
+            {
+                Debug.Log("Buddy Exit");
+                pressCount--;  //Buddyが離れたときは押してる数を減らす
+                pressBuddy = false;
+            }
+        }
     }
 
     private void PressSwtich()  //押されているとき
     {
-        buttonModel.transform.position = new Vector3(transform.position.x,  posY - 0.18f, 0);
+        buttonModel.transform.position = new Vector3(transform.position.x, posY - 0.18f, 0);
 
         if (pressSound != null && pressCount == 0)
         {
@@ -109,9 +127,9 @@ public class PressureButton : MonoBehaviour
     {
         pressCount--;
 
-        if (pressCount <= 0 && !pressBuddy && !pressPlayer)
+        if (pressCount == 0)
         {
-            pressCount = 0;
+            //pressCount = 0;
             buttonModel.transform.position = new Vector3(transform.position.x, posY, 0);
 
             if (releaseSound != null)
@@ -142,13 +160,15 @@ public class PressureButton : MonoBehaviour
     {
         if (!continuously)  //継続的ボタンか否か
         {
-            if (other.gameObject.CompareTag("Player"))
+            if (other.gameObject.CompareTag("Player") && pressPlayer)
             {
+                Debug.Log("Player Exit");
                 pressPlayer = false;
                 PullSwitch();
             }
-            else if (other.gameObject.CompareTag("Buddy"))
+            else if (other.gameObject.CompareTag("Buddy") && pressBuddy && !playerState.carryingBuddy && !pressPlayer)
             {
+                Debug.Log("Buddy Exit");
                 pressBuddy = false;
                 PullSwitch();
             }
@@ -157,13 +177,15 @@ public class PressureButton : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") && !pressPlayer)
         {
+            Debug.Log("Player Enter");
             pressPlayer = true;
             PressSwtich();
         }
-        else if (other.gameObject.CompareTag("Buddy") && !playerState.carryingBuddy)
+        else if (other.gameObject.CompareTag("Buddy") && !playerState.carryingBuddy && !pressPlayer && !pressBuddy)
         {
+            Debug.Log("Buddy Enter");
             pressBuddy = true;
             PressSwtich();
         }
