@@ -1,6 +1,7 @@
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.Animations;
-using TMPro;
+using UnityEngine.Audio;
 
 public class BuddyCarry : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class BuddyCarry : MonoBehaviour
     [Header("コールベルの音")]
     [SerializeField] private AudioClip callBellSound;
     private AudioSource audioSource;
+    [SerializeField] AudioMixerGroup seMixerGroup;
 
     void Start()
     {
@@ -33,6 +35,7 @@ public class BuddyCarry : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+        audioSource.outputAudioMixerGroup = seMixerGroup;
 
         if (GameObject.Find("Buddy") != null)
         {

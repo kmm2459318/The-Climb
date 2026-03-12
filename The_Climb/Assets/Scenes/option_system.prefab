@@ -255,6 +255,7 @@ GameObject:
   - component: {fileID: 5164901077074490944}
   - component: {fileID: 7630649002349357523}
   - component: {fileID: 1938862398719799487}
+  - component: {fileID: 8023545130145251775}
   m_Layer: 0
   m_Name: option_system
   m_TagString: Untagged
@@ -336,6 +337,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Back_Button
   UI: {fileID: 2971381721808078769}
   button: {fileID: 2081323421999366343}
+--- !u!114 &8023545130145251775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188410309327072108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75f6efa386f1f4e439fdb3ba1c986474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoudSetting
+  audioMixer: {fileID: 24100000, guid: acd11f576c88dd648a5ebed30b281dc6, type: 2}
+  bgmSlider: {fileID: 344290756623250683}
+  seSlider: {fileID: 8011430817454253895}
 --- !u!1 &1406130735171421594
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,7 +517,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4946058894482290594}
+      - m_Target: {fileID: 8023545130145251775}
         m_TargetAssemblyTypeName: SoudSetting, Assembly-CSharp
         m_MethodName: SetBGMVolume
         m_Mode: 4
@@ -603,7 +619,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4946058894482290594}
+      - m_Target: {fileID: 8023545130145251775}
         m_TargetAssemblyTypeName: SoudSetting, Assembly-CSharp
         m_MethodName: SetSEVolume
         m_Mode: 4
@@ -626,7 +642,6 @@ GameObject:
   - component: {fileID: 2799581093776957553}
   - component: {fileID: 5489927904865319535}
   - component: {fileID: 4777522879216247215}
-  - component: {fileID: 4946058894482290594}
   m_Layer: 5
   m_Name: BGM_UI
   m_TagString: Untagged
@@ -694,21 +709,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4946058894482290594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2971381721808078769}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75f6efa386f1f4e439fdb3ba1c986474, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SoudSetting
-  audioMixer: {fileID: 24100000, guid: acd11f576c88dd648a5ebed30b281dc6, type: 2}
-  bgmSlider: {fileID: 344290756623250683}
-  seSlider: {fileID: 8011430817454253895}
 --- !u!1 &3060740042085180493
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,7 +742,7 @@ RectTransform:
   m_Father: {fileID: 6579904883313132082}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1298,7 +1298,7 @@ RectTransform:
   m_Father: {fileID: 3334377953296143023}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1571,8 +1571,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 592909073874682463}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2007,8 +2007,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4901610562610691312}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
